@@ -1,0 +1,7 @@
+{
+  "all": true,
+  "plugins": ["license"],
+  "exec": {
+    "beforePush": "npm run build"
+  }
+}

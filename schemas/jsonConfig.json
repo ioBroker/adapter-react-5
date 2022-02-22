@@ -1,0 +1,1845 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "multilingual": {
+      "type": "object",
+      "required": [
+        "en"
+      ],
+      "patternProperties": {
+        "en|de|ru|pt|nl|fr|it|es|pl|zh-cn": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "description": "Control type",
+      "enum": [
+        "tabs",
+        "panel"
+      ]
+    },
+    "$schema": {
+      "description": "Specify a JSON schema",
+      "type": "string"
+    },
+    "i18n": {
+      "description": "If translations will be provided via files, e.g. in admin/i18n/de/translations.json or provide the path to the i18n folder if it's custom or provide the translations inside this attribute as an object",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object",
+          "patternProperties": {
+            "^.+": {
+              "$ref": "#/definitions/multilingual"
+            }
+          }
+        }
+      ]
+    },
+    "items": {
+      "description": "Consists of objects representing e.g. a single tab",
+      "type": "object",
+      "patternProperties": {
+        "^.+": {
+          "description": "Object representing e.g. a tab",
+          "type": "object",
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "language"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "system": {
+                    "description": "Allow the usage of the system language from system.config as default",
+                    "type": "boolean"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type", "system"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "autocompleteSendTo"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "command": {
+                    "description": "Command to be sent.",
+                    "type": "string"
+                  },
+                  "jsonData": {
+                    "description": "Data to be sent as parsable string, can contain special placeholder. E. g. '{\"subject1\": \"${data.subject}\", \"options1\": {\"host\": \"${data.host}\"}}'",
+                    "type": "string"
+                  },
+                  "data": {
+                    "description": "Data to be sent as JSON.",
+                    "type": "object"
+                  },
+                  "freeSolo": {
+                    "description": "Set freeSolo to true so the textbox can contain any arbitrary value.",
+                    "type": "boolean"
+                  },
+                  "placeholder": {
+                    "description": "Placeholder (for text control)",
+                    "type": "string"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type", "command"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "selectSendTo"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "command": {
+                    "description": "Command to be sent.",
+                    "type": "string"
+                  },
+                  "jsonData": {
+                    "description": "Data to be sent as parsable string, can contain special placeholder. E. g. '{\"subject1\": \"${data.subject}\", \"options1\": {\"host\": \"${data.host}\"}}'",
+                    "type": "string"
+                  },
+                  "data": {
+                    "description": "Data to be sent as JSON.",
+                    "type": "object"
+                  },
+                  "manual": {
+                    "description": "Allow manual editing. Without Dropdown",
+                    "type": "boolean"
+                  },
+                  "noTranslation": true,
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type", "command"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "header"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "size": {
+                    "description": "Size of the header: h1-h5",
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 5
+                  },
+                  "text": {
+                    "description": "Header text",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/multilingual"
+                      }
+                    ]
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type", "size", "text"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "color"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "divider"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "color": {
+                    "description": "Optional color",
+                    "type": "string",
+                    "enum": [
+                      "primary",
+                      "secondary"
+                    ]
+                  },
+                  "height": {
+                    "description": "Optional height",
+                    "type": "number"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "icon"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "crop": {
+                    "description": "If true, allow user to crop the image (only for non svg)",
+                    "type": "boolean"
+                  },
+                  "square": {
+                    "description": "Width must be equal to height or crop must allow only square as shape",
+                    "type": "boolean"
+                  },
+                  "maxWidth": {
+                    "description": "Maximum width",
+                    "type": "number"
+                  },
+                  "maxHeight": {
+                    "description": "Maximum height",
+                    "type": "number"
+                  },
+                  "maxSize": {
+                    "description": "Maximum size",
+                    "type": "number"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "panel"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "items": {
+                    "$ref": "#/properties/items"
+                  },
+                  "icon": {
+                    "description": "Panel can have icon (base64)",
+                    "type": "string"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type", "items"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "image"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "accept": {
+                    "description": "HTML accept attribute, like 'image/*,.pdf'",
+                    "type": "string"
+                  },
+                  "crop": {
+                    "description": "If true, allow user to crop the image (only for non svg)",
+                    "type": "boolean"
+                  },
+                  "square": {
+                    "description": "Width must be equal to height or crop must allow only square as shape",
+                    "type": "boolean"
+                  },
+                  "maxWidth": {
+                    "description": "'Maximum width",
+                    "type": "number"
+                  },
+                  "maxHeight": {
+                    "description": "'Maximum height",
+                    "type": "number"
+                  },
+                  "maxSize": {
+                    "description": "'Maximum size",
+                    "type": "number"
+                  },
+                  "filename": {
+                    "description": "Name of the file",
+                    "type": "string"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "sendTo"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "command": {
+                    "description": "Command to be sent.",
+                    "type": "string"
+                  },
+                  "color": {
+                    "description": "Optional color",
+                    "type": "string",
+                    "enum": [
+                      "primary",
+                      "secondary"
+                    ]
+                  },
+                  "icon": {
+                    "description": "sendTo can have icon (base64)",
+                    "type": "string"
+                  },
+                  "jsonData": {
+                    "description": "Data to be sent as parsable string, can contain special placeholder. E. g. '{\"subject1\": \"${data.subject}\", \"options1\": {\"host\": \"${data.host}\"}}'",
+                    "type": "string"
+                  },
+                  "data": {
+                    "description": "Data to be sent as JSON.",
+                    "type": "object"
+                  },
+                  "result": {
+                    "description": "{result1: {en: 'A'}, result2: {en: 'B'}}",
+                    "type": "object"
+                  },
+                  "error": {
+                    "description": "{error1: {en: 'E'}, error2: {en: 'E2'}}",
+                    "type": "object"
+                  },
+                  "variant": {
+                    "description": "If outlined or contained",
+                    "type": "string",
+                    "enum": [
+                      "contained",
+                      "outlined"
+                    ]
+                  },
+                  "placeholder": {
+                    "description": "Placeholder (for text control)",
+                    "type": "string"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type", "command"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "password"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "encrypted": {
+                    "description": "Is value encrypted or not (of course only for texts)",
+                    "type": "boolean"
+                  },
+                  "repeat": {
+                    "description": "Password must be compared with password",
+                    "type": "boolean"
+                  },
+                  "visible": {
+                    "description": "True if allow to view the password by toggling the view button",
+                    "type": "boolean"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "file"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "filename": {
+                    "description": "Name of the file",
+                    "type": "string"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type", "filename"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "slider"
+                  }
+                }
+              },
+
+              "then": {
+                "properties": {
+                  "min": {
+                    "description": "Minimal value",
+                    "type": "number",
+                    "default": 0
+                  },
+                  "max": {
+                    "description": "Maximum number",
+                    "type": "number",
+                    "default": 100
+                  },
+                  "step": {
+                    "description": "Step size",
+                    "type": "number",
+                    "default": 1
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "custom"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "component": {
+                    "description": "Component name that will be provided via props, like componentInstancesEditor",
+                    "type": "string"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "checkbox"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "number"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "placeholder": {
+                    "description": "Placeholder (for text control)",
+                    "type": "string"
+                  },
+                  "min": {
+                    "description": "Minimal value",
+                    "type": "number"
+                  },
+                  "max": {
+                    "description": "Maximum number",
+                    "type": "number"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "autocomplete"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "placeholder": {
+                    "description": "Placeholder (for text control)",
+                    "type": "string"
+                  },
+                  "freeSolo": {
+                    "description": "Set freeSolo to true so the textbox can contain any arbitrary value.",
+                    "type": "boolean"
+                  },
+                  "options": {
+                    "description": "Options which can be completed. [\"value1\", \"value2\", ...] or [{\"value\": \"value\", \"label\": \"Value1\"}, \"value2\", ...]",
+                    "type": "array",
+                    "items": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object"
+                        }
+                      ]
+                    }
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type", "options"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "text"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "text": {
+                    "description": "Static text like description",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/multilingual"
+                      }
+                    ]
+                  },
+                  "placeholder": {
+                    "description": "Placeholder (for text control)",
+                    "type": "string"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "select"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "options": {
+                    "description": "Options which can be selected",
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "label",
+                        "value"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "label": {
+                          "description": "Label"
+                        },
+                        "value": {
+                          "description": "Value"
+                        }
+                      }
+                    }
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "table"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "noDelete": {
+                    "description": "If delete or add disabled, If noDelete is false, add, delete and move up/down should work",
+                    "type": "boolean"
+                  },
+                  "items": {
+                    "description": "Items of the table",
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "type",
+                        "attr",
+                        "width",
+                        "title",
+                        "filter",
+                        "sort"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "attr": {
+                          "type": "string"
+                        },
+                        "width": {
+                          "type": [
+                            "number",
+                            "string"
+                          ]
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "filter": {
+                          "type": "boolean"
+                        },
+                        "sort": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type", "items"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "pattern"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "pattern": {
+                    "description": "Read-only field with pattern like 'https://${data.ip}:${data.port}' (will not be saved in config)",
+                    "type": "string"
+                  },
+                  "copyToClipboard": {
+                    "description": "If true, show copy button.",
+                    "type": "boolean"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type", "pattern"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "setState"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "color": {
+                    "description": "Optional color",
+                    "type": "string",
+                    "enum": [
+                      "primary",
+                      "secondary"
+                    ]
+                  },
+                  "icon": {
+                    "description": "setState can have icon (base64)",
+                    "type": "string"
+                  },
+                  "id": {
+                    "description": "State ID, e.g. 'info.test'",
+                    "type": "string"
+                  },
+                  "ack": {
+                    "description": "ack-flag of the state",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "val": {
+                    "description": "State value to set"
+                  },
+                  "okText": {
+                    "description": "Alert that will be shown by pressing the button",
+                    "type": "string"
+                  },
+                  "error": {
+                    "description": "{error1: {en: 'E'}, error2: {en: 'E2'}}",
+                    "type": "object"
+                  },
+                  "variant": {
+                    "description": "If outlined or contained",
+                    "type": "string",
+                    "enum": [
+                      "contained",
+                      "outlined"
+                    ]
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type", "id", "val"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "func"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "short": {
+                    "description": "no system.func.",
+                    "type": "string"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "room"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "short": {
+                    "description": "no system.room.",
+                    "type": "string"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "user"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "short": {
+                    "description": "no system.user.",
+                    "type": "string"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "ip"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "listenOnAllPorts": {
+                    "description": "Add 0.0.0.0 to option",
+                    "type": "boolean"
+                  },
+                  "onlyIp4": {
+                    "description": "Show only IP4 addresses",
+                    "type": "boolean"
+                  },
+                  "onlyIp6": {
+                    "description": "Show only IP6 addresses",
+                    "type": "boolean"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "certificate"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "certType": {
+                    "description": "Type of the certificate",
+                    "type": "string",
+                    "enum": [
+                      "public",
+                      "private",
+                      "chained"
+                    ]
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type", "certType"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "staticLink"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "href": {
+                    "description": "Link",
+                    "type": "string"
+                  },
+                  "text": {
+                    "description": "Static text like description",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/multilingual"
+                      }
+                    ]
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type", "href", "text"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "staticText"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "text": {
+                    "description": "Static text like description",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/multilingual"
+                      }
+                    ]
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type", "text"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "instance"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "adapter": {
+                    "description": "Name of the adapter.",
+                    "type": "string"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type", "adapter"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "staticImage"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "src": {
+                    "description": "Name of picture (from admin directory)",
+                    "type": "string"
+                  },
+                  "href": {
+                    "description": "Link",
+                    "type": "string"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "objectId"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "types": {
+                    "description": "Array of possible types: ['channel', 'device', ...] (has only state by default)",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "state",
+                        "channel",
+                        "device",
+                        "enum",
+                        "host",
+                        "adapter",
+                        "instance",
+                        "meta",
+                        "config",
+                        "script",
+                        "user",
+                        "group",
+                        "chart",
+                        "folder"
+                      ]
+                    }
+                  },
+                  "placeholder": {
+                    "description": "Placeholder (for text control)",
+                    "type": "string"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            }
+          ],
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "label": {
+              "anyOf": [
+                {
+                  "description": "Label of tab",
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/definitions/multilingual"
+                }
+              ]
+            },
+            "type": {
+              "description": "Type of the element",
+              "type": "string",
+              "enum": [
+                "autocomplete",
+                "text",
+                "number",
+                "color",
+                "checkbox",
+                "header",
+                "slider",
+                "ip",
+                "user",
+                "room",
+                "func",
+                "select",
+                "icon",
+                "image",
+                "panel",
+                "password",
+                "file",
+                "sendTo",
+                "staticText",
+                "custom",
+                "pattern",
+                "table",
+                "instance",
+                "language",
+                "setState",
+                "certificate",
+                "staticImage",
+                "staticLink",
+                "divider",
+                "objectId",
+                "selectSendTo",
+                "autocompleteSendTo"
+              ]
+            },
+            "sm": {
+              "description": "Width in 1/12 of screen on small screen",
+              "type": "number"
+            },
+            "md": {
+              "description": "width in 1/12 of screen on middle screens",
+              "type": "number"
+            },
+            "lg": {
+              "description": "width in 1/12 of screen on large screens",
+              "type": "number"
+            },
+            "xs": {
+              "description": "width in 1/12 of screen on very small screens",
+              "type": "number"
+            },
+            "newLine": {
+              "description": "Should be shown from new line",
+              "type": "boolean"
+            },
+            "hidden": {
+              "description": "JS function that could use 'native.attribute' for calculation",
+              "type": "string"
+            },
+            "hideOnlyControl": {
+              "description": "If hidden the place will be shown, but no control",
+              "type": "boolean"
+            },
+            "disabled": {
+              "description": "JS function that could use 'native.attribute' for calculation",
+              "type": "string"
+            },
+            "helpLink": {
+              "description": "href to help",
+              "type": "string"
+            },
+            "help": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/definitions/multilingual"
+                }
+              ]
+            },
+            "style": {
+              "description": "css style in react notation: 'radiusBorder' and not 'radius-border'",
+              "type": "object"
+            },
+            "darkStyle": {
+              "description": "css style for dark mode",
+              "type": "string"
+            },
+            "validator": {
+              "description": "JS function: true no error, false - error",
+              "type": "string"
+            },
+            "tooltip": {
+              "description": "Optional tooltip",
+              "type": "string"
+            },
+            "default": {
+              "description": "Default value"
+            },
+            "defaultFunc": {
+              "description": "JS function to calculate default value",
+              "type": "string"
+            },
+            "noTranslation": {
+              "description": "Do not translate selects or other options (not for help, label or placeholder)",
+              "type": "boolean"
+            },
+            "confirm": {
+              "description": "Confirm dialog",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "condition": {
+                  "description": "JS function: true show confirm dialog",
+                  "type": "string"
+                },
+                "text": {
+                  "description": "Text of confirmation dialog",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/definitions/multilingual"
+                    }
+                  ]
+                },
+                "title": {
+                  "description": "Title of confirmation dialog",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/definitions/multilingual"
+                    }
+                  ]
+                },
+                "ok": {
+                  "description": "Text for 'OK' button",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/definitions/multilingual"
+                    }
+                  ]
+                },
+                "cancel": {
+                  "description": "Text for 'cancel' button",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/definitions/multilingual"
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "info",
+                    "warning",
+                    "error",
+                    "none"
+                  ]
+                },
+                "alsoDependsOn": {
+                  "description": "Trigger confirm dialog if on of the components changed.",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
