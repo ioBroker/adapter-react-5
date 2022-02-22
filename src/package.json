@@ -9,7 +9,7 @@
   "scripts": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ioBroker/adapter-react.git"
+    "url": "git+https://github.com/ioBroker/adapter-react-v5.git"
   },
   "keywords": [
     "iobroker",
@@ -18,9 +18,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ioBroker/adapter-react/issues"
+    "url": "https://github.com/ioBroker/adapter-react-v5/issues"
   },
-  "homepage": "https://github.com/ioBroker/adapter-react#readme",
+  "homepage": "https://github.com/ioBroker/adapter-react-v5#readme",
   "devDependencies": {},
   "dependencies": {}
 }
