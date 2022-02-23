@@ -1,6 +1,6 @@
-import { createTheme, adaptV4Theme } from '@mui/material/styles';
+import { createTheme, adaptV4Theme, alpha } from '@mui/material/styles';
 
-import { orange } from '@mui/material/colors';
+import { orange, grey } from '@mui/material/colors';
 
 const step = (16 - 5) / 23 / 100;
 
@@ -13,7 +13,7 @@ function toInt(hex) {
     const rgb = {
         r: 0,
         g: 0,
-        b: 0
+        b: 0,
     };
 
     if (hex.length === 7) {
@@ -21,7 +21,6 @@ function toInt(hex) {
         rgb.g = parseInt(hex.substr(3, 2), 16);
         rgb.b = parseInt(hex.substr(5, 2), 16);
     } else if (hex.length === 4) {
-
         const r = hex.substr(1, 1);
         const g = hex.substr(2, 1);
         const b = hex.substr(3, 1);
@@ -40,7 +39,7 @@ function toInt(hex) {
  * @returns {string}
  */
 function toHex(int) {
-    return '#' + Math.round(int.r).toString(16) + Math.round(int.g).toString(16) + Math.round(int.b).toString(16);
+    return `#${Math.round(int.r).toString(16)}${Math.round(int.g).toString(16)}${Math.round(int.b).toString(16)}`;
 }
 
 /**
@@ -70,14 +69,74 @@ function getElevations(color, overlay) {
     /** @type {import('@mui/material/styles/withStyles').CSSProperties} */
     const elevations = {};
 
-    for(let i = 1; i <= 24; i++) {
-        elevations['elevation' + i] = {
-            backgroundColor: getElevation(color, overlay, i)
-        }
+    for (let i = 1; i <= 24; i++) {
+        elevations[`elevation${i}`] = {
+            backgroundColor: getElevation(color, overlay, i),
+        };
     }
 
     return elevations;
 }
+
+const buttonsPalette = theme => ({
+    palette: {
+        // mode: "dark",
+        grey: {
+            main: grey[300],
+            dark: grey[400],
+        },
+    },
+});
+
+const buttonsTheme = theme => ({
+    components: {
+        MuiButton: {
+            variants: [
+                {
+                    props: { variant: 'contained', color: 'grey' },
+                    style: {
+                        color: theme.palette.getContrastText(theme.palette.grey[300]),
+                    },
+                },
+                {
+                    props: { variant: 'outlined', color: 'grey' },
+                    style: {
+                        color: theme.palette.text.primary,
+                        borderColor:
+                theme.palette.mode === 'light'
+                    ? 'rgba(0, 0, 0, 0.23)'
+                    : 'rgba(255, 255, 255, 0.23)',
+                        '&.Mui-disabled': {
+                            border: `1px solid ${theme.palette.action.disabledBackground}`,
+                        },
+                        '&:hover': {
+                            borderColor:
+                  theme.palette.mode === 'light'
+                      ? 'rgba(0, 0, 0, 0.23)'
+                      : 'rgba(255, 255, 255, 0.23)',
+                            backgroundColor: alpha(
+                                theme.palette.text.primary,
+                                theme.palette.action.hoverOpacity,
+                            ),
+                        },
+                    },
+                },
+                {
+                    props: { color: 'grey', variant: 'text' },
+                    style: {
+                        color: 'black',
+                        '&:hover': {
+                            backgroundColor: alpha(
+                                theme.palette.text.primary,
+                                theme.palette.action.hoverOpacity,
+                            ),
+                        },
+                    },
+                },
+            ],
+        },
+    },
+});
 
 /**
  * The theme creation factory function.
@@ -93,25 +152,25 @@ const Theme = type => {
                 mode: 'dark',
                 background: {
                     paper: '#121212',
-                    default: '#121212'
+                    default: '#121212',
                 },
                 primary: {
-                    main: '#4dabf5'
+                    main: '#4dabf5',
                 },
                 secondary: {
-                    main: '#436a93'
+                    main: '#436a93',
                 },
                 expert: '#14bb00',
                 text: {
                     primary: '#ffffff',
-                    secondary: '#ffffff'
-                }
+                    secondary: '#ffffff',
+                },
             },
             overrides: {
                 MuiAppBar: {
                     colorDefault: {
-                        backgroundColor: '#272727'
-                    }
+                        backgroundColor: '#272727',
+                    },
                 },
                 MuiLink: {
                     root: {
@@ -119,12 +178,12 @@ const Theme = type => {
                         transition: 'color .3s ease',
                         color: orange[200],
                         '&:hover': {
-                            color: orange[100]
-                        }
-                    }
+                            color: orange[100],
+                        },
+                    },
                 },
-                MuiPaper: getElevations('#121212', '#fff')
-            }
+                MuiPaper: getElevations('#121212', '#fff'),
+            },
         };
     } else if (type === 'blue') {
         theme = {
@@ -133,25 +192,25 @@ const Theme = type => {
                 mode: 'dark',
                 background: {
                     paper: '#151d21',
-                    default: '#151d21'
+                    default: '#151d21',
                 },
                 primary: {
-                    main: '#4dabf5'
+                    main: '#4dabf5',
                 },
                 secondary: {
-                    main: '#436a93'
+                    main: '#436a93',
                 },
                 expert: '#14bb00',
                 text: {
                     primary: '#ffffff',
-                    secondary: '#ffffff'
-                }
+                    secondary: '#ffffff',
+                },
             },
             overrides: {
                 MuiAppBar: {
                     colorDefault: {
-                        backgroundColor: '#2a3135'
-                    }
+                        backgroundColor: '#2a3135',
+                    },
                 },
                 MuiLink: {
                     root: {
@@ -159,12 +218,12 @@ const Theme = type => {
                         transition: 'color .3s ease',
                         color: orange[200],
                         '&:hover': {
-                            color: orange[100]
-                        }
-                    }
+                            color: orange[100],
+                        },
+                    },
                 },
-                MuiPaper: getElevations('#151d21', '#fff')
-            }
+                MuiPaper: getElevations('#151d21', '#fff'),
+            },
         };
     } else if (type === 'colored') {
         theme = {
@@ -172,18 +231,18 @@ const Theme = type => {
             palette: {
                 mode: 'light',
                 primary: {
-                    main: '#3399CC'
+                    main: '#3399CC',
                 },
                 secondary: {
-                    main: '#164477'
+                    main: '#164477',
                 },
-                expert: '#96fc96'
+                expert: '#96fc96',
             },
             overrides: {
                 MuiAppBar: {
                     colorDefault: {
-                        backgroundColor: '#3399CC'
-                    }
+                        backgroundColor: '#3399CC',
+                    },
                 },
                 MuiLink: {
                     root: {
@@ -191,11 +250,11 @@ const Theme = type => {
                         transition: 'color .3s ease',
                         color: orange[400],
                         '&:hover': {
-                            color: orange[300]
-                        }
-                    }
-                }
-            }
+                            color: orange[300],
+                        },
+                    },
+                },
+            },
         };
     } else if (type === 'PT') {
         theme = {
@@ -203,18 +262,18 @@ const Theme = type => {
             palette: {
                 mode: 'light',
                 primary: {
-                    main: '#0F99DE'
+                    main: '#0F99DE',
                 },
                 secondary: {
-                    main: '#88A536'
+                    main: '#88A536',
                 },
-                expert: '#BD1B24'
+                expert: '#BD1B24',
             },
             overrides: {
                 MuiAppBar: {
                     colorDefault: {
-                        backgroundColor: '#0F99DE'
-                    }
+                        backgroundColor: '#0F99DE',
+                    },
                 },
                 MuiLink: {
                     root: {
@@ -222,35 +281,35 @@ const Theme = type => {
                         transition: 'color .3s ease',
                         color: orange[400],
                         '&:hover': {
-                            color: orange[300]
-                        }
-                    }
-                }
-            }
+                            color: orange[300],
+                        },
+                    },
+                },
+            },
         };
-    }  else if (type === 'DX') {
+    } else if (type === 'DX') {
         theme = {
             name: type,
             palette: {
                 mode: 'light',
                 primary: {
-                    main: '#F5F5F7'
+                    main: '#F5F5F7',
                 },
                 secondary: {
-                    main: '#a9a9a9'
+                    main: '#a9a9a9',
                 },
                 expert: '#BD1B24',
                 text: {
                     primary: '#007AFE',
                     secondary: '#007AFE',
                     disabled: '#007AFEAA',
-                }
+                },
             },
             overrides: {
                 MuiAppBar: {
                     colorDefault: {
-                        backgroundColor: '#a9a9a9'
-                    }
+                        backgroundColor: '#a9a9a9',
+                    },
                 },
                 MuiLink: {
                     root: {
@@ -258,11 +317,11 @@ const Theme = type => {
                         transition: 'color .3s ease',
                         color: orange[400],
                         '&:hover': {
-                            color: orange[300]
-                        }
-                    }
-                }
-            }
+                            color: orange[300],
+                        },
+                    },
+                },
+            },
         };
     } else {
         theme = {
@@ -270,12 +329,12 @@ const Theme = type => {
             palette: {
                 mode: 'light',
                 primary: {
-                    main: '#3399CC'
+                    main: '#3399CC',
                 },
                 secondary: {
-                    main: '#164477'
+                    main: '#164477',
                 },
-                expert: '#14bb00'
+                expert: '#14bb00',
             },
             overrides: {
                 MuiLink: {
@@ -284,16 +343,16 @@ const Theme = type => {
                         transition: 'color .3s ease',
                         color: orange[400],
                         '&:hover': {
-                            color: orange[300]
-                        }
-                    }
-                }
-            }
+                            color: orange[300],
+                        },
+                    },
+                },
+            },
         };
     }
 
     theme.toolbar = {
-        height: 48
+        height: 48,
     };
 
     // add save toolbar
@@ -301,11 +360,66 @@ const Theme = type => {
         background: theme.palette.primary.main,
         button: {
             borderRadius: 3,
-            height: 32
-        }
+            height: 32,
+        },
     };
 
-    return createTheme(adaptV4Theme(theme));
+    theme.palette.grey = {
+        main: grey[300],
+        dark: grey[400],
+    };
+
+    theme = createTheme(adaptV4Theme(theme));
+
+    return createTheme(theme, {
+        components: {
+            MuiButton: {
+                variants: [
+                    {
+                        props: { variant: 'contained', color: 'grey' },
+                        style: {
+                            color: theme.palette.getContrastText(theme.palette.grey[300]),
+                        },
+                    },
+                    {
+                        props: { variant: 'outlined', color: 'grey' },
+                        style: {
+                            color: theme.palette.text.primary,
+                            borderColor:
+                    theme.palette.mode === 'light'
+                        ? 'rgba(0, 0, 0, 0.23)'
+                        : 'rgba(255, 255, 255, 0.23)',
+                            '&.Mui-disabled': {
+                                border: `1px solid ${theme.palette.action.disabledBackground}`,
+                            },
+                            '&:hover': {
+                                borderColor:
+                      theme.palette.mode === 'light'
+                          ? 'rgba(0, 0, 0, 0.23)'
+                          : 'rgba(255, 255, 255, 0.23)',
+                                backgroundColor: alpha(
+                                    theme.palette.text.primary,
+                                    theme.palette.action.hoverOpacity,
+                                ),
+                            },
+                        },
+                    },
+                    {
+                        props: { color: 'grey', variant: 'text' },
+                        style: {
+                            color: theme.palette.text.primary,
+                            '&:hover': {
+                                backgroundColor: alpha(
+                                    theme.palette.text.primary,
+                                    theme.palette.action.hoverOpacity,
+                                ),
+                            },
+                        },
+                    },
+                ],
+            },
+        },
+    });
 };
 
 export default Theme;
