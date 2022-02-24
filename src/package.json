@@ -6,6 +6,9 @@
     "name": "bluefox",
     "email": "dogafox@gmail.com"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {},
   "repository": {
     "type": "git",
