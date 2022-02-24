@@ -80,9 +80,9 @@ class DialogComplexCron extends React.Component {
                 />
             </DialogContent>
             <DialogActions>
-                {!!this.props.clearButton && <Button variant="contained" onClick={() => this.handleClear()} startIcon={<IconClear />}>{this.props.clear || I18n.t('ra_Clear')}</Button>}
+                {!!this.props.clearButton && <Button color="grey" variant="contained" onClick={() => this.handleClear()} startIcon={<IconClear />}>{this.props.clear || I18n.t('ra_Clear')}</Button>}
                 <Button variant="contained" onClick={() => this.handleOk()} color="primary" startIcon={<IconOk />}>{this.props.ok || I18n.t('ra_Ok')}</Button>
-                <Button variant="contained" onClick={() => this.handleCancel()} startIcon={<IconCancel />}>{this.props.cancel || I18n.t('ra_Cancel')}</Button>
+                <Button color="grey" variant="contained" onClick={() => this.handleCancel()} startIcon={<IconCancel />}>{this.props.cancel || I18n.t('ra_Cancel')}</Button>
             </DialogActions>
         </Dialog>;
     }

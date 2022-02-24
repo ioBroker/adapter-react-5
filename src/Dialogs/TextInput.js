@@ -56,6 +56,7 @@ class TextInput extends React.Component {
                     {this.props.promptText}
                 </DialogContentText>
                 <TextField
+                    variant="standard" 
                     autoFocus
                     margin="dense"
                     error={!!this.state.error}
@@ -82,7 +83,7 @@ class TextInput extends React.Component {
             <DialogActions>
                 <Button variant="contained" disabled={!this.state.text || this.state.error} onClick={() => this.props.onClose(this.state.text)}
                         color="primary" startIcon={<IconCheck />}>{this.props.applyText}</Button>
-                <Button variant="contained" onClick={() => this.props.onClose(null)} startIcon={<IconClose />}>{this.props.cancelText}</Button>
+                <Button color="grey" variant="contained" onClick={() => this.props.onClose(null)} startIcon={<IconClose />}>{this.props.cancelText}</Button>
             </DialogActions>
         </Dialog>;
     }

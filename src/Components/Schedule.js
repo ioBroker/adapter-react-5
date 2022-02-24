@@ -578,6 +578,7 @@ class Schedule extends React.Component {
                             label={!fromTo ? I18n.t('sch_fromTo') : ''}/>
                             {fromTo && [
                                 <TextField
+                                    variant="standard" 
                                     className={this.props.classes.inputTime}
                                     style={{marginRight: 10}}
                                     key="exactTimeFrom"
@@ -594,6 +595,7 @@ class Schedule extends React.Component {
                                     margin="normal"
                                 />,
                                 <TextField
+                                    variant="standard" 
                                     className={this.props.classes.inputTime}
                                     key="exactTimeTo"
                                     type="time"
@@ -664,6 +666,7 @@ class Schedule extends React.Component {
                     }}/>} label={I18n.t('sch_exactTime')}/>
             </div>
             {this.state.schedule.time.exactTime && <Select
+                variant="standard"
                 value={isAstro ? this.state.schedule.time.start : '00:00'}
                 onChange={e => {
                     const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
@@ -677,6 +680,7 @@ class Schedule extends React.Component {
             }
             {this.state.schedule.time.exactTime && !isAstro &&
             <div className={this.props.classes.settingsDiv}><TextField
+                variant="standard" 
                 className={this.props.classes.inputTime}
                 key="exactTimeValue"
                 value={this.state.schedule.time.start}
@@ -730,6 +734,7 @@ class Schedule extends React.Component {
                 </div>
                 {isOnce && <div className={this.props.classes.settingsDiv}>
                     {<TextField
+                        variant="standard" 
                         className={this.props.classes.inputDate}
                         type="date"
                         ref={this.refOnce}
@@ -932,6 +937,7 @@ class Schedule extends React.Component {
                                 this.onChange(_schedule);
                             }}/>
                         <Select
+                            variant="standard"
                             value={schedule.period.yearMonth}
                             onChange={e => {
                                 const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
@@ -963,6 +969,7 @@ class Schedule extends React.Component {
                     this.onChange(_schedule);
                 }}/>
             <Select
+                variant="standard"
                 value={this.state.schedule.time.mode}
                 onChange={e => {
                     const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
@@ -1494,6 +1501,7 @@ class Schedule extends React.Component {
             </div>
             <div className={this.props.classes.settingsDiv}>
                 <TextField
+                    variant="standard" 
                     className={this.props.classes.inputDate}
                     style={{marginRight: 10}}
                     key="exactTimeFrom"
@@ -1531,6 +1539,7 @@ class Schedule extends React.Component {
                         }}/>}
                     label={I18n.t('sch_validTo')}/>
                 {!!schedule.valid.to && <TextField
+                    variant="standard" 
                     inputRef={this.refTo}
                     className={this.props.classes.inputDate}
                     style={{marginRight: 10}}

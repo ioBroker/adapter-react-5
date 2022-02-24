@@ -83,7 +83,7 @@ let IconPicker = function (props) {
 
     return <div className={classes.formContainer}>
         {IconCustom ? <IconCustom className={ classes.formIcon }/> : null}
-        <FormControl className={classes.formControl} style={{padding: 3}}>
+        <FormControl variant="standard" className={classes.formControl} style={{padding: 3}}>
             <InputLabel shrink classes={{root: props.customClasses?.label}}>
                 { props.label }
             </InputLabel>

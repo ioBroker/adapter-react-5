@@ -79,6 +79,7 @@ class SelectWithIcon extends Component {
         }
 
         const select = <Select
+            variant="standard"
             disabled={this.props.disabled}
             value={this.props.value}
             inputProps={this.props.inputProps}
@@ -121,7 +122,7 @@ class SelectWithIcon extends Component {
         if (this.props.dense) {
             return select;
         } else {
-            return <FormControl fullWidth={!!this.props.fullWidth} style={this.props.style} className={this.props.className}>
+            return <FormControl variant="standard" fullWidth={!!this.props.fullWidth} style={this.props.style} className={this.props.className}>
                 <InputLabel>{this.props.label}</InputLabel>
                 {select}
             </FormControl>;

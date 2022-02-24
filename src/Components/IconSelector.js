@@ -142,6 +142,7 @@ class IconSelector extends Component {
 
         return <>
             <Button
+                color="grey" 
                 variant="outlined"
                 title={this.props.t('ra_Select predefined icon')}
                 onClick={() => this.setState({opened: true}, () => this.loadAllIcons())} style={{minWidth: 40, marginRight: 8}}
@@ -149,6 +150,7 @@ class IconSelector extends Component {
             {this.state.opened ? <Dialog onClose={() => this.setState({opened: false})} open={true}>
                 <DialogTitle>{this.props.t('ra_Select predefined icon')}
                         {this.state.isAnyName ? <TextField
+                            variant="standard" 
                             margin="dense"
                             style={{marginLeft: 20}}
                             value={this.state.filter}
@@ -188,6 +190,7 @@ class IconSelector extends Component {
                 </DialogContent>
                 <DialogActions>
                     <Button
+                        color="grey" 
                         variant="contained"
                         onClick={() => this.setState({opened: false})}
                         startIcon={<CloseIcon />}

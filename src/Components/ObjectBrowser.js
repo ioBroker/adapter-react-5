@@ -1954,7 +1954,7 @@ class ObjectBrowser extends Component {
                     {/* </ListItemIcon> */}
                     <ListItemText primary={this.texts['filter_' + id] || this.props.t('ra_' + id)} />
                     <ListItemSecondaryAction>
-                        <FormControl className={this.props.classes.columnsDialogInputWidth} style={{ marginTop: 0, marginBottom: 0 }} margin="dense">
+                        <FormControl variant="standard" className={this.props.classes.columnsDialogInputWidth} style={{ marginTop: 0, marginBottom: 0 }} margin="dense">
                             <Input
                                 classes={{ underline: 'no-underline' }}
                                 placeholder={this.props.t('ra_Width')}
@@ -2059,7 +2059,7 @@ class ObjectBrowser extends Component {
                                     </ListItemIcon>
                                     <ListItemText primary={column.name + ' (' + adapter + ')'} />
                                     <ListItemSecondaryAction>
-                                        <FormControl className={this.props.classes.columnsDialogInputWidth} style={{ marginTop: 0, marginBottom: 0 }} margin="dense">
+                                        <FormControl variant="standard" className={this.props.classes.columnsDialogInputWidth} style={{ marginTop: 0, marginBottom: 0 }} margin="dense">
                                             <Input
                                                 classes={{ underline: 'no-underline' }}
                                                 placeholder={this.props.t('ra_Width')}
@@ -2478,6 +2478,7 @@ class ObjectBrowser extends Component {
         const hasIcons = !!values.find(item => item.icon);
         return <div style={{ position: 'relative' }}>
             <Select
+                variant="standard"
                 key={name + '_' + this.state.filterKey}
                 ref={this.filterRefs[name]}
                 className={this.props.classes.headerCellInput + ' no-underline'}
@@ -2861,9 +2862,9 @@ class ObjectBrowser extends Component {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="outlined" onClick={() => this.setState({showExportDialog: false}, () => this._exportObjects(true))}>{this.props.t('All objects')}</Button>
+                    <Button color="grey" variant="outlined" onClick={() => this.setState({showExportDialog: false}, () => this._exportObjects(true))}>{this.props.t('All objects')}</Button>
                     <Button variant="contained" autoFocus color="primary" onClick={() => this.setState({showExportDialog: false}, () => this._exportObjects(false))}>{this.props.t('Only selected')}</Button>
-                    <Button variant="contained" onClick={() => this.setState({showExportDialog: false})} startIcon={<IconClose/>}>{this.props.t('Cancel')}</Button>
+                    <Button color="grey" variant="contained" onClick={() => this.setState({showExportDialog: false})} startIcon={<IconClose/>}>{this.props.t('Cancel')}</Button>
                 </DialogActions>
             </Dialog>;
         }
@@ -3691,6 +3692,7 @@ class ObjectBrowser extends Component {
                             />
                             :
                             <TextField
+                                variant="standard" 
                                 defaultValue={this.customColumnDialog.value}
                                 fullWidth
                                 onKeyUp={e => e.keyCode === 13 && this.onColumnsEditCustomDialogClose(true)}
@@ -3719,6 +3721,7 @@ class ObjectBrowser extends Component {
                         {this.props.t('ra_Update')}
                     </Button>
                     <Button
+                        color="grey" 
                         variant="contained"
                         onClick={() => this.onColumnsEditCustomDialogClose()}
                         startIcon={<IconClose />}

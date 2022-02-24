@@ -186,7 +186,7 @@ class SelectID extends React.Component {
             </DialogContent>
             <DialogActions>
                 <Button variant="contained" onClick={ () => this.handleOk() } startIcon={<IconOk />} disabled={ !this.state.selected.length } color="primary">{ this.props.ok || I18n.t('ra_Ok') }</Button>
-                <Button variant="contained" onClick={ () => this.handleCancel() } startIcon={<IconCancel />}>{ this.props.cancel || I18n.t('ra_Cancel') }</Button>
+                <Button color="grey" variant="contained" onClick={ () => this.handleCancel() } startIcon={<IconCancel />}>{ this.props.cancel || I18n.t('ra_Cancel') }</Button>
             </DialogActions>
         </Dialog>;
     }

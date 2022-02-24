@@ -333,6 +333,7 @@ class ComplexCron extends React.Component {
 
         return <div>
             <Select
+                variant="standard"
                 className={this.props.classes.periodSelect}
                 style={{verticalAlign: 'bottom'}}
                 value={select}
@@ -359,6 +360,7 @@ class ComplexCron extends React.Component {
             </Select>
             {everyN && false && <span>{value}</span>}
             {everyN && <TextField
+                variant="standard"
                 key="interval"
                 label={I18n.t('sc_' + type)}
                 value={value}
@@ -386,7 +388,7 @@ class ComplexCron extends React.Component {
     render() {
         const tab = this.state.seconds !== false ? this.state.tab : this.state.tab + 1;
         return <div className={this.props.classes.mainDiv}>
-            <div style={{paddingLeft: 8, width: '100%'}}><TextField style={{width: '100%'}} value={this.state.cron} disabled={true}/></div>
+            <div style={{paddingLeft: 8, width: '100%'}}><TextField variant="standard" style={{width: '100%'}} value={this.state.cron} disabled={true}/></div>
             <div style={{paddingLeft: 8, width: '100%', height: 60}}>{this.convertCronToText(this.state.cron, this.props.language || 'en')}</div>
             <FormControlLabel
                 control={<Checkbox checked={this.state.seconds}

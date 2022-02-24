@@ -108,12 +108,14 @@ class FileViewer extends React.Component {
                 src={ this.props.href } alt={ this.props.href }/>;
         } else if (this.state.code !== null) {
             return <TextField
+                variant="standard" 
                 className={ this.props.classes.textarea }
                 multiline
                 value={ this.state.code }
                 readOnly={true}/>;
         } else  if (this.state.text !== null) {
             return <TextField
+                variant="standard" 
                 className={ this.props.classes.textarea }
                 value={ this.state.code }
                 multiline
@@ -135,7 +137,7 @@ class FileViewer extends React.Component {
                     { this.getContent() }
             </DialogContent>
             <DialogActions>
-                { this.state.copyPossible ? <Button onClick={e => Utils.copyToClipboard(this.state.text || this.state.code, e) } >
+                { this.state.copyPossible ? <Button color="grey" onClick={e => Utils.copyToClipboard(this.state.text || this.state.code, e) } >
                     <CopyIcon />
                     { this.props.t('Copy content') }
                 </Button> : null }

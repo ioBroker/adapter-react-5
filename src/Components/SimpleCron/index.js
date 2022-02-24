@@ -429,6 +429,7 @@ class SimpleCron extends React.Component {
             return <div key="period" style={{paddingLeft: 8, display: 'inline-block'}}>
                 <h5 style={{marginBottom: 5}}>{I18n.t('sc_period')}</h5>
                 <TextField
+                    variant="standard" 
                     style={{marginTop: 0, marginBottom: 0, verticalAlign: 'bottom'}}
                     key="value"
                     label={I18n.t('sc_minutes')}
@@ -446,6 +447,7 @@ class SimpleCron extends React.Component {
                     margin="normal"
                 />
                 <TextField
+                    variant="standard" 
                     style={{marginTop: 0, marginBottom: 0, verticalAlign: 'bottom'}}
                     key="value"
                     label={I18n.t('sc_hours')}
@@ -467,6 +469,7 @@ class SimpleCron extends React.Component {
             return <div key="period" style={{paddingLeft: 8, display: 'inline-block'}}>
                 <h5 style={{marginBottom: 5}}>{I18n.t('sc_period')}</h5>
                 <TextField
+                    variant="standard" 
                     style={{marginTop: 0, marginBottom: 0, verticalAlign: 'bottom'}}
                     key="value"
                     label={I18n.t('sc_every')}
@@ -483,6 +486,7 @@ class SimpleCron extends React.Component {
                     InputLabelProps={{shrink: true,}}
                     margin="normal"
                 /><Select
+                variant="standard"
                 style={{verticalAlign: 'bottom'}}
                 value={settings.unit}
                 onChange={e => {
@@ -497,8 +501,9 @@ class SimpleCron extends React.Component {
 
     getControlsTime(type) {
         const settings = this.state[type];
-        return <FormControl className={this.props.classes.formControl} classes={{root: this.props.classes.formControlMarginRight}}>
+        return <FormControl variant="standard" className={this.props.classes.formControl} classes={{root: this.props.classes.formControlMarginRight}}>
             <TextField
+                variant="standard" 
                 key="at"
                 label={I18n.t('sc_time')}
                 value={settings.time}
@@ -523,8 +528,9 @@ class SimpleCron extends React.Component {
         }
 
         //<InputLabel htmlFor="formatted-text-mask-input">{I18n.t('sc_at')}</InputLabel>
-        return <FormControl className={this.props.classes.formControl}>
+        return <FormControl variant="standard" className={this.props.classes.formControl}>
             <TextField
+                variant="standard" 
                 key="date"
                 label={I18n.t('sc_date')}
                 value={settings.date}
@@ -558,9 +564,10 @@ class SimpleCron extends React.Component {
             this.getControlsPeriodElements('intervalBetween'),
             <div key="between" style={{paddingLeft: 8, display: 'inline-block', verticalAlign: 'top'}}>
                 <h5 style={{marginBottom: 5}}>{I18n.t('sc_hours')}</h5>
-                <FormControl className={this.props.classes.formControl}>
+                <FormControl variant="standard" className={this.props.classes.formControl}>
                     <InputLabel shrink htmlFor="age-label-placeholder">{I18n.t('sc_from')}</InputLabel>
                     <Select
+                    variant="standard"
                     style={{width: 100}}
                     value={settings.timeFrom}
                     onChange={e => {
@@ -571,9 +578,10 @@ class SimpleCron extends React.Component {
                     {[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23].map(hour => (<MenuItem key={'B_' + hour} value={hour}>{padding(hour) + ':00'}</MenuItem>))}
                 </Select>
                 </FormControl>
-                <FormControl className={this.props.classes.formControl}>
+                <FormControl variant="standard" className={this.props.classes.formControl}>
                     <InputLabel shrink htmlFor="age-label-placeholder">{I18n.t('sc_to')}</InputLabel>
                     <Select
+                        variant="standard"
                         style={{width: 100}}
                         value={settings.timeTo}
                         onChange={e => {
@@ -613,9 +621,10 @@ class SimpleCron extends React.Component {
         return <div className={this.props.classes.mainDiv}>
             <div style={{paddingLeft: 8, width: '100%'}}><TextField style={{width: '100%'}} value={this.state.cron} disabled={true}/></div>
             <div style={{paddingLeft: 8, width: '100%', height: 60}}>{convertCronToText(this.state.cron, this.props.language || 'en')}</div>
-            <div><FormControl style={{marginLeft: 8, marginTop: 8}} className={this.props.classes.formControl}>
+            <div><FormControl variant="standard" style={{marginLeft: 8, marginTop: 8}} className={this.props.classes.formControl}>
                 <InputLabel>{I18n.t('ra_Repeat')}</InputLabel>
                 <Select
+                    variant="standard"
                     value={this.state.mode}
                     onChange={e => this.onModeChange(e.target.value)}
                     inputProps={{name: 'mode', id: 'mode',}}>

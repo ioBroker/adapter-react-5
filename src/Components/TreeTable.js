@@ -283,6 +283,7 @@ class TreeTable extends React.Component {
 
     renderCellEditSelect(item, col, val) {
         return <Select
+            variant="standard"
             onChange={e => {
                 const editData = this.state.editData ? {...this.state.editData} : {};
                 if (e.target.value === val) {
@@ -300,6 +301,7 @@ class TreeTable extends React.Component {
 
     renderCellEditString(item, col, val) {
         return <TextField
+            variant="standard" 
             className={this.props.classes.fieldEdit}
             fullWidth
             value={this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val}
@@ -372,6 +374,7 @@ class TreeTable extends React.Component {
         return (
             <div className={this.props.classes.fieldEdit}>
                 <TextField
+                    variant="standard" 
                     fullWidth
                     className={this.props.classes.fieldEditWithButton}
                     value={_val}
@@ -434,6 +437,7 @@ class TreeTable extends React.Component {
         return (
             <div className={this.props.classes.fieldEdit}>
                 <TextField
+                    variant="standard" 
                     fullWidth
                     className={this.props.classes.fieldEditWithButton}
                     value={this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val}
