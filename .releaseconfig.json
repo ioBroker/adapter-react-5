@@ -1,7 +1,6 @@
 {
-  "all": true,
   "plugins": ["license"],
   "exec": {
-    "beforePush": "npm run build"
+    "before_commit": "npm run build"
   }
 }

@@ -51,7 +51,7 @@ const babelOptions = {
 };
 
 gulp.task('compile', gulp.parallel('copy',
-    'typedefs',
+    //'typedefs',
     () => Promise.all([
         gulp.src(['src/Dialogs/*.js'])
             .pipe(sourcemaps.init())
