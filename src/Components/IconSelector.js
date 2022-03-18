@@ -63,7 +63,7 @@ class IconSelector extends Component {
 
                         names[i] = template.name;
 
-                        promises.push(Utils.getSvg(image.default)
+                        promises.push(Utils.getSvg(image)
                             .then(icon =>
                                 icons[i] = icon));
                     });
@@ -91,7 +91,7 @@ class IconSelector extends Component {
 
                         names[i + offset] = template.name;
 
-                        promises.push(Utils.getSvg(image.default)
+                        promises.push(Utils.getSvg(image)
                             .then(icon =>
                                 icons[i + offset] = icon));
                     });
