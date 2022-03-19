@@ -8,6 +8,8 @@ import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import copy from './copy-to-clipboard';
 import withStyles from '@mui/styles/withStyles';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import SVG from 'react-inlinesvg';
 
 import IconButton from '@mui/material/IconButton';
@@ -85,8 +87,23 @@ import TabContainer from './TabContainer';
 import TabContent from './TabContent';
 import TabHeader from './TabHeader';
 
+function useWidth() {
+    const theme = useTheme();
+    const keys = [...theme.breakpoints.keys].reverse();
+    return (
+      keys.reduce((output, key) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const matches = useMediaQuery(theme.breakpoints.up(key));
+        return !output && matches ? key : output;
+      }, null) || 'xs'
+    );
+  }
+
 // FIXME checkout https://mui.com/components/use-media-query/#migrating-from-withwidth
-const withWidth = () => (WrappedComponent) => (props) => <WrappedComponent {...props} width="xs" />;
+const withWidth = () => (WrappedComponent) => (props) => {
+    const width = useWidth();
+    return <WrappedComponent {...props} width={width} />
+};
 
 const ICON_SIZE = 24;
 const ROW_HEIGHT = 32;
@@ -532,7 +549,6 @@ const styles = theme => ({
     },
     headerCellInput: {
         width: 'calc(100% - 5px)',
-        height: ROW_HEIGHT,
         paddingTop: 3,
         '& .itemIcon': {
             verticalAlign: 'middle',
