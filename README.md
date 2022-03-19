@@ -615,7 +615,7 @@ The icons may not be reused in other projects without the proper flaticon licens
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 0.0.3 (2022-03-19)
 * (bluefox) beta version
 
 ### 0.0.2 (2022-02-24)
