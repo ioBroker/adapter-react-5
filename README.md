@@ -609,12 +609,37 @@ This project uses icons from [Flaticon](https://www.flaticon.com/).
 ioBroker GmbH has a valid license for all of used icons.
 The icons may not be reused in other projects without the proper flaticon license or flaticon subscription.
 
+## Migration to v5
+### In src/package.json => dependencies
+- `"@iobroker/adapter-react": "^2.0.22",` => `"@iobroker/adapter-react-v5": "^0.0.3",`
+- `"@material-ui/core": "^4.12.3",` => `"@mui/material": "^5.4.3",`
+- `"@material-ui/icons": "^4.11.2",` => `"@mui/icons-material": "^5.4.2",`
+- Add `"@mui/styles": "^5.4.2",`
+- Add `"babel-eslint": "^10.1.0",`
+
+### In Source files
+- All `@iobroker/adapter-react/...` => `@iobroker/adapter-react-v5/...`
+- All `@material-ui/icons/...` => `@mui/icons-material/...`
+- Change `import { withStyles } from '@material-ui/core/styles';` => `import { withStyles } from '@mui/styles';`
+- All `@material-ui/core...` => `@mui/material...`
+- Change `import { MuiThemeProvider } from '@material-ui/core/styles';` => `import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';` 
+- Change all `<MuiThemeProvider theme={this.state.theme}>` to `<StyledEngineProvider injectFirst><ThemeProvider theme={this.state.theme}>`
+- Rename in styles `theme.palette.type` => `theme.palette.mode`
+- Add to all `TextField` and `Select` the property `variant="standard"`
+- Add to all `Button` that do not have `color` property: `color="grey"`
+- Replace by `TextField` the `readOnly` attribute (if exists) with `InputProps={{readOnly: true}}`
+
+If you still have questions, try to find an answer [here](https://mui.com/guides/migration-v4/).
+
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Fixed eslint warnings
+
 ### 0.0.3 (2022-03-19)
 * (bluefox) beta version
 

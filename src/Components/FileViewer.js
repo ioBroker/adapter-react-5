@@ -17,7 +17,7 @@ import {FaCopy as CopyIcon} from 'react-icons/fa';
 import CloseIcon from '@mui/icons-material/Close';
 
 // FIXME checkout https://mui.com/components/use-media-query/#migrating-from-withwidth
-const withWidth = () => (WrappedComponent) => (props) => <WrappedComponent {...props} width="xs" />;
+const withWidth = () => WrappedComponent => props => <WrappedComponent {...props} width="xs" />;
 
 const styles = theme => ({
     dialog: {
@@ -108,25 +108,31 @@ class FileViewer extends React.Component {
                 src={ this.props.href } alt={ this.props.href }/>;
         } else if (this.state.code !== null) {
             return <TextField
-                variant="standard" 
+                variant="standard"
                 className={ this.props.classes.textarea }
                 multiline
                 value={ this.state.code }
-                readOnly={true}/>;
+                InputProps={{
+                    readOnly: true,
+                }}
+            />;
         } else  if (this.state.text !== null) {
             return <TextField
-                variant="standard" 
+                variant="standard"
                 className={ this.props.classes.textarea }
                 value={ this.state.code }
                 multiline
-                readOnly={true}/>;
+                InputProps={{
+                    readOnly: true,
+                }}
+            />;
         }
     }
 
     render() {
         return <Dialog
             className={ this.props.classes.dialog }
-            open={ this.props.href }
+            open={ !!this.props.href }
             onClose={ () => this.props.onClose() }
             fullWidth={ true }
             fullScreen={ true }
@@ -134,7 +140,7 @@ class FileViewer extends React.Component {
         >
             <DialogTitle id="form-dialog-title">{ this.props.t('View: %s', this.props.href) }</DialogTitle>
             <DialogContent className={ this.props.classes.content }>
-                    { this.getContent() }
+                { this.getContent() }
             </DialogContent>
             <DialogActions>
                 { this.state.copyPossible ? <Button color="grey" onClick={e => Utils.copyToClipboard(this.state.text || this.state.code, e) } >

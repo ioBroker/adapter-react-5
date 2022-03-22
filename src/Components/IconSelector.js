@@ -142,46 +142,48 @@ class IconSelector extends Component {
 
         return <>
             <Button
-                color="grey" 
+                color="grey"
                 variant="outlined"
                 title={this.props.t('ra_Select predefined icon')}
                 onClick={() => this.setState({opened: true}, () => this.loadAllIcons())} style={{minWidth: 40, marginRight: 8}}
             >...</Button>
             {this.state.opened ? <Dialog onClose={() => this.setState({opened: false})} open={true}>
                 <DialogTitle>{this.props.t('ra_Select predefined icon')}
-                        {this.state.isAnyName ? <TextField
-                            variant="standard" 
-                            margin="dense"
-                            style={{marginLeft: 20}}
-                            value={this.state.filter}
-                            onChange={e => this.setState({filter: e.target.value.toLowerCase()})}
-                            placeholder={this.props.t('Filter')}
-                            InputProps={{
-                                endAdornment: this.state.filter
-                                    ?
-                                    <IconButton
-                                        size="small"
-                                        onClick={() => this.setState({filter: ''})}>
-                                        <ClearIcon />
-                                    </IconButton>
-                                    :
-                                    undefined,
-                            }}
-                        /> : null}
+                    {this.state.isAnyName ? <TextField
+                        variant="standard"
+                        margin="dense"
+                        style={{marginLeft: 20}}
+                        value={this.state.filter}
+                        onChange={e => this.setState({filter: e.target.value.toLowerCase()})}
+                        placeholder={this.props.t('Filter')}
+                        InputProps={{
+                            endAdornment: this.state.filter
+                                ?
+                                <IconButton
+                                    size="small"
+                                    onClick={() => this.setState({filter: ''})}>
+                                    <ClearIcon />
+                                </IconButton>
+                                :
+                                undefined,
+                        }}
+                    /> : null}
                 </DialogTitle>
                 <DialogContent>
                     <div style={{width: '100%', textAlign: 'center'}}>
                         {this.state.icons && this.state.icons.map((icon, i) => {
                             if (!this.state.filter || (this.state.names[i] && this.state.names[i].toLowerCase().includes(this.state.filter))) {
-                                return (
-                                    <Tooltip title={this.state.names[i] || ''} key={i}><IconButton
+                                return <Tooltip title={this.state.names[i] || ''} key={i}>
+                                    <IconButton
                                         onClick={() =>
                                             this.setState({opened: false}, () =>
-                                                this.props.onSelect(icon))}
-                                        size="large">
+                                                this.props.onSelect(icon))
+                                        }
+                                        size="large"
+                                    >
                                         <Icon src={icon} alt={i} style={{width: 32, height: 32, borderRadius: 5}}/>
-                                    </IconButton></Tooltip>
-                                );
+                                    </IconButton>
+                                </Tooltip>;
                             } else {
                                 return null;
                             }
@@ -190,7 +192,7 @@ class IconSelector extends Component {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        color="grey" 
+                        color="grey"
                         variant="contained"
                         onClick={() => this.setState({opened: false})}
                         startIcon={<CloseIcon />}
