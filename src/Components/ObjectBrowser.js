@@ -225,14 +225,14 @@ const styles = theme => ({
         userSelect: 'none',
         width: '100%',
         '&:hover': {
-            background: `${theme.palette.type === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light} !important`,
+            background: `${theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light} !important`,
             color: Utils.invertColor(theme.palette.primary.main, true),
         },
         whiteSpace: 'nowrap',
         flexWrap: 'nowrap',
     },
     tableRowLines: {
-        borderBottom: `1px solid ${theme.palette.type === 'dark' ? '#8888882e' : '#8888882e'}`,
+        borderBottom: `1px solid ${theme.palette.mode === 'dark' ? '#8888882e' : '#8888882e'}`,
     },
     tableRowNoDragging: {
         cursor: 'pointer',
@@ -342,7 +342,7 @@ const styles = theme => ({
         fontSize: 12,
         opacity: 0.7,
         '&:hover': {
-            color: theme.palette.type === 'dark' ? '#009900' : '#007700',
+            color: theme.palette.mode === 'dark' ? '#009900' : '#007700',
         }
     },
     cellIdAliasReadWriteDiv: {
@@ -466,7 +466,7 @@ const styles = theme => ({
             color: '#008000',
         },
         '100%': {
-            color: theme.palette.type === 'dark' ? '#fff' : '#000',
+            color: theme.palette.mode === 'dark' ? '#fff' : '#000',
         }
     },
     cellValueTextState: {
@@ -672,7 +672,7 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.default
     },
     iconDeviceConnected: {
-        color: theme.palette.type === 'dark' ? COLOR_NAME_CONNECTED_DARK : COLOR_NAME_CONNECTED_LIGHT,
+        color: theme.palette.mode === 'dark' ? COLOR_NAME_CONNECTED_DARK : COLOR_NAME_CONNECTED_LIGHT,
         opacity: 0.8,
         position: 'absolute',
         top: 4,
@@ -680,7 +680,7 @@ const styles = theme => ({
         width: 20,
     },
     iconDeviceDisconnected: {
-        color: theme.palette.type === 'dark' ? COLOR_NAME_DISCONNECTED_DARK : COLOR_NAME_DISCONNECTED_LIGHT,
+        color: theme.palette.mode === 'dark' ? COLOR_NAME_DISCONNECTED_DARK : COLOR_NAME_DISCONNECTED_LIGHT,
         opacity: 0.8,
         position: 'absolute',
         top: 4,
@@ -688,7 +688,7 @@ const styles = theme => ({
         width: 20,
     },
     iconDeviceError: {
-        color: theme.palette.type === 'dark' ? COLOR_NAME_ERROR_DARK : COLOR_NAME_ERROR_LIGHT,
+        color: theme.palette.mode === 'dark' ? COLOR_NAME_ERROR_DARK : COLOR_NAME_ERROR_LIGHT,
         opacity: 0.8,
         position: 'absolute',
         top: 4,

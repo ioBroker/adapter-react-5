@@ -637,6 +637,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Fixed theme errors
+
 ### 0.0.4 (2022-03-22)
 * (bluefox) Fixed eslint warnings
 
