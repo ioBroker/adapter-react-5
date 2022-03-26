@@ -637,7 +637,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### 1.0.0 (2022-03-26)
+### **WORK IN PROGRESS**
 * (bluefox) Initial version
 
 ### 0.1.0 (2022-03-23)
