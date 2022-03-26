@@ -1365,7 +1365,7 @@ class Connection {
             if (!base64) {
                 this._socket.emit('readFile', adapter, fileName, (err, data, type) => {
                     //@ts-ignore
-                    err ? reject(err) : resolve(data, type);
+                    err ? reject(err) : resolve({data, type});
                 });
             } else {
                 this._socket.emit('readFile64', adapter, fileName, base64, (err, data) =>

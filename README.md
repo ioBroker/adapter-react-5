@@ -637,6 +637,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) BREAKING_CHANGE: Corrected error with readFile(base64=false)
+
 ### 2.0.0 (2022-03-26)
 * (bluefox) Initial version
 
