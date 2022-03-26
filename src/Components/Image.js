@@ -73,8 +73,10 @@ class Image extends React.Component {
 
         if (props && state && props.color !== state.color) {
             newState.color = props.color;
+            newState.created = false;
             changed = true;
         }
+
         if (props && state && props.showError !== state.showError) {
             newState.showError = props.showError;
             changed = true;
@@ -134,7 +136,7 @@ class Image extends React.Component {
 
 Image.propTypes = {
     color: PropTypes.string,
-    src: PropTypes.string,
+    src: PropTypes.string.isRequired,
     className: PropTypes.string,
     imagePrefix: PropTypes.string,
 };

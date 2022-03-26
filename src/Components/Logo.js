@@ -58,15 +58,15 @@ class Logo extends React.Component {
                     const json = JSON.parse(contents);
                     if (json.native && json.common) {
                         if (json.common.name !== this.props.common.name) {
-                            this.props.onError(I18n.t('ra_otherConfig', json.common.name));
+                            this.props.onError && this.props.onError(I18n.t('ra_otherConfig', json.common.name));
                         } else {
-                            this.props.onLoad(json.native);
+                            this.props.onLoad && this.props.onLoad(json.native);
                         }
                     } else {
-                        this.props.onError(I18n.t('ra_invalidConfig'));
+                        this.props.onError && this.props.onError(I18n.t('ra_invalidConfig'));
                     }
                 } catch (e) {
-                    this.props.onError(e.toString());
+                    this.props.onError && this.props.onError(e.toString());
                 }
             };
             r.readAsText(f);
@@ -107,14 +107,23 @@ class Logo extends React.Component {
 
     render() {
         return <div className={this.props.className} style={this.props.style}>
-            {this.props.common.icon ? <img src={this.props.common.icon} className={this.props.classes.logo} alt="logo"/> : null}
+            {this.props.common.icon ?
+                <img src={this.props.common.icon} className={this.props.classes.logo} alt="logo"/> : null}
             {this.props.common.readme ?
-                <Fab size="small" color="primary" aria-label="Help" className={this.props.classes.buttons} onClick={() => {
-                    const win = window.open(this.props.common.readme, '_blank');
-                    win.focus();
-                }}><IconHelp /></Fab> : null}
-            <Fab size="small" color="primary" aria-label="Load config" className={this.props.classes.buttons} title={I18n.t('ra_Load configuration from file')} onClick={() => this.upload()}><IconUpload /></Fab>
-            <Fab size="small" color="primary" aria-label="Save config" className={this.props.classes.buttons} title={I18n.t('ra_Save configuration to file')} onClick={() => this.download()}><IconDownload /></Fab>
+                <Fab
+                    size="small"
+                    color="primary"
+                    aria-label="Help"
+                    className={this.props.classes.buttons}
+                    onClick={() => {
+                        const win = window.open(this.props.common.readme, '_blank');
+                        win.focus();
+                    }}
+                ><IconHelp/></Fab> : null}
+            {this.props.onLoad ? <Fab size="small" color="primary" aria-label="Load config" className={this.props.classes.buttons}
+                 title={I18n.t('ra_Load configuration from file')} onClick={() => this.upload()}><IconUpload/></Fab> : null}
+            <Fab size="small" color="primary" aria-label="Save config" className={this.props.classes.buttons}
+                 title={I18n.t('ra_Save configuration to file')} onClick={() => this.download()}><IconDownload/></Fab>
         </div>;
     }
 }
@@ -125,8 +134,8 @@ Logo.propTypes = {
     style: PropTypes.object,
     native: PropTypes.object.isRequired,
     instance: PropTypes.number.isRequired,
-    onError: PropTypes.func,
-    onLoad: PropTypes.func,
+    onError: PropTypes.func.isRequired,
+    onLoad: PropTypes.func.isRequired,
 };
 
 /** @type {typeof Logo} */

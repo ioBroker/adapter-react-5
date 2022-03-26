@@ -133,10 +133,9 @@ IconPicker.propTypes = {
     icon: PropTypes.object,
     customClasses: PropTypes.object,
     label: PropTypes.string,
-    name: PropTypes.string,
     value: PropTypes.any,
     disabled: PropTypes.bool,
-    onChange: PropTypes.func,
+    onChange: PropTypes.func.isRequired,
 
     icons: PropTypes.array,
     onlyRooms: PropTypes.bool,

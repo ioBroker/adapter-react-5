@@ -116,7 +116,7 @@ class Icon extends React.Component {
 Icon.propTypes = {
     color: PropTypes.string,
     title: PropTypes.string,
-    src: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    src: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     className: PropTypes.string,
     imagePrefix: PropTypes.string,
     style: PropTypes.object,

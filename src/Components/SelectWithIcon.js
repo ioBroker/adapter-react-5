@@ -28,7 +28,7 @@ class SelectWithIcon extends Component {
         }
 
         let list;
-        if (Array.isArray(this.props.list || this.props.options)) {
+        if (Array.isArray(this.props.list)) {
             list = this.props.list.map(obj => ({
                 name: Utils.getObjectNameFromObj(obj, this.props.lang)
                     .replace('system.group.', '')
@@ -38,7 +38,7 @@ class SelectWithIcon extends Component {
                 value: obj._id,
                 icon: obj.common?.icon,
                 color: obj.common?.color,
-            }))
+            }));
         } else {
             list = Object.values(this.props.list || this.props.options).map(obj => ({
                 name: Utils.getObjectNameFromObj(obj, this.props.lang)
@@ -61,11 +61,28 @@ class SelectWithIcon extends Component {
         }
 
         this.state = {
-            list
+            list,
         };
     }
 
     render() {
+        if (this.props.allowNone && !this.state.list.find(obj => obj.value === '')) {
+            this.timeout = this.timeout || setTimeout(() => {
+                this.timeout = null;
+                const list = JSON.parse(JSON.stringify(this.state.list));
+                list.unshift({value: '', name: I18n.t('ra_none')});
+                this.setState({list});
+            }, 100);
+        } else if (!this.props.allowNone && this.state.list.find(obj => obj.value === '')) {
+            this.timeout = this.timeout || setTimeout(() => {
+                this.timeout = null;
+                const list = JSON.parse(JSON.stringify(this.state.list));
+                const i = this.state.list.findIndex(obj => obj.value === '');
+                list.splice(i, 1);
+                this.setState({list});
+            }, 100);
+        }
+
         const item = this.state.list.find(it => it.value === this.props.value || (this.props.removePrefix && it.value.replace(this.props.removePrefix, '') === this.props.value));
 
         const style = this.props.value === this.props.different ? {} :
@@ -132,16 +149,16 @@ class SelectWithIcon extends Component {
 }
 
 SelectWithIcon.propTypes = {
-    t: PropTypes.func,
-    lang: PropTypes.string,
+    t: PropTypes.func.isRequired,
+    lang: PropTypes.string.isRequired,
     themeType: PropTypes.string,
     value: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
-    list: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-    options: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-    label: PropTypes.string,
+    list: PropTypes.oneOfType([PropTypes.array, PropTypes.object]), // one of "list"(Array) or "options"(object) is required
+    options: PropTypes.oneOfType([PropTypes.array, PropTypes.object]), // one of "list"(Array) or "options"(object) is required
     different: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+    label: PropTypes.string,
     fullWidth: PropTypes.bool,
     className: PropTypes.string,
     style: PropTypes.object,

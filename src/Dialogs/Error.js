@@ -69,7 +69,7 @@ class DialogError extends React.Component {
 }
 
 DialogError.propTypes = {
-    onClose: PropTypes.func,
+    onClose: PropTypes.func.isRequired,
     title: PropTypes.string,
     text: PropTypes.oneOfType([
         PropTypes.string,

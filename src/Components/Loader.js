@@ -23,30 +23,23 @@ const styles = theme => ({
  * @extends {React.Component<LoaderProps>}
  */
 class Loader extends React.Component {
-    /**
-     * @param {LoaderProps} props
-     */
-    constructor(props) {
-        super(props);
-        this.size = this.props.size || 234;
-    }
-
     render() {
+        const size = this.props.size || 234;
         const theme = this.props.themeType || this.props.theme || 'light';
         return <div className={'logo-back logo-background-' + theme}>
-            <div className="logo-div" style={{width: this.size, height: this.size}}>
+            <div className="logo-div" style={{width: size, height: size}}>
                 <div className={'logo-top logo-background-' + theme} style={{left: '37%'}}/>
                 <div className={'logo-top logo-background-' + theme} style={{left: '57%'}}/>
                 <div
                     className={'logo-border logo-background-' + theme + ' logo-animate-wait'}
-                    style={{borderWidth: this.size * 0.132}}
+                    style={{borderWidth: size * 0.132}}
                 />
                 <div className={'logo-i logo-animate-color-inside-' + theme}/>
                 <div className={'logo-i-top logo-animate-color-inside-' + theme} style={{top: '18%'}}/>
                 <div className={'logo-i-top logo-animate-color-inside-' + theme} style={{bottom: '18%'}}/>
             </div>
             <div className={'logo-animate-grow logo-animate-grow-' + theme}
-                 style={{width: this.size + 11, height: this.size + 11}}
+                 style={{width: size + 11, height: size + 11}}
             />
         </div>;
     }

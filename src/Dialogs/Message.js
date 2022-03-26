@@ -58,7 +58,7 @@ class DialogMessage extends React.Component {
 }
 
 DialogMessage.propTypes = {
-    onClose: PropTypes.func,
+    onClose: PropTypes.func.isRequired,
     title: PropTypes.string,
     text: PropTypes.string,
     icon: PropTypes.object

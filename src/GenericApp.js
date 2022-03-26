@@ -42,8 +42,10 @@ class GenericApp extends Router {
      * @param {import('./types').GenericAppSettings | undefined} settings
      */
     constructor(props, settings) {
+        const ConnectionClass = props.Connection || settings.Connection || Connection;
+
         // Remove `!Connection.isWeb() && window.adapterName !== 'material'` when iobroker.socket will support native ws
-        if (!Connection.isWeb() && window.io && window.location.port === '3000') {
+        if (!ConnectionClass.isWeb() && window.io && window.location.port === '3000') {
             try {
                 const io = new window.SocketClient();
                 delete window.io;
@@ -129,7 +131,7 @@ class GenericApp extends Router {
 
         this.sentryDSN = (settings && settings.sentryDSN) || props.sentryDSN;
 
-        this.socket = new Connection({
+        this.socket = new ConnectionClass({
             ...(props?.socket || settings?.socket),
             name: this.adapterName,
             doNotLoadAllObjects: settings?.doNotLoadAllObjects,
@@ -779,6 +781,7 @@ GenericApp.propTypes = {
     socket: PropTypes.object, // (optional) socket information (host, port)
     encryptedFields: PropTypes.array, // (optional) list of native attributes, that must be encrypted
     bottomButtons: PropTypes.bool, // If the bottom buttons (Save/Close) must be shown
+    Connection: PropTypes.object, // If the bottom buttons (Save/Close) must be shown
 };
 
 export default GenericApp;

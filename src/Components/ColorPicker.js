@@ -41,7 +41,11 @@ const styles = theme => ({
         boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
         display: 'inline-block',
         cursor: 'pointer',
-        verticalAlign: 'middle'
+        verticalAlign: 'middle',
+    },
+    swatchDisabled: {
+        opacity: 0.5,
+        cursor: 'default'
     },
     popover: {
         position: 'absolute',
@@ -201,14 +205,14 @@ class ColorPicker extends React.Component {
                 className={this.props.classes.delButton}
                 style={color ? {} : {opacity: 0, cursor: 'default'}}
             ><IconDelete/></IconButton> : null}
-            <div className={this.props.classes.swatch} onClick={() => this.handleClick()}>
+            <div className={`${this.props.classes.swatch}${this.props.disabled ? ' ' + this.props.classes.swatchDisabled : ''}`} onClick={() => !this.props.disabled && this.handleClick()}>
                 <div className={this.props.classes.color} style={{background: color}} />
             </div>
             { this.state.displayColorPicker && !this.props.disabled ? <div className={this.props.classes.popover} style={style}>
                 <div className={this.props.classes.cover} onClick={() => this.handleClose()}/>
                 <ChromePicker color={ this.state.color } onChangeComplete={color => this.handleChange(color)} />
             </div> : null }
-        </div>
+        </div>;
     }
 }
 

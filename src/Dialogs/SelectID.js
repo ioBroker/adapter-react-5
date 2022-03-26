@@ -195,8 +195,8 @@ class SelectID extends React.Component {
 SelectID.propTypes = {
     dialogName: PropTypes.string, // where to store settings in localStorage
     classes: PropTypes.object,
-    onClose: PropTypes.func,
     notEditable: PropTypes.bool,
+    onClose: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
     title: PropTypes.string,
     lang: PropTypes.string,

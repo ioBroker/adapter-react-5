@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@mui/styles/withStyles';
 
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -10,15 +9,13 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
+import I18n from '../i18n';
+
 import IconClose from '@mui/icons-material/Close';
 import IconCheck from '@mui/icons-material/Check';
 
 // FIXME checkout https://mui.com/components/use-media-query/#migrating-from-withwidth
-const withWidth = () => (WrappedComponent) => (props) => <WrappedComponent {...props} width="xs" />;
-
-const styles = {
-
-};
+const withWidth = () => WrappedComponent => props => <WrappedComponent {...props} width="xs" />;
 
 /**
  * @typedef {object} TextInputProps
@@ -44,7 +41,7 @@ class TextInput extends React.Component {
         super(props);
 
         this.state = {
-            text: this.props.input || '',
+            text: this.props.input || this.props.value || '', // input is deprectaed
             error: ''
         }
     }
@@ -56,7 +53,7 @@ class TextInput extends React.Component {
                     {this.props.promptText}
                 </DialogContentText>
                 <TextField
-                    variant="standard" 
+                    variant="standard"
                     autoFocus
                     margin="dense"
                     error={!!this.state.error}
@@ -82,8 +79,8 @@ class TextInput extends React.Component {
             </DialogContent>
             <DialogActions>
                 <Button variant="contained" disabled={!this.state.text || this.state.error} onClick={() => this.props.onClose(this.state.text)}
-                        color="primary" startIcon={<IconCheck />}>{this.props.applyText}</Button>
-                <Button color="grey" variant="contained" onClick={() => this.props.onClose(null)} startIcon={<IconClose />}>{this.props.cancelText}</Button>
+                        color="primary" startIcon={<IconCheck />}>{this.props.applyText || I18n.t('ra_Ok')}</Button>
+                <Button color="grey" variant="contained" onClick={() => this.props.onClose(null)} startIcon={<IconClose />}>{this.props.cancelText || I18n.t('ra_Cancel')}</Button>
             </DialogActions>
         </Dialog>;
     }
@@ -94,14 +91,14 @@ TextInput.propTypes = {
     titleText: PropTypes.string.isRequired,
     promptText: PropTypes.string,
     labelText: PropTypes.string,
-    cancelText: PropTypes.string.isRequired,
-    applyText: PropTypes.string.isRequired,
+    cancelText: PropTypes.string,
+    applyText: PropTypes.string,
     verify: PropTypes.func,
     replace: PropTypes.func,
     type: PropTypes.string, // text, number, password, email
-    input: PropTypes.string,
+    value: PropTypes.string,
 };
 
 /** @type {typeof TextInput} */
-const _export = withWidth()(withStyles(styles)(TextInput));
+const _export = withWidth()(TextInput);
 export default _export;

@@ -99,12 +99,12 @@ const TextWithIcon = props => {
 }
 
 TextWithIcon.propTypes = {
-    t: PropTypes.func,
-    lang: PropTypes.string,
+    t: PropTypes.func.isRequired,
+    lang: PropTypes.string.isRequired,
     themeType: PropTypes.string,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    list: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-    options: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    list: PropTypes.oneOfType([PropTypes.array, PropTypes.object]), // one of "list"(Array) or "options"(object) is required
+    options: PropTypes.oneOfType([PropTypes.array, PropTypes.object]), // one of "list"(Array) or "options"(object) is required
     className: PropTypes.string,
     style: PropTypes.object,
     title: PropTypes.string,

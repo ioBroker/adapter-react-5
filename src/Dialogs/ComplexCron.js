@@ -90,7 +90,7 @@ class DialogComplexCron extends React.Component {
 
 DialogComplexCron.propTypes = {
     classes: PropTypes.object,
-    onClose: PropTypes.func,
+    onClose: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
     title: PropTypes.string,
     cron: PropTypes.string,
