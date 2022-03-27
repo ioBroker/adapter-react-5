@@ -115,6 +115,11 @@ class Connection {
 
         /** @type {Record<string, Promise<any>>} */
         this._promises = {};
+
+        this.log = {
+            error: text =>
+        }
+
         this.startSocket();
     }
 
@@ -2596,6 +2601,16 @@ class Connection {
             .then(obj => obj?.native?.uuid);
 
         return this._promises.uuid;
+    }
+
+    /**
+     * Send log to ioBroker log
+     * @param {string} [text] Log text
+     * @param {string} [level] `info`, `debug`, `warn`, `error` or `silly`
+     * @returns {void}
+     */
+    log(text, level) {
+        text && this._socket.emit('log', text, level || 'debug');
     }
 
     /**
