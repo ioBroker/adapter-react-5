@@ -542,7 +542,7 @@ class TreeTable extends React.Component {
         } else {
             // try to find children
             const opened = this.state.opened.includes(item.id);
-            const children = opened ? this.props.data.filter(it => it.parentId === item.id) : null;
+            const children = this.props.data.filter(it => it.parentId === item.id);
 
             return [
                 <TableRow
