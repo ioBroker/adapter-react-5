@@ -263,5 +263,18 @@
   "ra_Clear icon": "Icono claro",
   "ra_none": "ninguno",
   "ra_Select predefined icon": "Seleccionar icono predefinido",
-  "ra_Show lines between rows": "Mostrar líneas entre filas"
+  "ra_Show lines between rows": "Mostrar líneas entre filas",
+  "ra_The page you are looking for was not found": "No se encontró la página que busca",
+  "ra_Good luck": "Buena suerte",
+  "ra_Cannot find \"%s\"": "No se puede encontrar \"%s\"",
+  "ra_Cannot read \"%s\"": "No se puede leer \"%s\"",
+  "ra_Back to %s": "Volver a %s",
+  "ra_Background image": "Imagen de fondo",
+  "ra_View: %s": "Ver: %s",
+  "ra_Copy content": "Copiar contenido",
+  "ra_Filter": "Filtrar",
+  "ra_All objects": "Todos los objetos",
+  "ra_Only selected": "Solo seleccionados",
+  "ra_Change color theme": "Cambiar tema de color",
+  "ra_daysShortText": "d."
 }

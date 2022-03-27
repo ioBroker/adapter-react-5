@@ -263,5 +263,18 @@
   "ra_Clear icon": "清除图标",
   "ra_none": "没有任何",
   "ra_Select predefined icon": "选择预定义图标",
-  "ra_Show lines between rows": "显示行之间的线"
+  "ra_Show lines between rows": "显示行之间的线",
+  "ra_The page you are looking for was not found": "未找到您要查找的页面",
+  "ra_Good luck": "祝你好运",
+  "ra_Cannot find \"%s\"": "找不到“%s”",
+  "ra_Cannot read \"%s\"": "无法阅读“%s”",
+  "ra_Back to %s": "返回“%s”",
+  "ra_Background image": "背景图像",
+  "ra_View: %s": "查看：%s",
+  "ra_Copy content": "复制内容",
+  "ra_Filter": "筛选",
+  "ra_All objects": "所有对象",
+  "ra_Only selected": "只选择",
+  "ra_Change color theme": "更改颜色主题",
+  "ra_daysShortText": "天"
 }

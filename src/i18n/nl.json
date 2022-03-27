@@ -263,5 +263,18 @@
   "ra_Clear icon": "Pictogram wissen",
   "ra_none": "geen",
   "ra_Select predefined icon": "Selecteer voorgedefinieerd pictogram",
-  "ra_Show lines between rows": "Toon lijnen tussen rijen"
+  "ra_Show lines between rows": "Toon lijnen tussen rijen",
+  "ra_The page you are looking for was not found": "De pagina die u zoekt is niet gevonden",
+  "ra_Good luck": "Veel geluk",
+  "ra_Cannot find \"%s\"": "Kan \"%s\" niet vinden",
+  "ra_Cannot read \"%s\"": "Kan \"%s\" niet lezen",
+  "ra_Back to %s": "Terug naar %s",
+  "ra_Background image": "Achtergrond afbeelding",
+  "ra_View: %s": "Bekijk: %s",
+  "ra_Copy content": "Inhoud kopiëren",
+  "ra_Filter": "Filter",
+  "ra_All objects": "Alle objecten",
+  "ra_Only selected": "Alleen geselecteerd",
+  "ra_Change color theme": "Kleurthema wijzigen",
+  "ra_daysShortText": "d."
 }

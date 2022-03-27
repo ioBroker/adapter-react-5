@@ -429,7 +429,7 @@ class SimpleCron extends React.Component {
             return <div key="period" style={{paddingLeft: 8, display: 'inline-block'}}>
                 <h5 style={{marginBottom: 5}}>{I18n.t('sc_period')}</h5>
                 <TextField
-                    variant="standard" 
+                    variant="standard"
                     style={{marginTop: 0, marginBottom: 0, verticalAlign: 'bottom'}}
                     key="value"
                     label={I18n.t('sc_minutes')}
@@ -447,7 +447,7 @@ class SimpleCron extends React.Component {
                     margin="normal"
                 />
                 <TextField
-                    variant="standard" 
+                    variant="standard"
                     style={{marginTop: 0, marginBottom: 0, verticalAlign: 'bottom'}}
                     key="value"
                     label={I18n.t('sc_hours')}
@@ -469,7 +469,7 @@ class SimpleCron extends React.Component {
             return <div key="period" style={{paddingLeft: 8, display: 'inline-block'}}>
                 <h5 style={{marginBottom: 5}}>{I18n.t('sc_period')}</h5>
                 <TextField
-                    variant="standard" 
+                    variant="standard"
                     style={{marginTop: 0, marginBottom: 0, verticalAlign: 'bottom'}}
                     key="value"
                     label={I18n.t('sc_every')}
@@ -503,7 +503,7 @@ class SimpleCron extends React.Component {
         const settings = this.state[type];
         return <FormControl variant="standard" className={this.props.classes.formControl} classes={{root: this.props.classes.formControlMarginRight}}>
             <TextField
-                variant="standard" 
+                variant="standard"
                 key="at"
                 label={I18n.t('sc_time')}
                 value={settings.time}
@@ -530,7 +530,7 @@ class SimpleCron extends React.Component {
         //<InputLabel htmlFor="formatted-text-mask-input">{I18n.t('sc_at')}</InputLabel>
         return <FormControl variant="standard" className={this.props.classes.formControl}>
             <TextField
-                variant="standard" 
+                variant="standard"
                 key="date"
                 label={I18n.t('sc_date')}
                 value={settings.date}
@@ -628,7 +628,7 @@ class SimpleCron extends React.Component {
                     value={this.state.mode}
                     onChange={e => this.onModeChange(e.target.value)}
                     inputProps={{name: 'mode', id: 'mode',}}>
-                    {Object.keys(PERIODIC).map(mode => (<MenuItem key={PERIODIC[mode]} value={PERIODIC[mode]}>{I18n.t('sc_' + PERIODIC[mode])}</MenuItem>))}
+                    {Object.keys(PERIODIC).map(mode => <MenuItem key={PERIODIC[mode]} value={PERIODIC[mode]}>{I18n.t('sc_' + PERIODIC[mode])}</MenuItem>)}
                 </Select>
             </FormControl></div>
             {this.state.mode === PERIODIC.once && this.getOnceElements()}

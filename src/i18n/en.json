@@ -276,5 +276,18 @@
   "ra_Clear icon": "Clear icon",
   "ra_none": "none",
   "ra_Select predefined icon": "Select predefined icon",
-  "ra_Show lines between rows": "Show lines between rows"
+  "ra_Show lines between rows": "Show lines between rows",
+  "ra_The page you are looking for was not found": "The page you are looking for was not found",
+  "ra_Good luck": "Good luck",
+  "ra_Cannot find \"%s\"": "Cannot find \"%s\"",
+  "ra_Cannot read \"%s\"": "Cannot read \"%s\"",
+  "ra_Back to %s": "Back to %s",
+  "ra_Background image": "Background image",
+  "ra_View: %s": "View: %s",
+  "ra_Copy content": "Copy content",
+  "ra_Filter": "Filter",
+  "ra_All objects": "All objects",
+  "ra_Only selected": "Only selected",
+  "ra_Change color theme": "Change color theme",
+  "ra_daysShortText": "days"
 }

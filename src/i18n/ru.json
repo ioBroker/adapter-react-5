@@ -276,5 +276,18 @@
   "ra_Clear icon": "Очистить значок",
   "ra_none": "ничего",
   "ra_Select predefined icon": "Выберите предопределенный значок",
-  "ra_Show lines between rows": "Показать линии между строками"
+  "ra_Show lines between rows": "Показать линии между строками",
+  "ra_The page you are looking for was not found": "Страница, которую вы ищете, не найдена",
+  "ra_Good luck": "Удачи",
+  "ra_Cannot find \"%s\"": "Не могу найти \"%s\"",
+  "ra_Cannot read \"%s\"": "Не могу прочитать \"%s\"",
+  "ra_Back to %s": "Вернуться к %s",
+  "ra_Background image": "Фоновая картинка",
+  "ra_View: %s": "Просмотр: %s",
+  "ra_Copy content": "Копировать содержимое",
+  "ra_Filter": "Фильтр",
+  "ra_All objects": "Все объекты",
+  "ra_Only selected": "Только выбранные",
+  "ra_Change color theme": "Изменить цветовую тему",
+  "ra_daysShortText": "д."
 }

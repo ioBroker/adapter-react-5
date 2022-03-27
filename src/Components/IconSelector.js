@@ -155,7 +155,7 @@ class IconSelector extends Component {
                         style={{marginLeft: 20}}
                         value={this.state.filter}
                         onChange={e => this.setState({filter: e.target.value.toLowerCase()})}
-                        placeholder={this.props.t('Filter')}
+                        placeholder={this.props.t('ra_Filter')}
                         InputProps={{
                             endAdornment: this.state.filter
                                 ?
@@ -197,7 +197,7 @@ class IconSelector extends Component {
                         onClick={() => this.setState({opened: false})}
                         startIcon={<CloseIcon />}
                     >
-                        {this.props.t('Close')}
+                        {this.props.t('ra_Close')}
                     </Button>
                 </DialogActions>
             </Dialog> : null}

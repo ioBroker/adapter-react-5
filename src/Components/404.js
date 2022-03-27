@@ -88,10 +88,10 @@ class Page404 extends Component {
             <div className={this.props.classes.root}>
                 <div className={this.props.classes.overlay}>
                     <div className={this.props.classes.terminal}>
-                        <h1>Error<span className={this.props.classes.errorCode}>404</span></h1>
+                        <h1>{I18n.t('ra_Error')}<span className={this.props.classes.errorCode}>404</span></h1>
                         <p className={this.props.classes.output}>
-                            {I18n.t('The page you are looking for')}</p>
-                        <p className={this.props.classes.output}>{I18n.t('Good luck')}</p>
+                            {I18n.t('ra_The page you are looking for was not found')}</p>
+                        <p className={this.props.classes.output}>{I18n.t('ra_Good luck')}</p>
                     </div>
                 </div>
             </div>

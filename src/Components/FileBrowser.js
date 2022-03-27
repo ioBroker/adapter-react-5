@@ -742,7 +742,7 @@ class FileBrowser extends Component {
             if (!item.temp) {
                 return this.browseFolder(item.id)
                     .then(folders => this.setState({ expanded, folders }))
-                    .catch(err => window.alert(err === NOT_FOUND ? this.props.t('re_Cannot find "%s"', item.id) : this.props.t('re_Cannot read "%s"', item.id)));
+                    .catch(err => window.alert(err === NOT_FOUND ? this.props.t('ra_Cannot find "%s"', item.id) : this.props.t('ra_Cannot read "%s"', item.id)));
             } else {
                 this.setState({ expanded });
             }
@@ -861,7 +861,7 @@ class FileBrowser extends Component {
         return <div key={this.state.currentDir}
             id={this.state.currentDir}
             onClick={e => this.changeFolder(e)}
-            title={this.props.t('re_Back to %s', getParentDir(this.state.currentDir))}
+            title={this.props.t('ra_Back to %s', getParentDir(this.state.currentDir))}
             className={Utils.clsx(
                 'browserItem',
                 this.props.classes['item' + this.state.viewType],
@@ -1202,7 +1202,7 @@ class FileBrowser extends Component {
                     onClick={() =>
                         this.setState({uploadFile: true})}
                     size="large"><UploadIcon /></IconButton> : null}
-                <Tooltip title={this.props.t('Background image')}>
+                <Tooltip title={this.props.t('ra_Background image')}>
                     <IconButton
                         color={'inherit'}
                         edge="start"
@@ -1537,7 +1537,7 @@ class FileBrowser extends Component {
                     if (!this.state.folders[folder]) {
                         return this.browseFolder(folder)
                             .then(folders => this.setState({ folders }, () => resolve(true)))
-                            .catch(err => this.setState({ errorText: err === NOT_FOUND ? this.props.t('re_Cannot find "%s"', folder) : this.props.t('re_Cannot read "%s"', folder) }));
+                            .catch(err => this.setState({ errorText: err === NOT_FOUND ? this.props.t('ra_Cannot find "%s"', folder) : this.props.t('ra_Cannot read "%s"', folder) }));
                     } else {
                         return resolve(true);
                     }

@@ -131,19 +131,19 @@ class FileViewer extends React.Component {
             fullScreen={this.props.fullScreen !== undefined ? this.props.fullScreen : true}
             aria-labelledby="form-dialog-title"
         >
-            <DialogTitle id="form-dialog-title">{ this.props.t('View: %s', this.props.href) }</DialogTitle>
+            <DialogTitle id="form-dialog-title">{ this.props.t('ra_View: %s', this.props.href) }</DialogTitle>
             <DialogContent className={ this.props.classes.content }>
                 { this.getContent() }
             </DialogContent>
             <DialogActions>
                 { this.state.copyPossible ? <Button color="grey" onClick={e => Utils.copyToClipboard(this.state.text || this.state.code, e) } >
                     <CopyIcon />
-                    { this.props.t('Copy content') }
+                    { this.props.t('ra_Copy content') }
                 </Button> : null }
 
                 <Button onClick={() => this.props.onClose()} color="primary">
                     <CloseIcon />
-                    { this.props.t('Close') }
+                    { this.props.t('ra_Close') }
                 </Button>
             </DialogActions>
         </Dialog>;

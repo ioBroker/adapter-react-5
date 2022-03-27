@@ -2953,9 +2953,9 @@ class ObjectBrowser extends Component {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button color="grey" variant="outlined" onClick={() => this.setState({showExportDialog: false}, () => this._exportObjects(true))}>{this.props.t('All objects')}</Button>
+                    <Button color="grey" variant="outlined" onClick={() => this.setState({showExportDialog: false}, () => this._exportObjects(true))}>{this.props.t('ra_All objects')}</Button>
                     <Button variant="contained" autoFocus color="primary" onClick={() => this.setState({showExportDialog: false}, () => this._exportObjects(false))}>{this.props.t('Only selected')}</Button>
-                    <Button color="grey" variant="contained" onClick={() => this.setState({showExportDialog: false})} startIcon={<IconClose/>}>{this.props.t('Cancel')}</Button>
+                    <Button color="grey" variant="contained" onClick={() => this.setState({showExportDialog: false})} startIcon={<IconClose/>}>{this.props.t('ra_Cancel')}</Button>
                 </DialogActions>
             </Dialog>;
         }
@@ -3828,7 +3828,7 @@ class ObjectBrowser extends Component {
                         variant="contained"
                         onClick={() => this.onColumnsEditCustomDialogClose()}
                         startIcon={<IconClose />}
-                    >{this.props.t('Cancel')}</Button>
+                    >{this.props.t('ra_Cancel')}</Button>
                 </DialogActions>
             </Dialog>;
         } else {
