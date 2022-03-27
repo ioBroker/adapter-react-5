@@ -639,7 +639,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### 2.1.2 (2022-03-27)
+### **WORK IN PROGRESS**
 * (bluefox) Corrected translations
 
 ### 2.1.1 (2022-03-27)
