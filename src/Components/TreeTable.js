@@ -227,6 +227,11 @@ class TreeTable extends React.Component {
             useTable: false,
             showSelectColor: false,
             glowOnChange: props.glowOnChange
+        };
+
+        this.levelShift = this.props.levelShift;
+        if (this.levelShift === undefined) {
+            this.levelShift = 24;
         }
     }
 
@@ -536,8 +541,8 @@ class TreeTable extends React.Component {
             return null; // should never happen
         } else {
             // try to find children
-            const children = this.props.data.filter(it => it.parentId === item.id);
             const opened = this.state.opened.includes(item.id);
+            const children = opened ? this.props.data.filter(it => it.parentId === item.id) : null;
 
             return [
                 <TableRow
@@ -576,7 +581,7 @@ class TreeTable extends React.Component {
                     <TableCell
                         scope="row"
                         className={Utils.clsx(this.props.classes.cell, level && this.props.classes.cellSecondary)}
-                        style={this.props.columns[0].cellStyle}
+                        style={Object.assign({}, this.props.columns[0].cellStyle, {paddingLeft: this.levelShift * level})}
                     >
                         {this.props.columns[0].subField ?
                             this.renderCellWithSubField(item, this.props.columns[0])
@@ -629,7 +634,7 @@ class TreeTable extends React.Component {
                         }
                     </TableCell> : null}
                 </TableRow>,
-                !level && this.state.opened.includes(item.id) ? children.map(item => this.renderLine(item, level + 1)) : null,
+                !level && opened ? children.map(item => this.renderLine(item, level + 1)) : null,
             ];
         }
     }
@@ -827,7 +832,8 @@ TreeTable.propTypes = {
     noAdd: PropTypes.bool, // hide add button
     themeType: PropTypes.string,
     glowOnChange: PropTypes.bool,
-    socket: PropTypes.object // only if oid type is used
+    socket: PropTypes.object, // only if oid type is used
+    levelShift: PropTypes.number, // Shift in pixels for every level
 };
 
 export default withStyles(styles)(TreeTable);
