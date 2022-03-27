@@ -655,9 +655,9 @@ class TreeTable extends React.Component {
                     component="th"
                     className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes['width_' + this.props.columns[0].field.replace(/\./g, '_')])}
                     style={this.props.columns[0].headerStyle || this.props.columns[0].cellStyle}
-                    sortDirection={this.state.orderBy === this.props.columns[0].field ? this.state.order : false}
+                    sortDirection={this.props.noSort ? false : (this.state.orderBy === this.props.columns[0].field ? this.state.order : false)}
                 >
-                    <TableSortLabel
+                    {this.props.noSort ? null : <TableSortLabel
                         active={this.state.orderBy === this.props.columns[0].field}
                         direction={this.state.orderBy === this.props.columns[0].field ? this.state.order : 'asc'}
                         onClick={() => this.handleRequestSort(this.props.columns[0].field)}
@@ -667,7 +667,7 @@ class TreeTable extends React.Component {
                             <span className={this.props.classes.visuallyHidden}>
                                 {this.state.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                             </span> : null}
-                    </TableSortLabel>
+                    </TableSortLabel>}
                 </TableCell>
                 {this.props.columns.map((col, i) =>
                     !i && !col.hidden ? null : <TableCell
@@ -676,7 +676,7 @@ class TreeTable extends React.Component {
                         style={col.headerStyle || col.cellStyle}
                         component="th"
                     >
-                        <TableSortLabel
+                        {this.props.noSort ? null : <TableSortLabel
                             active={this.state.orderBy === col.field}
                             direction={this.state.orderBy === col.field ? this.state.order : 'asc'}
                             onClick={() => this.handleRequestSort(col.field)}
@@ -686,7 +686,7 @@ class TreeTable extends React.Component {
                                 <span className={this.props.classes.visuallyHidden}>
                                     {this.state.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                 </span> : null}
-                        </TableSortLabel>
+                        </TableSortLabel> }
                     </TableCell>)}
                 {this.props.onUpdate ? <TableCell component="th" className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes.cellButton)}>
                     {!this.props.noAdd ? <Fab
@@ -826,7 +826,7 @@ TreeTable.propTypes = {
             ]),
         })
     ).isRequired,
-    noSort: PropTypes.bool, // todo
+    noSort: PropTypes.bool,
     onUpdate: PropTypes.func,
     onDelete: PropTypes.func,
     noAdd: PropTypes.bool, // hide add button
