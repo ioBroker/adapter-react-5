@@ -301,7 +301,7 @@ class TreeTable extends React.Component {
 
     renderCellEditString(item, col, val) {
         return <TextField
-            variant="standard" 
+            variant="standard"
             className={this.props.classes.fieldEdit}
             fullWidth
             value={this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val}
@@ -320,8 +320,15 @@ class TreeTable extends React.Component {
     renderCellEditCustom(item, col, val) {
         const EditComponent = col.editComponent;
 
+        // use new value if exists
+        if (this.state.editData && this.state.editData[col.field] !== undefined) {
+            val = this.state.editData[col.field];
+            item = JSON.parse(JSON.stringify(item));
+            item[col.field] = val;
+        }
+
         return <EditComponent
-            value={val}
+            value={ val }
             rowData={item}
             onChange={newVal => {
                 const editData = this.state.editData ? {...this.state.editData} : {};
@@ -371,44 +378,42 @@ class TreeTable extends React.Component {
 
     renderCellEditColor(item, col, val) {
         const _val = this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val;
-        return (
-            <div className={this.props.classes.fieldEdit}>
-                <TextField
-                    variant="standard" 
-                    fullWidth
-                    className={this.props.classes.fieldEditWithButton}
-                    value={_val}
-                    inputProps={{style: {backgroundColor: _val, color: Utils.isUseBright(_val, null) ? '#FFF' : '#000'}}}
-                    onChange={e => {
+        return <div className={this.props.classes.fieldEdit}>
+            <TextField
+                variant="standard"
+                fullWidth
+                className={this.props.classes.fieldEditWithButton}
+                value={_val}
+                inputProps={{style: {backgroundColor: _val, color: Utils.isUseBright(_val, null) ? '#FFF' : '#000'}}}
+                onChange={e => {
+                    const editData = this.state.editData ? {...this.state.editData} : {};
+                    if (e.target.value === val) {
+                        delete editData[col.field];
+                    } else {
+                        editData[col.field] = e.target.value;
+                    }
+                    this.setState({editData});
+                }}
+            />
+
+            <IconButton
+                className={this.props.classes.fieldButton}
+                contained
+                onClick={() => {
+                    this.selectCallback = newColor => {
                         const editData = this.state.editData ? {...this.state.editData} : {};
-                        if (e.target.value === val) {
+                        if (newColor === val) {
                             delete editData[col.field];
                         } else {
-                            editData[col.field] = e.target.value;
+                            editData[col.field] = newColor;
                         }
                         this.setState({editData});
-                    }}
-                />
+                    };
 
-                <IconButton
-                    className={this.props.classes.fieldButton}
-                    contained
-                    onClick={() => {
-                        this.selectCallback = newColor => {
-                            const editData = this.state.editData ? {...this.state.editData} : {};
-                            if (newColor === val) {
-                                delete editData[col.field];
-                            } else {
-                                editData[col.field] = newColor;
-                            }
-                            this.setState({editData});
-                        };
-
-                        this.setState({showSelectColor: true, selectIdValue: val});
-                    }}
-                    size="large"><IconColor/></IconButton>
-            </div>
-        );
+                    this.setState({showSelectColor: true, selectIdValue: val});
+                }}
+                size="large"><IconColor/></IconButton>
+        </div>;
     }
 
     renderSelectIdDialog() {
@@ -434,43 +439,42 @@ class TreeTable extends React.Component {
     }
 
     renderCellEditObjectID(item, col, val) {
-        return (
-            <div className={this.props.classes.fieldEdit}>
-                <TextField
-                    variant="standard" 
-                    fullWidth
-                    className={this.props.classes.fieldEditWithButton}
-                    value={this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val}
-                    onChange={e => {
+        return <div className={this.props.classes.fieldEdit}>
+            <TextField
+                variant="standard"
+                fullWidth
+                className={this.props.classes.fieldEditWithButton}
+                value={this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val}
+                onChange={e => {
+                    const editData = this.state.editData ? {...this.state.editData} : {};
+                    if (e.target.value === val) {
+                        delete editData[col.field];
+                    } else {
+                        editData[col.field] = e.target.value;
+                    }
+                    this.setState({editData});
+                }}
+            />
+
+            <IconButton
+                className={this.props.classes.fieldButton}
+                contained
+                onClick={() => {
+                    this.selectCallback = selected => {
                         const editData = this.state.editData ? {...this.state.editData} : {};
-                        if (e.target.value === val) {
+                        if (selected === val) {
                             delete editData[col.field];
                         } else {
-                            editData[col.field] = e.target.value;
+                            editData[col.field] = selected;
                         }
                         this.setState({editData});
-                    }}
-                />
+                    };
 
-                <IconButton
-                    className={this.props.classes.fieldButton}
-                    contained
-                    onClick={() => {
-                        this.selectCallback = selected => {
-                            const editData = this.state.editData ? {...this.state.editData} : {};
-                            if (selected === val) {
-                                delete editData[col.field];
-                            } else {
-                                editData[col.field] = selected;
-                            }
-                            this.setState({editData});
-                        };
-
-                        this.setState({showSelectId: true, selectIdValue: val});
-                    }}
-                    size="large"><IconList/></IconButton>
-            </div>
-        );
+                    this.setState({showSelectId: true, selectIdValue: val});
+                }}
+                size="large"
+            ><IconList/></IconButton>
+        </div>;
     }
 
     renderCellNonEdit(item, col) {
@@ -513,7 +517,7 @@ class TreeTable extends React.Component {
 
     renderCellWithSubField(item, col) {
         const main = getAttr(item, col.field, col.lookup);
-        const sub = getAttr(item, col.subField, col.subLookup)
+        const sub  = getAttr(item, col.subField, col.subLookup);
         return <div>
             <div className={this.props.classes.mainText}>{main}</div>
             <div className={this.props.classes.subText} style={col.subStyle || {}}>{sub}</div>
@@ -529,7 +533,7 @@ class TreeTable extends React.Component {
         if (!level && item.parentId) {
             return null;
         } else if (level && !item.parentId) {
-            return null; // should never happens
+            return null; // should never happen
         } else {
             // try to find children
             const children = this.props.data.filter(it => it.parentId === item.id);
@@ -565,13 +569,15 @@ class TreeTable extends React.Component {
 
                                 this.setState({opened});
                             }}
-                            size="large">
+                            size="small">
                             {opened ? <IconCollapse/> : <IconExpand/>}
                         </IconButton>  : null}
                     </TableCell>
-                    <TableCell scope="row"
-                               className={Utils.clsx(this.props.classes.cell, level && this.props.classes.cellSecondary)}
-                               style={this.props.columns[0].cellStyle}>
+                    <TableCell
+                        scope="row"
+                        className={Utils.clsx(this.props.classes.cell, level && this.props.classes.cellSecondary)}
+                        style={this.props.columns[0].cellStyle}
+                    >
                         {this.props.columns[0].subField ?
                             this.renderCellWithSubField(item, this.props.columns[0])
                             :
@@ -634,63 +640,61 @@ class TreeTable extends React.Component {
     }
 
     renderHead() {
-        return (
-            <TableHead>
-                <TableRow key="headerRow">
-                    <TableCell
+        return <TableHead>
+            <TableRow key="headerRow">
+                <TableCell
+                    component="th"
+                    className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes.cellExpand)}
+                />
+                <TableCell
+                    component="th"
+                    className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes['width_' + this.props.columns[0].field.replace(/\./g, '_')])}
+                    style={this.props.columns[0].headerStyle || this.props.columns[0].cellStyle}
+                    sortDirection={this.state.orderBy === this.props.columns[0].field ? this.state.order : false}
+                >
+                    <TableSortLabel
+                        active={this.state.orderBy === this.props.columns[0].field}
+                        direction={this.state.orderBy === this.props.columns[0].field ? this.state.order : 'asc'}
+                        onClick={() => this.handleRequestSort(this.props.columns[0].field)}
+                    >
+                        {this.props.columns[0].title || this.props.columns[0].field}
+                        {this.state.orderBy === this.props.columns[0].field ?
+                            <span className={this.props.classes.visuallyHidden}>
+                                {this.state.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                            </span> : null}
+                    </TableSortLabel>
+                </TableCell>
+                {this.props.columns.map((col, i) =>
+                    !i && !col.hidden ? null : <TableCell
+                        key={col.field}
+                        className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes['width_' + col.field.replace(/\./g, '_')])}
+                        style={col.headerStyle || col.cellStyle}
                         component="th"
-                        className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes.cellExpand)}
-                    />
-                    <TableCell
-                        component="th"
-                        className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes['width_' + this.props.columns[0].field.replace(/\./g, '_')])}
-                        style={this.props.columns[0].headerStyle || this.props.columns[0].cellStyle}
-                        sortDirection={this.state.orderBy === this.props.columns[0].field ? this.state.order : false}
                     >
                         <TableSortLabel
-                            active={this.state.orderBy === this.props.columns[0].field}
-                            direction={this.state.orderBy === this.props.columns[0].field ? this.state.order : 'asc'}
-                            onClick={() => this.handleRequestSort(this.props.columns[0].field)}
+                            active={this.state.orderBy === col.field}
+                            direction={this.state.orderBy === col.field ? this.state.order : 'asc'}
+                            onClick={() => this.handleRequestSort(col.field)}
                         >
-                            {this.props.columns[0].title || this.props.columns[0].field}
-                            {this.state.orderBy === this.props.columns[0].field ?
+                            {col.title || col.field}
+                            {this.state.orderBy === col.field ?
                                 <span className={this.props.classes.visuallyHidden}>
                                     {this.state.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                 </span> : null}
                         </TableSortLabel>
-                    </TableCell>
-                    {this.props.columns.map((col, i) =>
-                        !i && !col.hidden ? null : <TableCell
-                            key={col.field}
-                            className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes['width_' + col.field.replace(/\./g, '_')])}
-                            style={col.headerStyle || col.cellStyle}
-                            component="th"
-                        >
-                            <TableSortLabel
-                                active={this.state.orderBy === col.field}
-                                direction={this.state.orderBy === col.field ? this.state.order : 'asc'}
-                                onClick={() => this.handleRequestSort(col.field)}
-                            >
-                                {col.title || col.field}
-                                {this.state.orderBy === col.field ?
-                                    <span className={this.props.classes.visuallyHidden}>
-                                        {this.state.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                    </span> : null}
-                            </TableSortLabel>
-                        </TableCell>)}
-                    {this.props.onUpdate ? <TableCell component="th" className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes.cellButton)}>
-                        {!this.props.noAdd ? <Fab
-                            color="primary"
-                            size="small"
-                            disabled={this.state.editMode !== false}
-                            onClick={() => this.props.onUpdate(true)}>
-                            <IconAdd/>
-                        </Fab>: null }
-                    </TableCell> : null}
-                    {this.props.onDelete || this.props.onUpdate ? <TableCell component="th" className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes.cellButton)}/> : null}
-                </TableRow>
-            </TableHead>
-        );
+                    </TableCell>)}
+                {this.props.onUpdate ? <TableCell component="th" className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes.cellButton)}>
+                    {!this.props.noAdd ? <Fab
+                        color="primary"
+                        size="small"
+                        disabled={this.state.editMode !== false}
+                        onClick={() => this.props.onUpdate(true)}>
+                        <IconAdd/>
+                    </Fab>: null }
+                </TableCell> : null}
+                {this.props.onDelete || this.props.onUpdate ? <TableCell component="th" className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes.cellButton)}/> : null}
+            </TableRow>
+        </TableHead>;
     }
 
     render() {
@@ -702,7 +706,7 @@ class TreeTable extends React.Component {
             this.updateTimeout = setTimeout(() => {
                 this.updateTimeout = null;
                 this.setState({update: null});
-            }, 500)
+            }, 500);
         }
 
         return <div className={Utils.clsx(this.props.classes.tableContainer, this.props.className)}>
@@ -800,7 +804,7 @@ TreeTable.propTypes = {
     columns: PropTypes.arrayOf(
         PropTypes.shape({
             cellStyle: PropTypes.object,
-            editComponent: PropTypes.element,
+            editComponent: PropTypes.func,
             field: PropTypes.string,
             headerStyle: PropTypes.object,
             hidden: PropTypes.bool,

@@ -1,4 +1,6 @@
 # Help ReactJS classes for adapter config
+You can find demo on https://github.com/ioBroker/adapter-react-demo
+
 ## Getting started
 If you want to create the configuration page with react:
 1. Create github repo for adapter.
@@ -637,6 +639,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Corrected error in TreeTable
+
 ### 2.1.0 (2022-03-26)
 * (bluefox) BREAKING_CHANGE: Corrected error with readFile(base64=false)
 

@@ -177,7 +177,7 @@ class IconSelector extends Component {
                                     <IconButton
                                         onClick={() =>
                                             this.setState({opened: false}, () =>
-                                                this.props.onSelect(icon))
+                                                (this.props.onSelect || this.props.onChange)(icon))
                                         }
                                         size="large"
                                     >
@@ -209,7 +209,8 @@ IconSelector.propTypes = {
     icons: PropTypes.array,
     onlyRooms: PropTypes.bool,
     onlyDevices: PropTypes.bool,
-    onSelect: PropTypes.func.isRequired,
+    onSelect: PropTypes.func, // one of onSelect or onChange are required
+    onChange: PropTypes.func,
     t: PropTypes.func.isRequired,
     lang: PropTypes.string.isRequired,
 };
