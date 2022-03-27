@@ -226,13 +226,8 @@ class TreeTable extends React.Component {
             orderBy: this.props.columns[0].field,
             useTable: false,
             showSelectColor: false,
-            glowOnChange: props.glowOnChange
+            glowOnChange: props.glowOnChange,
         };
-
-        this.levelShift = this.props.levelShift;
-        if (this.levelShift === undefined) {
-            this.levelShift = 24;
-        }
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -530,6 +525,8 @@ class TreeTable extends React.Component {
     }
 
     renderLine(item, level) {
+        const levelShift = this.props.levelShift === undefined ? 24 : this.props.levelShift;
+
         level = level || 0;
         const i = this.props.data.indexOf(item);
         if (!item) {
@@ -581,7 +578,7 @@ class TreeTable extends React.Component {
                     <TableCell
                         scope="row"
                         className={Utils.clsx(this.props.classes.cell, level && this.props.classes.cellSecondary)}
-                        style={Object.assign({}, this.props.columns[0].cellStyle, {paddingLeft: this.levelShift * level})}
+                        style={Object.assign({}, this.props.columns[0].cellStyle, {paddingLeft: levelShift * level})}
                     >
                         {this.props.columns[0].subField ?
                             this.renderCellWithSubField(item, this.props.columns[0])
