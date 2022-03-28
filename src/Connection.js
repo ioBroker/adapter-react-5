@@ -116,9 +116,11 @@ class Connection {
         /** @type {Record<string, Promise<any>>} */
         this._promises = {};
 
-        this.log = {
-            error: text =>
-        }
+        this.log.error = text => this.log(text, 'error');
+        this.log.warn = text => this.log(text, 'warn');
+        this.log.info = text => this.log(text, 'info');
+        this.log.debug = text => this.log(text, 'debug');
+        this.log.silly = text => this.log(text, 'silly');
 
         this.startSocket();
     }

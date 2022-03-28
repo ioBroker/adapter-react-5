@@ -94,7 +94,7 @@ class I18n {
     /**
      * Translate the given string to the selected language.
      * @param {string} word The (key) word to look up the string.
-     * @param {string[]} args Optional arguments which will replace the first (second, third, ...) occurence of %s
+     * @param {string[]} args Optional arguments which will replace the first (second, third, ...) occurrences of %s
      */
     static t(word, ...args) {
         const translation = I18n.translations[I18n.lang];
