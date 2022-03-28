@@ -639,7 +639,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 2.1.5 (2022-03-28)
 * (bluefox) Added `log` method to connection 
 * (bluefox) Corrected translations
 
