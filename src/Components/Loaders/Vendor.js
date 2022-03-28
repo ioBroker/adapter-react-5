@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 ioBroker GmbH
+ * Copyright 2021-2022 ioBroker GmbH
  *
  * MIT License
  *
