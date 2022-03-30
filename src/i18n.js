@@ -21,6 +21,8 @@ class I18n {
      */
     static lang = window.sysLang || 'en';
 
+    static _disableWarning = false;
+
     /**
      * Set the language to display.
      * @param {ioBroker.Languages} lang
@@ -103,13 +105,22 @@ class I18n {
             if (w) {
                 word = w;
             } else {
-                console.log(`Translate: ${word}`);
+                I18n._disableWarning && console.log(`Translate: ${word}`);
             }
         }
         for (const arg of args) {
             word = word.replace('%s', arg);
         }
         return word;
+    }
+
+     /**
+      * Disable warning about non-translated words
+      * Required during development
+      * @param {boolean} disable Do the warning should be disabled
+      */
+    static disableWarning(disable) {
+        I18n._disableWarning = !!disable;
     }
 }
 
