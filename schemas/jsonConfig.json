@@ -911,6 +911,10 @@
                       }
                     ]
                   },
+                  "trim": {
+                    "description": "If text must be trimmed or not (default = true)",
+                     "type": "boolean"
+                  },
                   "placeholder": {
                     "description": "Placeholder (for text control)",
                     "type": "string"
@@ -1506,8 +1510,12 @@
               "then": {
                 "properties": {
                   "adapter": {
-                    "description": "Name of the adapter.",
+                    "description": "Name of the adapter. With special name _dataSources you can get all adapters with flag common.getHistory",
                     "type": "string"
+                  },
+                  "all": {
+                    "description": "Add to the options ALL option with value *",
+                    "type": "boolean"
                   },
                   "label": true,
                   "type": true,
