@@ -1589,6 +1589,45 @@
               "if": {
                 "properties": {
                   "type": {
+                    "const": "chips"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "delimiter": {
+                    "description": "Delimiter for options. If no delimiter, the setting will be stored as array",
+                    "type": "string"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "helpLink": true,
+                  "help": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "validator": true,
+                  "tooltip": true,
+                  "default": true,
+                  "defaultFunc": true,
+                  "noTranslation": true,
+                  "confirm": true
+                },
+                "additionalProperties": false,
+                "required": ["type"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
                     "const": "objectId"
                   }
                 }
@@ -1672,6 +1711,7 @@
                 "number",
                 "color",
                 "checkbox",
+                "chips",
                 "header",
                 "slider",
                 "ip",
