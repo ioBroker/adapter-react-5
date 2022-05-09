@@ -328,7 +328,7 @@ class TreeTable extends React.Component {
         }
 
         return <EditComponent
-            value={ val }
+            value={val}
             rowData={item}
             onChange={newVal => {
                 const editData = this.state.editData ? {...this.state.editData} : {};

@@ -163,15 +163,13 @@ function padding(num) {
 function TextTime(props) {
     const {inputRef, ...other} = props;
 
-    return (
-        <MaskedInput
-            {...other}
-            ref={inputRef}
-            mask={[/[0-2]/, /[0-9]/, ':', /[0-5]/, /[0-9]/]}
-            placeholderChar={props.placeholder || '00:00'}
-            showMask
-        />
-    );
+    return <MaskedInput
+        {...other}
+        ref={inputRef}
+        mask={[/[0-2]/, /[0-9]/, ':', /[0-5]/, /[0-9]/]}
+        placeholderChar={props.placeholder || '00:00'}
+        showMask
+    />;
 }
 
 TextTime.propTypes = {
@@ -181,15 +179,13 @@ TextTime.propTypes = {
 function TextDate(props) {
     const {inputRef, ...other} = props;
 
-    return (
-        <MaskedInput
-            {...other}
-            ref={inputRef}
-            mask={[/[0-3]/, /[0-9]/, '.', /[0-1]/, /[0-9]/, '.', '2', '0', /[0-9]/, /[0-9]/]}
-            placeholderChar={props.placeholder || '01.01.2020'}
-            showMask
-        />
-    );
+    return <MaskedInput
+        {...other}
+        ref={inputRef}
+        mask={[/[0-3]/, /[0-9]/, '.', /[0-1]/, /[0-9]/, '.', '2', '0', /[0-9]/, /[0-9]/]}
+        placeholderChar={props.placeholder || '01.01.2020'}
+        showMask
+    />;
 }
 
 TextDate.propTypes = {

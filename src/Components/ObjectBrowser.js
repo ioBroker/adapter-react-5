@@ -1738,16 +1738,15 @@ class ObjectBrowser extends Component {
 
                 if (typeof props.filterFunc === 'function') {
                     this.objects = {};
-                    const keys = Object.keys(objects);
-                    for (let k = 0; k < keys.length; k++) {
+                    Object.keys(objects).forEach(id => {
                         try {
-                            if (props.filterFunc(objects[keys[k]])) {
-                                this.objects[keys[k]] = objects[keys[k]];
+                            if (props.filterFunc(objects[id])) {
+                                this.objects[id] = objects[id];
                             }
                         } catch (e) {
-                            console.log(`Error by filtering of "${keys[k]}": ${e}`);
+                            console.log(`Error by filtering of "${id}": ${e}`);
                         }
-                    }
+                    });
                 } else
                 if (props.types) {
                     this.objects = {};
@@ -2046,7 +2045,12 @@ class ObjectBrowser extends Component {
                     {/* </ListItemIcon> */}
                     <ListItemText primary={this.texts['filter_' + id] || this.props.t('ra_' + id)} />
                     <ListItemSecondaryAction>
-                        <FormControl variant="standard" className={this.props.classes.columnsDialogInputWidth} style={{ marginTop: 0, marginBottom: 0 }} margin="dense">
+                        <FormControl
+                            variant="standard"
+                            className={this.props.classes.columnsDialogInputWidth}
+                            style={{ marginTop: 0, marginBottom: 0 }}
+                            margin="dense"
+                        >
                             <Input
                                 classes={{ underline: 'no-underline' }}
                                 placeholder={this.props.t('ra_Width')}
@@ -2151,7 +2155,12 @@ class ObjectBrowser extends Component {
                                     </ListItemIcon>
                                     <ListItemText primary={column.name + ' (' + adapter + ')'} />
                                     <ListItemSecondaryAction>
-                                        <FormControl variant="standard" className={this.props.classes.columnsDialogInputWidth} style={{ marginTop: 0, marginBottom: 0 }} margin="dense">
+                                        <FormControl
+                                            variant="standard"
+                                            className={this.props.classes.columnsDialogInputWidth}
+                                            style={{ marginTop: 0, marginBottom: 0 }}
+                                            margin="dense"
+                                        >
                                             <Input
                                                 classes={{ underline: 'no-underline' }}
                                                 placeholder={this.props.t('ra_Width')}
@@ -2954,7 +2963,7 @@ class ObjectBrowser extends Component {
                 </DialogContent>
                 <DialogActions>
                     <Button color="grey" variant="outlined" onClick={() => this.setState({showExportDialog: false}, () => this._exportObjects(true))}>{this.props.t('ra_All objects')}</Button>
-                    <Button variant="contained" autoFocus color="primary" onClick={() => this.setState({showExportDialog: false}, () => this._exportObjects(false))}>{this.props.t('Only selected')}</Button>
+                    <Button variant="contained" autoFocus color="primary" onClick={() => this.setState({showExportDialog: false}, () => this._exportObjects(false))}>{this.props.t('ra_Only selected')}</Button>
                     <Button color="grey" variant="contained" onClick={() => this.setState({showExportDialog: false})} startIcon={<IconClose/>}>{this.props.t('ra_Cancel')}</Button>
                 </DialogActions>
             </Dialog>;
@@ -3144,13 +3153,21 @@ class ObjectBrowser extends Component {
                 }
                 {this.state.expandAllVisible &&
                 <Tooltip title={this.props.t('ra_Expand all nodes')}>
-                    <IconButton key="expandAll" onClick={() => this.onExpandAll()} size="large">
+                    <IconButton
+                        key="expandAll"
+                        onClick={() => this.onExpandAll()}
+                        size="large"
+                    >
                         <IconOpen />
                     </IconButton>
                 </Tooltip>
                 }
                 <Tooltip title={this.props.t('ra_Collapse all nodes')}>
-                    <IconButton key="collapseAll" onClick={() => this.onCollapseAll()} size="large">
+                    <IconButton
+                        key="collapseAll"
+                        onClick={() => this.onCollapseAll()}
+                        size="large"
+                    >
                         <IconClosed />
                     </IconButton>
                 </Tooltip>
@@ -3179,7 +3196,10 @@ class ObjectBrowser extends Component {
                     </IconButton>
                 </Tooltip>
                 {this.props.objectStatesView && <Tooltip title={this.props.t('ra_Toggle the states view')}>
-                    <IconButton onClick={() => this.onStatesViewVisible()} size="large">
+                    <IconButton
+                        onClick={() => this.onStatesViewVisible()}
+                        size="large"
+                    >
                         <LooksOneIcon color={this.state.statesView ? 'primary' : 'inherit'} />
                     </IconButton>
                 </Tooltip>}
@@ -3945,7 +3965,8 @@ class ObjectBrowser extends Component {
 
         // icon
         let iconFolder;
-        let itemType = item.data.obj?.type;
+        const obj = item.data.obj;
+        let itemType = obj?.type;
 
         if (item.children || itemType === 'folder' || itemType === 'device' || itemType === 'channel' || itemType === 'meta') {
             iconFolder = isExpanded ? <IconOpen
@@ -3972,7 +3993,6 @@ class ObjectBrowser extends Component {
             }
         }
 
-        const obj = item.data.obj;
         const common = obj?.common;
 
         const typeImg = (obj && obj.type && ITEM_IMAGES[obj.type]) || <div className="itemIcon" />;
@@ -4021,8 +4041,8 @@ class ObjectBrowser extends Component {
             }
         }
         if (obj) {
-            obj.from && newValueTitle.push(this.texts.objectChangedFrom + ' ' + obj.from.replace(/^system\.adapter\.|^system\./, ''));
-            obj.user && newValueTitle.push(this.texts.objectChangedBy + ' ' + obj.user.replace(/^system\.user\./, ''));
+            obj.from && newValueTitle.push(this.texts.objectChangedFrom   + ' ' + obj.from.replace(/^system\.adapter\.|^system\./, ''));
+            obj.user && newValueTitle.push(this.texts.objectChangedBy     + ' ' + obj.user.replace(/^system\.user\./, ''));
             obj.ts   && newValueTitle.push(this.texts.objectChangedByUser + ' ' + Utils.formatDate(new Date(obj.ts), this.props.dateFormat));
         }
 
@@ -4031,47 +4051,47 @@ class ObjectBrowser extends Component {
         const alias = id.startsWith('alias.') && common?.alias?.id ?
             (readWriteAlias ?
                 <div className={classes.cellIdAliasReadWriteDiv}>
-                    {obj.common.alias.id.read ? <div
+                    {common.alias.id.read ? <div
                         onClick={e => {
                             e.stopPropagation();
                             e.preventDefault();
-                            this.onSelect(obj.common.alias.id.read);
+                            this.onSelect(common.alias.id.read);
                             setTimeout(() => {
                                 this.expandAllSelected(() =>
-                                    this.scrollToItem(obj.common.alias.id.read));
+                                    this.scrollToItem(common.alias.id.read));
                             }, 100);
                         }}
                         className={Utils.clsx(classes.cellIdAlias, classes.cellIdAliasReadWrite)}
-                    >←{obj.common.alias.id.read}</div> : null}
-                    {obj.common.alias.id.write ? <div
+                    >←{common.alias.id.read}</div> : null}
+                    {common.alias.id.write ? <div
                         onClick={e => {
                             e.stopPropagation();
                             e.preventDefault();
-                            this.onSelect(obj.common.alias.id.write);
+                            this.onSelect(common.alias.id.write);
                             setTimeout(() => {
                                 this.expandAllSelected(() =>
-                                    this.scrollToItem(obj.common.alias.id.write));
+                                    this.scrollToItem(common.alias.id.write));
                             }, 100);
                         }}
                         className={Utils.clsx(classes.cellIdAlias, classes.cellIdAliasReadWrite)}
-                    >→{obj.common.alias.id.write}</div> : null}
+                    >→{common.alias.id.write}</div> : null}
                 </div>
                 :
                 <div
                     onClick={e => {
                         e.stopPropagation();
                         e.preventDefault();
-                        this.onSelect(obj.common.alias.id);
+                        this.onSelect(common.alias.id);
                         setTimeout(() => {
                             this.expandAllSelected(() =>
-                                this.scrollToItem(obj.common.alias.id));
+                                this.scrollToItem(common.alias.id));
                         }, 100);
                     }}
                     className={Utils.clsx(classes.cellIdAlias, classes.cellIdAliasAlone)}
-                >→{obj.common.alias.id}</div>
+                >→{common.alias.id}</div>
         ) : null;
 
-        let checkColor = item.data?.common?.color;
+        let checkColor = common?.color;
         let invertBackground = 'none';
         if (checkColor && !this.state.selected.includes(id)) {
             invertBackground = Utils.invertColor(checkColor, true);
@@ -4230,7 +4250,7 @@ class ObjectBrowser extends Component {
             {!this.state.statesView ?
                 <>
                     {this.columnsVisibility.type ? <div className={classes.cellType} style={{ width: this.columnsVisibility.type }}>{typeImg} {obj && obj.type}</div> : null}
-                    {this.columnsVisibility.role ? <div className={classes.cellRole} style={{ width: this.columnsVisibility.role, cursor: this.props.expertMode && enumEditable && this.props.objectBrowserEditRole ? 'text' : 'default' }} onClick={this.props.expertMode && enumEditable && this.props.objectBrowserEditRole ? () => this.setState({ roleDialog: item.data.id }) : undefined}>{obj && obj.common && obj.common.role}</div> : null}
+                    {this.columnsVisibility.role ? <div className={classes.cellRole} style={{ width: this.columnsVisibility.role, cursor: this.props.expertMode && enumEditable && this.props.objectBrowserEditRole ? 'text' : 'default' }} onClick={this.props.expertMode && enumEditable && this.props.objectBrowserEditRole ? () => this.setState({ roleDialog: item.data.id }) : undefined}>{common?.role}</div> : null}
                     {this.columnsVisibility.room ? <div className={`${classes.cellRoom} ${item.data.per ? classes.cellEnumParent : ''}`} style={{ width: this.columnsVisibility.room, cursor: enumEditable ? 'text' : 'default' }} onClick={enumEditable ? () => { const enums = findEnumsForObjectAsIds(this.info, item.data.id, 'roomEnums'); this.setState({ enumDialogEnums: enums, enumDialog: { item, type: 'room', enumsOriginal: JSON.parse(JSON.stringify(enums)) } }); } : undefined}>{item.data.rooms}</div> : null}
                     {this.columnsVisibility.func ? <div className={`${classes.cellFunc} ${item.data.pef ? classes.cellEnumParent : ''}`} style={{ width: this.columnsVisibility.func, cursor: enumEditable ? 'text' : 'default' }} onClick={enumEditable ? () => { const enums = findEnumsForObjectAsIds(this.info, item.data.id, 'funcEnums'); this.setState({ enumDialogEnums: enums, enumDialog: { item, type: 'func', enumsOriginal: JSON.parse(JSON.stringify(enums)) } }); } : undefined}>{item.data.funcs}</div> : null}
                 </>

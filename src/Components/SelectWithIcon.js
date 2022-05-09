@@ -28,7 +28,7 @@ class SelectWithIcon extends Component {
         }
 
         let list;
-        if (Array.isArray(this.props.list)) {
+        if (Array.isArray(this.props.list || this.props.options)) {
             list = this.props.list.map(obj => ({
                 name: Utils.getObjectNameFromObj(obj, this.props.lang)
                     .replace('system.group.', '')

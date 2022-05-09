@@ -579,33 +579,34 @@ class GenericApp extends Router {
      * @returns {JSX.Element | null} The JSX element.
      */
     renderToast() {
-        if (!this.state.toast) return null;
-        return (
-            <Snackbar
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                open={true}
-                autoHideDuration={6000}
-                onClose={() => this.setState({toast: ''})}
-                ContentProps={{
-                    'aria-describedby': 'message-id',
-                }}
-                message={<span id="message-id">{this.state.toast}</span>}
-                action={[
-                    <IconButton
-                        key="close"
-                        aria-label="Close"
-                        color="inherit"
-                        className={this.props.classes.close}
-                        onClick={() => this.setState({toast: ''})}
-                        size="large">
-                        <IconClose />
-                    </IconButton>,
-                ]}
-            />
-        );
+        if (!this.state.toast) {
+            return null;
+        }
+
+        return <Snackbar
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+            }}
+            open={true}
+            autoHideDuration={6000}
+            onClose={() => this.setState({toast: ''})}
+            ContentProps={{
+                'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.toast}</span>}
+            action={[
+                <IconButton
+                    key="close"
+                    aria-label="Close"
+                    color="inherit"
+                    className={this.props.classes.close}
+                    onClick={() => this.setState({toast: ''})}
+                    size="large">
+                    <IconClose />
+                </IconButton>,
+            ]}
+        />;
     }
 
     /**

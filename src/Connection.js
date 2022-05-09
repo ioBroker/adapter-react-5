@@ -2171,7 +2171,11 @@ class Connection {
      * Gets the version.
      * @returns {Promise<{version: string; serverName: string}>}
      */
-    getVersion() {
+    getVersion(update) {
+        if (update && this._promises.version) {
+            this._promises.version = null;
+        }
+
         this._promises.version = this._promises.version || new Promise((resolve, reject) =>
             this._socket.emit('getVersion', (err, version, serverName) => {
                 // support of old socket.io
