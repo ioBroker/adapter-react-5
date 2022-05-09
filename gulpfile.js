@@ -46,7 +46,10 @@ gulp.task('typedefs', () => {
 
 const babelOptions = {
     presets: ['@babel/preset-env', '@babel/preset-react'],
-    plugins: ['@babel/plugin-proposal-class-properties']
+    plugins: [
+        '@babel/plugin-proposal-class-properties',
+        '@babel/plugin-transform-runtime'
+    ]
 };
 
 function handleError (error) {
@@ -55,7 +58,7 @@ function handleError (error) {
 }
 
 gulp.task('compile', gulp.parallel('copy',
-    //'typedefs',
+    'typedefs',
     () => Promise.all([
         gulp.src(['src/Dialogs/*.js'])
             .pipe(sourcemaps.init())
@@ -83,7 +86,8 @@ gulp.task('compile', gulp.parallel('copy',
             .pipe(babel({
                 presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-flow'],
                 plugins: [
-                    '@babel/plugin-proposal-class-properties'
+                    '@babel/plugin-proposal-class-properties',
+                    '@babel/plugin-transform-runtime'
                 ]
             }))
              .on('error', handleError)
