@@ -639,7 +639,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-* ### **WORK IN PROGRESS**
+### **WORK IN PROGRESS**
 * (bluefox) Changes were synchronized with adapter-react-v5
 * (bluefox) Added `I18n.disableWarning` method
 
