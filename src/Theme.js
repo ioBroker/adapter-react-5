@@ -1,6 +1,6 @@
-import { createTheme, adaptV4Theme, alpha } from '@mui/material/styles';
+import {createTheme, adaptV4Theme, alpha} from '@mui/material/styles';
 
-import { orange, grey } from '@mui/material/colors';
+import {orange, grey} from '@mui/material/colors';
 
 const step = (16 - 5) / 23 / 100;
 
@@ -93,27 +93,27 @@ const buttonsTheme = theme => ({
         MuiButton: {
             variants: [
                 {
-                    props: { variant: 'contained', color: 'grey' },
+                    props: {variant: 'contained', color: 'grey'},
                     style: {
                         color: theme.palette.getContrastText(theme.palette.grey[300]),
                     },
                 },
                 {
-                    props: { variant: 'outlined', color: 'grey' },
+                    props: {variant: 'outlined', color: 'grey'},
                     style: {
                         color: theme.palette.text.primary,
                         borderColor:
-                theme.palette.mode === 'light'
-                    ? 'rgba(0, 0, 0, 0.23)'
-                    : 'rgba(255, 255, 255, 0.23)',
+                            theme.palette.mode === 'light'
+                                ? 'rgba(0, 0, 0, 0.23)'
+                                : 'rgba(255, 255, 255, 0.23)',
                         '&.Mui-disabled': {
                             border: `1px solid ${theme.palette.action.disabledBackground}`,
                         },
                         '&:hover': {
                             borderColor:
-                  theme.palette.mode === 'light'
-                      ? 'rgba(0, 0, 0, 0.23)'
-                      : 'rgba(255, 255, 255, 0.23)',
+                                theme.palette.mode === 'light'
+                                    ? 'rgba(0, 0, 0, 0.23)'
+                                    : 'rgba(255, 255, 255, 0.23)',
                             backgroundColor: alpha(
                                 theme.palette.text.primary,
                                 theme.palette.action.hoverOpacity,
@@ -122,7 +122,7 @@ const buttonsTheme = theme => ({
                     },
                 },
                 {
-                    props: { color: 'grey', variant: 'text' },
+                    props: {color: 'grey', variant: 'text'},
                     style: {
                         color: 'black',
                         '&:hover': {
@@ -376,27 +376,27 @@ const Theme = type => {
             MuiButton: {
                 variants: [
                     {
-                        props: { variant: 'contained', color: 'grey' },
+                        props: {variant: 'contained', color: 'grey'},
                         style: {
                             color: theme.palette.getContrastText(theme.palette.grey[300]),
                         },
                     },
                     {
-                        props: { variant: 'outlined', color: 'grey' },
+                        props: {variant: 'outlined', color: 'grey'},
                         style: {
                             color: theme.palette.text.primary,
                             borderColor:
-                    theme.palette.mode === 'light'
-                        ? 'rgba(0, 0, 0, 0.23)'
-                        : 'rgba(255, 255, 255, 0.23)',
+                                theme.palette.mode === 'light'
+                                    ? 'rgba(0, 0, 0, 0.23)'
+                                    : 'rgba(255, 255, 255, 0.23)',
                             '&.Mui-disabled': {
                                 border: `1px solid ${theme.palette.action.disabledBackground}`,
                             },
                             '&:hover': {
                                 borderColor:
-                      theme.palette.mode === 'light'
-                          ? 'rgba(0, 0, 0, 0.23)'
-                          : 'rgba(255, 255, 255, 0.23)',
+                                    theme.palette.mode === 'light'
+                                        ? 'rgba(0, 0, 0, 0.23)'
+                                        : 'rgba(255, 255, 255, 0.23)',
                                 backgroundColor: alpha(
                                     theme.palette.text.primary,
                                     theme.palette.action.hoverOpacity,
@@ -405,7 +405,7 @@ const Theme = type => {
                         },
                     },
                     {
-                        props: { color: 'grey', variant: 'text' },
+                        props: {variant: 'text', color: 'grey'},
                         style: {
                             color: theme.palette.text.primary,
                             '&:hover': {
