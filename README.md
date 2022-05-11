@@ -630,6 +630,7 @@ The icons may not be reused in other projects without the proper flaticon licens
 - Add to all `TextField` and `Select` the property `variant="standard"`
 - Add to all `Button` that do not have `color` property: `color="grey"`
 - Replace by `TextField` the `readOnly` attribute (if exists) with `InputProps={{readOnly: true}}`
+- Remove px by all `theme.spacing`: `calc(100% - ${theme.spacing(4)}px)` => `calc(100% - ${theme.spacing(4)})`
 
 If you still have questions, try to find an answer [here](https://mui.com/guides/migration-v4/).
 
