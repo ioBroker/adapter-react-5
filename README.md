@@ -640,6 +640,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Corrected expert mode in object browser
+
 ### 2.1.7 (2022-05-09)
 * (bluefox) Changes were synchronized with adapter-react-v5
 * (bluefox) Added `I18n.disableWarning` method
