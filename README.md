@@ -623,6 +623,7 @@ The icons may not be reused in other projects without the proper flaticon licens
 - All `@iobroker/adapter-react/...` => `@iobroker/adapter-react-v5/...`
 - All `@material-ui/icons/...` => `@mui/icons-material/...`
 - Change `import { withStyles } from '@material-ui/core/styles';` => `import { withStyles } from '@mui/styles';`
+- Change `import { makeStyles } from '@mui/material/styles';` => `import { makeStyles } from '@mui/styles';`
 - All `@material-ui/core...` => `@mui/material...`
 - Change `import { MuiThemeProvider } from '@material-ui/core/styles';` => `import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';` 
 - Change all `<MuiThemeProvider theme={this.state.theme}>` to `<StyledEngineProvider injectFirst><ThemeProvider theme={this.state.theme}>`
