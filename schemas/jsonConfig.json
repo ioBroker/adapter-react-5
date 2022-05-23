@@ -32,7 +32,7 @@
     },
     "i18n": {
       "description": "If translations will be provided via files, e.g. in admin/i18n/de/translations.json or provide the path to the i18n folder if it's custom or provide the translations inside this attribute as an object",
-      "anyOf": [
+      "oneOf": [
         {
           "type": "string"
         },
@@ -227,7 +227,7 @@
                   },
                   "text": {
                     "description": "Header text",
-                    "anyOf": [
+                    "oneOf": [
                       {
                         "type": "string"
                       },
@@ -884,7 +884,7 @@
                     "description": "Options which can be completed. [\"value1\", \"value2\", ...] or [{\"value\": \"value\", \"label\": \"Value1\"}, \"value2\", ...]",
                     "type": "array",
                     "items": {
-                      "anyOf": [
+                      "oneOf": [
                         {
                           "type": "string"
                         },
@@ -933,7 +933,7 @@
                 "properties": {
                   "text": {
                     "description": "Text input",
-                    "anyOf": [
+                    "oneOf": [
                       {
                         "type": "string"
                       },
@@ -1474,7 +1474,7 @@
                   },
                   "text": {
                     "description": "Static link or button",
-                    "anyOf": [
+                    "oneOf": [
                       {
                         "type": "string"
                       },
@@ -1526,7 +1526,7 @@
                 "properties": {
                   "text": {
                     "description": "Static text like description",
-                    "anyOf": [
+                    "oneOf": [
                       {
                         "type": "string"
                       },
@@ -1762,7 +1762,7 @@
           ],
           "properties": {
             "label": {
-              "anyOf": [
+              "oneOf": [
                 {
                   "description": "Label of tab",
                   "type": "string"
@@ -1848,7 +1848,7 @@
               "type": "string"
             },
             "help": {
-              "anyOf": [
+              "oneOf": [
                 {
                   "type": "string"
                 },
@@ -1937,7 +1937,7 @@
                 },
                 "text": {
                   "description": "Text of confirmation dialog",
-                  "anyOf": [
+                  "oneOf": [
                     {
                       "type": "string"
                     },
@@ -1948,7 +1948,7 @@
                 },
                 "title": {
                   "description": "Title of confirmation dialog",
-                  "anyOf": [
+                  "oneOf": [
                     {
                       "type": "string"
                     },
@@ -1959,7 +1959,7 @@
                 },
                 "ok": {
                   "description": "Text for 'OK' button",
-                  "anyOf": [
+                  "oneOf": [
                     {
                       "type": "string"
                     },
@@ -1970,7 +1970,7 @@
                 },
                 "cancel": {
                   "description": "Text for 'cancel' button",
-                  "anyOf": [
+                  "oneOf": [
                     {
                       "type": "string"
                     },
