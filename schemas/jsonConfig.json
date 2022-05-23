@@ -1532,7 +1532,7 @@
                   "defaultFunc": true,
                   "noMultiEdit": true,
                   "noTranslation": true,
-                  "confirm": true,
+                  "confirm": true
                 },
                 "additionalProperties": false,
                 "required": ["type", "text"]
@@ -1851,7 +1851,28 @@
             },
             "defaultFunc": {
               "description": "JS function to calculate default value",
-              "type": "string"
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "func": {
+                      "description": "JS function: hat calculates value",
+                      "type": "string"
+                    },
+                    "alsoDependsOn": {
+                      "description": "Depends on other attributes and will be re-calculated when other attributes changed",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ]
             },
             "noTranslation": {
               "description": "Do not translate selects or other options (not for help, label or placeholder)",
