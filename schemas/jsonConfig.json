@@ -147,7 +147,8 @@
                   "defaultFunc": true,
                   "noMultiEdit": true,
                   "noTranslation": true,
-                  "confirm": true
+                  "confirm": true,
+                  "maxLength": true
                 },
                 "additionalProperties": false,
                 "required": ["type", "command"]
@@ -627,7 +628,8 @@
                   "defaultFunc": true,
                   "noMultiEdit": true,
                   "noTranslation": true,
-                  "confirm": true
+                  "confirm": true,
+                  "maxLength": true
                 },
                 "additionalProperties": false,
                 "required": ["type"]
@@ -917,7 +919,7 @@
               "then": {
                 "properties": {
                   "text": {
-                    "description": "Static text like description",
+                    "description": "Text input",
                     "anyOf": [
                       {
                         "type": "string"
@@ -955,7 +957,8 @@
                   "defaultFunc": true,
                   "noMultiEdit": true,
                   "noTranslation": true,
-                  "confirm": true
+                  "confirm": true,
+                  "maxLength": true
                 },
                 "additionalProperties": false,
                 "required": ["type"]
@@ -987,6 +990,9 @@
                         },
                         "value": {
                           "description": "Value"
+                        },
+                        "hidden": {
+                          "description": "JS function that could use `native.attribute` for calculation"
                         }
                       }
                     }
@@ -1444,7 +1450,7 @@
                     "type": "string"
                   },
                   "text": {
-                    "description": "Static text like description",
+                    "description": "Static link or button",
                     "anyOf": [
                       {
                         "type": "string"
@@ -1453,6 +1459,10 @@
                         "$ref": "#/definitions/multilingual"
                       }
                     ]
+                  },
+                  "icon": {
+                    "description": "icon for button",
+                    "type": "string"
                   },
                   "label": true,
                   "type": true,
@@ -1474,7 +1484,8 @@
                   "defaultFunc": true,
                   "noMultiEdit": true,
                   "noTranslation": true,
-                  "confirm": true
+                  "confirm": true,
+                  "button": true
                 },
                 "additionalProperties": false,
                 "required": ["type", "href", "text"]
@@ -1521,7 +1532,7 @@
                   "defaultFunc": true,
                   "noMultiEdit": true,
                   "noTranslation": true,
-                  "confirm": true
+                  "confirm": true,
                 },
                 "additionalProperties": false,
                 "required": ["type", "text"]
@@ -1919,6 +1930,14 @@
             },
             "noMultiEdit": {
               "description": "(only custom) if this flag set to true, this field will not be shown if user selected more than one object for edit",
+              "type": "boolean"
+            },
+            "maxLength": {
+              "description": "max length of text in field",
+              "type": "number"
+            },
+            "button": {
+              "description": "show link as button",
               "type": "boolean"
             }
           }
