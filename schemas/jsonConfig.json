@@ -90,6 +90,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -146,6 +147,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true,
                   "maxLength": true
@@ -200,6 +202,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
@@ -249,9 +252,6 @@
                   "darkStyle": true,
                   "validator": true,
                   "tooltip": true,
-                  "default": true,
-                  "defaultFunc": true,
-                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -288,6 +288,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -336,6 +337,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -392,6 +394,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -435,6 +438,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -499,6 +503,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -579,6 +584,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -627,6 +633,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true,
                   "maxLength": true
@@ -668,6 +675,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -719,6 +727,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -759,6 +768,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -795,6 +805,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -843,6 +854,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -901,6 +913,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -956,6 +969,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true,
                   "maxLength": true
@@ -1016,6 +1030,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1095,6 +1110,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1139,6 +1155,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1215,6 +1232,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1255,6 +1273,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1295,6 +1314,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1335,6 +1355,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1383,6 +1404,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1428,6 +1450,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1575,6 +1598,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1659,6 +1683,7 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1722,6 +1747,8 @@
                   "default": true,
                   "defaultFunc": true,
                   "noMultiEdit": true,
+                  "onChange": true,
+                  "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1849,6 +1876,27 @@
             "default": {
               "description": "Default value"
             },
+            "onChange": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "calculateFunc": {
+                  "description": "JS function: that calculates value",
+                  "type": "string"
+                },
+                "ignoreOwnChanges": {
+                  "description": "Do not trigger onChange event if changed value of this attribute",
+                  "type": "boolean"
+                },
+                "alsoDependsOn": {
+                  "description": "Depends on other attributes and will be re-calculated when other attributes changed",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
             "defaultFunc": {
               "description": "JS function to calculate default value",
               "oneOf": [
@@ -1860,7 +1908,7 @@
                   "additionalProperties": false,
                   "properties": {
                     "func": {
-                      "description": "JS function: hat calculates value",
+                      "description": "JS function: that calculates value",
                       "type": "string"
                     },
                     "alsoDependsOn": {
