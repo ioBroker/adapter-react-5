@@ -89,6 +89,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -144,6 +145,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -196,6 +198,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
@@ -247,6 +250,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -282,6 +286,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -329,6 +334,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -384,6 +390,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -426,6 +433,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -489,6 +497,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -568,6 +577,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -615,6 +625,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -654,6 +665,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -669,7 +681,6 @@
                   }
                 }
               },
-
               "then": {
                 "properties": {
                   "min": {
@@ -705,6 +716,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -744,6 +756,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -779,6 +792,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -826,6 +840,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -883,6 +898,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -913,7 +929,7 @@
                   },
                   "trim": {
                     "description": "If text must be trimmed or not (default = true)",
-                     "type": "boolean"
+                    "type": "boolean"
                   },
                   "placeholder": {
                     "description": "Placeholder (for text control)",
@@ -937,6 +953,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -992,6 +1009,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1070,6 +1088,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1113,6 +1132,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1188,6 +1208,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1227,6 +1248,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1266,6 +1288,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1305,6 +1328,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1352,6 +1376,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1396,6 +1421,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1446,6 +1472,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1492,6 +1519,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1535,6 +1563,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1578,6 +1607,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1617,6 +1647,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1679,6 +1710,7 @@
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
+                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
@@ -1884,6 +1916,10 @@
                   }
                 }
               }
+            },
+            "noMultiEdit": {
+              "description": "(only custom) if this flag set to true, this field will not be shown if user selected more than one object for edit",
+              "type": "boolean"
             }
           }
         }
