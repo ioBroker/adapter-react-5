@@ -38,7 +38,7 @@ gulp.task('copy', () => Promise.all([
 const tsProject = typescript.createProject('tsconfig.build.json');
 
 gulp.task('typedefs', () => {
-    return gulp.src(['src/**/*.js', '!src/gulpfile.js'])
+    return gulp.src(['src/**/*.js', 'src/**/*.jsx', '!src/gulpfile.js'])
         .pipe(tsProject())
         .dts
         .pipe(gulp.dest('dist'));
@@ -60,28 +60,28 @@ function handleError (error) {
 gulp.task('compile', gulp.parallel('copy',
 //    'typedefs',
     () => Promise.all([
-        gulp.src(['src/Dialogs/*.js'])
+        gulp.src(['src/Dialogs/*.js', 'src/Dialogs/**/*.js', 'src/Dialogs/*.jsx', 'src/Dialogs/**/*.jsx'])
             .pipe(sourcemaps.init())
             .pipe(babel(babelOptions))
             .on('error', handleError)
             .pipe(sourcemaps.write('.'))
             .pipe(gulp.dest('dist/Dialogs')),
 
-        gulp.src(['src/icons/*.js'])
+        gulp.src(['src/icons/*.js', 'src/icons/**/*.js', 'src/icons/*.jsx', 'src/icons/**/*.jsx'])
             .pipe(sourcemaps.init())
             .pipe(babel(babelOptions))
             .on('error', handleError)
             .pipe(sourcemaps.write('.'))
             .pipe(gulp.dest('dist/icons')),
 
-        gulp.src(['src/*.js', '!src/gulpfile.js'])
+        gulp.src(['src/*.js', 'src/*.jsx', '!src/gulpfile.js'])
             .pipe(sourcemaps.init())
             .pipe(babel(babelOptions))
             .on('error', handleError)
             .pipe(sourcemaps.write('.'))
             .pipe(gulp.dest('dist')),
 
-        gulp.src(['src/Components/*.js', 'src/Components/**/*.js'])
+        gulp.src(['src/Components/*.js', 'src/Components/**/*.js', 'src/Components/*.jsч', 'src/Components/**/*.jsx'])
             .pipe(sourcemaps.init())
             .pipe(babel({
                 presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-flow'],

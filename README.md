@@ -641,6 +641,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added JsonConfigComponent
+
 ### 2.1.11 (2022-05-24)
 * (bluefox) Update file browser. It supports now the file changed events.
 
