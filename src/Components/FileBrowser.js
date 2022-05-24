@@ -4,11 +4,10 @@
  * MIT License
  *
  **/
-
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from '@mui/styles';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Dropzone from 'react-dropzone'
+import Dropzone from 'react-dropzone';
 
 import LinearProgress from '@mui/material/LinearProgress';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -29,7 +28,7 @@ import Utils from './Utils';
 import TextInputDialog from '../Dialogs/TextInput';
 import { EXTENSIONS } from './FileViewer';
 import FileViewer from './FileViewer';
-//import FileViewer from '@iobroker/adapter-react/Components/FileViewer';
+//import FileViewer from '@iobroker/adapter-react-v5/Components/FileViewer';
 
 // Icons
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -56,8 +55,7 @@ import NoImage from '../assets/no_icon.svg';
 import IconClosed from '../icons/IconClosed';
 import IconOpen from '../icons/IconOpen';
 
-// FIXME checkout https://mui.com/components/use-media-query/#migrating-from-withwidth
-const withWidth = () => (WrappedComponent) => (props) => <WrappedComponent {...props} width="xs" />;
+import withWidth from './withWidth';
 
 const ROW_HEIGHT   = 32;
 const BUTTON_WIDTH = 32;
@@ -83,10 +81,10 @@ const styles = theme => ({
         padding: theme.spacing(1),
     },
     filesDivTable: {
-        height: `calc(100% - ${48 + theme.spacing(1)}px)`,
+        height: `calc(100% - ${48 + parseInt(theme.spacing(1), 10)}px)`,
     },
     filesDivTile: {
-        height: `calc(100% - ${48 * 2 + theme.spacing(1)}px)`,
+        height: `calc(100% - ${48 * 2 + parseInt(theme.spacing(1), 10)}px)`,
         display: 'flex',
         alignContent: 'flex-start',
         alignItems: 'stretch',
@@ -466,6 +464,8 @@ class FileBrowser extends Component {
         this.browseList = [];
         this.browseListRunning = false;
         this.initialReadFinished = false;
+        this.supportSubscribes = null;
+        this._tempTimeout = {};
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -478,6 +478,7 @@ class FileBrowser extends Component {
 
     loadFolders() {
         this.initialReadFinished = false;
+
         return this.browseFolder('/')
             .then(folders => {
                 return this.state.viewType === TABLE ?
@@ -515,12 +516,21 @@ class FileBrowser extends Component {
     componentDidMount() {
         this.mounted = true;
         this.loadFolders();
+        return this.props.socket.checkFeatureSupported('BINARY_STATE_EVENT')
+            .then(result => {
+                this.supportSubscribes = result;
+                this.supportSubscribes && this.props.socket.subscribeFiles('*', '*', this.onFileChange);
+            });
     }
 
     componentWillUnmount() {
+        this.supportSubscribes && this.props.socket.unsubscribeFiles('*', '*', this.onFileChange);
         this.mounted = false;
         this.browseList = null;
         this.browseListRunning = false;
+        Object.values(this._tempTimeout)
+            .forEach(timer => timer && clearTimeout(timer));
+        this._tempTimeout = {};
     }
 
     browseFolders(foldersList, _newFolders, _resolve) {
@@ -538,14 +548,14 @@ class FileBrowser extends Component {
         } else {
             this.browseFolder(foldersList.shift(), _newFolders)
                 .then(()  => setTimeout(() => this.browseFolders(foldersList, _newFolders, _resolve), 0))
-                .catch(() => setTimeout(() => this.browseFolders(foldersList, _newFolders, _resolve), 0))
+                .catch(() => setTimeout(() => this.browseFolders(foldersList, _newFolders, _resolve), 0));
         }
     }
 
     readDirSerial(adapter, relPath) {
         return new Promise((resolve, reject) => {
             if (this.browseList) { // if component still mounted
-                this.browseList.push({resolve, reject, adapter, relPath});
+                this.browseList.push({ resolve, reject, adapter, relPath });
                 !this.browseListRunning && this.processBrowseList();
             }
         });
@@ -586,10 +596,9 @@ class FileBrowser extends Component {
                                 this.setState({queueLength: 0});
                             }
                         } else {
-                            this.setState({queueLength: 0});
+                            this.setState({ queueLength: 0 });
                         }
                     }
-
                 })
                 .catch(e => {
                     if (this.browseList) { // if component still mounted
@@ -619,14 +628,19 @@ class FileBrowser extends Component {
         }
     }
 
-    browseFolder(folderId, _newFolders, _checkEmpty) {
+    browseFolder(folderId, _newFolders, _checkEmpty, force) {
+        if (typeof _newFolders === 'boolean') {
+            force = _newFolders;
+            _newFolders = null;
+        }
+
         if (!_newFolders) {
             _newFolders = {};
             Object.keys(this.state.folders).forEach(folder =>
                 _newFolders[folder] = this.state.folders[folder]);
         }
 
-        if (_newFolders[folderId]) {
+        if (_newFolders[folderId] && !force) {
             if (!_checkEmpty) {
                 return new Promise((resolve, reject) =>
                     Promise.all(_newFolders[folderId].filter(item => item.folder).map(item =>
@@ -706,7 +720,7 @@ class FileBrowser extends Component {
                     const _folders = [];
                     files.forEach(file => {
                         const item = {
-                            id:       folderId + '/' + file.file,
+                            id:       `${folderId}/${file.file}`,
                             ext:      Utils.getFileExtension(file.file),
                             folder:   file.isDir,
                             name:     file.file,
@@ -760,6 +774,24 @@ class FileBrowser extends Component {
         }
     }
 
+    onFileChange = (id, fileName, size) => {
+        const key = id + '/' + fileName;
+        const pos = key.lastIndexOf('/');
+        const folder = key.substring(0, pos);
+        console.log(`File changed ${key}[${size}]`);
+
+        if (this.state.folders[folder]) {
+            this._tempTimeout[folder] && clearTimeout(this._tempTimeout[folder]);
+
+            this._tempTimeout[folder] = setTimeout(() => {
+                delete this._tempTimeout[folder];
+
+                this.browseFolder(folder, true)
+                    .then(folders => this.setState({ folders }));
+            }, 300);
+        }
+    };
+
     changeFolder(e, folder) {
         e && e.stopPropagation();
 
@@ -776,9 +808,22 @@ class FileBrowser extends Component {
         if (folder && !this.state.folders[folder]) {
             return this.browseFolder(folder)
                 .then(folders =>
-                    this.setState({ folders, path: folder, currentDir: folder, selected: folder, pathFocus: false }, () => this.props.onSelect && this.props.onSelect('')));
+                    this.setState({
+                        folders,
+                        path: folder,
+                        currentDir: folder,
+                        selected: folder,
+                        pathFocus: false
+                    }, () =>
+                        this.props.onSelect && this.props.onSelect('')));
         } else {
-            this.setState({ currentDir: folder, selected: folder, path: folder, pathFocus: false }, () => this.props.onSelect && this.props.onSelect(''));
+            this.setState({
+                currentDir: folder,
+                selected: folder,
+                path: folder,
+                pathFocus: false
+            }, () =>
+                this.props.onSelect && this.props.onSelect(''));
         }
     }
 
@@ -838,6 +883,7 @@ class FileBrowser extends Component {
             <Hidden smDown>
                 {this.state.viewType === TABLE ? this.formatAcl(item.acl) : null}
             </Hidden>
+
             <Hidden smDown>
                 {this.state.viewType === TABLE && this.props.expertMode ? <div className={this.props.classes['itemDeleteButton' + this.state.viewType]} /> : null}
             </Hidden>
@@ -845,6 +891,7 @@ class FileBrowser extends Component {
 
             {this.state.viewType === TABLE && this.props.allowDelete && this.state.folders[item.id] && this.state.folders[item.id].length && (this.state.expertMode || item.id.startsWith(USER_DATA) || item.id.startsWith('vis.0/')) ?
                 <IconButton
+                    size="large"
                     aria-label="delete"
                     onClick={e => {
                         e.stopPropagation();
@@ -855,7 +902,7 @@ class FileBrowser extends Component {
                         }
                     }}
                     className={this.props.classes['itemDeleteButton' + this.state.viewType]}
-                    size="large">
+                >
                     <DeleteIcon fontSize="small" />
                 </IconButton>
                 :
@@ -893,10 +940,12 @@ class FileBrowser extends Component {
             access = access.toString(16).padStart(3, '0');
         }
 
-        return <div className={this.props.classes['itemAccess' + this.state.viewType]}> <IconButton
-            onClick={() => this.setState({ modalEditOfAccess: true })}
-            className={this.props.classes['itemAclButton' + this.state.viewType]}
-            size="large">{access || '---'}</IconButton>
+        return <div className={this.props.classes['itemAccess' + this.state.viewType]}>
+            <IconButton
+                size="large"
+                onClick={() => this.setState({ modalEditOfAccess: true })}
+                className={this.props.classes['itemAclButton' + this.state.viewType]}
+            >{access || '---'}</IconButton>
         </div>;
     }
 
@@ -1022,7 +1071,8 @@ class FileBrowser extends Component {
                         }
                     }}
                     className={this.props.classes['itemDeleteButton' + this.state.viewType]}
-                    size="large">
+                    size="large"
+                >
                     <EditIcon fontSize="small" />
                 </IconButton>
                 :
@@ -1033,7 +1083,8 @@ class FileBrowser extends Component {
                 href={this.imagePrefix + item.id}
                 className={this.props.classes['itemDownloadButton' + this.state.viewType]}
                 onClick={e => e.stopPropagation()}
-                size="large"><DownloadIcon /></IconButton> : null}
+                size="large"
+            ><DownloadIcon /></IconButton> : null}
 
             {this.state.viewType === TABLE &&
                 this.props.allowDelete &&
@@ -1042,6 +1093,7 @@ class FileBrowser extends Component {
                 (this.state.expertMode || item.id.startsWith(USER_DATA) || item.id.startsWith('vis.0/'))
                 ?
                 <IconButton
+                    size="large"
                     aria-label="delete"
                     onClick={e => {
                         e.stopPropagation();
@@ -1052,7 +1104,7 @@ class FileBrowser extends Component {
                         }
                     }}
                     className={this.props.classes['itemDeleteButton' + this.state.viewType]}
-                    size="large">
+                >
                     <DeleteIcon fontSize="small" />
                 </IconButton>
                 :
@@ -1147,7 +1199,8 @@ class FileBrowser extends Component {
                 className={Utils.clsx(this.props.classes.menuButton, this.state.expertMode && this.props.classes.menuButtonExpertActive)}
                 aria-label="expert mode"
                 onClick={() => this.setState({ expertMode: !this.state.expertMode })}
-                size="large"><ExpertIcon /></IconButton> : null}
+                size="large"
+            ><ExpertIcon /></IconButton> : null}
             {this.props.showViewTypeButton ? <IconButton
                 edge="start"
                 title={this.props.t('ra_Toggle view mode')}
@@ -1166,7 +1219,8 @@ class FileBrowser extends Component {
                         }
                     });
                 }}
-                size="large">{this.state.viewType !== TABLE ? <IconList /> : <IconTile />}</IconButton> : null}
+                size="large"
+            >{this.state.viewType !== TABLE ? <IconList /> : <IconTile />}</IconButton> : null}
             <IconButton
                 edge="start"
                 title={this.props.t('ra_Hide empty folders')}
@@ -1177,7 +1231,8 @@ class FileBrowser extends Component {
                     window.localStorage.setItem('file.empty', !this.state.filterEmpty);
                     this.setState({ filterEmpty: !this.state.filterEmpty });
                 }}
-                size="large"><EmptyFilterIcon /></IconButton>
+                size="large"
+            ><EmptyFilterIcon /></IconButton>
             <IconButton
                 edge="start"
                 title={this.props.t('ra_Reload files')}
@@ -1185,7 +1240,8 @@ class FileBrowser extends Component {
                 color={'inherit'}
                 aria-label="reload files"
                 onClick={() => this.setState({ folders: {} }, () => this.loadFolders())}
-                size="large"><RefreshIcon /></IconButton>
+                size="large"
+            ><RefreshIcon /></IconButton>
             {this.props.allowCreateFolder ? <IconButton
                 edge="start"
                 disabled={this.state.expertMode ? !this.state.selected : !this.state.selected.startsWith('vis.0') && !this.state.selected.startsWith(USER_DATA)}
@@ -1194,7 +1250,8 @@ class FileBrowser extends Component {
                 color={'inherit'}
                 aria-label="add folder"
                 onClick={() => this.setState({ addFolder: true })}
-                size="large"><AddFolderIcon /></IconButton> : null}
+                size="large"
+            ><AddFolderIcon /></IconButton> : null}
             {this.props.allowUpload ? <IconButton
                 edge="start"
                 disabled={this.state.expertMode ? !this.state.selected : !this.state.selected.startsWith('vis.0') && !this.state.selected.startsWith(USER_DATA)}
@@ -1204,14 +1261,16 @@ class FileBrowser extends Component {
                 aria-label="upload file"
                 onClick={() =>
                     this.setState({uploadFile: true})}
-                size="large"><UploadIcon /></IconButton> : null}
+                size="large"
+            ><UploadIcon /></IconButton> : null}
             <Tooltip title={this.props.t('ra_Background image')}>
                 <IconButton
                     color={'inherit'}
                     edge="start"
                     className={this.props.classes.menuButton}
                     onClick={this.setStateBackgroundImage}
-                    size="large">
+                    size="large"
+                >
                     <Brightness5Icon />
                 </IconButton>
             </Tooltip>
@@ -1476,12 +1535,16 @@ class FileBrowser extends Component {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button color="grey" variant="contained" onClick={() => {
-                        this.suppressDeleteConfirm = Date.now() + 60000 * 5;
-                        this.deleteItem();
-                    }} >{this.props.t('ra_Delete (no confirm for 5 mins)')}</Button>
+                    <Button
+                        variant="contained"
+                        onClick={() => {
+                            this.suppressDeleteConfirm = Date.now() + 60000 * 5;
+                            this.deleteItem();
+                        }}
+                        color="grey"
+                    >{this.props.t('ra_Delete (no confirm for 5 mins)')}</Button>
                     <Button variant="contained" onClick={() => this.deleteItem()} color="primary" autoFocus>{this.props.t('ra_Delete')}</Button>
-                    <Button color="grey" variant="contained" onClick={() => this.setState({ deleteItem: '' })} >{this.props.t('ra_Cancel')}</Button>
+                    <Button variant="contained" onClick={() => this.setState({ deleteItem: '' })} color="grey">{this.props.t('ra_Cancel')}</Button>
                 </DialogActions>
             </Dialog>;
         } else {
@@ -1586,7 +1649,7 @@ class FileBrowser extends Component {
 
     render() {
         if (!this.props.ready) {
-            return <LinearProgress key={this.props.key ? this.props.key + '_c' : 'c'} />;
+            return <LinearProgress />;
         }
 
         if (this.state.loadAllFolders && !this.foldersLoading) {
@@ -1598,7 +1661,6 @@ class FileBrowser extends Component {
                 });
             }, 300);
         }
-
 
         return <div style={this.props.style} className={Utils.clsx(this.props.classes.root, this.props.className)}>
             {this.props.showToolbar ? this.renderToolbar() : null}
