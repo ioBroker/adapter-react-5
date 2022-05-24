@@ -641,7 +641,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 2.1.10 (2022-05-24)
 * (bluefox) Corrected object browser
 
 ### 2.1.9 (2022-05-16)
