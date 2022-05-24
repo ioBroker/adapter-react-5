@@ -1711,7 +1711,7 @@ FileBrowser.propTypes = {
     tileView: PropTypes.bool,
     filterFiles: PropTypes.array, // like ['png', 'svg', 'bmp', 'jpg', 'jpeg']
     filterByType: PropTypes.string, // images, code or txt from FileViewer.EXTENSIONS
-    onSelect: PropTypes.func.isRequired, // function (id, isDoubleClick)
+    onSelect: PropTypes.func, // function (id, isDoubleClick)
 };
 
 /** @type {typeof FileBrowser} */
