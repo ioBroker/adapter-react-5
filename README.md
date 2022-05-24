@@ -641,6 +641,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Corrected object browser
+
 ### 2.1.9 (2022-05-16)
 * (bluefox) Corrected expert mode in object browser
 
