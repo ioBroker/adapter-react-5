@@ -628,7 +628,7 @@ The icons may not be reused in other projects without the proper flaticon licens
 - Change `import { MuiThemeProvider } from '@material-ui/core/styles';` => `import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';` 
 - Change all `<MuiThemeProvider theme={this.state.theme}>` to `<StyledEngineProvider injectFirst><ThemeProvider theme={this.state.theme}>`
 - Rename in styles `theme.palette.type` => `theme.palette.mode`
-- Add to all `TextField` and `Select` the property `variant="standard"`
+- Add to all `TextField`, `Select`, `FormControl` the property `variant="standard"`
 - Add to all `Button` that do not have `color` property: `color="grey"`
 - Replace by `TextField` the `readOnly` attribute (if exists) with `InputProps={{readOnly: true}}`
 - Remove px by all `theme.spacing`: `calc(100% - ${theme.spacing(4)}px)` => `calc(100% - ${theme.spacing(4)})`
