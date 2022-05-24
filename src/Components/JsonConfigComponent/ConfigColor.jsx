@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@mui/styles';
 import { ChromePicker } from 'react-color';
@@ -8,8 +9,8 @@ import Dialog from '@mui/material/Dialog';
 
 import ClearIcon from '@mui/icons-material/Close';
 
-import Utils from '@iobroker/adapter-react-v5/Components/Utils';
-import ColorPicker from '@iobroker/adapter-react-v5/Components/ColorPicker';
+import Utils from '../Utils';
+import ColorPicker from '../ColorPicker';
 
 import ConfigGeneric from './ConfigGeneric';
 

@@ -5,8 +5,8 @@ import { withStyles } from '@mui/styles';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 
-import copy from '@iobroker/adapter-react-v5/Components/copy-to-clipboard';
-import CopyIcon from '@iobroker/adapter-react-v5/icons/IconCopy';
+import copy from '../copy-to-clipboard';
+import CopyIcon from '../..//icons/IconCopy';
 
 import ConfigGeneric from './ConfigGeneric';
 

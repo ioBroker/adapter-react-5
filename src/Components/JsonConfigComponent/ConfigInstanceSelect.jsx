@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
@@ -7,7 +8,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import I18n from '../../i18n';
 import ConfigGeneric from './ConfigGeneric';
 
 const styles = theme => ({

@@ -1,10 +1,11 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
 import ConfigGeneric from './ConfigGeneric';
 
-import I18n from '@iobroker/adapter-react-v5/i18n';
-import Utils from '@iobroker/adapter-react-v5/Components/Utils';
+import I18n from '../../i18n';
+import Utils from '../Utils';
 
 const styles = theme => ({
     root: {
@@ -12,7 +13,7 @@ const styles = theme => ({
     },
     notAlive: {
         color: '#a30000'
-    }
+    },
 });
 
 class ConfigAlive extends ConfigGeneric {

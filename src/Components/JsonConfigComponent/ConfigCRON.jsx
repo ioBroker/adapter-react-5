@@ -6,8 +6,8 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import { Button, TextField } from '@mui/material';
 
-import DialogCron from '@iobroker/adapter-react-v5/Dialogs/Cron';
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import DialogCron from '../..//Dialogs/Cron';
+import I18n from '../../i18n';
 
 import ConfigGeneric from './ConfigGeneric';
 

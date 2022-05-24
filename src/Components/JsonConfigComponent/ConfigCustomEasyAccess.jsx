@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
@@ -9,7 +10,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import I18n from '../../i18n';
 
 import ConfigGeneric from './ConfigGeneric';
 

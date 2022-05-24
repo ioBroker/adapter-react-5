@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
@@ -7,8 +8,8 @@ import IconButton from '@mui/material/IconButton';
 
 import ConfigGeneric from './ConfigGeneric';
 
-import copy from '@iobroker/adapter-react-v5/Components/copy-to-clipboard';
-import CopyIcon from '@iobroker/adapter-react-v5/icons/IconCopy';
+import copy from '../copy-to-clipboard';
+import CopyIcon from '../..//icons/IconCopy';
 
 const styles = theme => ({
 });
