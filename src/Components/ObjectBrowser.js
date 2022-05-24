@@ -8,8 +8,6 @@ import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import copy from './copy-to-clipboard';
 import withStyles from '@mui/styles/withStyles';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import SVG from 'react-inlinesvg';
 
 import IconButton from '@mui/material/IconButton';
@@ -88,24 +86,7 @@ import Utils from './Utils';
 import TabContainer from './TabContainer';
 import TabContent from './TabContent';
 import TabHeader from './TabHeader';
-
-function useWidth() {
-    const theme = useTheme();
-    const keys = [...theme.breakpoints.keys].reverse();
-    return (
-      keys.reduce((output, key) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const matches = useMediaQuery(theme.breakpoints.up(key));
-        return !output && matches ? key : output;
-      }, null) || 'xs'
-    );
-  }
-
-// FIXME checkout https://mui.com/components/use-media-query/#migrating-from-withwidth
-const withWidth = () => (WrappedComponent) => (props) => {
-    const width = useWidth();
-    return <WrappedComponent {...props} width={width} />
-};
+import withWidth from './withWidth';
 
 const ICON_SIZE = 24;
 const ROW_HEIGHT = 32;
@@ -213,7 +194,7 @@ const styles = theme => ({
     tableDiv: {
         paddingTop: 0,//theme.spacing(1),
         paddingLeft: 0,
-        width: `calc(100% - ${theme.spacing(1)}px)`,
+        width: `calc(100% - ${theme.spacing(1)})`,
         height: `calc(100% - 38px)`,
         overflow: 'auto'
     },
@@ -495,6 +476,7 @@ const styles = theme => ({
             opacity: 1,
         },
         paddingTop: 0,
+        paddingLeft: 0,
         marginTop: -2,
     },
     cellButtonsEmptyButton: {
@@ -528,7 +510,7 @@ const styles = theme => ({
         cursor: 'pointer',
     },
     cellButtonsValueButtonEdit: {
-        right: SMALL_BUTTON_SIZE / 2 + theme.spacing(2),
+        right: SMALL_BUTTON_SIZE / 2 + parseInt(theme.spacing(2), 10),
     },
 
     filteredOut: {
@@ -734,7 +716,8 @@ function binarySearch(list, find, _start, _end) {
     }
 }
 
-function applyFilter(item, filters, lang, objects, context, counter, customFilter, selectedTypes) {
+function applyFilter(item, filters, lang, objects, context, counter, customFilter, selectedTypes, _depth) {
+    _depth = _depth || 0;
     let filteredOut = false;
     if (!context) {
         context = {};
@@ -833,9 +816,9 @@ function applyFilter(item, filters, lang, objects, context, counter, customFilte
     }
     data.visible = !filteredOut;
     data.hasVisibleChildren = false;
-    if (item.children) {
+    if (item.children && _depth < 20) {
         item.children.forEach(_item => {
-            const visible = applyFilter(_item, filters, lang, objects, context, counter, customFilter, selectedTypes);
+            const visible = applyFilter(_item, filters, lang, objects, context, counter, customFilter, selectedTypes, _depth + 1);
             if (visible) {
                 data.hasVisibleChildren = true;
             }
@@ -1998,7 +1981,7 @@ class ObjectBrowser extends Component {
         return cols
             .filter(id => (isLast && (id === 'val' || id === 'buttons')) || (!isLast && id !== 'val' && id !== 'buttons'))
             .map(id =>
-                <ListItem button onClick={() => {
+                <ListItemButton onClick={() => {
                     if (!this.state.columnsAuto && id !== 'id') {
                         const columns = [...(this.state.columns || [])];
                         const pos = columns.indexOf(id);
@@ -2044,7 +2027,7 @@ class ObjectBrowser extends Component {
                             />
                         </FormControl>
                     </ListItemSecondaryAction>
-                </ListItem>
+                </ListItemButton>
             );
     }
 
@@ -2107,7 +2090,7 @@ class ObjectBrowser extends Component {
 
                         {this.state.columnsForAdmin && Object.keys(this.state.columnsForAdmin).sort().map(adapter =>
                             this.state.columnsForAdmin[adapter].map(column =>
-                                <ListItem button onClick={() => {
+                                <ListItemButton onClick={() => {
                                     if (!this.state.columnsAuto) {
                                         const columns = [...(this.state.columns || [])];
                                         const id = '_' + adapter + '_' + column.path;
@@ -2154,7 +2137,7 @@ class ObjectBrowser extends Component {
                                             />
                                         </FormControl>
                                     </ListItemSecondaryAction>
-                                </ListItem>
+                                </ListItemButton>
                             )
                         )}
                         {this._renderDefinedList(true)}
@@ -2354,7 +2337,7 @@ class ObjectBrowser extends Component {
 
             if (obj && typeof this.props.filterFunc === 'function' && !this.props.filterFunc(obj)) {
                 return;
-            };
+            }
 
             if (id.startsWith('system.adapter.') && obj && obj.type === 'adapter') {
                 let columnsForAdmin = JSON.parse(JSON.stringify(this.state.columnsForAdmin));
@@ -4682,6 +4665,16 @@ class ObjectBrowser extends Component {
      */
     renderEditValueDialog() {
         if (!this.state.updateOpened || !this.props.objectBrowserValue) {
+            return null;
+        }
+
+        if (!this.edit.id) {
+            console.error('Invalid ID for edit: ' + JSON.stringify(this.edit));
+            return null;
+        }
+
+        if (!this.objects[this.edit.id]) {
+            console.error(`Something went wrong. Possibly the object ${this.edit.id} was deleted.`);
             return null;
         }
 
