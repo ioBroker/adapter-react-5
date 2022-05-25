@@ -641,7 +641,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.0.7 (2022-05-25)
 * (bluefox) Made the module definitions
 
 ### 3.0.6 (2022-05-25)
