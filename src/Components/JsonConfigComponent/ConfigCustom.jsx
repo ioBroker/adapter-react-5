@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import LinearProgress from "@mui/material/LinearProgress";
+
+import LinearProgress from '@mui/material/LinearProgress';
+import Grid from '@mui/material/Grid';
 
 class ConfigCustom extends Component {
     constructor(props) {
@@ -33,7 +35,7 @@ class ConfigCustom extends Component {
         // custom component always has constant name
         const component = await import('CustomComponent/Components');
 
-        if (!component || !!component.default || !component.default[this.props.schema.name]) {
+        if (!component || !component.default || !component.default[this.props.schema.name]) {
             const keys = Object.keys(component?.default || {});
             console.error('URL is empty. Cannot load custom component!');
             this.setState({ error: `Component ${this.props.schema.name} not found in ${this.props.schema.url}. Found: ${keys.join(', ')}` });
@@ -46,11 +48,37 @@ class ConfigCustom extends Component {
 
     render() {
         const Component = this.state.Component;
+
+        // render temporary placeholder
         if (!Component) {
             if (this.state.error) {
-                return <div>{this.state.error}</div>;
+                return ;
             } else {
-                return <LinearProgress />;
+                const schema = this.props.schema || {};
+
+                const item = <Grid
+                    item
+                    xs={schema.xs || undefined}
+                    lg={schema.lg || undefined}
+                    md={schema.md || undefined}
+                    sm={schema.sm || undefined}
+                    style={Object.assign({}, {
+                        marginBottom: 0,
+                        //marginRight: 8,
+                        textAlign: 'left',
+                        width: schema.type === 'divider' || schema.type === 'header' ? schema.width || '100%' : undefined
+                    }, schema.style, this.props.themeType === 'dark' ? schema.darkStyle : {})}>
+                    {this.state.error ? <div>{this.state.error}</div> : <LinearProgress />}
+                </Grid>;
+
+                if (schema.newLine) {
+                    return <>
+                        <div style={{ flexBasis: '100%', height: 0 }} />
+                        {item}
+                    </>;
+                } else {
+                    return item;
+                }
             }
         }
 
