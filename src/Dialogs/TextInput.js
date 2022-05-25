@@ -14,8 +14,7 @@ import I18n from '../i18n';
 import IconClose from '@mui/icons-material/Close';
 import IconCheck from '@mui/icons-material/Check';
 
-// FIXME checkout https://mui.com/components/use-media-query/#migrating-from-withwidth
-const withWidth = () => WrappedComponent => props => <WrappedComponent {...props} width="xs" />;
+import withWidth from '../Components/withWidth';
 
 /**
  * @typedef {object} TextInputProps

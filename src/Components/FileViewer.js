@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { withStyles } from '@mui/styles';
-import withWidth from './withWidth';
 import PropTypes from 'prop-types';
 
 import TextField from '@mui/material/TextField';
@@ -12,6 +11,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { IconButton } from '@mui/material';
 
 import IconNoIcon from '../icons/IconNoIcon';
+import withWidth from './withWidth';
 import Utils from './Utils';
 
 // Icons
