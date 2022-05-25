@@ -30,19 +30,23 @@ class JsonConfigComponent extends Component {
             systemConfig: null,
             alive: false,
             commandRunning: false,
+            schema: JSON.parse(JSON.stringify(this.props.schema))
         };
 
         this.forceUpdateHandlers = {};
 
-        this.schema = JSON.parse(JSON.stringify(this.props.schema));
-        this.buildDependencies(this.schema);
+        this.buildDependencies(this.state.schema);
 
         this.readData();
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (JSON.stringify(props.updateData) !== JSON.stringify(state.updateData)) {
-            return {updateData: props.updateData, originalData: JSON.stringify(props.data)};
+        if (props.updateData !== state.updateData) {
+            return {
+                updateData: props.updateData,
+                originalData: JSON.stringify(props.data),
+                schema: JSON.parse(JSON.stringify(props.schema)),
+            };
         } else {
             return null;
         }
@@ -352,7 +356,7 @@ class JsonConfigComponent extends Component {
         }
 
         return <div className={this.props.classes.root}>
-            {this.renderItem(this.schema)}
+            {this.renderItem(this.state.schema)}
         </div>;
     }
 }

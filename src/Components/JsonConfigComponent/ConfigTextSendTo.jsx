@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 
 import copy from '../copy-to-clipboard';
-import CopyIcon from '../..//icons/IconCopy';
+import CopyIcon from '../../icons/IconCopy';
 
 import ConfigGeneric from './ConfigGeneric';
 

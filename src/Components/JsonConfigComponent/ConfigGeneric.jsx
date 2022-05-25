@@ -9,7 +9,7 @@ import IconError from '@mui/icons-material/Error';
 
 import I18n from '../../i18n';
 import Utils from '../Utils';
-import ConfirmDialog from '../..//Dialogs/Confirm';
+import ConfirmDialog from '../../Dialogs/Confirm';
 
 class ConfigGeneric extends Component {
     static DIFFERENT_VALUE = '__different__';

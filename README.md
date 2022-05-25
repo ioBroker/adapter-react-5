@@ -641,7 +641,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### 3.0.5 (2022-05-24)
+### **WORK IN PROGRESS**
 * (bluefox) Added JsonConfigComponent
 
 ### 2.1.11 (2022-05-24)
