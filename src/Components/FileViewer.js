@@ -11,7 +11,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { IconButton } from '@mui/material';
 
-import NoImage from '../assets/no_icon.svg';
+import IconNoIcon from '../icons/IconNoIcon';
 import Utils from './Utils';
 
 // Icons
@@ -89,6 +89,7 @@ class FileViewer extends Component {
             copyPossible: EXTENSIONS.code.includes(ext) || EXTENSIONS.txt.includes(ext),
             forceUpdate: Date.now(),
             changed: false,
+            imgError: false,
         };
     }
 
@@ -195,15 +196,19 @@ class FileViewer extends Component {
 
     getContent() {
         if (EXTENSIONS.images.includes(this.state.ext)) {
-            return <img
-                onError={e => {
-                    e.target.onerror = null;
-                    e.target.src = NoImage;
-                }}
-                className={Utils.clsx(this.props.classes.img, this.props.getClassBackgroundImage())}
-                src={this.props.href + '?ts=' + this.state.forceUpdate}
-                alt={this.props.href}
-            />;
+            if (this.state.imgError) {
+                return <IconNoIcon className={Utils.clsx(this.props.classes.img, this.props.getClassBackgroundImage())} />;
+            } else {
+                return <img
+                    onError={e => {
+                        e.target.onerror = null;
+                        this.setState({ imgError: true });
+                    }}
+                    className={Utils.clsx(this.props.classes.img, this.props.getClassBackgroundImage())}
+                    src={this.props.href + '?ts=' + this.state.forceUpdate}
+                    alt={this.props.href}
+                />;
+            }
         } else if (this.state.code !== null || this.state.text !== null || this.state.editing) {
             return <TextField
                 variant="standard"

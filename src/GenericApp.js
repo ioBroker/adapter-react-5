@@ -5,7 +5,7 @@
  *
  **/
 import React from 'react';
-import Connection, {PROGRESS} from './Connection';
+import Connection, { PROGRESS } from './Connection';
 import PropTypes from 'prop-types';
 import * as Sentry from '@sentry/browser';
 import * as SentryIntegrations from '@sentry/integrations';
@@ -24,7 +24,57 @@ import Utils from './Components/Utils';
 import SaveCloseButtons from './Components/SaveCloseButtons';
 import I18n from './i18n';
 
-import './index.css';
+// import './index.css';
+const cssStyle = `
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* scrollbar */
+::-webkit-scrollbar-track {
+    background-color: #ccc;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    background-color: #ccc;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #575757;
+    border-radius: 5px;
+}
+
+#root {
+    height: 100%;
+}
+
+.App {
+    height: 100%;
+}
+
+@keyframes glow {
+    from {
+        background-color: initial;
+    }
+    to {
+        background-color: #58c458;
+    }
+}
+`;
 
 if (!window.localStorage) {
     window.localStorage = {
@@ -43,6 +93,13 @@ class GenericApp extends Router {
      */
     constructor(props, settings) {
         const ConnectionClass = props.Connection || settings.Connection || Connection;
+
+        if (!window.document.getElementById('generic-app-iobroker-component')) {
+            const style = window.document.createElement('style');
+            style.setAttribute('id', 'generic-app-iobroker-component');
+            style.innerHTML = cssStyle;
+            window.document.head.appendChild(style);
+        }
 
         // Remove `!Connection.isWeb() && window.adapterName !== 'material'` when iobroker.socket will support native ws
         if (!ConnectionClass.isWeb() && window.io && window.location.port === '3000') {

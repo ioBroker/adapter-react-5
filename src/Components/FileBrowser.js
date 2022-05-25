@@ -51,9 +51,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Brightness5Icon from '@mui/icons-material/Brightness6';
 
 import ExpertIcon from  '../icons/IconExpert';
-import NoImage from '../assets/no_icon.svg';
 import IconClosed from '../icons/IconClosed';
 import IconOpen from '../icons/IconOpen';
+import IconNoIcon from '../icons/IconNoIcon';
 
 import withWidth from './withWidth';
 
@@ -453,6 +453,7 @@ class FileBrowser extends Component {
             queueLength: 0,
             loadAllFolders: false,
             allFoldersLoaded: false,
+            fileErrors: [],
         };
 
         this.imagePrefix = this.props.imagePrefix || './files/';
@@ -1046,11 +1047,20 @@ class FileBrowser extends Component {
             )}
         >
             {EXTENSIONS.images.includes(ext) ?
-                <img
-                    onError={e => { e.target.onerror = null; e.target.src = NoImage }}
-                    className={Utils.clsx(this.props.classes['itemImage' + this.state.viewType], this.getClassBackgroundImage())}
-                    src={this.imagePrefix + item.id} alt={item.name}
-                />
+                this.state.fileErrors.includes(item.id) ?
+                    <IconNoIcon className={Utils.clsx(this.props.classes['itemImage' + this.state.viewType], this.getClassBackgroundImage())}/> :
+                    (<img
+                        onError={e => {
+                            e.target.onerror = null;
+                            const fileErrors = [...this.state.fileErrors];
+                            if (!fileErrors.includes(item.id)) {
+                                fileErrors.push(item.id);
+                                this.setState({ fileErrors });
+                            }
+                        }}
+                        className={Utils.clsx(this.props.classes['itemImage' + this.state.viewType], this.getClassBackgroundImage())}
+                        src={this.imagePrefix + item.id} alt={item.name}
+                    />)
                 :
                 this.getFileIcon(ext)}
             <div className={this.props.classes['itemName' + this.state.viewType]}>{item.name}</div>

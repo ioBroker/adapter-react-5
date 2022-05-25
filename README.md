@@ -641,7 +641,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### 3.0.11 (2022-05-25)
+### **WORK IN PROGRESS**
 * (bluefox) Added ConfigGeneric to import
 
 ### 3.0.7 (2022-05-25)

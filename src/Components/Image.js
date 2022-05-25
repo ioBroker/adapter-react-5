@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import IconNoIcon from '../assets/no_icon.svg';
+import IconNoIcon from '../icons/IconNoIcon';
 
 function getElementFromSource(src) {
     const svgContainer = document.createElement('div');
@@ -12,6 +12,7 @@ function getElementFromSource(src) {
     } else {
         svgContainer.removeChild(svg);
     }
+
     svgContainer.remove();
     return svg;
 }
@@ -122,12 +123,16 @@ class Image extends React.Component {
 
             return this.svg;
         } else if (this.state.src) {
-            return <img
-                className={this.props.className}
-                src={this.state.imgError ? IconNoIcon : (this.props.imagePrefix || '') + this.state.src || IconNoIcon}
-                alt=""
-                onError={() => this.props.showError ? this.setState({imgError: true}) : this.setState({src: ''})}
-            />;
+            if (this.state.imgError || !this.state.src) {
+                return <IconNoIcon className={this.props.className} />;
+            } else {
+                return <img
+                    className={this.props.className}
+                    src={(this.props.imagePrefix || '') + this.state.src}
+                    alt=""
+                    onError={() => this.props.showError ? this.setState({imgError: true}) : this.setState({src: ''})}
+                />;
+            }
         } else {
             return null;
         }

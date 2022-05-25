@@ -412,11 +412,11 @@ class UploadImage extends Component {
         };
         this.cropperRef = createRef();
 
-        if (!document.getElementById('cropper-style-json-component')) {
-            const style = document.createElement('style');
+        if (!window.document.getElementById('cropper-style-json-component')) {
+            const style = window.document.createElement('style');
             style.setAttribute('id', 'cropper-style-json-component');
             style.innerHTML = cropperStyles;
-            document.head.appendChild(style);
+            window.document.head.appendChild(style);
         }
     }
 
