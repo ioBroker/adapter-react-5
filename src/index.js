@@ -165,3 +165,7 @@ export * from './Dialogs/SimpleCron';
 export { default as TextInput } from './Dialogs/TextInput';
 export * from './Dialogs/TextInput';
 
+export { default as ConfigGeneric } from './Components/JsonConfigComponent/ConfigGeneric';
+export * from './Components/JsonConfigComponent/ConfigGeneric';
+
+
