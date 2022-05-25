@@ -90,7 +90,8 @@ gulp.task('compile', gulp.parallel('copy',
                 presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-flow'],
                 plugins: [
                     '@babel/plugin-proposal-class-properties',
-                    '@babel/plugin-transform-runtime'
+                    '@babel/plugin-transform-runtime',
+                    ['inline-json-import', {}]
                 ]
             }))
              .on('error', handleError)

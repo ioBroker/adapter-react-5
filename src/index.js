@@ -1,8 +1,8 @@
 export { default as Theme } from './Theme';
 export * from './Theme';
 
-export { default as GenericApp } from './GenericApp';
-export * from './GenericApp';
+// export { default as GenericApp } from './GenericApp';
+// export * from './GenericApp';
 
 export { default as Connection } from './Connection';
 export * from './Connection';
