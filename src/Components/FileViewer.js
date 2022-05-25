@@ -109,7 +109,7 @@ class FileViewer extends Component {
                     const newState = {copyPossible: this.state.copyPossible};
                     // try to detect valid extension
                     if (data.type === 'Buffer') {
-                        const ext = AdminUtils.detectMimeType(bufferToBase64(data.data));
+                        const ext = Utils.detectMimeType(bufferToBase64(data.data));
                         if (ext) {
                             newState.ext = ext;
                             newState.copyPossible = EXTENSIONS.code.includes(ext) || EXTENSIONS.txt.includes(ext);

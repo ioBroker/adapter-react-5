@@ -50,7 +50,7 @@ import IconBack from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Brightness5Icon from '@mui/icons-material/Brightness6';
 
-import ExpertIcon from  '../icons/IconExpert';
+import ExpertIcon from '../icons/IconExpert';
 import IconClosed from '../icons/IconClosed';
 import IconOpen from '../icons/IconOpen';
 import IconNoIcon from '../icons/IconNoIcon';
@@ -1049,7 +1049,7 @@ class FileBrowser extends Component {
             {EXTENSIONS.images.includes(ext) ?
                 this.state.fileErrors.includes(item.id) ?
                     <IconNoIcon className={Utils.clsx(this.props.classes['itemImage' + this.state.viewType], this.getClassBackgroundImage())}/> :
-                    (<img
+                    <img
                         onError={e => {
                             e.target.onerror = null;
                             const fileErrors = [...this.state.fileErrors];
@@ -1060,7 +1060,7 @@ class FileBrowser extends Component {
                         }}
                         className={Utils.clsx(this.props.classes['itemImage' + this.state.viewType], this.getClassBackgroundImage())}
                         src={this.imagePrefix + item.id} alt={item.name}
-                    />)
+                    />
                 :
                 this.getFileIcon(ext)}
             <div className={this.props.classes['itemName' + this.state.viewType]}>{item.name}</div>
@@ -1564,6 +1564,7 @@ class FileBrowser extends Component {
 
     renderViewDialog() {
         return this.state.viewer ? <FileViewer
+            supportSubscribes={this.supportSubscribes}
             key={this.state.viewer}
             href={this.state.viewer}
             formatEditFile={this.state.formatEditFile}
