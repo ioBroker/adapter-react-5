@@ -1,8 +1,8 @@
 export { default as Theme } from './Theme';
 export * from './Theme';
 
-// export { default as GenericApp } from './GenericApp';
-// export * from './GenericApp';
+export { default as GenericApp } from './GenericApp';
+export * from './GenericApp';
 
 export { default as Connection } from './Connection';
 export * from './Connection';
@@ -96,8 +96,11 @@ export * from './Components/withWidth';
 export { default as SimpleCron } from './Components/SimpleCron';
 export * from './Components/SimpleCron';
 
-export { default as Vendor } from './Components/Loaders/Vendor';
+export { default as LoaderVendor } from './Components/Loaders/Vendor';
 export * from './Components/Loaders/Vendor';
+
+export { default as LoaderPT } from './Components/Loaders/PT';
+export * from './Components/Loaders/PT';
 
 export { default as JsonConfigComponent } from './Components/JsonConfigComponent';
 export * from './Components/JsonConfigComponent';

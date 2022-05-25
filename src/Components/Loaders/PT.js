@@ -9,17 +9,17 @@ import PropTypes from 'prop-types';
 import './PT.css'
 
 /**
- * @typedef {object} LoaderProps
+ * @typedef {object} LoaderPTProps
  * @property {string} [key] The key to identify this component.
  * @property {number} [size] The size in pixels of this loader.
  * @property {string} [themeType] The chosen theme type.
  * @property {string} [theme] The chosen theme.
  *
- * @extends {React.Component<LoaderProps>}
+ * @extends {React.Component<LoaderPTProps>}
  */
 class LoaderPT extends React.Component {
     /**
-     * @param {LoaderProps} props
+     * @param {LoaderPTProps} props
      */
     constructor(props) {
         super(props);
