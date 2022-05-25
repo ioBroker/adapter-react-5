@@ -18,22 +18,28 @@ const styles = theme => ({
 });
 
 /**
- * @typedef {object} LogoProps
+ * @typedef {object} SaveCloseButtonsProps
  * @property {boolean} noTextOnButtons Are the buttons without text
  * @property {any} theme Theme object (from this.state.theme)
  * @property {boolean} isIFrame bottom position 0 or 38 for iFrame
+ * @property {boolean} newReact is used in new react
  * @property {function} onSave on Save handler
  * @property {function} onClose on Close handler
  *
- * @extends {React.Component<LogoProps>}
+ * @extends {React.Component<SaveCloseButtonsProps>}
  */
 class SaveCloseButtons extends React.Component {
+    /**
+     * @param {SaveCloseButtonsProps} props
+     */
     constructor(props) {
         super(props);
+        const newReact = props.newReact === undefined ? true : props.newReact;
+
         try {
-            this.isIFrame = !props.newReact && window.self !== window.top;
+            this.isIFrame = !newReact && window.self !== window.top;
         } catch (e) {
-            this.isIFrame = !props.newReact;
+            this.isIFrame = !newReact;
         }
     }
 

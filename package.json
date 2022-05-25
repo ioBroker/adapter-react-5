@@ -21,6 +21,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "module": "./index.js",
   "keywords": [
     "iobroker",
     "adapter",
