@@ -641,7 +641,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.0.15 (2022-06-01)
 * (bluefox) Updated JsonConfigComponent: password, table
 
 ### 3.0.14 (2022-05-25)
