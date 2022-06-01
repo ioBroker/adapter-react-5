@@ -641,6 +641,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Updated JsonConfigComponent: password, table
+
 ### 3.0.14 (2022-05-25)
 * (bluefox) Added ConfigGeneric to import
 

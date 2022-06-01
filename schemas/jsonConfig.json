@@ -1087,6 +1087,14 @@
                         },
                         "sort": {
                           "type": "boolean"
+                        },
+                        "repeat": {
+                          "type": "boolean",
+                          "description": "Used for type password if repeat field visible"
+                        },
+                        "visible": {
+                          "type": "boolean",
+                          "description": "Used for type password if button to show password is visible"
                         }
                       }
                     }

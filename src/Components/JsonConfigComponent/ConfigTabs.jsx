@@ -42,7 +42,20 @@ class ConfigTabs extends ConfigGeneric {
                 this.setState({tab});
             }}>
                 {Object.keys(items).map(name => {
-                    const disabled = this.execute(items[name].disabled, false);
+                    let disabled;
+                    if (this.props.custom) {
+                        const hidden = this.executeCustom(items[name].hidden, this.props.data, this.props.customObj, this.props.instanceObj);
+                        if (hidden) {
+                            return null;
+                        }
+                        disabled = this.executeCustom(items[name].disabled, this.props.data, this.props.customObj, this.props.instanceObj);
+                    } else {
+                        const hidden = this.execute(items[name].hidden, false);
+                        if (hidden) {
+                            return null;
+                        }
+                        disabled = this.execute(items[name].disabled, false);
+                    }
                     return <Tab wrapped disabled={disabled} key={name} value={name} label={this.getText(items[name].label)} />
                 })}
             </Tabs>

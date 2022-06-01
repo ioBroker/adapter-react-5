@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 
 import LinearProgress from '@mui/material/LinearProgress';
 import Grid from '@mui/material/Grid';
+import i18n from '../../i18n';
 
 class ConfigCustom extends Component {
     constructor(props) {
         super(props);
         // schema.url - location of Widget
         // schema.name - Component name
+        // schema.i18n - i18n
 
         this.state = {
             Component: null,
@@ -24,25 +26,50 @@ class ConfigCustom extends Component {
             return;
         }
 
+        let url;
         if (this.props.schema.url.startsWith('http:') || this.props.schema.url.startsWith('https:')) {
-            window._customComponent = this.props.schema.url;
+            url = this.props.schema.url;
         } else if (this.props.schema.url.startsWith('./')) {
-            window._customComponent = `${window.location.protocol}//${window.location.host}${this.props.schema.url.replace(/^\./, '')}`;
+            url = `${window.location.protocol}//${window.location.host}${this.props.schema.url.replace(/^\./, '')}`;
         } else {
-            window._customComponent = `${window.location.protocol}//${window.location.host}/${this.props.schema.url}`;
+            url = `${window.location.protocol}//${window.location.host}/adapter/${this.props.adapterName}/${this.props.schema.url}`;
         }
 
-        // custom component always has constant name
+        if (this.props.schema.i18n === true) {
+            // load i18n from files
+            const pos = url.lastIndexOf('/');
+            let i18nURL;
+            if (pos !== -1) {
+                i18nURL = url.substring(0, pos);
+            } else {
+                i18nURL = url;
+            }
+            const lang = i18n.getLanguage();
+            const file = `${i18nURL}/i18n/${lang}.json`;
+
+            await fetch(file)
+                .then(data => data.json())
+                .then(json => i18n.extendTranslations(json, lang))
+                .catch(error => console.log(`Cannot load i18n "${file}": ${error}`));
+        } else if (this.props.schema.i18n && typeof this.props.schema.i18n === 'object') {
+            try {
+                i18n.extendTranslations(this.props.schema.i18n);
+            } catch (error) {
+                console.error(`Cannot import i18n: ${error}`);
+            }
+        }
+
         try {
-            const component = await import('CustomComponent/Components');
-            if (!component || !component.default || !component.default[this.props.schema.name]) {
-                const keys = Object.keys(component?.default || {});
+            const [uniqueName, fileToLoad, ...componentName] = this.props.schema.name.split('/');
+            console.log(uniqueName, fileToLoad, componentName.join('/'));
+            const component = await window.importFederation(uniqueName, {url, format: 'esm', from: 'vite'}, fileToLoad);
+
+            if (!component || !component || !component[componentName.join('/')]) {
+                const keys = Object.keys(component || {});
                 console.error('URL is empty. Cannot load custom component!');
                 this.setState({ error: `Component ${this.props.schema.name} not found in ${this.props.schema.url}. Found: ${keys.join(', ')}` });
             } else {
-                this.setState({
-                    Component: component.default[this.props.schema.name]
-                });
+                this.setState({ Component: component[componentName.join('/')] });
             }
         } catch (error) {
             this.setState({ error: `Cannot import from ${this.props.schema.url}: ${error}` });
@@ -90,13 +117,14 @@ class ConfigCustom extends Component {
 }
 
 ConfigCustom.propTypes = {
-    socket: PropTypes.object.isRequired,
+    socket: PropTypes.object,
     themeType: PropTypes.string,
     themeName: PropTypes.string,
     style: PropTypes.object,
     className: PropTypes.string,
+    attr: PropTypes.string,
     data: PropTypes.object.isRequired,
-    schema: PropTypes.object,
+    schema: PropTypes.object.isRequired,
     onError: PropTypes.func,
     onChange: PropTypes.func,
 };
