@@ -881,8 +881,8 @@ class Connection {
             let timeout = setTimeout(() => {
                 timeout = null;
                 this.getObjectView(
-                    `system.adapter.${adapter}.`,
-                    `system.adapter.${adapter}.\u9999`,
+                    `system.adapter.${adapter ? adapter + '.' : ''}`,
+                    `system.adapter.${adapter ? adapter + '.' : ''}\u9999`,
                     'instance'
                 )
                     .then(items => resolve(Object.keys(items).map(id => fixAdminUI(items[id]))))
