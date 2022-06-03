@@ -863,10 +863,6 @@ class Connection {
      * @returns {Promise<ioBroker.Object[]>}
      */
     getAdapterInstances(adapter, update) {
-        if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
-        }
-
         if (typeof adapter === 'boolean') {
             update = adapter;
             adapter = '';
