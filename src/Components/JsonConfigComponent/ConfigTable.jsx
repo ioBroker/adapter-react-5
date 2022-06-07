@@ -176,20 +176,22 @@ class ConfigTable extends ConfigGeneric {
     itemTable(attrItem, data, idx) {
         const { value, systemConfig } = this.state;
         const { schema } = this.props;
-        const schemaFind = schema.items.find(el => el.attr === attrItem);
+        const schemaForAttribute = schema.items.find(el => el.attr === attrItem);
 
-        if (!schemaFind) {
+        if (!schemaForAttribute) {
             return null;
         }
 
         const schemaItem = {
             items: {
-                [attrItem]: schemaFind
+                [attrItem]: schemaForAttribute
             }
         };
 
         return <ConfigPanel
             index={idx + this.state.iteration}
+            arrayIndex={idx}
+            globalData={this.props.data}
             socket={this.props.socket}
             adapterName={this.props.adapterName}
             instance={this.props.instance}
@@ -265,7 +267,7 @@ class ConfigTable extends ConfigGeneric {
             <TableRow>
                 {schema.items.map(headCell => (
                     <TableCell
-                        style={{ width: typeof headCell.width === 'string' && headCell.width.endsWith('%') ? 'auto' : headCell.width }}
+                        style={{ width: typeof headCell.width === 'string' && headCell.width.endsWith('%') ? headCell.width : headCell.width }}
                         key={headCell.attr}
                         align="left"
                         sortDirection={orderBy === headCell.attr ? order : false}
@@ -282,28 +284,26 @@ class ConfigTable extends ConfigGeneric {
                                     variant="standard"
                                     ref={this.filterRefs[headCell.attr]}
                                     onChange={() => this.applyFilter()}
-                                    title={I18n.t('You can filter entries by entering here some text')}
+                                    title={I18n.t('ra_You can filter entries by entering here some text')}
                                     InputProps={{
-                                        endAdornment: (
-                                            this.filterRefs[headCell.attr]?.current?.children[0]?.children[0]?.value && <InputAdornment position="end">
-                                                <IconButton
-                                                    size="small"
-                                                    onClick={() => {
-                                                        this.filterRefs[headCell.attr].current.children[0].children[0].value = '';
-                                                        this.applyFilter();
-                                                    }}
-                                                >
-                                                    <CloseIcon />
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
+                                        endAdornment: this.filterRefs[headCell.attr]?.current?.children[0]?.children[0]?.value && <InputAdornment position="end">
+                                            <IconButton
+                                                size="small"
+                                                onClick={() => {
+                                                    this.filterRefs[headCell.attr].current.children[0].children[0].value = '';
+                                                    this.applyFilter();
+                                                }}
+                                            >
+                                                <CloseIcon />
+                                            </IconButton>
+                                        </InputAdornment>,
                                     }}
                                     fullWidth
                                     placeholder={this.getText(headCell.title)}
                                 />
                                 : <span className={this.props.classes.headerText}>{this.getText(headCell.title)}</span>}
                             { headCell.filter ? <IconButton
-                                title={I18n.t('Show/hide filter input')}
+                                title={I18n.t('ra_Show/hide filter input')}
                                 size="small"
                                 onClick={() => {
                                     const filterOn = [...this.state.filterOn];
@@ -373,7 +373,18 @@ class ConfigTable extends ConfigGeneric {
         const visibleValue = JSON.parse(JSON.stringify(this.state.visibleValue));
 
         const newItem = schema.items.reduce((accumulator, currentValue) => {
-            accumulator[currentValue.attr] = currentValue.default === undefined ? null : currentValue.default;
+            let defaultValue;
+            if (currentValue.defaultFunc) {
+                if (this.props.custom) {
+                    defaultValue = currentValue.defaultFunc ? this.executeCustom(currentValue.defaultFunc, this.props.schema.default, this.props.data, this.props.instanceObj, newValue.length, this.props.data) : this.props.schema.default;
+                } else {
+                    defaultValue = currentValue.defaultFunc ? this.execute(currentValue.defaultFunc, this.props.schema.default, this.props.data, newValue.length, this.props.data) : this.props.schema.default;
+                }
+            } else {
+                defaultValue = currentValue.default === undefined ? null : currentValue.default;
+            }
+
+            accumulator[currentValue.attr] = defaultValue;
             return accumulator;
         }, {});
 
@@ -443,7 +454,7 @@ class ConfigTable extends ConfigGeneric {
                         {this.getText(schema.label)}
                     </Typography>
                 </Toolbar> : null}
-                {!schema.noDelete ? <Tooltip title={doAnyFilterSet ? I18n.t('Cannot add items with set filter') : I18n.t('Add row')}>
+                {!schema.noDelete ? <Tooltip title={doAnyFilterSet ? I18n.t('ra_Cannot add items with set filter') : I18n.t('ra_Add row')}>
                     <span>
                         <IconButton disabled={!!doAnyFilterSet} onClick={this.onAdd}>
                             <AddIcon />
@@ -461,23 +472,22 @@ class ConfigTable extends ConfigGeneric {
                                 key={idx}
                             >
                                 {schema.items.map(headCell => {
-                                    console.log(`KEy: ${headCell.attr + idx} = ${value[idx][headCell.attr]}`)
                                     return <TableCell key={headCell.attr + '_' + idx} align="left">
                                         {this.itemTable(headCell.attr, value[idx], idx)}
                                     </TableCell>;
                                 })}
                                 {!schema.noDelete && <TableCell align="left" className={classes.buttonCell}>
-                                    {!doAnyFilterSet && !this.state.orderBy ? (i ? <Tooltip title={I18n.t('Move up')}>
+                                    {!doAnyFilterSet && !this.state.orderBy ? (i ? <Tooltip title={I18n.t('ra_Move up')}>
                                         <IconButton size="small" onClick={() => this.onMoveUp(idx)}>
                                             <UpIcon />
                                         </IconButton>
-                                    </Tooltip> : <div className={classes.buttonEmpty}/> ) : null}
-                                    {!doAnyFilterSet && !this.state.orderBy ? (i < visibleValue.length - 1 ? <Tooltip title={I18n.t('Move down')}>
+                                    </Tooltip> : <div className={classes.buttonEmpty}/>) : null}
+                                    {!doAnyFilterSet && !this.state.orderBy ? (i < visibleValue.length - 1 ? <Tooltip title={I18n.t('ra_Move down')}>
                                         <IconButton size="small" onClick={() => this.onMoveDown(idx)}>
                                             <DownIcon />
                                         </IconButton>
                                     </Tooltip> : <div className={classes.buttonEmpty}/> ) : null}
-                                    <Tooltip title={I18n.t('Delete current row')}>
+                                    <Tooltip title={I18n.t('ra_Delete current row')}>
                                         <IconButton size="small" onClick={this.onDelete(idx)}>
                                             <DeleteIcon />
                                         </IconButton>
@@ -489,7 +499,7 @@ class ConfigTable extends ConfigGeneric {
                 {!visibleValue.length && value.length ?
                     <div className={classes.filteredOut}>
                         <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-                            {I18n.t('All items are filtered out')}
+                            {I18n.t('ra_All items are filtered out')}
                             <IconButton
                                 size="small"
                                 onClick={e => this.applyFilter(true)}

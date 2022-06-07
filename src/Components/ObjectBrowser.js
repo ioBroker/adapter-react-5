@@ -82,11 +82,11 @@ import IconClearFilter from '../icons/IconClearFilter';
 
 // own
 import Icon from './Icon';
+import withWidth from './withWidth';
 import Utils from './Utils';
 import TabContainer from './TabContainer';
 import TabContent from './TabContent';
 import TabHeader from './TabHeader';
-import withWidth from './withWidth';
 
 const ICON_SIZE = 24;
 const ROW_HEIGHT = 32;
@@ -408,6 +408,19 @@ const styles = theme => ({
             display: 'block'
         }
     },
+    cellValueWritable: {
+        '&:after': {
+            content: '"*"',
+            color: theme.palette.mode === 'dark' ? 'white' : 'black',
+            position: 'absolute',
+            zIndex: 1,
+            top: -6,
+            left: 0,
+            fontSize: 9,
+            width: 4,
+            height: 4,
+        }
+    },
     cellValueFile: {
         color: '#2837b9'
     },
@@ -492,6 +505,9 @@ const styles = theme => ({
     },
     cellButtonsButtonWithCustoms: {
         color: theme.palette.secondary.main,
+    },
+    cellButtonsButtonWithoutCustoms: {
+        opacity: 0.2,
     },
     cellButtonsValueButton: {
         position: 'absolute',
@@ -774,7 +790,7 @@ function applyFilter(item, filters, lang, objects, context, counter, customFilte
             if (data.fID === undefined) {
                 data.fID = data.id.toLowerCase();
             }
-            filteredOut = data.fID.indexOf(context.id) === -1;
+            filteredOut = !data.fID.includes(context.id);
         }
         if (!filteredOut && context.name) {
             if (common) {
@@ -814,7 +830,9 @@ function applyFilter(item, filters, lang, objects, context, counter, customFilte
             }
         }
     }
+
     data.visible = !filteredOut;
+
     data.hasVisibleChildren = false;
     if (item.children && _depth < 20) {
         item.children.forEach(_item => {
@@ -825,8 +843,8 @@ function applyFilter(item, filters, lang, objects, context, counter, customFilte
         });
     }
 
-    //const visible = data.visible || data.hasVisibleChildren;
-    data.sumVisibility = data.visible || data.hasVisibleChildren || data.hasVisibleParent;
+    // const visible = data.visible || data.hasVisibleChildren;
+    data.sumVisibility = data.visible || data.hasVisibleChildren;// || data.hasVisibleParent;
     if (counter && data.sumVisibility) {
         counter.count++;
     }
@@ -1244,8 +1262,10 @@ function formatValue(id, state, obj, texts, dateFormat, isFloatComma) {
 
     // try to replace number with "common.states"
     if (states && states[v] !== undefined) {
-        valText.s = v;
-        v = states[v];
+        if (v !== states[v]) {
+            valText.s = v;
+            v = states[v];
+        }
     }
 
     let valFull;
@@ -1855,6 +1875,9 @@ class ObjectBrowser extends Component {
      * Called when component is unmounted.
      */
     componentWillUnmount() {
+        this.filterTimer && clearTimeout(this.filterTimer);
+        this.filterTimer = null;
+
         if (this.props.objectsWorker) {
             this.props.objectsWorker.unregisterHandler(this.onObjectChange, true);
         } else {
@@ -2506,7 +2529,7 @@ class ObjectBrowser extends Component {
                 id={name}
                 placeholder={this.texts['filter_' + name]}
                 defaultValue={this.state.filter[name]}
-                onChange={e => {
+                onChange={() => {
                     this.filterTimer && clearTimeout(this.filterTimer);
                     this.filterTimer = setTimeout(() => this.onFilter(), 400);
                 }}
@@ -2543,7 +2566,7 @@ class ObjectBrowser extends Component {
                 key={name + '_' + this.state.filterKey}
                 ref={this.filterRefs[name]}
                 className={this.props.classes.headerCellInput + ' no-underline'}
-                onChange={e => {
+                onChange={() => {
                     this.filterTimer && clearTimeout(this.filterTimer);
                     this.filterTimer = setTimeout(() => this.onFilter(), 400);
                 }}
@@ -3371,7 +3394,7 @@ class ObjectBrowser extends Component {
                 <IconDelete className={classes.cellButtonsButtonIcon} />
             </IconButton> : null,
             this.props.objectCustomDialog && this.info.hasSomeCustoms && item.data.obj.type === 'state' && item.data.obj.common?.type !== 'file' ? <IconButton
-                className={Utils.clsx(classes.cellButtonsButton, item.data.hasCustoms && classes.cellButtonsButtonWithCustoms)}
+                className={Utils.clsx(classes.cellButtonsButton, item.data.hasCustoms ? classes.cellButtonsButtonWithCustoms : classes.cellButtonsButtonWithoutCustoms)}
                 key="custom"
                 size="small"
                 aria-label="config"
@@ -3458,15 +3481,16 @@ class ObjectBrowser extends Component {
      * @returns {JSX.Element | null}
      */
     renderColumnValue(id, item, classes) {
-        if (!item.data.obj || !this.states) {
+        const obj = item.data.obj;
+        if (!obj || !this.states) {
             return null;
         }
 
-        if (item.data.obj.common?.type === 'file') {
+        if (obj.common?.type === 'file') {
             return <div className={Utils.clsx(classes.cellValueText, classes.cellValueFile)}>[file]</div>;
         } else
         if (!this.states[id]) {
-            if (item.data.obj.type === 'state') {
+            if (obj.type === 'state') {
                 !this.recordStates.includes(id) && this.recordStates.push(id);
                 this.states[id] = { val: null };
                 this.subscribe(id);
@@ -3479,7 +3503,7 @@ class ObjectBrowser extends Component {
         const state = this.states[id];
         let info = item.data.state;
         if (!info) {
-            info = item.data.state = item.data.state || formatValue(id, state, item.data.obj, this.texts, this.props.dateFormat, this.props.isFloatComma);
+            info = item.data.state = item.data.state || formatValue(id, state, obj, this.texts, this.props.dateFormat, this.props.isFloatComma);
 
             info.valFull = info.valFull.map(item => {
                 if (item.t === this.texts.quality && state.q) {
@@ -3523,7 +3547,7 @@ class ObjectBrowser extends Component {
             classes={{ tooltip: this.props.classes.cellValueTooltip, popper: this.props.classes.cellValueTooltipBox }}
             onOpen={() => this.readHistory(id)}
         >
-            <div style={info.style} className={classes.cellValueText} >
+            <div style={info.style} className={Utils.clsx(classes.cellValueText, obj.common && (obj.common.write !== false) && classes.cellValueWritable)} >
                 {val}
             </div>
         </Tooltip>;
@@ -4273,7 +4297,6 @@ class ObjectBrowser extends Component {
         root.data.id && items.push(leaf);
 
         isExpanded = isExpanded === undefined ? binarySearch(this.state.expanded, root.data.id) : isExpanded;
-
         if (!root.data.id || isExpanded) {
             if (!this.state.foldersFirst) {
                 root.children && items.push(root.children.map(item => {
@@ -4720,6 +4743,7 @@ class ObjectBrowser extends Component {
 
         // apply filter if changed
         const jsonFilter = JSON.stringify(this.state.filter);
+
         if (this.lastAppliedFilter !== jsonFilter && this.objects && this.root) {
             const counter = { count: 0 };
 

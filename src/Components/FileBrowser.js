@@ -284,7 +284,10 @@ const styles = theme => ({
         width: 'calc(100% - 40px)',
         height: 'calc(100% - 40px)',
         position: 'relative',
-        color: theme.palette.mode === 'dark' ? '#222' : '#CCC'
+        color: theme.palette.mode === 'dark' ? '#222' : '#CCC',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     uploadCenterIcon: {
         width: '25%',
@@ -301,12 +304,7 @@ const styles = theme => ({
         right: 30,
     },
     uploadCenterTextAndIcon: {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        height: '30%',
-        width: '50%',
-        margin: '-15% 0 0 -25%',
+
     },
     menuButtonExpertActive: {
         color: '#c00000',
@@ -365,6 +363,9 @@ const styles = theme => ({
             direction: 'rtl'
         }
     },
+    specialFolder: {
+        color: theme.palette.mode === 'dark' ? '#229b0f' : '#5dd300'
+    }
 });
 
 const USER_DATA = '0_userdata.0';
@@ -504,7 +505,7 @@ class FileBrowser extends Component {
                     this.scrollToSelected();
                 }
                 this.initialReadFinished = true;
-            }))
+            }));
     }
 
     scrollToSelected() {
@@ -661,13 +662,13 @@ class FileBrowser extends Component {
                     let userData = null;
 
                     // load only adapter.admin and not other meta files like hm-rpc.0.devices.blablabla
-                    objs = objs.filter(obj => {
-                        if (!this.state.expertMode) {
-                            return obj._id === '0_userdata.0' || obj._id === 'vis.0';
-                        } else {
-                            return obj._id.split('.').length <= 2;
-                        }
-                    });
+                    if (!this.state.expertMode) {
+                        objs = objs.filter(obj => !obj._id.endsWith('.admin'));
+                    }
+                    const pos = objs.findIndex(obj => obj._id === 'system.meta.uuid');
+                    if (pos !== -1) {
+                        objs.splice(pos, 1);
+                    }
 
                     // remember, that all folders are loaded
                     if (this.state.expertMode) {
@@ -702,8 +703,9 @@ class FileBrowser extends Component {
 
                     if (!_checkEmpty) {
                         return Promise.all(_folders.filter(item => item.folder).map(item =>
-                            this.browseFolder(item.id, _newFolders, true).catch(error => { })))
-                            .then(() => _newFolders)
+                            this.browseFolder(item.id, _newFolders, true)
+                                .catch(error => { })))
+                        .then(() => _newFolders);
                     } else {
                         return _newFolders;
                     }
@@ -857,13 +859,16 @@ class FileBrowser extends Component {
         }
         const Icon = expanded ? IconOpen : IconClosed;
         const padding = this.state.viewType === TABLE ? item.level * this.levelPadding : 0;
+        const isUserData = item.name === USER_DATA;
+        const isSpecialData = isUserData || item.name === 'vis.0';
+
         return <div
             key={item.id}
             id={item.id}
-            style={this.state.viewType === TABLE ? { marginLeft: padding, width: 'calc(100% - ' + padding + 'px' } : {}}
+            style={this.state.viewType === TABLE ? { marginLeft: padding, width: `calc(100% - ${padding}px` } : {}}
             onClick={e => this.state.viewType === TABLE ? this.select(item.id, e) : this.changeFolder(e, item.id)}
             onDoubleClick={e => this.state.viewType === TABLE && this.toggleFolder(item, e)}
-            title={item.title && typeof item.title === 'object' ? item.title[this.props.lang] || item.title.end || '' : item.title || null}
+            title={item.title && typeof item.title === 'object' ? (item.title[this.props.lang] || item.title.end || '') : (item.title || null)}
             className={Utils.clsx(
                 'browserItem',
                 this.props.classes['item' + this.state.viewType],
@@ -872,10 +877,10 @@ class FileBrowser extends Component {
                 item.temp && this.props.classes['itemFolderTemp'],
             )}
         >
-            <Icon className={this.props.classes['itemFolderIcon' + this.state.viewType]} onClick={this.state.viewType === TABLE ? e => this.toggleFolder(item, e) : undefined} />
+            <Icon className={Utils.clsx(this.props.classes['itemFolderIcon' + this.state.viewType], isSpecialData && this.props.classes.specialFolder)} onClick={this.state.viewType === TABLE ? e => this.toggleFolder(item, e) : undefined} />
 
             <div className={Utils.clsx(this.props.classes['itemName' + this.state.viewType], this.props.classes['itemNameFolder' + this.state.viewType])}
-            >{item.name === USER_DATA ? this.props.t('ra_User files') : item.name}</div>
+            >{isUserData ? this.props.t('ra_User files') : item.name}</div>
 
             <Hidden smDown>
                 {<div className={this.props.classes['itemSize' + this.state.viewType]}>{this.state.viewType === TABLE && this.state.folders[item.id] ? this.state.folders[item.id].length : ''}</div>}
@@ -1038,7 +1043,7 @@ class FileBrowser extends Component {
                 }
             }}
             onClick={e => this.select(item.id, e)}
-            style={this.state.viewType === TABLE ? { marginLeft: padding, width: 'calc(100% - ' + padding + 'px)' } : {}}
+            style={this.state.viewType === TABLE ? { marginLeft: padding, width: `calc(100% - ${padding}px)` } : {}}
             className={Utils.clsx(
                 'browserItem',
                 this.props.classes['item' + this.state.viewType],
@@ -1128,29 +1133,14 @@ class FileBrowser extends Component {
     }
 
     renderItems(folderId) {
-        if (folderId &&
-            folderId !== '/' &&
-            !this.state.expertMode &&
-            folderId !== USER_DATA && !folderId.startsWith(USER_DATA) &&
-            folderId !== 'vis.0'   && !folderId.startsWith('vis.0/')
-        ) {
-            return null;
-        }
-
-        // tile
         if (this.state.folders && this.state.folders[folderId]) {
+            // tile
             if (this.state.viewType === TILE) {
                 const res = [];
                 if (folderId && folderId !== '/') {
                     res.push(this.renderBackFolder());
                 }
                 this.state.folders[folderId].forEach(item => {
-                    if (!this.state.expertMode &&
-                        item.id !== USER_DATA && !item.id.startsWith(USER_DATA) &&
-                        item.id !== 'vis.0'   && !item.id.startsWith('vis.0/')
-                    ) {
-                        return;
-                    }
                     if (item.folder) {
                         res.push(this.renderFolder(item));
                     } else if (
@@ -1164,16 +1154,6 @@ class FileBrowser extends Component {
             } else {
                 return this.state.folders[folderId].map(item => {
                     const res = [];
-                    if (item.id &&
-                        item.id !== '/' &&
-                        !this.state.expertMode &&
-                        item.id !== USER_DATA &&
-                        !item.id.startsWith(USER_DATA) &&
-                        item.id !== 'vis.0' &&
-                        !item.id.startsWith('vis.0/')) {
-                        return null;
-                    }
-
                     if (item.folder) {
                         const expanded = this.state.expanded.includes(item.id);
 
@@ -1404,6 +1384,7 @@ class FileBrowser extends Component {
                     onDragLeave={() => this.setState({ uploadFile: true })}
                     onDrop={acceptedFiles => {
                         let count = acceptedFiles.length;
+
                         acceptedFiles.forEach(file => {
                             const reader = new FileReader();
 
@@ -1419,25 +1400,34 @@ class FileBrowser extends Component {
                                 this.uploadFile(id, reader.result)
                                     .then(() => {
                                         if (!--count) {
-                                            const folders = {};
-                                            Object.keys(this.state.folders).forEach(name => {
-                                                if (name !== parentFolder && !name.startsWith(parentFolder + '/')) {
-                                                    folders[name] = this.state.folders[name];
+                                            this.setState({ uploadFile: false }, () => {
+                                                if (this.supportSubscribes) {
+                                                    // open current folder
+                                                    const expanded = [...this.state.expanded];
+                                                    if (!expanded.includes(parentFolder)) {
+                                                        expanded.push(parentFolder);
+                                                        expanded.sort();
+                                                        window.localStorage.setItem('files.expanded', JSON.stringify(expanded));
+                                                    }
+                                                    this.setState({ expanded }, () =>
+                                                        this.select(id));
+                                                } else {
+                                                    setTimeout(() =>
+                                                        this.browseFolder(parentFolder, true)
+                                                            .then(folders => {
+                                                                // open current folder
+                                                                const expanded = [...this.state.expanded];
+                                                                if (!expanded.includes(parentFolder)) {
+                                                                    expanded.push(parentFolder);
+                                                                    expanded.sort();
+                                                                    window.localStorage.setItem('files.expanded', JSON.stringify(expanded));
+                                                                }
+                                                                this.setState({ folders, expanded }, () =>
+                                                                    this.select(id));
+                                                            })
+                                                    , 500);
                                                 }
                                             });
-                                            this.setState({ uploadFile: false, folders }, () =>
-                                                this.browseFolders([...this.state.expanded], folders)
-                                                    .then(folders => {
-                                                        // open current folder
-                                                        const expanded = [...this.state.expanded];
-                                                        if (!expanded.includes(parentFolder)) {
-                                                            expanded.push(parentFolder);
-                                                            expanded.sort();
-                                                            window.localStorage.setItem('files.expanded', JSON.stringify(expanded));
-                                                        }
-                                                        this.setState({ folders, expanded }, () =>
-                                                            this.select(id))
-                                                    }));
                                         }
                                     });
                             };
@@ -1514,23 +1504,32 @@ class FileBrowser extends Component {
         this.setState({ deleteItem: '' }, () =>
             this.deleteRecursive(deleteItem)
                 .then(() => {
+                    const newState = {};
                     const pos = this.state.expanded.indexOf(deleteItem);
                     if (pos !== -1) {
                         const expanded = [...this.state.expanded];
                         expanded.splice(pos, 1);
                         window.localStorage.setItem('files.expanded', JSON.stringify(expanded));
-                        this.setState({ expanded });
+                        newState.expanded = expanded;
                     }
-                    /*let parentFolder = this.findFirstFolder(deleteItem);
-                    const folders = {};
-                    Object.keys(this.state.folders).forEach(name => {
-                        if (name !== parentFolder && !name.startsWith(parentFolder + '/')) {
-                            folders[name] = this.state.folders[name];
-                        }
-                    });
-                    this.setState({ folders }, () =>
-                        this.browseFolders([...this.state.expanded], folders)
-                            .then(folders => this.setState({ folders })));*/
+
+                    if (!this.supportSubscribes) {
+                        let parentFolder = this.findFirstFolder(deleteItem);
+                        const folders = {};
+                        Object.keys(this.state.folders).forEach(name => {
+                            if (name !== parentFolder && !name.startsWith(parentFolder + '/')) {
+                                folders[name] = this.state.folders[name];
+                            }
+                        });
+                        newState.folders = folders;
+
+                        this.setState(newState, () =>
+                            setTimeout(() => this.browseFolders([...this.state.expanded], folders)
+                                .then(folders => this.setState({ folders })), 200));
+
+                    } else {
+                        this.setState(newState);
+                    }
                 })
         );
     }

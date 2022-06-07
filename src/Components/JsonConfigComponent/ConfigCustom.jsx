@@ -82,7 +82,7 @@ class ConfigCustom extends Component {
         // render temporary placeholder
         if (!Component) {
             if (this.state.error) {
-                return ;
+                return;
             } else {
                 const schema = this.props.schema || {};
 

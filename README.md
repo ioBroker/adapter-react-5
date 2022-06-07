@@ -641,6 +641,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Some german texts were corrected
+
 ### 3.0.17 (2022-06-03)
 * (bluefox) Allowed to call getAdapterInstances not for admin too
 
