@@ -180,8 +180,13 @@ class Connection {
                 host = parts[1];
             }
         }
-
-        const url = port ? `${protocol}://${host}:${port}` : `${protocol}://${host}`;
+        // get current path
+        let path = window.location.pathname;
+        const pos = path.lastIndexOf('/');
+        if (pos !== -1) {
+            path = path.substring(0, pos + 1);
+        }
+        const url = port ? `${protocol}://${host}:${port}${path}` : `${protocol}://${host}${path}`;
 
         this._socket = window.io.connect(
             url,
@@ -2112,7 +2117,7 @@ class Connection {
             this._socket.emit('getHostByIp', ipOrHostName, (ip, host) => {
                 const IPs4 = [{name: '[IPv4] 0.0.0.0 - Listen on all IPs', address: '0.0.0.0', family: 'ipv4'}];
                 const IPs6 = [{name: '[IPv6] :: - Listen on all IPs',      address: '::',      family: 'ipv6'}];
-                if (host.native?.hardware?.networkInterfaces) {
+                if (host?.native?.hardware?.networkInterfaces) {
                     for (const eth in host.native.hardware.networkInterfaces) {
                         if (!host.native.hardware.networkInterfaces.hasOwnProperty(eth)) {
                             continue;
@@ -2372,9 +2377,8 @@ class Connection {
                         resolve(json);
                     }
                 })
-                .catch(e => {
-                    reject('getCurrentSession: ' + e);
-                });
+                .catch(e =>
+                    reject('getCurrentSession: ' + e));
         });
     }
 
