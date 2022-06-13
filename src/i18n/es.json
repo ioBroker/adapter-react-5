@@ -297,5 +297,6 @@
   "ra_Move up": "Ascender",
   "ra_Move down": "Mover hacia abajo",
   "ra_Delete current row": "Eliminar fila actual",
-  "ra_All items are filtered out": "Todos los elementos se filtran"
+  "ra_All items are filtered out": "Todos los elementos se filtran",
+  "ra_Double click to reset table layout": "Haga doble clic para restablecer el diseño de la tabla"
 }

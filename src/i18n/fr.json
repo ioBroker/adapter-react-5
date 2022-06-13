@@ -297,5 +297,6 @@
   "ra_Move up": "Déplacer vers le haut",
   "ra_Move down": "Descendre",
   "ra_Delete current row": "Supprimer la ligne actuelle",
-  "ra_All items are filtered out": "Tous les éléments sont filtrés"
+  "ra_All items are filtered out": "Tous les éléments sont filtrés",
+  "ra_Double click to reset table layout": "Double-cliquez pour réinitialiser la disposition du tableau"
 }

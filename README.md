@@ -641,6 +641,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added table with resized headers
+
 ### 3.1.2 (2022-06-09)
 * (bluefox) Added new document icon (read only)
 

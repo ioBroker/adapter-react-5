@@ -297,5 +297,6 @@
   "ra_Move up": "Podnieść",
   "ra_Move down": "Padnij",
   "ra_Delete current row": "Usuń bieżący wiersz",
-  "ra_All items are filtered out": "Wszystkie pozycje są odfiltrowane"
+  "ra_All items are filtered out": "Wszystkie pozycje są odfiltrowane",
+  "ra_Double click to reset table layout": "Kliknij dwukrotnie, aby zresetować układ tabeli"
 }

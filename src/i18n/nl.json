@@ -297,5 +297,6 @@
   "ra_Move up": "Omhoog gaan",
   "ra_Move down": "Naar beneden verplaatsen",
   "ra_Delete current row": "Huidige rij verwijderen",
-  "ra_All items are filtered out": "Alle items zijn uitgefilterd"
+  "ra_All items are filtered out": "Alle items zijn uitgefilterd",
+  "ra_Double click to reset table layout": "Dubbelklik om de tafelindeling te resetten"
 }

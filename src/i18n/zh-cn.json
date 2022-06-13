@@ -297,5 +297,6 @@
   "ra_Move up": "提升",
   "ra_Move down": "下移",
   "ra_Delete current row": "删除当前行",
-  "ra_All items are filtered out": "所有项目都被过滤掉"
+  "ra_All items are filtered out": "所有项目都被过滤掉",
+  "ra_Double click to reset table layout": "双击重置表格布局"
 }

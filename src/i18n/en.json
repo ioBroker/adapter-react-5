@@ -310,5 +310,6 @@
   "ra_Move up": "Move up",
   "ra_Move down": "Move down",
   "ra_Delete current row": "Delete current row",
-  "ra_All items are filtered out": "All items are filtered out"
+  "ra_All items are filtered out": "All items are filtered out",
+  "ra_Double click to reset table layout": "Double click to reset table layout"
 }

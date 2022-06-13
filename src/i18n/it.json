@@ -297,5 +297,6 @@
   "ra_Move up": "Andare avanti",
   "ra_Move down": "Abbassati",
   "ra_Delete current row": "Elimina la riga corrente",
-  "ra_All items are filtered out": "Tutti gli elementi vengono filtrati"
+  "ra_All items are filtered out": "Tutti gli elementi vengono filtrati",
+  "ra_Double click to reset table layout": "Fare doppio clic per ripristinare il layout della tabella"
 }

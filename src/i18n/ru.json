@@ -310,5 +310,6 @@
   "ra_Move up": "Вверх",
   "ra_Move down": "Вниз",
   "ra_Delete current row": "Удалить текущую строку",
-  "ra_All items are filtered out": "Все элементы отфильтрованы"
+  "ra_All items are filtered out": "Все элементы отфильтрованы",
+  "ra_Double click to reset table layout": "Дважды щелкните, чтобы сбросить макет таблицы"
 }

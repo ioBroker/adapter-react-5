@@ -310,5 +310,6 @@
   "ra_Move up": "Nach oben",
   "ra_Move down": "Nach unten",
   "ra_Delete current row": "Aktuelle Zeile löschen",
-  "ra_All items are filtered out": "Alle Elemente werden herausgefiltert"
+  "ra_All items are filtered out": "Alle Elemente werden herausgefiltert",
+  "ra_Double click to reset table layout": "Doppelklicken, um das Tabellenlayout zurückzusetzen"
 }
