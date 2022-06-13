@@ -641,7 +641,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.1.3 (2022-06-13)
 * (bluefox) Added table with resized headers
 
 ### 3.1.2 (2022-06-09)
