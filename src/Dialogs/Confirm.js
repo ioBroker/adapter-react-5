@@ -57,12 +57,12 @@ class DialogConfirm extends React.Component {
         let suppress = false;
 
         if (this.props.suppressQuestionMinutes) {
-            suppress = parseInt(window.localStorage.getItem(this.props.dialogName), 10) || 0;
+            suppress = parseInt((window._localStorage || window.localStorage).getItem(this.props.dialogName), 10) || 0;
 
             if (!suppress) {
                 suppress = false;
             } else if (Date.now() > suppress) {
-                window.localStorage.removeItem(this.props.dialogName);
+                (window._localStorage || window.localStorage).removeItem(this.props.dialogName);
                 suppress = false;
             }
         }
@@ -74,7 +74,7 @@ class DialogConfirm extends React.Component {
 
     handleOk() {
         if (this.state.suppress) {
-            window.localStorage.setItem(this.props.dialogName, Date.now() + this.props.suppressQuestionMinutes * 60000);
+            (window._localStorage || window.localStorage).setItem(this.props.dialogName, Date.now() + this.props.suppressQuestionMinutes * 60000);
         }
         this.props.onClose && this.props.onClose(true);
     };

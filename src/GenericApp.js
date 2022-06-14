@@ -76,8 +76,8 @@ body {
 }
 `;
 
-if (!window.localStorage) {
-    window.localStorage = {
+if (!(window._localStorage || window.localStorage)) {
+    (window._localStorage || window.localStorage) = {
         getItem: () => null,
         setItem: () => null,
     };
@@ -137,12 +137,12 @@ class GenericApp extends Router {
         this.newReact = args.newReact === true; // it is admin5
 
         const location = Router.getLocation();
-        location.tab = location.tab || window.localStorage.getItem(this.adapterName + '-adapter') || '';
+        location.tab = location.tab || (window._localStorage || window.localStorage).getItem(this.adapterName + '-adapter') || '';
 
         const themeInstance = this.createTheme();
 
         this.state = {
-            selectedTab:    window.localStorage.getItem(this.adapterName + '-adapter') || '',
+            selectedTab:    (window._localStorage || window.localStorage).getItem(this.adapterName + '-adapter') || '',
             selectedTabNum: -1,
             native:         {},
             errorText:      '',
@@ -487,7 +487,7 @@ class GenericApp extends Router {
      * @param {number} [index]
      */
     selectTab(tab, index) {
-        window.localStorage[this.adapterName + '-adapter'] = tab;
+        (window._localStorage || window.localStorage)[this.adapterName + '-adapter'] = tab;
         this.setState({selectedTab: tab, selectedTabNum: index})
     }
 

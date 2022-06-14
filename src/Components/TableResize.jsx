@@ -56,7 +56,7 @@ class TableResize extends Component {
         this.resizerActiveIndex = null;
         this.resizerActiveDiv = null;
         this.resizerCurrentWidths = [];
-        const widthsStored = window.localStorage.getItem(`App.${this.props.name || 'history'}.table`);
+        const widthsStored = (window._localStorage || window.localStorage).getItem(`App.${this.props.name || 'history'}.table`);
         this.widthFilled = false;
 
         if (widthsStored) {
@@ -116,7 +116,7 @@ class TableResize extends Component {
             this.resizerCurrentWidths[c] = (this.props.initialWidths || [])[c] || 'auto';
         }
 
-        window.localStorage.setItem(`App.${this.props.name || 'history'}.table`, JSON.stringify(this.resizerCurrentWidths));
+        (window._localStorage || window.localStorage).setItem(`App.${this.props.name || 'history'}.table`, JSON.stringify(this.resizerCurrentWidths));
         this.resizerApplyWidths();
     }
 
@@ -180,7 +180,7 @@ class TableResize extends Component {
     }
 
     resizerMouseUp = () => {
-        window.localStorage.setItem(`App.${this.props.name || 'history'}.table`, JSON.stringify(this.resizerCurrentWidths));
+        (window._localStorage || window.localStorage).setItem(`App.${this.props.name || 'history'}.table`, JSON.stringify(this.resizerCurrentWidths));
 
         this.resizerActiveIndex = null;
         this.resizerActiveDiv = null;

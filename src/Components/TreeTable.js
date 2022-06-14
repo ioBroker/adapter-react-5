@@ -206,7 +206,7 @@ class TreeTable extends React.Component {
     constructor(props) {
         super(props);
 
-        let opened = window.localStorage.getItem(this.props.name || 'iob-table') || '[]';
+        let opened = (window._localStorage || window.localStorage).getItem(this.props.name || 'iob-table') || '[]';
         try {
             opened = JSON.parse(opened) || [];
         } catch (e) {
@@ -567,7 +567,7 @@ class TreeTable extends React.Component {
                                     opened.splice(pos, 1);
                                 }
 
-                                window.localStorage.setItem(this.props.name || 'iob-table', JSON.stringify(opened));
+                                (window._localStorage || window.localStorage).setItem(this.props.name || 'iob-table', JSON.stringify(opened));
 
                                 this.setState({opened});
                             }}

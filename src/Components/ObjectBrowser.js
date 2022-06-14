@@ -1535,7 +1535,7 @@ class ObjectBrowser extends Component {
     constructor(props) {
         super(props);
 
-        this.lastSelectedItems = window.localStorage.getItem(`${props.dialogName || 'App'}.objectSelected`) || '[]';
+        this.lastSelectedItems = (window._localStorage || window.localStorage).getItem(`${props.dialogName || 'App'}.objectSelected`) || '[]';
         try {
             this.lastSelectedItems = JSON.parse(this.lastSelectedItems);
             if (typeof this.lastSelectedItems !== 'object') {
@@ -1546,7 +1546,7 @@ class ObjectBrowser extends Component {
 
         }
 
-        let expanded = window.localStorage.getItem(`${props.dialogName || 'App'}.objectExpanded`) || '[]';
+        let expanded = (window._localStorage || window.localStorage).getItem(`${props.dialogName || 'App'}.objectExpanded`) || '[]';
         try {
             expanded = JSON.parse(expanded);
         } catch (e) {
@@ -1555,7 +1555,7 @@ class ObjectBrowser extends Component {
 
         let filter =
             props.defaultFilters ||
-            window.localStorage.getItem(`${props.dialogName || 'App'}.objectFilter`) ||
+            (window._localStorage || window.localStorage).getItem(`${props.dialogName || 'App'}.objectFilter`) ||
             Object.assign({}, DEFAULT_FILTER);
 
         if (typeof filter === 'string') {
@@ -1608,14 +1608,14 @@ class ObjectBrowser extends Component {
         }
         selected = selected.map(id => id.replace(/["']/g, '')).filter(id => id);
 
-        let columns = window.localStorage.getItem(`${props.dialogName || 'App'}.columns`);
+        let columns = (window._localStorage || window.localStorage).getItem(`${props.dialogName || 'App'}.columns`);
         try {
             columns = columns ? JSON.parse(columns) : null;
         } catch (e) {
             columns = null;
         }
 
-        let columnsWidths = window.localStorage.getItem(`${props.dialogName || 'App'}.columnsWidths`);
+        let columnsWidths = (window._localStorage || window.localStorage).getItem(`${props.dialogName || 'App'}.columnsWidths`);
         try {
             columnsWidths = columnsWidths ? JSON.parse(columnsWidths) : {};
         } catch (e) {
@@ -1623,7 +1623,7 @@ class ObjectBrowser extends Component {
         }
 
         this.imagePrefix = props.imagePrefix || '.';
-        let foldersFirst = window.localStorage.getItem((props.dialogName || 'App') + '.foldersFirst');
+        let foldersFirst = (window._localStorage || window.localStorage).getItem((props.dialogName || 'App') + '.foldersFirst');
         if (foldersFirst === 'false') {
             foldersFirst = false;
         } else if (foldersFirst === 'true') {
@@ -1634,7 +1634,7 @@ class ObjectBrowser extends Component {
 
         let statesView = false;
         try {
-            statesView = this.props.objectStatesView ? JSON.parse(window.localStorage.getItem((props.dialogName || 'App') + '.objectStatesView')) || false : false;
+            statesView = this.props.objectStatesView ? JSON.parse((window._localStorage || window.localStorage).getItem((props.dialogName || 'App') + '.objectStatesView')) || false : false;
         } catch (error) {
             // ignore
         }
@@ -1643,7 +1643,7 @@ class ObjectBrowser extends Component {
             loaded: false,
             foldersFirst,
             selected,
-            selectedNonObject: window.localStorage.getItem(`${props.dialogName || 'App'}.selectedNonObject`) || '',
+            selectedNonObject: (window._localStorage || window.localStorage).getItem(`${props.dialogName || 'App'}.selectedNonObject`) || '',
             filter,
             filterKey: 0,
             depth: 0,
@@ -1662,13 +1662,13 @@ class ObjectBrowser extends Component {
             columns,
             columnsForAdmin: null,
             columnsSelectorShow: false,
-            columnsAuto: window.localStorage.getItem(`${props.dialogName || 'App'}.columnsAuto`) !== 'false',
+            columnsAuto: (window._localStorage || window.localStorage).getItem(`${props.dialogName || 'App'}.columnsAuto`) !== 'false',
             columnsWidths,
             columnsDialogTransparent: 100,
             columnsEditCustomDialog: null,
             customColumnDialogValueChanged: false,
             showExportDialog: false,
-            linesEnabled: window.localStorage.getItem(`${props.dialogName || 'App'}.lines`) === 'true',
+            linesEnabled: (window._localStorage || window.localStorage).getItem(`${props.dialogName || 'App'}.lines`) === 'true',
         };
 
         this.edit = {};
@@ -1721,7 +1721,7 @@ class ObjectBrowser extends Component {
 
         this.levelPadding = props.levelPadding || ITEM_LEVEL;
 
-        let resizerCurrentWidths = window.localStorage.getItem(`${this.props.dialogName || 'App'}.table`);
+        let resizerCurrentWidths = (window._localStorage || window.localStorage).getItem(`${this.props.dialogName || 'App'}.table`);
         if (resizerCurrentWidths) {
             try {
                 resizerCurrentWidths = JSON.parse(resizerCurrentWidths);
@@ -1862,7 +1862,7 @@ class ObjectBrowser extends Component {
         });
         if (changed) {
             expanded.sort();
-            window.localStorage.setItem(`${this.props.dialogName || 'App'}.objectExpanded`, JSON.stringify(expanded));
+            (window._localStorage || window.localStorage).setItem(`${this.props.dialogName || 'App'}.objectExpanded`, JSON.stringify(expanded));
             this.setState({ expanded }, cb)
         } else {
             cb && cb();
@@ -1876,12 +1876,12 @@ class ObjectBrowser extends Component {
     onAfterSelect(isDouble) {
         this.lastSelectedItems = [...this.state.selected];
         if (this.state.selected && this.state.selected.length) {
-            window.localStorage.setItem(`${this.props.dialogName || 'App'}.objectSelected`, JSON.stringify(this.lastSelectedItems));
+            (window._localStorage || window.localStorage).setItem(`${this.props.dialogName || 'App'}.objectSelected`, JSON.stringify(this.lastSelectedItems));
 
             const name = this.lastSelectedItems.length === 1 ? Utils.getObjectName(this.objects, this.lastSelectedItems[0], null, { language: this.state.lang }) : '';
             this.props.onSelect && this.props.onSelect(this.lastSelectedItems, name, isDouble);
         } else {
-            window.localStorage.setItem(`${this.props.dialogName || 'App'}.objectSelected`, '');
+            (window._localStorage || window.localStorage).setItem(`${this.props.dialogName || 'App'}.objectSelected`, '');
             if (this.state.selected.length) {
                 this.setState({ selected: [] }, () => this.props.onSelect && this.props.onSelect([], ''));
             } else {
@@ -2008,7 +2008,7 @@ class ObjectBrowser extends Component {
     onSelect(toggleItem, isDouble) {
         if (!this.props.multiSelect) {
             if (this.objects[toggleItem] && (!this.props.types || this.props.types.includes(this.objects[toggleItem].type))) {
-                window.localStorage.removeItem(`${this.props.dialogName || 'App'}.selectedNonObject`);
+                (window._localStorage || window.localStorage).removeItem(`${this.props.dialogName || 'App'}.selectedNonObject`);
                 if (this.state.selected[0] !== toggleItem) {
                     this.setState({ selected: [toggleItem], selectedNonObject: '' }, () =>
                         this.onAfterSelect(isDouble));
@@ -2016,13 +2016,13 @@ class ObjectBrowser extends Component {
                     this.onAfterSelect(isDouble);
                 }
             } else {
-                window.localStorage.setItem(`${this.props.dialogName || 'App'}.selectedNonObject`, toggleItem);
+                (window._localStorage || window.localStorage).setItem(`${this.props.dialogName || 'App'}.selectedNonObject`, toggleItem);
                 this.setState({ selected: [], selectedNonObject: toggleItem }, () =>
                     this.onAfterSelect());
             }
         } else {
             if (this.objects[toggleItem] && (!this.props.types || this.props.types.includes(this.objects[toggleItem].type))) {
-                window.localStorage.removeItem(`${this.props.dialogName || 'App'}.selectedNonObject`);
+                (window._localStorage || window.localStorage).removeItem(`${this.props.dialogName || 'App'}.selectedNonObject`);
 
                 const selected = [...this.state.selected];
                 const pos = selected.indexOf(toggleItem);
@@ -2065,7 +2065,7 @@ class ObjectBrowser extends Component {
                         } else {
                             columns.splice(pos, 1);
                         }
-                        window.localStorage.setItem((this.props.dialogName || 'App') + '.columns', JSON.stringify(columns));
+                        (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.columns', JSON.stringify(columns));
                         this.calculateColumnsVisibility(null, columns);
                         this.setState({ columns });
                     }
@@ -2093,7 +2093,7 @@ class ObjectBrowser extends Component {
                                 onChange={e => {
                                     const columnsWidths = JSON.parse(JSON.stringify(this.state.columnsWidths));
                                     columnsWidths[id] = e.target.value;
-                                    window.localStorage.setItem((this.props.dialogName || 'App') + '.columnsWidths', JSON.stringify(columnsWidths));
+                                    (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.columnsWidths', JSON.stringify(columnsWidths));
                                     this.calculateColumnsVisibility(null, null, null, columnsWidths);
                                     this.setState({ columnsWidths });
                                 }}
@@ -2123,7 +2123,7 @@ class ObjectBrowser extends Component {
                     <FormControlLabel
                         className={this.props.classes.switchColumnAuto}
                         control={<Switch checked={this.state.columnsAuto} onChange={() => {
-                            window.localStorage.setItem((this.props.dialogName || 'App') + '.columnsAuto', this.state.columnsAuto ? 'false' : 'true');
+                            (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.columnsAuto', this.state.columnsAuto ? 'false' : 'true');
                             if (!this.state.columnsAuto) {
                                 this.calculateColumnsVisibility(true);
                                 this.setState({ columnsAuto: true });
@@ -2142,7 +2142,7 @@ class ObjectBrowser extends Component {
                     <FormControlLabel
                         className={this.props.classes.switchColumnAuto}
                         control={<Switch checked={this.state.foldersFirst} onChange={() => {
-                            window.localStorage.setItem((this.props.dialogName || 'App') + '.foldersFirst', this.state.foldersFirst ? 'false' : 'true');
+                            (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.foldersFirst', this.state.foldersFirst ? 'false' : 'true');
                             this.setState({ foldersFirst: !this.state.foldersFirst });
                         }} />}
                         label={this.props.t('ra_Folders always first')}
@@ -2150,7 +2150,7 @@ class ObjectBrowser extends Component {
                     <FormControlLabel
                         className={this.props.classes.switchColumnAuto}
                         control={<Switch checked={this.state.linesEnabled} onChange={() => {
-                            window.localStorage.setItem((this.props.dialogName || 'App') + '.lines', this.state.linesEnabled ? 'false' : 'true');
+                            (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.lines', this.state.linesEnabled ? 'false' : 'true');
                             this.setState({ linesEnabled: !this.state.linesEnabled });
                         }} />}
                         label={this.props.t('ra_Show lines between rows')}
@@ -2176,7 +2176,7 @@ class ObjectBrowser extends Component {
                                             columns.splice(pos, 1);
                                         }
                                         this.calculateColumnsVisibility(null, columns);
-                                        window.localStorage.setItem((this.props.dialogName || 'App') + '.columns', JSON.stringify(columns));
+                                        (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.columns', JSON.stringify(columns));
                                         this.setState({ columns });
                                     }
                                 }} key={adapter + '_' + column.name}>
@@ -2203,7 +2203,7 @@ class ObjectBrowser extends Component {
                                                 onChange={e => {
                                                     const columnsWidths = JSON.parse(JSON.stringify(this.state.columnsWidths));
                                                     columnsWidths['_' + adapter + '_' + column.path] = e.target.value;
-                                                    window.localStorage.setItem((this.props.dialogName || 'App') + '.columnsWidths', JSON.stringify(columnsWidths));
+                                                    (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.columnsWidths', JSON.stringify(columnsWidths));
                                                     this.calculateColumnsVisibility(null, null, null, columnsWidths);
                                                     this.setState({ columnsWidths });
                                                 }}
@@ -2526,7 +2526,7 @@ class ObjectBrowser extends Component {
         filter = Object.assign({}, this.state.filter, filter);
 
         if (JSON.stringify(this.state.filter) !== JSON.stringify(filter)) {
-            window.localStorage.setItem((this.props.dialogName || 'App') + '.objectFilter', JSON.stringify(filter));
+            (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.objectFilter', JSON.stringify(filter));
             this.setState({ filter }, () =>
                 this.props.onFilterChanged && this.props.onFilterChanged(filter));
         }
@@ -2551,7 +2551,7 @@ class ObjectBrowser extends Component {
         filter = Object.assign({}, this.state.filter, filter);
 
         if (JSON.stringify(this.state.filter) !== JSON.stringify(filter)) {
-            window.localStorage.setItem((this.props.dialogName || 'App') + '.objectFilter', JSON.stringify(filter));
+            (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.objectFilter', JSON.stringify(filter));
             this.setState({ filter, filterKey: this.state.filterKey + 1 }, () =>
                 this.props.onFilterChanged && this.props.onFilterChanged(filter));
         }
@@ -2654,7 +2654,7 @@ class ObjectBrowser extends Component {
                             const newFilter = { ...this.state.filter };
                             newFilter[name] = '';
                             this.filterRefs[name].current.childNodes[1].value = '';
-                            window.localStorage.setItem((this.props.dialogName || 'App') + '.objectFilter', JSON.stringify(newFilter));
+                            (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.objectFilter', JSON.stringify(newFilter));
                             this.setState({ filter: newFilter, filterKey: this.state.filterKey + 1 }, () =>
                                 this.props.onFilterChanged && this.props.onFilterChanged(newFilter));
                         }}
@@ -2745,7 +2745,7 @@ class ObjectBrowser extends Component {
 
         if (root === this.root) {
             expanded.sort();
-            window.localStorage.setItem((this.props.dialogName || 'App') + '.objectExpanded', JSON.stringify(expanded));
+            (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.objectExpanded', JSON.stringify(expanded));
 
             this.setState({ expanded });
         }
@@ -2755,8 +2755,8 @@ class ObjectBrowser extends Component {
      * @private
      */
     onCollapseAll() {
-        window.localStorage.setItem(`${this.props.dialogName || 'App'}.objectExpanded`, JSON.stringify([]));
-        window.localStorage.setItem(`${this.props.dialogName || 'App'}.objectSelected`, '[]');
+        (window._localStorage || window.localStorage).setItem(`${this.props.dialogName || 'App'}.objectExpanded`, JSON.stringify([]));
+        (window._localStorage || window.localStorage).setItem(`${this.props.dialogName || 'App'}.objectSelected`, '[]');
         this.setState({ expanded: [], depth: 0, selected: [] }, () =>
             this.onAfterSelect());
     }
@@ -2803,7 +2803,7 @@ class ObjectBrowser extends Component {
             const depth = this.state.depth + 1;
             const expanded = [...this.state.expanded];
             this.expandDepth(this.root, depth, expanded);
-            window.localStorage.setItem((this.props.dialogName || 'App') + '.objectExpanded', JSON.stringify(expanded));
+            (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.objectExpanded', JSON.stringify(expanded));
             this.setState({ depth, expanded });
         }
     }
@@ -2813,7 +2813,7 @@ class ObjectBrowser extends Component {
      */
     onStatesViewVisible() {
         const statesView = !this.state.statesView;
-        window.localStorage.setItem((this.props.dialogName || 'App') + '.objectStatesView', JSON.stringify(statesView));
+        (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.objectStatesView', JSON.stringify(statesView));
         this.setState({ statesView });
     }
 
@@ -2824,7 +2824,7 @@ class ObjectBrowser extends Component {
         if (this.state.depth > 0) {
             const depth = this.state.depth - 1;
             const expanded = this.collapseDepth(depth, this.state.expanded);
-            window.localStorage.setItem((this.props.dialogName || 'App') + '.objectExpanded', JSON.stringify(expanded));
+            (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.objectExpanded', JSON.stringify(expanded));
             this.setState({ depth, expanded });
         }
     }
@@ -3298,7 +3298,7 @@ class ObjectBrowser extends Component {
                             this.pauseSubscribe(true);
 
                             if (ids.length === 1) {
-                                window.localStorage.setItem((this.props.dialogName || 'App') + '.objectSelected', this.state.selected[0]);
+                                (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.objectSelected', this.state.selected[0]);
                                 this.props.router && this.props.router.doNavigate(null, 'custom', this.state.selected[0]);
                             }
                             this.setState({ customDialog: ids });
@@ -3329,7 +3329,7 @@ class ObjectBrowser extends Component {
             expanded.splice(pos, 1);
         }
 
-        window.localStorage.setItem((this.props.dialogName || 'App') + '.objectExpanded', JSON.stringify(expanded));
+        (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.objectExpanded', JSON.stringify(expanded));
 
         this.setState({ expanded });
     }
@@ -3430,7 +3430,7 @@ class ObjectBrowser extends Component {
                 aria-label="edit"
                 title={this.texts.editObject}
                 onClick={() => {
-                    window.localStorage.setItem(`${this.props.dialogName || 'App'}.objectSelected`, id);
+                    (window._localStorage || window.localStorage).setItem(`${this.props.dialogName || 'App'}.objectSelected`, id);
                     this.setState({ editObjectDialog: id });
                 }}
             >
@@ -3453,7 +3453,7 @@ class ObjectBrowser extends Component {
                 aria-label="config"
                 title={this.texts.customConfig}
                 onClick={() => {
-                    window.localStorage.setItem((this.props.dialogName || 'App') + '.objectSelected', id);
+                    (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.objectSelected', id);
 
                     this.pauseSubscribe(true);
                     this.props.router && this.props.router.doNavigate(null, 'customs', id);
@@ -4587,7 +4587,7 @@ class ObjectBrowser extends Component {
     }
 
     resizerMouseUp = () => {
-        window.localStorage.setItem(`${this.props.dialogName || 'App'}.table`, JSON.stringify(this.resizerCurrentWidths));
+        (window._localStorage || window.localStorage).setItem(`${this.props.dialogName || 'App'}.table`, JSON.stringify(this.resizerCurrentWidths));
         this.resizerActiveName = null;
         this.resizerNextName   = null;
         this.resizerActiveDiv  = null;
@@ -4649,7 +4649,7 @@ class ObjectBrowser extends Component {
         this.customWidth = false;
         SCREEN_WIDTHS[this.props.width] = JSON.parse(JSON.stringify(this.storedWidths));
         this.calculateColumnsVisibility();
-        window.localStorage.removeItem(`${this.props.dialogName || 'App'}.table`);
+        (window._localStorage || window.localStorage).removeItem(`${this.props.dialogName || 'App'}.table`);
         this.forceUpdate();
     };
 

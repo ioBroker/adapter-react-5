@@ -88,7 +88,7 @@ class SelectID extends React.Component {
         this.dialogName = this.props.dialogName || 'default';
         this.dialogName = 'SelectID.' + this.dialogName;
 
-        this.filters = window.localStorage.getItem(this.dialogName) || '{}';
+        this.filters = (window._localStorage || window.localStorage).getItem(this.dialogName) || '{}';
 
         try {
             this.filters = JSON.parse(this.filters);
@@ -171,7 +171,7 @@ class SelectID extends React.Component {
                     customFilter={ this.props.customFilter }
                     onFilterChanged={ filterConfig => {
                         this.filters = filterConfig;
-                        window.localStorage.setItem(this.dialogName, JSON.stringify(filterConfig));
+                        (window._localStorage || window.localStorage).setItem(this.dialogName, JSON.stringify(filterConfig));
                     } }
                     onSelect={ (selected, name, isDouble) => {
                         if (JSON.stringify(selected) !== JSON.stringify(this.state.selected)) {
