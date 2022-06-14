@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import LinearProgress from '@mui/material/LinearProgress';
 import Grid from '@mui/material/Grid';
+
 import i18n from '../../i18n';
 
 class ConfigCustom extends Component {
