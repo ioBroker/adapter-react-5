@@ -76,8 +76,8 @@ body {
 }
 `;
 
-if (!(window._localStorage || window.localStorage)) {
-    (window._localStorage || window.localStorage) = {
+if (!window.localStorage) {
+    window.localStorage = {
         getItem: () => null,
         setItem: () => null,
     };
