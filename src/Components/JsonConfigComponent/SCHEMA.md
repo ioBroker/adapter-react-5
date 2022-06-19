@@ -95,9 +95,6 @@ Possible types:
   - `!crop` - if true, allow user to crop the image
   - `!square` - width must be equal to height or crop must allow only square as shape
 
-- `!file` - saves file (not image) as file of adapter.0 object
-  - `filename` - name of file
-
 - `objectId` - object ID - show it with name, color and icon
   - `types` - Array of possible types: ['channel', 'device', ...] (has only `state` by default)
 
@@ -162,7 +159,7 @@ Possible types:
   - `noDelete` - boolean if delete or add disabled, If noDelete is false, add, delete and move up/down should work
   - `objKeyName` - (legacy setting, don't use!) - name of the key in `{"192.168.1.1": {delay: 1000, enabled: true}, "192.168.1.2": {delay: 2000, enabled: false}}`
   - `objValueName` - (legacy setting, don't use!) - name of the value in `{"192.168.1.1": "value1", "192.168.1.2": "value2"}`
-
+  - `allowAddByFilter` - if add allowed even if filter is set
 - `json` - json editor
 
 - `language`
@@ -191,6 +188,30 @@ Possible types:
   - `complex` - show CRON with "minutes", "seconds" and so on
   - `simple` - show simple CRON settings
 
+- `fileSelector`
+  - `pattern` - File extension pattern. Allowed `**/*.ext` to show all files from sub-folders too, `*.ext` to show from root folder or `folderName/*.ext` to show all files in sub-folder `folderName`. Default `**/*.*`. 
+  - `objectID` - Object ID of type `meta`. You can use special placeholder `%INSTANCE%`: like `myAdapter.%INSTANCE%.files` 
+  - `upload` - path, where the uploaded files will be stored. Like `folderName`. If not defined, no upload field will be show. To upload in root set this field to `/`.  
+  - `refresh` - Show refresh button near the select.  
+  - `maxSize` - max file size (default 2MB)  
+  - `withFolder` - show folder name even if all files in same folder  
+  - `delete` - Allow deletion of files
+  - `noNone` - Do not show `none` option
+  - `noSize` - Do not show size of files
+
+- `file`
+  Input field with file selector
+  - `disableEdit` - if user can manually enter the file name and not only through select dialog
+  - `limitPath` - limit selection to one specific object of type `meta` and following path (not mandatory)
+  - `filterFiles` - like `['png', 'svg', 'bmp', 'jpg', 'jpeg']`
+  - `filterByType` - `images, code, txt, audio, video`
+  - `allowUpload` - allowed upload of files
+  - `allowDownload` - allowed download of files (default true)
+  - `allowCreateFolder` - allowed creation of folders
+  - `allowView` - allowed tile view (default true)
+  - `showToolbar` - show toolbar (default true)
+  - `selectOnlyFolders` - user can select only folders (e.g. for upload path)
+ 
 - `selectSendTo`
   Shows drop down menu with the given from the instance values. 
   - `command` - sendTo command
@@ -485,7 +506,7 @@ Following variables are available in JS function in adapter settings:
 - _socket - socket
 - _instance - instance number
 - arrayIndex - used only in table and represent current line in array
-- globalData - used only in table and all settings and not only one table line
+- globalData - used only in table for all settings and not only one table line
 
 ### Custom settings dialog
 JS functions is:
@@ -505,7 +526,7 @@ Following variables are available in JS function in custom settings:
 - customObj - current object itself
 - _socket - socket
 - arrayIndex - used only in table and represent current line in array
-- globalData - used only in table and all settings and not only one table line
+- globalData - used only in table for all settings and not only one table line
 
 ## Custom component
 ```

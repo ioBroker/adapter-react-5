@@ -11,40 +11,42 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import ConfigGeneric from './ConfigGeneric';
-import ConfigText from './ConfigText';
-import ConfigCheckbox from './ConfigCheckbox';
-import ConfigStaticImage from './ConfigStaticImage';
-import ConfigNumber from './ConfigNumber';
-import ConfigColor from './ConfigColor';
-import ConfigIP from './ConfigIP';
-import ConfigSelect from './ConfigSelect';
-import ConfigUser from './ConfigUser';
-import ConfigStaticText from './ConfigStaticText';
-import ConfigPattern from './ConfigPattern';
-import ConfigCertificateSelect from './ConfigCertificateSelect';
-import ConfigImageUpload from './ConfigImageUpload';
-import ConfigInstanceSelect from './ConfigInstanceSelect';
-import ConfigTable from './ConfigTable';
-import ConfigSendto from './ConfigSendto';
-import ConfigObjectId from './ConfigObjectId';
-import ConfigLanguage from './ConfigLanguage';
-import ConfigChip from './ConfigChip';
-import ConfigPassword from './ConfigPassword';
-import ConfigStaticHeader from './ConfigStaticHeader';
-import ConfigStaticDivider from './ConfigStaticDivider';
-import ConfigSetState from './ConfigSetState';
-import ConfigJsonEditor from './ConfigJsonEditor';
-import ConfigSelectSendTo from './ConfigSelectSendTo';
-import ConfigTopic from './ConfigTopic';
+import ConfigAlive from './ConfigAlive';
 import ConfigAutocomplete from './ConfigAutocomplete';
 import ConfigAutocompleteSendTo from './ConfigAutocompleteSendTo';
-import ConfigTimePicker from './ConfigTimePicker';
-import ConfigDatePicker from './ConfigDatePicker';
 import ConfigCRON from './ConfigCRON';
-import ConfigAlive from './ConfigAlive';
-import ConfigTextSendTo from './ConfigTextSendTo';
+import ConfigCertificateSelect from './ConfigCertificateSelect';
+import ConfigCheckbox from './ConfigCheckbox';
+import ConfigChip from './ConfigChip';
+import ConfigColor from './ConfigColor';
 import ConfigCoordinates from './ConfigCoordinates';
 import ConfigCustom from './ConfigCustom';
+import ConfigDatePicker from './ConfigDatePicker';
+import ConfigFile from './ConfigFile';
+import ConfigFileSelector from './ConfigFileSelector';
+import ConfigIP from './ConfigIP';
+import ConfigImageUpload from './ConfigImageUpload';
+import ConfigInstanceSelect from './ConfigInstanceSelect';
+import ConfigJsonEditor from './ConfigJsonEditor';
+import ConfigLanguage from './ConfigLanguage';
+import ConfigNumber from './ConfigNumber';
+import ConfigObjectId from './ConfigObjectId';
+import ConfigPassword from './ConfigPassword';
+import ConfigPattern from './ConfigPattern';
+import ConfigSelect from './ConfigSelect';
+import ConfigSelectSendTo from './ConfigSelectSendTo';
+import ConfigSendto from './ConfigSendto';
+import ConfigSetState from './ConfigSetState';
+import ConfigStaticDivider from './ConfigStaticDivider';
+import ConfigStaticHeader from './ConfigStaticHeader';
+import ConfigStaticImage from './ConfigStaticImage';
+import ConfigStaticText from './ConfigStaticText';
+import ConfigTable from './ConfigTable';
+import ConfigText from './ConfigText';
+import ConfigTextSendTo from './ConfigTextSendTo';
+import ConfigTimePicker from './ConfigTimePicker';
+import ConfigTopic from './ConfigTopic';
+import ConfigUser from './ConfigUser';
 
 const components = {
     alive: ConfigAlive,
@@ -52,14 +54,16 @@ const components = {
     autocompleteSendTo: ConfigAutocompleteSendTo,
     certificate: ConfigCertificateSelect,
     checkbox: ConfigCheckbox,
-    chips: ConfigChip,
     chip: ConfigChip, // deprecated. Use "chips"
+    chips: ConfigChip,
     color: ConfigColor,
     coordinates: ConfigCoordinates,
     cron: ConfigCRON,
     custom: ConfigCustom,
     datePicker: ConfigDatePicker,
     divider: ConfigStaticDivider,
+    file: ConfigFile,
+    fileSelector: ConfigFileSelector,
     header: ConfigStaticHeader,
     image: ConfigImageUpload,
     instance: ConfigInstanceSelect,
@@ -150,7 +154,7 @@ class ConfigPanel extends ConfigGeneric {
             }
 
             return <ItemComponent
-                key={attr + '_' + this.props.index}
+                key={attr + '_' + (this.props.index === undefined ? '' : this.props.index)}
                 index={this.props.index}
                 arrayIndex={this.props.arrayIndex}
                 globalData={this.props.globalData}
@@ -161,6 +165,7 @@ class ConfigPanel extends ConfigGeneric {
                 adapterName={this.props.adapterName}
                 instance={this.props.instance}
                 common={this.props.common}
+                customs={this.props.customs}
                 alive={this.props.alive}
                 themeType={this.props.themeType}
                 themeName={this.props.themeName}
@@ -169,20 +174,22 @@ class ConfigPanel extends ConfigGeneric {
                 systemConfig={this.props.systemConfig}
                 onError={this.props.onError}
                 onChange={this.props.onChange}
-                customs={this.props.customs}
+                multiEdit={this.props.multiEdit}
                 dateFormat={this.props.dateFormat}
                 isFloatComma={this.props.isFloatComma}
                 disabled={disabled}
+                imagePrefix={this.props.imagePrefix}
 
-                registerOnForceUpdate={this.props.registerOnForceUpdate}
+                changeLanguage={this.props.changeLanguage}
                 forceUpdate={this.props.forceUpdate}
+                registerOnForceUpdate={this.props.registerOnForceUpdate}
 
                 customObj={this.props.customObj}
                 instanceObj={this.props.instanceObj}
                 custom={this.props.custom}
 
-                attr={attr}
                 schema={items[attr]}
+                attr={attr}
             />;
         }) : null;
     }
@@ -323,6 +330,8 @@ ConfigPanel.propTypes = {
     isFloatComma: PropTypes.bool,
     multiEdit: PropTypes.bool,
     isParentTab: PropTypes.bool,
+    imagePrefix: PropTypes.string,
+    changeLanguage: PropTypes.func,
 
     arrayIndex: PropTypes.number,
     globalData: PropTypes.object,
@@ -331,9 +340,9 @@ ConfigPanel.propTypes = {
     instanceObj: PropTypes.object,
     custom: PropTypes.bool,
 
+    forceUpdate: PropTypes.func,
     onError: PropTypes.func,
     onChange: PropTypes.func,
-    onForceUpdate: PropTypes.func,
     registerOnForceUpdate: PropTypes.func,
 };
 

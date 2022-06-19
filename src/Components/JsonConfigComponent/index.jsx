@@ -285,12 +285,14 @@ class JsonConfigComponent extends Component {
                 dateFormat={this.props.dateFormat}
                 isFloatComma={this.props.isFloatComma}
                 multiEdit={this.props.multiEdit}
+                imagePrefix={this.props.imagePrefix}
 
                 custom={this.props.custom}
                 customObj={this.props.customObj}
                 instanceObj={this.props.instanceObj}
 
-                forceUpdate={this.forceUpdate}
+                changeLanguage={this.changeLanguage}
+                forceUpdate={this.forceAttrUpdate}
                 registerOnForceUpdate={this.registerOnForceUpdate}
 
                 onChange={this.onChange}
@@ -317,21 +319,27 @@ class JsonConfigComponent extends Component {
                 dateFormat={this.props.dateFormat}
                 isFloatComma={this.props.isFloatComma}
                 multiEdit={this.props.multiEdit}
-
-                forceUpdate={this.forceUpdate}
-                registerOnForceUpdate={this.registerOnForceUpdate}
+                imagePrefix={this.props.imagePrefix}
 
                 custom={this.props.custom}
                 customObj={this.props.customObj}
                 instanceObj={this.props.instanceObj}
 
+                changeLanguage={this.changeLanguage}
+                forceUpdate={this.forceAttrUpdate}
+                registerOnForceUpdate={this.registerOnForceUpdate}
+
                 onChange={this.onChange}
                 onError={(attr, error) => this.onError(attr, error)}
-            />
+            />;
         }
     }
 
-    forceUpdate = (attr, data) => {
+    changeLanguage = () => {
+        this.forceUpdate();
+    }
+
+    forceAttrUpdate = (attr, data) => {
         if (Array.isArray(attr)) {
             attr.forEach(a =>
                 this.forceUpdateHandlers[a] && this.forceUpdateHandlers[a](data));
@@ -375,6 +383,7 @@ JsonConfigComponent.propTypes = {
     instanceObj: PropTypes.object,
     dateFormat: PropTypes.string,
     isFloatComma: PropTypes.bool,
+    imagePrefix: PropTypes.string,
 
     themeType: PropTypes.string,
     themeName: PropTypes.string,

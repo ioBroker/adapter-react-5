@@ -9,6 +9,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 import ConfigGeneric from './ConfigGeneric';
+import I18n from '../../i18n';
 
 const styles = theme => ({
     fullWidth: {
