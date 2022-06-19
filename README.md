@@ -641,7 +641,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.1.4 (2022-06-19)
 * (bluefox) Added file select dialog
 
 ### 3.1.3 (2022-06-13)
