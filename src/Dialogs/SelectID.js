@@ -54,8 +54,7 @@ const styles = theme => ({
 });
 
 /**
- * @typedef {object} SelectIDProps
- * @property {string} [key] The key to identify this component.
+ * @typedef {object} DialogSelectIDProps
  * @property {string} [dialogName] The internal name of the dialog; default: "default"
  * @property {string} [title] The dialog title; default: Please select object ID... (translated)
  * @property {boolean} [multiSelect] Set to true to allow the selection of multiple IDs.
@@ -77,11 +76,11 @@ const styles = theme => ({
  * @property {(selected: string | string[] | undefined, name: string) => void} onOk Handler that is called when the user presses OK.
  * @property {{headerID: string; dialog: string; content: string}} [classes] The styling class names.
  *
- * @extends {React.Component<SelectIDProps>}
+ * @extends {React.Component<DialogSelectIDProps>}
  */
-class SelectID extends React.Component {
+class DialogSelectID extends React.Component {
     /**
-     * @param {SelectIDProps} props
+     * @param {DialogSelectIDProps} props
      */
     constructor(props) {
         super(props);
@@ -220,10 +219,10 @@ SelectID.propTypes = {
     types: PropTypes.array,   // optional ['state', 'instance', 'channel']
     columns: PropTypes.array, // optional ['name', 'type', 'role', 'room', 'func', 'val', 'buttons']
 
-    filterFunc: PropTypes.func,         // function to filter out all unneccessary objects. It cannot be used together with "types"
+    filterFunc: PropTypes.func,         // function to filter out all unnecessary objects. It cannot be used together with "types"
                                         // Example for function: `obj => obj.common && obj.common.type === 'boolean'` to show only boolean states
 };
 
-/** @type {typeof SelectID} */
-const _export = withStyles(styles)(SelectID);
+/** @type {typeof DialogSelectID} */
+const _export = withStyles(styles)(DialogSelectID);
 export default _export;

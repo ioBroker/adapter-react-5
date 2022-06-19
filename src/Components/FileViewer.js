@@ -49,6 +49,8 @@ export const EXTENSIONS = {
     images: ['png', 'jpg', 'svg', 'jpeg', 'bmp'],
     code:   ['js', 'json', 'md'],
     txt:    ['log', 'txt', 'html', 'css', 'xml'],
+    audio:  ['mp3', 'wav', 'ogg', 'acc'],
+    video:  ['mp4', 'mov', 'avi'],
 };
 
 function bufferToBase64(buffer) {
