@@ -641,7 +641,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.1.9 (2022-06-20)
 * (bluefox) Allowed to work behind reverse proxy
 
 ### 3.1.7 (2022-06-19)
