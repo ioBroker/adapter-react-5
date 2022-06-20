@@ -197,6 +197,9 @@ class Connection {
                 parts.pop();
                 parts.pop();
                 path = parts.join('/');
+                if (!path.endsWith('/')) {
+                    path += '/';
+                }
             }
         }
 
@@ -205,6 +208,7 @@ class Connection {
         this._socket = window.io.connect(
             url,
             {
+                path: path.endsWith('/') ? path + 'socket.io' : path + '/socket.io',
                 query: 'ws=true',
                 name: this.props.name,
                 timeout: this.props.ioTimeout
