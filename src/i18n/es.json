@@ -298,5 +298,6 @@
   "ra_Move down": "Mover hacia abajo",
   "ra_Delete current row": "Eliminar fila actual",
   "ra_All items are filtered out": "Todos los elementos se filtran",
-  "ra_Double click to reset table layout": "Haga doble clic para restablecer el diseño de la tabla"
+  "ra_Double click to reset table layout": "Haga doble clic para restablecer el diseño de la tabla",
+  "ra_Cannot retrieve options, as instance is offline": "No se pueden recuperar las opciones, ya que la instancia está fuera de línea"
 }

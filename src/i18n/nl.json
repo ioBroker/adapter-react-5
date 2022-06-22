@@ -298,5 +298,6 @@
   "ra_Move down": "Naar beneden verplaatsen",
   "ra_Delete current row": "Huidige rij verwijderen",
   "ra_All items are filtered out": "Alle items zijn uitgefilterd",
-  "ra_Double click to reset table layout": "Dubbelklik om de tafelindeling te resetten"
+  "ra_Double click to reset table layout": "Dubbelklik om de tafelindeling te resetten",
+  "ra_Cannot retrieve options, as instance is offline": "Kan opties niet ophalen, omdat instantie offline is"
 }

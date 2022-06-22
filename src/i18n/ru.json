@@ -311,5 +311,6 @@
   "ra_Move down": "Вниз",
   "ra_Delete current row": "Удалить текущую строку",
   "ra_All items are filtered out": "Все элементы отфильтрованы",
-  "ra_Double click to reset table layout": "Дважды щелкните, чтобы сбросить макет таблицы"
+  "ra_Double click to reset table layout": "Дважды щелкните, чтобы сбросить макет таблицы",
+  "ra_Cannot retrieve options, as instance is offline": "Невозможно получить параметры, так как экземпляр находится в автономном режиме."
 }

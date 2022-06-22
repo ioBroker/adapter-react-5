@@ -641,6 +641,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added translations
+
 ### 3.1.9 (2022-06-20)
 * (bluefox) Allowed to work behind reverse proxy
 

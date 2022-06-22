@@ -99,7 +99,6 @@ const TextWithIcon = props => {
 }
 
 TextWithIcon.propTypes = {
-    t: PropTypes.func.isRequired,
     lang: PropTypes.string.isRequired,
     themeType: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,

@@ -298,5 +298,6 @@
   "ra_Move down": "Mover para baixo",
   "ra_Delete current row": "Excluir linha atual",
   "ra_All items are filtered out": "Todos os itens são filtrados",
-  "ra_Double click to reset table layout": "Clique duas vezes para redefinir o layout da tabela"
+  "ra_Double click to reset table layout": "Clique duas vezes para redefinir o layout da tabela",
+  "ra_Cannot retrieve options, as instance is offline": "Não é possível recuperar opções, pois a instância está off-line"
 }
