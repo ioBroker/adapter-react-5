@@ -263,7 +263,7 @@ class Loader extends React.Component {
                 backgroundSize: 'cover',
             }}
         >
-            {window.loadingHideLogo === '@@loadingHideLogo@@' || window.loadingHideLogo === 'false' ?
+            {window.loadingHideLogo === 'true' ?
                 null
                 :
                 <>
