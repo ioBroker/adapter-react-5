@@ -65,7 +65,7 @@
   "ra_Toggle view mode": "Ansichtsmodus umschalten",
   "ra_Root": "Anfang",
   "ra_Back to %s": "Zurück zu %s",
-  "ra_Place your files here or click here to open the browse dialog": "Platzieren Sie Ihre Dateien hier oder klicken Sie hier, um den Suchdialog zu öffnen",
+  "ra_Place your files here or click here to open the browse dialog": "Die Dateien hier platzieren oder hier klicken, um den Suchdialog zu öffnen",
   "ra_If no file will be created in the folder, it will disappear after the browser closed": "Wenn im Ordner keine Datei erstellt wird, verschwindet dieser nach dem Schließen des Browsers",
   "ra_Folder name": "Ordnernamen",
   "ra_Create new folder in %s": "Neuen Ordner in \"%s\" erstellen",

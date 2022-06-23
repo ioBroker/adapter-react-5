@@ -258,7 +258,7 @@ class Loader extends React.Component {
         const theme = this.props.themeType || this.props.theme || 'light';
         return <div className={'logo-back logo-background-' + theme}
             style={{
-                backgroundImage: window.loadingBackgroundImage && window.loadingBackgroundImage !== '@@loginBackgroundImage@@' ? window.loadingBackgroundImage : undefined,
+                backgroundImage: window.loadingBackgroundImage && window.loadingBackgroundImage !== '@@loginBackgroundImage@@' ? 'url(' + window.loadingBackgroundImage + ')' : undefined,
                 backgroundColor: window.loadingBackgroundColor && window.loadingBackgroundColor !== '@@loginBackgroundColor@@' ? window.loadingBackgroundColor : undefined,
                 backgroundSize: 'cover',
             }}
