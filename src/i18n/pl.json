@@ -299,5 +299,8 @@
   "ra_Delete current row": "Usuń bieżący wiersz",
   "ra_All items are filtered out": "Wszystkie pozycje są odfiltrowane",
   "ra_Double click to reset table layout": "Kliknij dwukrotnie, aby zresetować układ tabeli",
-  "ra_Cannot retrieve options, as instance is offline": "Nie można pobrać opcji, ponieważ instancja jest w trybie offline"
+  "ra_Cannot retrieve options, as instance is offline": "Nie można pobrać opcji, ponieważ instancja jest w trybie offline",
+  "ra_File is too big. Max %sk allowed. Try use SVG.": "Plik jest za duży. Maksymalna dozwolona liczba %sk. Spróbuj użyć SVG.",
+  "ra_Cannot upload": "Nie można przesłać",
+  "ra_Crop": "Przyciąć"
 }

@@ -6,8 +6,9 @@ import InputLabel from '@mui/material/InputLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 
-import ConfigGeneric from './ConfigGeneric';
 import UploadImage from '../UploadImage';
+
+import ConfigGeneric from './ConfigGeneric';
 
 const styles = theme => ({
     fullWidth: {
@@ -47,7 +48,7 @@ class ConfigCertificateSelect extends ConfigGeneric {
         }
         let url = `files/${this.props.adapterName}.${this.props.instance}/${this.props.attr}?t=${this.index}`;
         if (window.location.port === '3000') {
-            url = window.location.protocol + '//' + window.location.hostname + ':8081/' + url;
+            url = `${window.location.protocol}//${window.location.hostname}:8081/${url}`;
         }
 
         return url;

@@ -299,5 +299,8 @@
   "ra_Delete current row": "Huidige rij verwijderen",
   "ra_All items are filtered out": "Alle items zijn uitgefilterd",
   "ra_Double click to reset table layout": "Dubbelklik om de tafelindeling te resetten",
-  "ra_Cannot retrieve options, as instance is offline": "Kan opties niet ophalen, omdat instantie offline is"
+  "ra_Cannot retrieve options, as instance is offline": "Kan opties niet ophalen, omdat instantie offline is",
+  "ra_File is too big. Max %sk allowed. Try use SVG.": "Bestand is te groot. Max. %sk toegestaan. Probeer SVG te gebruiken.",
+  "ra_Cannot upload": "Kan niet uploaden",
+  "ra_Crop": "Bijsnijden"
 }

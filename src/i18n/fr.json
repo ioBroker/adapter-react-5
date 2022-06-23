@@ -299,5 +299,8 @@
   "ra_Delete current row": "Supprimer la ligne actuelle",
   "ra_All items are filtered out": "Tous les éléments sont filtrés",
   "ra_Double click to reset table layout": "Double-cliquez pour réinitialiser la disposition du tableau",
-  "ra_Cannot retrieve options, as instance is offline": "Impossible de récupérer les options, car l'instance est hors ligne"
+  "ra_Cannot retrieve options, as instance is offline": "Impossible de récupérer les options, car l'instance est hors ligne",
+  "ra_File is too big. Max %sk allowed. Try use SVG.": "Le fichier est trop volumineux. Max %sk autorisé. Essayez d'utiliser SVG.",
+  "ra_Cannot upload": "Impossible de télécharger",
+  "ra_Crop": "Recadrer"
 }

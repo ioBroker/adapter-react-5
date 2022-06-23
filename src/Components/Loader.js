@@ -256,21 +256,33 @@ class Loader extends React.Component {
     render() {
         const size = this.props.size || 234;
         const theme = this.props.themeType || this.props.theme || 'light';
-        return <div className={'logo-back logo-background-' + theme}>
-            <div className="logo-div" style={{width: size, height: size}}>
-                <div className={'logo-top logo-background-' + theme} style={{left: '37%'}}/>
-                <div className={'logo-top logo-background-' + theme} style={{left: '57%'}}/>
-                <div
-                    className={'logo-border logo-background-' + theme + ' logo-animate-wait'}
-                    style={{borderWidth: size * 0.132}}
-                />
-                <div className={'logo-i logo-animate-color-inside-' + theme}/>
-                <div className={'logo-i-top logo-animate-color-inside-' + theme} style={{top: '18%'}}/>
-                <div className={'logo-i-top logo-animate-color-inside-' + theme} style={{bottom: '18%'}}/>
-            </div>
-            <div className={'logo-animate-grow logo-animate-grow-' + theme}
-                 style={{width: size + 11, height: size + 11}}
-            />
+        return <div className={'logo-back logo-background-' + theme}
+            style={{
+                backgroundImage: window.loadingBackgroundImage && window.loadingBackgroundImage !== '@@loginBackgroundImage@@' ? window.loadingBackgroundImage : undefined,
+                backgroundColor: window.loadingBackgroundColor && window.loadingBackgroundColor !== '@@loginBackgroundColor@@' ? window.loadingBackgroundColor : undefined,
+                backgroundSize: 'cover',
+            }}
+        >
+            {window.loadingHideLogo === '@@loadingHideLogo@@' || window.loadingHideLogo === 'false' ?
+                null
+                :
+                <>
+                    <div className="logo-div" style={{ width: size, height: size }}>
+                        <div className={'logo-top logo-background-' + theme} style={{ left: '37%' }}/>
+                        <div className={'logo-top logo-background-' + theme} style={{ left: '57%' }}/>
+                        <div
+                            className={`logo-border logo-background-${theme} logo-animate-wait`}
+                            style={{ borderWidth: size * 0.132 }}
+                        />
+                        <div className={'logo-i logo-animate-color-inside-' + theme}/>
+                        <div className={'logo-i-top logo-animate-color-inside-' + theme} style={{ top: '18%' }}/>
+                        <div className={'logo-i-top logo-animate-color-inside-' + theme} style={{ bottom: '18%' }}/>
+                    </div>
+                    <div className={'logo-animate-grow logo-animate-grow-' + theme}
+                    style={{ width: size + 11, height: size + 11 }}
+                    />
+                </>
+            }
         </div>;
     }
 }

@@ -4,18 +4,36 @@ import { withStyles } from '@mui/styles';
 
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+
+import IconText from '@mui/icons-material/Article';
+import IconVideo from '@mui/icons-material/Videocam';
+import IconCode from '@mui/icons-material/Code';
+import IconPlay from '@mui/icons-material/PlayArrow';
+
+import FileSelectDialog from '../../Dialogs/FileSelect';
 
 import ConfigGeneric from './ConfigGeneric';
-import FileSelectDialog from '../../Dialogs/FileSelect';
+import ConfigFileSelector from './ConfigFileSelector';
 
 const styles = theme => ({
     fullWidth: {
         width: '100%'
     },
     fullWidthOneButton: {
-        width: 'calc(100% - 65px)'
+        width: 'calc(100% - 69px)',
+        marginRight: 4,
     },
-
+    fullWidthIcon: {
+        width: 'calc(100% - 119px)',
+        marginRight: 4,
+    },
+    selectedImage: {
+        height: 40,
+        width: 40,
+        display: 'inline-block',
+        marginRight: 8,
+    }
 });
 
 const IMAGE_EXT = ['jpg', 'jpeg', 'svg', 'png', 'webp'];
@@ -28,6 +46,7 @@ class ConfigFile extends ConfigGeneric {
     componentDidMount() {
         super.componentDidMount();
         const value = ConfigGeneric.getValue(this.props.data, this.props.attr);
+        this.imagePrefix = this.props.imagePrefix === undefined ? './files' : this.props.imagePrefix;
         this.setState({ value });
     }
 
@@ -38,6 +57,51 @@ class ConfigFile extends ConfigGeneric {
         } else {
             return null;
         }
+    }
+
+    loadFile() {
+        const pos = this.state.value.indexOf('/');
+        if (pos !== -1) {
+            const adapter = this.state.value.substring(0, pos);
+            const path = this.state.value.substring(pos + 1);
+            return this.props.socket.readFile(adapter, path, true);
+        }
+    }
+
+    play() {
+        this.loadFile()
+            .then(data => {
+                if (typeof AudioContext !== 'undefined') {
+                    const context = new AudioContext();
+                    const buf = ConfigFileSelector.base64ToArrayBuffer(data.file);
+                    context.decodeAudioData(buf, buffer => {
+                        const source = context.createBufferSource(); // creates a sound source
+                        source.buffer = buffer;                      // tell the source which sound to play
+                        source.connect(context.destination);         // connect the source to the context's destination (the speakers)
+                        source.start(0);
+                    }, err => window.alert('Cannot play: ' + err));
+                }
+            });
+    }
+
+    getIcon() {
+        const extension = this.state.value.split('.').pop().toLowerCase();
+        if (IMAGE_EXT.includes(extension)) {
+            return <div className={this.props.classes.selectedImage} style={{
+                backgroundImage: `url(${this.imagePrefix}/${this.state.value})`,
+                backgroundSize: 'contain',
+                backgroundRepeat: 'no-repeat',
+            }} />;
+        } else if (AUDIO_EXT.includes(extension)) {
+            return <IconButton style={{ color: '#00FF00' }} onClick={() => this.play()}><IconPlay /></IconButton>;
+        } else if (DOC_EXT.includes(extension)) {
+            return <IconText />;
+        } else if (VIDEO_EXT.includes(extension)) {
+            return <IconVideo />;
+        } else if (JS_EXT.includes(extension)) {
+            return <IconCode />;
+        }
+        return null;
     }
 
     renderFileBrowser() {
@@ -65,10 +129,13 @@ class ConfigFile extends ConfigGeneric {
     }
 
     renderItem(error, disabled, defaultValue) {
+        const icon = this.getIcon();
+
         return <div className={this.props.classes.fullWidth}>
+            {icon}
             <TextField
                 variant="standard"
-                className={this.props.classes.fullWidthOneButton}
+                className={icon ? this.props.classes.fullWidthIcon : this.props.classes.fullWidthOneButton}
                 value={this.state.value === null || this.state.value === undefined ? '' : this.state.value}
                 error={!!error}
                 disabled={!!disabled}

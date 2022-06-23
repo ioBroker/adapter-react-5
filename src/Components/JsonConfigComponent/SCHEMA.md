@@ -28,14 +28,15 @@ Possible types:
   - `max` - maximal value
   - `step` - step
 
-- `color`
+- `color` - color picker
 
-- `checkbox`
+- `checkbox` - show checkbox
 
-- `!slider`               
+- `slider` - show slider              
   - `min` - (default 0)
   - `max` - (default 100)
-  - `step` - (default 1)
+  - `step` - (default `(max - min) / 100`)
+  - `unit` - Unit of slider
 
 - `ip` - bind address
   - `listenOnAllPorts` - add 0.0.0.0 to option
@@ -45,11 +46,11 @@ Possible types:
 - `user` - Select user from system.user. (With color and icon)
   - `short` - no system.user.
 
-- `!room` - Select room from enum.room (With color and icon)
-  - `short` - no system.room.
+- `room` - Select room from `enum.room` (With color and icon)
+  - `short` - no `enum.rooms.`
 
-- `!func` - Select function from enum.func (With color and icon)
-  - `short` - no system.func.
+- `func` - Select function from `enum.func` (With color and icon)
+  - `short` - no `enum.func.`
 
 - `select` 
   - `options` - `[{label: {en: "option 1"}, value: 1}, ...]`
@@ -63,10 +64,10 @@ Possible types:
   - `maxWidth`
   - `maxHeight`
   - `crop` - if true, allow user to crop the image (only for non svg)
-  - `square` - width must be equal to height or crop must allow only square as shape 
+  - `square` - width must be equal to height or crop must allow only square as shape
 
 - `image` - saves image as file of adapter.X object or as base64 in attribute
-  - `filename` - name of file is structure name 
+  - `filename` - name of file is structure name
 ```
   "login-bg.png": {
        "type": "image",
@@ -96,131 +97,133 @@ Possible types:
   - `!square` - width must be equal to height or crop must allow only square as shape
 
 - `objectId` - object ID - show it with name, color and icon
-  - `types` - Array of possible types: ['channel', 'device', ...] (has only `state` by default)
+    - `types` - Array of possible types: ['channel', 'device', ...] (has only `state` by default)
 
 - `password` (repeat - if repeat password must be shown with the same width settings)
-  - `repeat` password must be compared with password
-  - `visible` - true if allow to view the password by toggling the view button
-  - `maxLength` - max length of text in field
+    - `repeat` password must be compared with password
+    - `visible` - true if allow to view the password by toggling the view button
+    - `maxLength` - max length of text in field
 
 - `instance`
-  - `adapter` - name of adapter. With special name `_dataSources` you can get all adapters with flag `common.getHistory`.
-  - `allowDeactivate` - if true. Additional option "deactivate" is shown
-  - `long` - value will look like `system.adapter.ADAPTER.0` and not `ADAPTER.0`
-  - `short` - value will look like `0` and not `ADAPTER.0`
-  - `all` - Add to the options "all" option with value `*`
+    - `adapter` - name of adapter. With special name `_dataSources` you can get all adapters with flag `common.getHistory`.
+    - `allowDeactivate` - if true. Additional option "deactivate" is shown
+    - `long` - value will look like `system.adapter.ADAPTER.0` and not `ADAPTER.0`
+    - `short` - value will look like `0` and not `ADAPTER.0`
+    - `all` - Add to the options "all" option with value `*`
 
 - `chips` - user can enter the word, and it will be added (see cloud => services => White list). Option is an array if no `delimiter` defined.
-  - `delimiter` - if it is defined, so the option will be stored as string with delimiter instead of array. E.g. by `delimiter=;` you will get `a;b;c` instead of `['a', 'b', 'c']`
+    - `delimiter` - if it is defined, so the option will be stored as string with delimiter instead of array. E.g. by `delimiter=;` you will get `a;b;c` instead of `['a', 'b', 'c']`
 
 - `alive` - just indication if the instance is alive, and it could be used in "hidden" and "disabled" (will not be saved in config)
   Just text: Instance is running, Instance is not running
-  - `instance` - check if the instance is alive. If not defined, it will be used current instance. You can use `${data.number}` pattern in the text.
-  - `textAlive` - default text is `Instance %s is alive`, where %s will be replaced by `ADAPTER.0`.
-  - `textNotAlive` - default text is `Instance %s is not alive`, where %s will be replaced by `ADAPTER.0`.
+    - `instance` - check if the instance is alive. If not defined, it will be used current instance. You can use `${data.number}` pattern in the text.
+    - `textAlive` - default text is `Instance %s is alive`, where %s will be replaced by `ADAPTER.0`.
+    - `textNotAlive` - default text is `Instance %s is not alive`, where %s will be replaced by `ADAPTER.0`.
 
 - `pattern` - read only field with pattern like 'https://${data.ip}:${data.port}' (will not be saved in config)
   Text input with read only flag, that shows pattern.
-  - `copyToClipboard` - if true - show button
-  - `pattern` - my pattern
+    - `copyToClipboard` - if true - show button
+    - `pattern` - my pattern
 
 - `sendto` - button that sends request to instance (https://github.com/iobroker-community-adapters/ioBroker.email/blob/master/admin/index_m.html#L128)
-  - `command` - (Default 'send')
-  - `jsonData` - string - `{"subject1": "${data.subject}", "options1": {"host": "${data.host}"}}`
-  - `data` - object - `{"subject1": 1, "data": "static"}`. You can specify jsonData or data, but not both.
-  - `result` - `{result1: {en: 'A'}, result2: {en: 'B'}}`
-  - `error` - `{error1: {en: 'E'}, error2: {en: 'E2'}}`
-  - `variant` - `contained`, `outlined`, ''
-  `this.props.socket.sendTo(adapterName.instance, command || 'send', data, result => {});`
+    - `command` - (Default 'send')
+    - `jsonData` - string - `{"subject1": "${data.subject}", "options1": {"host": "${data.host}"}}`
+    - `data` - object - `{"subject1": 1, "data": "static"}`. You can specify jsonData or data, but not both.
+    - `result` - `{result1: {en: 'A'}, result2: {en: 'B'}}`
+    - `error` - `{error1: {en: 'E'}, error2: {en: 'E2'}}`
+    - `variant` - `contained`, `outlined`, ''
+      `this.props.socket.sendTo(adapterName.instance, command || 'send', data, result => {});`
 
 - `setState` - button that set instance's state
-  - `id` - 'info.test'
-  - `ack` - false (default false)
-  - `val` - '${data.myText}_test' or number. Type will be detected automatically from state type and converting done too
-  - `okText` - Alert which will be shown by pressing the button
-  - `variant` - `contained`, `outlined`, ''
+    - `id` - 'info.test'
+    - `ack` - false (default false)
+    - `val` - '${data.myText}_test' or number. Type will be detected automatically from state type and converting done too
+    - `okText` - Alert which will be shown by pressing the button
+    - `variant` - `contained`, `outlined`, ''
 
 - `staticText` - static text like description
-  - `label` - multi-language text
-  - `text` - same as label
+    - `label` - multi-language text
+    - `text` - same as label
 
 - `staticLink` - static link
-  - `label` - multi-language text
-  - `href` - link. Link could be dynamic like `#tab-objects/customs/${data.parentId}`
-  - `button` - show link as button
-  - `icon` - icon for button
+    - `label` - multi-language text
+    - `href` - link. Link could be dynamic like `#tab-objects/customs/${data.parentId}`
+    - `button` - show link as button
+    - `icon` - icon for button
 
 - `staticImage` - static image
-  - `href` - optional HTTP link
-  - `src` - name of picture (from admin directory)
+    - `href` - optional HTTP link
+    - `src` - name of picture (from admin directory)
 
 - `table` - table with items that could be deleted, added, movedUP, moved Down
-  - `items` - [{"type": see above, "width": px or %, "title": {"en": "header"}, "attr": "name", "filter": false, "sort": true, "default": ""}]
-  - `noDelete` - boolean if delete or add disabled, If noDelete is false, add, delete and move up/down should work
-  - `objKeyName` - (legacy setting, don't use!) - name of the key in `{"192.168.1.1": {delay: 1000, enabled: true}, "192.168.1.2": {delay: 2000, enabled: false}}`
-  - `objValueName` - (legacy setting, don't use!) - name of the value in `{"192.168.1.1": "value1", "192.168.1.2": "value2"}`
-  - `allowAddByFilter` - if add allowed even if filter is set
+    - `items` - [{"type": see above, "width": px or %, "title": {"en": "header"}, "attr": "name", "filter": false, "sort": true, "default": ""}]
+    - `noDelete` - boolean if delete or add disabled, If noDelete is false, add, delete and move up/down should work
+    - `objKeyName` - (legacy setting, don't use!) - name of the key in `{"192.168.1.1": {delay: 1000, enabled: true}, "192.168.1.2": {delay: 2000, enabled: false}}`
+    - `objValueName` - (legacy setting, don't use!) - name of the value in `{"192.168.1.1": "value1", "192.168.1.2": "value2"}`
+    - `allowAddByFilter` - if add allowed even if filter is set
 - `json` - json editor
 
 - `language`
-  - `system` - allow the usage of the system language from system.config as default
+    - `system` - allow the usage of the system language from system.config as default
 
 - `certificate`
-  - `certType` - on of: `public`, `private`, `chained`
+    - `certType` - on of: `public`, `private`, `chained`
 
 - `custom`
-  - `name` - Component name that will be provided via props, like ComponentInstancesEditor
-  - `url` - Location of component
-      - `custom/customComponents.js`: in this case the files will be loaded from `/adapter/ADAPTER_NAME/custom/customComponents.js`
-      - `https://URL/myComponent`: direct from URL
-      - `./adapter/ADAPTER_NAME/custom/customComponent.js`: in this case the files will be loaded from `/adapter/ADAPTER_NAME/custom/customComponents.js`
-  - `i18n` - true if `i18n/xx.json` files are located in the same directory as component, or translation object `{"text1": {"en": Text1"}}`
+    - `name` - Component name that will be provided via props, like ComponentInstancesEditor
+    - `url` - Location of component
+        - `custom/customComponents.js`: in this case the files will be loaded from `/adapter/ADAPTER_NAME/custom/customComponents.js`
+        - `https://URL/myComponent`: direct from URL
+        - `./adapter/ADAPTER_NAME/custom/customComponent.js`: in this case the files will be loaded from `/adapter/ADAPTER_NAME/custom/customComponents.js`
+    - `i18n` - true if `i18n/xx.json` files are located in the same directory as component, or translation object `{"text1": {"en": Text1"}}`
 
 - `divider` - horizontal line
-  - `height` - optional height
-  - `color` - optional divider color or `primary`, `secondary`
+    - `height` - optional height
+    - `color` - optional divider color or `primary`, `secondary`
 
 - `header`
-  - `text`
-  - `size` - 1-5 => h1-h5
+    - `text`
+    - `size` - 1-5 => h1-h5
 
 - `cron`
-  - `complex` - show CRON with "minutes", "seconds" and so on
-  - `simple` - show simple CRON settings
+    - `complex` - show CRON with "minutes", "seconds" and so on
+    - `simple` - show simple CRON settings
 
 - `fileSelector`
-  - `pattern` - File extension pattern. Allowed `**/*.ext` to show all files from sub-folders too, `*.ext` to show from root folder or `folderName/*.ext` to show all files in sub-folder `folderName`. Default `**/*.*`. 
-  - `objectID` - Object ID of type `meta`. You can use special placeholder `%INSTANCE%`: like `myAdapter.%INSTANCE%.files` 
-  - `upload` - path, where the uploaded files will be stored. Like `folderName`. If not defined, no upload field will be show. To upload in root set this field to `/`.  
-  - `refresh` - Show refresh button near the select.  
-  - `maxSize` - max file size (default 2MB)  
-  - `withFolder` - show folder name even if all files in same folder  
-  - `delete` - Allow deletion of files
-  - `noNone` - Do not show `none` option
-  - `noSize` - Do not show size of files
+    - `pattern` - File extension pattern. Allowed `**/*.ext` to show all files from sub-folders too, `*.ext` to show from root folder or `folderName/*.ext` to show all files in sub-folder `folderName`. Default `**/*.*`.
+    - `objectID` - Object ID of type `meta`. You can use special placeholder `%INSTANCE%`: like `myAdapter.%INSTANCE%.files`
+    - `upload` - path, where the uploaded files will be stored. Like `folderName`. If not defined, no upload field will be show. To upload in root set this field to `/`.
+    - `refresh` - Show refresh button near the select.
+    - `maxSize` - max file size (default 2MB)
+    - `withFolder` - show folder name even if all files in same folder
+    - `delete` - Allow deletion of files
+    - `noNone` - Do not show `none` option
+    - `noSize` - Do not show size of files
 
 - `file`
   Input field with file selector
-  - `disableEdit` - if user can manually enter the file name and not only through select dialog
-  - `limitPath` - limit selection to one specific object of type `meta` and following path (not mandatory)
-  - `filterFiles` - like `['png', 'svg', 'bmp', 'jpg', 'jpeg']`
-  - `filterByType` - `images, code, txt, audio, video`
-  - `allowUpload` - allowed upload of files
-  - `allowDownload` - allowed download of files (default true)
-  - `allowCreateFolder` - allowed creation of folders
-  - `allowView` - allowed tile view (default true)
-  - `showToolbar` - show toolbar (default true)
-  - `selectOnlyFolders` - user can select only folders (e.g. for upload path)
- 
+    - `disableEdit` - if user can manually enter the file name and not only through select dialog
+    - `limitPath` - limit selection to one specific object of type `meta` and following path (not mandatory)
+    - `filterFiles` - like `['png', 'svg', 'bmp', 'jpg', 'jpeg']`
+    - `filterByType` - `images, code, txt, audio, video`
+    - `allowUpload` - allowed upload of files
+    - `allowDownload` - allowed download of files (default true)
+    - `allowCreateFolder` - allowed creation of folders
+    - `allowView` - allowed tile view (default true)
+    - `showToolbar` - show toolbar (default true)
+    - `selectOnlyFolders` - user can select only folders (e.g. for upload path)
+
 - `selectSendTo`
-  Shows drop down menu with the given from the instance values. 
-  - `command` - sendTo command
-  - `jsonData` - string - `{"subject1": "${data.subject}", "options1": {"host": "${data.host}"}}`. This data will be sent to backend
-  - `data` - object - `{"subject1": 1, "data": "static"}`. You can specify jsonData or data, but not both. This data will be sent to backend if jsonData is not defined.
-  - `!manual` - allow manual editing. Without drop down  
-  - `noTranslation` - do not translate label of selects  
-    To use this option, your adapter must implement message handler:
-    The result of command must be an array in form `[{"value": 1, "label": "one"}, ...]`
+  Shows drop down menu with the given from the instance values.
+    - `command` - sendTo command
+    - `jsonData` - string - `{"subject1": "${data.subject}", "options1": {"host": "${data.host}"}}`. This data will be sent to backend
+    - `data` - object - `{"subject1": 1, "data": "static"}`. You can specify jsonData or data, but not both. This data will be sent to backend if jsonData is not defined.
+    - `manual` - allow manual editing. Without drop down menu (if instance is offline). Default `true`.
+    - `multiple` - Multiple choice select
+    - `showAllValues` - show item even if no label was found for it (by multiple), default=`true`
+    - `noTranslation` - do not translate label of selects  
+      To use this option, your adapter must implement message handler:
+      The result of command must be an array in form `[{"value": 1, "label": "one"}, ...]`
 ```
 adapter.on('message', obj => {
    if (obj) {
@@ -264,7 +267,7 @@ adapter.on('message', obj => {
   - `maxLength` - max length of text in field
   To use this option, your adapter must implement message handler:
     The result of command must be an array in form `["value1", {"value": "value2", "label": "Value2"}, ...]`
-    See `selectSendTo` for handler example 
+    See `selectSendTo` for handler example
 
 - `textSendTo`
   Shows readonly control with the given from the instance values.
@@ -303,7 +306,7 @@ All types could have:
 - `darkStyle` - css style for dark mode
 - `validator` - JS function: true no error, false - error
 - `validatorErrorText` - Text to show if validator fails
-- `validatorNoSaveOnError` - disable save button if error   
+- `validatorNoSaveOnError` - disable save button if error
 - `tooltip` - optional tooltip
 - `default` - default value
 - `defaultFunc` - JS function to calculate default value
@@ -315,7 +318,7 @@ All types could have:
   - `buttonTooltip` - Button tooltip (default: `Request data by instance`)
   - `buttonTooltipNoTranslation` - Do not translate button tooltip
 - `placeholder` - placeholder (for text control)
-- `noTranslation` - do not translate selects or other options (not for help, label or placeholder)  
+- `noTranslation` - do not translate selects or other options (not for help, label or placeholder)
 - `onChange` - Structure in form `{"alsoDependsOn": ["attr1", "attr2], "calculateFunc": "attr1 + attr2", "ignoreOwnChanges": true}`
 - `doNotSave` - Do not save this attribute as used only for internal calculations
 - `noMultiEdit` - if this flag set to true, this field will not be shown if user selected more than one object for edit.
@@ -375,7 +378,7 @@ All types could have:
 `Number`, `text`, `checkbox`, `select` support autocomplete to allow selection of options if used as custom settings.
 In this case the value will be provided as array of all possible values.
 
-Example: 
+Example:
 ```
 ...
    "timeout": {
@@ -432,7 +435,7 @@ If no schema provided, the schema must be created automatically from data.
 If element has no attribute `type`, assume it has default type 'panel'.
 
 ## i18n
-1. User can provide translations directly in label like: 
+1. User can provide translations directly in label like:
 ```
 {
    "type": "text",
@@ -450,7 +453,7 @@ On the top level of structure set `i18n: true` and provide files in admin:
 - admin/i18n/en/translations.json
 - ...
 
-or 
+or
 - admin/i18n/de.json
 - admin/i18n/en.json
 - ...
@@ -465,7 +468,7 @@ or
 - admin/customI18n/en.json
 - ...
 
-3. User can provide translations in i18n attribute: 
+3. User can provide translations in i18n attribute:
 ```
 {
     "18n": {

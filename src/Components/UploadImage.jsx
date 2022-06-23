@@ -320,7 +320,6 @@ const cropperStyles = `
 }
 `;
 
-
 const styles = theme => ({
     dropZone: {
         width: '100%',
@@ -436,7 +435,7 @@ class UploadImage extends Component {
                 ext = 'image/svg+xml';
             }
             if (file.size > maxSize) {
-                return window.alert(t('File is too big. Max %sk allowed. Try use SVG.', Math.round(maxSize / 1024)));
+                return window.alert(t('ra_File is too big. Max %sk allowed. Try use SVG.', Math.round(maxSize / 1024)));
             }
             const base64 = `data:${ext};base64,${btoa(
                 new Uint8Array(reader.result)
@@ -461,7 +460,7 @@ class UploadImage extends Component {
             onDrop={(acceptedFiles, errors) => {
                 this.setState({ uploadFile: false });
                 if (!acceptedFiles.length) {
-                    window.alert((errors && errors[0] && errors[0].errors && errors[0].errors[0] && errors[0].errors[0].message) || t('Cannot upload'));
+                    window.alert((errors && errors[0] && errors[0].errors && errors[0].errors[0] && errors[0].errors[0].message) || t('ra_Cannot upload'));
                 } else {
                     return this.onDrop(acceptedFiles);
                 }
@@ -475,18 +474,18 @@ class UploadImage extends Component {
                     disabled && classes.disabledOpacity,
                     !icon && classes.dropZoneEmpty
                 )}
-                 {...getRootProps()}>
+                {...getRootProps()}>
                 <input {...getInputProps()} />
                 <div className={clsx(classes.uploadCenterDiv, error && classes.error)}>
                     {!icon ? <div className={classes.uploadCenterTextAndIcon}>
                             <UploadIcon className={classes.uploadCenterIcon} />
                             <div className={classes.uploadCenterText}>{
-                                uploadFile === 'dragging' ? t('Drop file here') :
-                                    t('Place your files here or click here to open the browse dialog')}</div>
+                                uploadFile === 'dragging' ? t('ra_Drop file here') :
+                                    t('ra_Place your files here or click here to open the browse dialog')}</div>
                         </div>
                         :
                         removeIconFunc && !cropHandler && <div className={classes.buttonRemoveWrapper}>
-                            <Tooltip title={t('Clear')}>
+                            <Tooltip title={t('ra_Clear')}>
                                 <IconButton size="large" onClick={e => {
                                     removeIconFunc && removeIconFunc();
                                     e.stopPropagation();
@@ -496,7 +495,7 @@ class UploadImage extends Component {
                         </div>
                     }
                     {icon && crop && <div className={classes.buttonCropWrapper}>
-                        <Tooltip title={t('Crop')}>
+                        <Tooltip title={t('ra_Crop')}>
                             <IconButton size="large" onClick={e => {
                                 if (!cropHandler) {
                                     this.setState({ cropHandler: true });
@@ -508,7 +507,6 @@ class UploadImage extends Component {
                             </IconButton>
                         </Tooltip>
                         <Menu
-                            id="simple-menu"
                             anchorEl={anchorEl}
                             keepMounted
                             open={Boolean(anchorEl)}
@@ -517,8 +515,8 @@ class UploadImage extends Component {
                             <MenuItem onClick={() => this.setState({ anchorEl: null, cropHandler: false }, () => {
                                 const imageElement = this.cropperRef?.current?.cropper;
                                 onChange(imageElement.getCroppedCanvas().toDataURL());
-                            })}>{t('Save')}</MenuItem>
-                            <MenuItem onClick={() => this.setState({ anchorEl: null, cropHandler: false })}>{t('Close')}</MenuItem>
+                            })}>{t('ra_Save')}</MenuItem>
+                            <MenuItem onClick={() => this.setState({ anchorEl: null, cropHandler: false })}>{t('ra_Close')}</MenuItem>
                         </Menu>
                     </div>}
                     {icon && !cropHandler ? <img src={icon} className={classes.image} alt="icon" /> : null}
@@ -546,7 +544,7 @@ UploadImage.defaultProps = {
     maxSize: 10 * 1024,
     icon: null,
     removeIconFunc: null,
-    accept: 'image/*',
+    accept: { 'image/*': [] },
     error: false,
     onChange: base64 => console.log(base64),
     t: el => el,
@@ -560,7 +558,7 @@ UploadImage.propTypes = {
     crop: PropTypes.bool,
     error: PropTypes.bool,
     onChange: PropTypes.func,
-    accept: PropTypes.string,
+    accept: PropTypes.object,
     t: PropTypes.func,
 };
 

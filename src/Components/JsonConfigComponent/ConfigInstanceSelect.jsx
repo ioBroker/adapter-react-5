@@ -33,6 +33,8 @@ class ConfigInstanceSelect extends ConfigGeneric {
                 if (this.props.schema.adapter === '_dataSources') {
                     // get only "data-sources", like history, sql, influx
                     instances = instances.filter(instance => instance && instance.common && instance.common.getHistory);
+                } else if (this.props.schema.adapter) {
+                    instances = instances.filter(instance => instance && instance._id.startsWith('system.adapter.' + this.props.schema.adapter + '.'));
                 }
 
                 selectOptions = instances.map(instance => ({
@@ -40,6 +42,16 @@ class ConfigInstanceSelect extends ConfigGeneric {
                         (this.props.schema.short ? instance._id.split('.').pop() : instance._id.replace(/^system\.adapter\./, '')),
                     label: `${instance.common.name} [${instance._id.replace(/^system\.adapter\./, '')}]`
                 }));
+
+                selectOptions.sort((a, b) => {
+                    if (a.value > b.value) {
+                        return 1;
+                    } else if (a.value < b.value) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                });
 
                 selectOptions.unshift({ label: I18n.t(ConfigGeneric.NONE_LABEL), value: ConfigGeneric.NONE_VALUE });
                 if (this.props.schema.all) {
@@ -104,7 +116,7 @@ class ConfigInstanceSelect extends ConfigGeneric {
         const item = this.state.selectOptions?.find(item => item.value === this.state.value);
 
         return <FormControl className={this.props.classes.fullWidth} key={this.props.attr} variant="standard">
-            <InputLabel shrink>{this.getText(this.props.schema.label)}</InputLabel>
+            {this.props.schema.label ? <InputLabel shrink>{this.getText(this.props.schema.label)}</InputLabel> : null }
             <Select
                 variant="standard"
                 error={!!error}

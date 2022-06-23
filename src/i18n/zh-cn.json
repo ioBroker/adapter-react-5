@@ -299,5 +299,8 @@
   "ra_Delete current row": "删除当前行",
   "ra_All items are filtered out": "所有项目都被过滤掉",
   "ra_Double click to reset table layout": "双击重置表格布局",
-  "ra_Cannot retrieve options, as instance is offline": "无法检索选项，因为实例处于脱机状态"
+  "ra_Cannot retrieve options, as instance is offline": "无法检索选项，因为实例处于脱机状态",
+  "ra_File is too big. Max %sk allowed. Try use SVG.": "文件太大。允许的最大字节%s数。尝试使用 SVG。",
+  "ra_Cannot upload": "无法上传",
+  "ra_Crop": "庄稼"
 }

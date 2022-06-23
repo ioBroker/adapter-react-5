@@ -312,5 +312,8 @@
   "ra_Delete current row": "Delete current row",
   "ra_All items are filtered out": "All items are filtered out",
   "ra_Double click to reset table layout": "Double click to reset table layout",
-  "ra_Cannot retrieve options, as instance is offline": "Cannot retrieve options, as instance is offline"
+  "ra_Cannot retrieve options, as instance is offline": "Cannot retrieve options, as instance is offline",
+  "ra_File is too big. Max %sk allowed. Try use SVG.": "File is too big. Max %sk allowed. Try use SVG.",
+  "ra_Cannot upload": "Cannot upload",
+  "ra_Crop": "Crop"
 }

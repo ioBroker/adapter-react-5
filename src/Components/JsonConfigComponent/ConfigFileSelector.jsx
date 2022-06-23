@@ -124,7 +124,7 @@ class ConfigFileSelector extends ConfigGeneric {
     constructor(props) {
         super(props);
         this.dropzoneRef = React.createRef();
-        this.imagePrefix = this.props.imagePrefix === undefined ? '../../files' : this.props.imagePrefix;
+        this.imagePrefix = this.props.imagePrefix === undefined ? './files' : this.props.imagePrefix;
     }
 
     componentDidMount() {
@@ -147,7 +147,6 @@ class ConfigFileSelector extends ConfigGeneric {
             .then(() => {
                 const value = ConfigGeneric.getValue(this.props.data, this.props.attr);
                 this.setState({ value });
-                this.checkImage();
             });
     }
 
@@ -245,10 +244,6 @@ class ConfigFileSelector extends ConfigGeneric {
         reader.readAsArrayBuffer(file);
     }
 
-    loadFile() {
-        return this.props.socket.readFile(this.objectID, this.state.value, true);
-    }
-
     renderDeleteDialog() {
         if (!this.state.deleteFile) {
             return null;
@@ -272,13 +267,17 @@ class ConfigFileSelector extends ConfigGeneric {
     }
 
     static base64ToArrayBuffer(base64) {
-        var binary_string = window.atob(base64);
-        var len = binary_string.length;
-        var bytes = new Uint8Array(len);
-        for (var i = 0; i < len; i++) {
-            bytes[i] = binary_string.charCodeAt(i);
+        const binaryString = window.atob(base64);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
         }
         return bytes.buffer;
+    }
+
+    loadFile() {
+        return this.props.socket.readFile(this.objectID, this.state.value, true);
     }
 
     play() {
@@ -303,7 +302,7 @@ class ConfigFileSelector extends ConfigGeneric {
         }
         if (IMAGE_EXT.includes(item.extension)) {
             return <div className={this.props.classes.selectedImage} style={{
-                backgroundImage: 'url(' + this.imagePrefix + '/' + this.objectID + '/' + item.value + ')',
+                backgroundImage: `url(${this.imagePrefix}/${this.objectID}/${item.value})`,
                 backgroundSize: 'contain',
                 backgroundRepeat: 'no-repeat',
             }} />;
@@ -467,8 +466,8 @@ class ConfigFileSelector extends ConfigGeneric {
                         <div className={this.props.classes.uploadCenterTextAndIcon}>
                             <UploadIcon className={this.props.classes.uploadCenterIcon} />
                             <div className={this.props.classes.uploadCenterText}>{
-                                this.state.uploadFile === 'dragging' ? I18n.t('Drop file here') :
-                                    I18n.t('Place your files here or click here to open the browse dialog')}</div>
+                                this.state.uploadFile === 'dragging' ? I18n.t('ra_Drop file here') :
+                                    I18n.t('ra_Place your files here or click here to open the browse dialog')}</div>
                         </div>
                     </div> : null}
                     {element}

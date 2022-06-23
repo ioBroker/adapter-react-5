@@ -66,7 +66,7 @@ class ConfigSendto extends ConfigGeneric {
         }
 
         this.props.socket.sendTo(
-            this.props.adapterName + '.' + this.props.instance,
+            `${this.props.adapterName}.${this.props.instance}`,
             this.props.schema.command || 'send',
             data
         )

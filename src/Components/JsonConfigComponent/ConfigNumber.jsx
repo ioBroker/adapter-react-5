@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
-import { Autocomplete, TextField, InputAdornment, FormControl } from '@mui/material';
+import { Autocomplete, TextField, FormControl } from '@mui/material';
 
 import I18n from '../../i18n';
 import Utils from '../Utils';
@@ -16,7 +16,7 @@ const styles = theme => ({
     },
     control: {
       flexDirection: 'row',
-        width: '100%',
+        width: '100%'
     },
     textWithArrows: {
         width: 'calc(100% - 12px)',

@@ -3,23 +3,20 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
 import Button from '@mui/material/Button';
-import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import {Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField} from '@mui/material';
 import { withStyles } from '@mui/styles';
 
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import LanguageIcon from '@mui/icons-material/Language';
 
-import i18n from '../i18n';
+import Utils from './Utils';
+import I18n from '../i18n';
 
 const styles = theme => ({
-    modalWrapper: {
-        position: 'relative',
-        '[class*="MuiPaper-root MuiDialog-paper MuiPaper-elevation24 MuiDialog-paperScrollPaper MuiDialog-paperWidthXl MuiPaper-elevation24 MuiPaper-rounded"]': {
-            backgroundColor: '#f6f6f6'
-        }
-    },
     modalDialog: {
-        minWidth: 400
+        minWidth: 400,
+        maxWidth: 800,
     },
     overflowHidden: {
         display: 'flex',
@@ -29,11 +26,19 @@ const styles = theme => ({
         marginRight: 5,
     },
     content: {
-        fontSize: 16
+        fontSize: 16,
+    },
+    languageButton: {
+        position: 'absolute',
+        right: theme.spacing(1),
+        top: theme.spacing(1)
+    },
+    languageButtonActive: {
+        color: theme.palette.primary.main
     },
 });
 
-const CustomModal = ({ title, fullWidth, help, maxWidth, progress, icon, applyDisabled, applyButton, classes, open, onClose, children, titleButtonApply, titleButtonClose, onApply, textInput, defaultValue, overflowHidden }) => {
+const CustomModal = ({ toggleTranslation, noTranslation, title, fullWidth, help, maxWidth, progress, icon, applyDisabled, applyButton, classes, open, onClose, children, titleButtonApply, titleButtonClose, onApply, textInput, defaultValue, overflowHidden }) => {
     const [value, setValue] = useState(defaultValue);
     useEffect(() => {
         setValue(defaultValue);
@@ -52,10 +57,20 @@ const CustomModal = ({ title, fullWidth, help, maxWidth, progress, icon, applyDi
         disableEscapeKeyDown={false}
         onClose={onClose}
         classes={{ paper: classes.modalDialog, /*paper: classes.background*/ }}
-        className={classes.modalWrapper}
     >
-        {title && <DialogTitle>{icon ? <Icon className={classes.titleIcon}/> : null}{title}</DialogTitle>}
-        <DialogContent className={clsx(overflowHidden ? classes.overflowHidden : null, classes.content)}>
+        {title && <DialogTitle>
+            {icon ? <Icon className={classes.titleIcon}/> : null}
+            {title}
+            {I18n.getLanguage() !== 'en' && toggleTranslation ? <IconButton
+                size="large"
+                className={Utils.clsx(classes.languageButton, noTranslation && classes.languageButtonActive)}
+                onClick={() => toggleTranslation()}
+                title={I18n.t('Disable/Enable translation')}
+            >
+                <LanguageIcon />
+            </IconButton> : null}
+        </DialogTitle>}
+        <DialogContent className={clsx(overflowHidden ? classes.overflowHidden : null, classes.content)} style={{ paddingTop: 8 }}>
             {textInput && <TextField
                 // className={className}
                 autoComplete="off"
@@ -80,7 +95,7 @@ const CustomModal = ({ title, fullWidth, help, maxWidth, progress, icon, applyDi
                 variant="contained"
                 color="primary"
             >
-                {i18n.t(titleButtonApply)}
+                {I18n.t(titleButtonApply)}
             </Button>}
             <Button
                 color="grey"
@@ -89,7 +104,7 @@ const CustomModal = ({ title, fullWidth, help, maxWidth, progress, icon, applyDi
                 variant="contained"
                 startIcon={<CloseIcon/>}
             >
-                {i18n.t(titleButtonClose)}
+                {I18n.t(titleButtonClose)}
             </Button>
         </DialogActions>
     </Dialog>;
@@ -118,6 +133,8 @@ CustomModal.propTypes = {
     fullWidth: PropTypes.bool,
     maxWidth: PropTypes.string,
     help: PropTypes.string,
+    noTranslation: PropTypes.bool,
+    toggleTranslation: PropTypes.func,
 };
 
 export default withStyles(styles)(CustomModal);
