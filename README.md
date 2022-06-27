@@ -641,7 +641,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.1.15 (2022-06-27)
 * (bluefox) Allow to use spaces in name
 
 ### 3.1.14 (2022-06-23)
