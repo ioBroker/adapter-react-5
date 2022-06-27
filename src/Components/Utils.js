@@ -144,9 +144,10 @@ class Utils {
      * @param {{ name: any; } | ioBroker.Languages | null } settings or language
      * @param {{ language?: ioBroker.Languages; } } options
      * @param {boolean} [isDesc] Set to true to get the description.
+     * @param {boolean} [noTrim] Allow to use spaces in name (by edit)
      * @returns {string}
      */
-    static getObjectNameFromObj(obj, settings, options, isDesc) {
+    static getObjectNameFromObj(obj, settings, options, isDesc, noTrim) {
         let item = obj;
         let text = (obj && obj._id) || '';
         const attr = isDesc ? 'desc' : 'name';
@@ -178,7 +179,7 @@ class Utils {
                 text = text[0] + text.substring(1).toLowerCase();
             }
         }
-        return text.trim();
+        return noTrim ? text : text.trim();
     }
 
     /**
