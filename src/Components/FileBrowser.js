@@ -950,8 +950,7 @@ class FileBrowser extends Component {
                     <DeleteIcon fontSize="small" />
                 </IconButton>
                 :
-                (this.state.viewType === TABLE && this.props.allowDelete ? <div className={this.props.classes['itemDeleteButton' + this.state.viewType]} /> : null)
-            }
+                (this.state.viewType === TABLE && this.props.allowDelete ? <div className={this.props.classes[`itemDeleteButton${this.state.viewType}`]} /> : null)}
         </div>;
     }
 

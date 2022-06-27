@@ -216,6 +216,9 @@ const styles = theme => ({
     },
     tableRowLines: {
         borderBottom: `1px solid ${theme.palette.mode === 'dark' ? '#8888882e' : '#8888882e'}`,
+        '& > div': {
+            borderRight: `1px solid ${theme.palette.mode === 'dark' ? '#8888882e' : '#8888882e'}`,
+        }
     },
     tableRowNoDragging: {
         cursor: 'pointer',
@@ -1566,7 +1569,7 @@ class ObjectBrowser extends Component {
             }
         }
 
-        filter.expertMode = props.expertMode !== undefined ? props.expertMode : (window.sessionStorage.getItem('App.expertMode') === 'true');
+        filter.expertMode = props.expertMode !== undefined ? props.expertMode : ((window._sessionStorage || window.sessionStorage).getItem('App.expertMode') === 'true');
         this.tableRef = createRef();
         this.filterRefs = {};
 
@@ -2519,7 +2522,7 @@ class ObjectBrowser extends Component {
         if (name) {
             filter[name] = value;
             if (name === 'expertMode') {
-                window.sessionStorage.setItem('App.expertMode', value ? 'true' : 'false');
+                (window._sessionStorage || window.sessionStorage).setItem('App.expertMode', value ? 'true' : 'false');
             }
         }
 
@@ -3581,9 +3584,9 @@ class ObjectBrowser extends Component {
             const copyText = info.valText.v || '';
             info.val = copyText;
             info.valText = [
-                <span className={classes.newValue || classes.newValue} key="valText">{info.valText.v.toString()}</span>,
-                info.valText.u ? <span className={Utils.clsx(classes.cellValueTextUnit, classes.newValue)} key="unit">{info.valText.u}</span> : null,
-                info.valText.s !== undefined ? <span className={Utils.clsx(classes.cellValueTextState, classes.newValue)} key="states">({info.valText.s})</span> : null,
+                <span className={classes.newValue} key={`${info.valText.v.toString()}valText`}>{info.valText.v.toString()}</span>,
+                info.valText.u ? <span className={Utils.clsx(classes.cellValueTextUnit, classes.newValue)} key={`${info.valText.v.toString()}unit`}>{info.valText.u}</span> : null,
+                info.valText.s !== undefined ? <span className={Utils.clsx(classes.cellValueTextState, classes.newValue)} key={`${info.valText.v.toString()}states`}>({info.valText.s})</span> : null,
                 <IconCopy className={Utils.clsx(classes.cellButtonsValueButton, 'copyButton', classes.cellButtonsValueButtonCopy)} onClick={e => this.onCopy(e, copyText)} key="cc" />,
                 //<IconEdit className={ Utils.clsx(classes.cellButtonsValueButton, 'copyButton', classes.cellButtonsValueButtonEdit) } key="ce" />
             ];
@@ -3855,7 +3858,7 @@ class ObjectBrowser extends Component {
                                 defaultValue={this.customColumnDialog.value}
                                 fullWidth
                                 onKeyUp={e => e.keyCode === 13 && this.onColumnsEditCustomDialogClose(true)}
-                                label={this.state.columnsEditCustomDialog.it.name + ' (' + this.state.columnsEditCustomDialog.it.pathText + ')'}
+                                label={`${this.state.columnsEditCustomDialog.it.name} (${this.state.columnsEditCustomDialog.it.pathText})`}
                                 onChange={e => {
                                     this.customColumnDialog.value = e.target.value;
                                     const changed = this.customColumnDialog.value !== this.customColumnDialog.initValue;
