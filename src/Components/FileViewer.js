@@ -65,7 +65,6 @@ function bufferToBase64(buffer) {
 
 /**
  * @typedef {object} FileViewerProps
- * @property {string} [key] The key to identify this component.
  * @property {import('../types').Translator} t Translation function
  * @property {ioBroker.Languages} [lang] The selected language.
  * @property {boolean} [expertMode] Is expert mode enabled? (default: false)

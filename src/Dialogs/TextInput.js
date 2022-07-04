@@ -18,7 +18,6 @@ import withWidth from '../Components/withWidth';
 
 /**
  * @typedef {object} TextInputProps
- * @property {string} [key] The key to identify this component.
  * @property {(text: string | null) => void} onClose The dialog close callback.
  * @property {string} titleText The title text.
  * @property {string} [promptText] Prompt text (default: empty).

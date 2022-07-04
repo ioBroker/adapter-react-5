@@ -37,7 +37,6 @@ function serializeAttrs(map) {
 
 /**
  * @typedef {object} ImageProps
- * @property {string} [key] The key to identify this component.
  * @property {string} [color] The color.
  * @property {string} [src] The source of the image.
  * @property {string} [imagePrefix] The image prefix (default: './files/')

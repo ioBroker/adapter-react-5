@@ -234,7 +234,6 @@ const loaderStyles = `
 
 /**
  * @typedef {object} LoaderProps
- * @property {string} [key] The key to identify this component.
  * @property {number} [size] The size in pixels of this loader.
  * @property {string} [themeType] The chosen theme type.
  * @property {string} [theme] The chosen theme.

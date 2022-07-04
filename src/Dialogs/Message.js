@@ -22,7 +22,6 @@ import I18n from '../i18n';
 
 /**
  * @typedef {object} DialogMessageProps
- * @property {string} [key] The key to identify this component.
  * @property {string} [title] The dialog title; default: Message (translated)
  * @property {string} text The dialog text.
  * @property {() => void} [onClose] Close handler.
