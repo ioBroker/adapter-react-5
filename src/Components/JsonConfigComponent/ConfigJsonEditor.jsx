@@ -10,12 +10,12 @@ import ConfigGeneric from './ConfigGeneric';
 import I18n from '../../i18n';
 import CustomModal from '../CustomModal';
 
-import AceEditor from 'react-ace';
+// import AceEditor from 'react-ace';
 // import 'ace-builds/webpack-resolver';
-import 'ace-builds/src-noconflict/mode-json';
-import 'ace-builds/src-noconflict/theme-clouds_midnight';
-import 'ace-builds/src-noconflict/theme-chrome';
-import 'ace-builds/src-noconflict/ext-language_tools';
+// import 'ace-builds/src-noconflict/mode-json';
+// import 'ace-builds/src-noconflict/theme-clouds_midnight';
+// import 'ace-builds/src-noconflict/theme-chrome';
+// import 'ace-builds/src-noconflict/ext-language_tools';
 
 const styles = theme => ({
     fullWidth: {
@@ -67,7 +67,7 @@ class ConfigJsonEditor extends ConfigGeneric {
                 onApply={() => this.setState({ showSelectId: false }, () => this.onChange(attr, value))}
             >
                 <div className={classes.wrapper}>
-                    <AceEditor
+                    {/*<AceEditor
                         mode="json"
                         theme={this.props.themeName === 'dark' ? 'clouds_midnight' : 'chrome'}
                         value={value}
@@ -82,7 +82,8 @@ class ConfigJsonEditor extends ConfigGeneric {
                             enableSnippets: true
                         }}
                         editorProps={{ $blockScrolling: true }}
-                    />
+                    />*/}
+                    <div>NOT SUPPORTED</div>
                 </div>
             </CustomModal> : null}
             {schema.help ? <FormHelperText>{this.renderHelp(this.props.schema.help, this.props.schema.helpLink, this.props.schema.noTranslation)}</FormHelperText> : null}
