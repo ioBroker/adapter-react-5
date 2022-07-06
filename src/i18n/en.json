@@ -315,5 +315,6 @@
   "ra_Cannot retrieve options, as instance is offline": "Cannot retrieve options, as instance is offline",
   "ra_File is too big. Max %sk allowed. Try use SVG.": "File is too big. Max %sk allowed. Try use SVG.",
   "ra_Cannot upload": "Cannot upload",
-  "ra_Crop": "Crop"
+  "ra_Crop": "Crop",
+  "ra_tooltip_comment": "Comment"
 }

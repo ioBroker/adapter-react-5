@@ -302,5 +302,6 @@
   "ra_Cannot retrieve options, as instance is offline": "Kan opties niet ophalen, omdat instantie offline is",
   "ra_File is too big. Max %sk allowed. Try use SVG.": "Bestand is te groot. Max. %sk toegestaan. Probeer SVG te gebruiken.",
   "ra_Cannot upload": "Kan niet uploaden",
-  "ra_Crop": "Bijsnijden"
+  "ra_Crop": "Bijsnijden",
+  "ra_tooltip_comment": "Opmerking"
 }

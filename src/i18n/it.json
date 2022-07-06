@@ -302,5 +302,6 @@
   "ra_Cannot retrieve options, as instance is offline": "Impossibile recuperare le opzioni, poiché l'istanza è offline",
   "ra_File is too big. Max %sk allowed. Try use SVG.": "Il file è troppo grande. Max %sk consentito. Prova a usare SVG.",
   "ra_Cannot upload": "Impossibile caricare",
-  "ra_Crop": "Raccolto"
+  "ra_Crop": "Raccolto",
+  "ra_tooltip_comment": "Commento"
 }

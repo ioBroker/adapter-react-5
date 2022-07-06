@@ -315,5 +315,6 @@
   "ra_Cannot retrieve options, as instance is offline": "Невозможно получить параметры, так как экземпляр находится в автономном режиме.",
   "ra_File is too big. Max %sk allowed. Try use SVG.": "Файл слишком большой. Разрешено максимальное количество %sk. Попробуйте использовать SVG.",
   "ra_Cannot upload": "Невозможно загрузить",
-  "ra_Crop": "Обрезать"
+  "ra_Crop": "Обрезать",
+  "ra_tooltip_comment": "Комментарий"
 }
