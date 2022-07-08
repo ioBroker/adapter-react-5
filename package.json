@@ -34,7 +34,7 @@
   "homepage": "https://github.com/ioBroker/adapter-react-v5#readme",
   "dependencies": {
     "@emotion/react": "^11.9.3",
-    "@emotion/styled": "^11.8.1",
+    "@emotion/styled": "^11.9.3",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.7",
     "@mui/styles": "^5.8.7",
