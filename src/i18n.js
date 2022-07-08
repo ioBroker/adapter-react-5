@@ -44,18 +44,25 @@ class I18n {
      static extendTranslations(words, lang) {
          try {
              if (!lang) {
-                 Object.keys(words).forEach(word => {
-                     Object.keys(words[word]).forEach(lang => {
-                         if (!I18n.translations[lang]) {
-                             console.warn(`Used unknown language: ${lang}`);
-                         }
-                         if (!I18n.translations[lang][word]) {
-                             I18n.translations[lang][word] = words[word][lang];
-                         } else if (I18n.translations[lang][word] !== words[word][lang]) {
-                             console.warn(`Translation for word "${word}" in "${lang}" was ignored: existing = "${I18n.translations[lang][word]}", new = ${words[word][lang]}`);
-                         }
+                 if (words.en && words.de && words.ru) {
+                     Object.keys(words).forEach(lang => {
+                         I18n.translations[lang] = I18n.translations[lang] || {};
+                         Object.assign(I18n.translations[lang], words[lang]);
                      });
-                 });
+                 } else {
+                     Object.keys(words).forEach(word => {
+                         Object.keys(words[word]).forEach(lang => {
+                             if (!I18n.translations[lang]) {
+                                 console.warn(`Used unknown language: ${lang}`);
+                             }
+                             if (!I18n.translations[lang][word]) {
+                                 I18n.translations[lang][word] = words[word][lang];
+                             } else if (I18n.translations[lang][word] !== words[word][lang]) {
+                                 console.warn(`Translation for word "${word}" in "${lang}" was ignored: existing = "${I18n.translations[lang][word]}", new = ${words[word][lang]}`);
+                             }
+                         });
+                     });
+                 }
              } else {
                  if (!I18n.translations[lang]) {
                      console.warn(`Used unknown language: ${lang}`);

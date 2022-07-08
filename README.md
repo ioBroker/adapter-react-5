@@ -642,6 +642,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Allowed to extend translations for all languages together
+
 ### 3.1.18 (2022-07-06)
 * (bluefox) Added translation
 
