@@ -1072,13 +1072,15 @@ class Utils {
      * @returns {string}
      */
     static _toVal(mix) {
-        let k, y, str='';
+        let k;
+        let y;
+        let str = '';
 
         if (typeof mix === 'string' || typeof mix === 'number') {
             str += mix;
         } else if (typeof mix === 'object') {
             if (Array.isArray(mix)) {
-                for (k=0; k < mix.length; k++) {
+                for (k = 0; k < mix.length; k++) {
                     if (mix[k]) {
                         if ((y = Utils._toVal(mix[k]))) {
                             str && (str += ' ');
