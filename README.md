@@ -642,7 +642,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.1.20 (2022-07-14)
 * (bluefox) Allowed to show select dialog with the expert mode enabled
 
 ### 3.1.19 (2022-07-08)
