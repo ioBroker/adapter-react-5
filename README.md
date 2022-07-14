@@ -642,6 +642,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Allowed to show select dialog with the expert mode enabled
+
 ### 3.1.19 (2022-07-08)
 * (bluefox) Allowed to extend translations for all languages together
 

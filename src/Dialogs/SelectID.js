@@ -155,6 +155,7 @@ class DialogSelectID extends React.Component {
                     defaultFilters={ this.filters }
                     dialogName={this.dialogName}
                     showExpertButton={ this.props.showExpertButton !== undefined ? this.props.showExpertButton : true }
+                    expertMode={ this.props.expertMode }
                     style={ {width: '100%', height: '100%'} }
                     columns={ this.props.columns || ['name', 'type', 'role', 'room', 'func', 'val'] }
                     types={ this.props.types || ['state'] }
@@ -172,14 +173,14 @@ class DialogSelectID extends React.Component {
                         this.filters = filterConfig;
                         (window._localStorage || window.localStorage).setItem(this.dialogName, JSON.stringify(filterConfig));
                     } }
-                    onSelect={ (selected, name, isDouble) => {
+                    onSelect={(selected, name, isDouble) => {
                         if (JSON.stringify(selected) !== JSON.stringify(this.state.selected)) {
                             this.setState({selected, name}, () =>
                                 isDouble && this.handleOk());
                         } else if (isDouble) {
                             this.handleOk();
                         }
-                    } }
+                    }}
                     filterFunc={this.props.filterFunc}
                 />
             </DialogContent>
@@ -215,6 +216,7 @@ DialogSelectID.propTypes = {
     themeName: PropTypes.string,
     themeType: PropTypes.string,
     showExpertButton: PropTypes.bool,
+    expertMode: PropTypes.bool, // force expert mode
     multiSelect: PropTypes.bool,
     types: PropTypes.array,   // optional ['state', 'instance', 'channel']
     columns: PropTypes.array, // optional ['name', 'type', 'role', 'room', 'func', 'val', 'buttons']
