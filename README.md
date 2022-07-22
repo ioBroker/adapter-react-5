@@ -642,7 +642,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.1.22 (2022-07-22)
 * (bluefox) Added i18n tools for development
 
 ### 3.1.20 (2022-07-14)
