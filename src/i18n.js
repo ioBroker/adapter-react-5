@@ -120,9 +120,8 @@ class I18n {
             } else {
                 if (!I18n.unknownTranslations.includes(word)) {
                     I18n.unknownTranslations.push(word);
+                    !I18n._disableWarning && console.log(`Translate: ${word}`);
                 }
-
-                !I18n._disableWarning && console.log(`Translate: ${word}`);
             }
         }
         for (const arg of args) {
