@@ -15,6 +15,12 @@ class I18n {
      */
     static translations = {};
 
+     /**
+      * List of unknown translations during development.
+      * @type {string[]}
+      */
+     static unknownTranslations = [];
+
     /**
      * The currently displayed language.
      * @type {ioBroker.Languages}
@@ -112,13 +118,50 @@ class I18n {
             if (w) {
                 word = w;
             } else {
-                I18n._disableWarning && console.log(`Translate: ${word}`);
+                if (!I18n.unknownTranslations.includes(word)) {
+                    I18n.unknownTranslations.push(word);
+                }
+
+                !I18n._disableWarning && console.log(`Translate: ${word}`);
             }
         }
         for (const arg of args) {
             word = word.replace('%s', arg);
         }
         return word;
+    }
+
+     /**
+      * Show non-translated words
+      * Required during development
+      * @param {string | RegExp} filter filter words
+      */
+     static i18nShow(filter) {
+         /**
+          * List words with their translations.
+          * @type {Record<string, string>}
+          */
+         const result = {};
+        if (!filter) {
+            I18n.unknownTranslations.forEach(word => {
+                result[word] = word;
+            });
+            console.log(JSON.stringify(result, null, 2));
+        } else if (typeof filter === 'string') {
+            I18n.unknownTranslations.forEach(word => {
+                if (word.startsWith(filter)) {
+                    result[word] = word.replace(filter, '');
+                }
+            });
+            console.log(JSON.stringify(result, null, 2));
+        } else if (typeof filter === 'object') {
+            I18n.unknownTranslations.forEach(word => {
+                if (filter.test(word)) {
+                    result[word] = word;
+                }
+            });
+            console.log(JSON.stringify(result, null, 2));
+        }
     }
 
      /**
@@ -130,6 +173,11 @@ class I18n {
         I18n._disableWarning = !!disable;
     }
 }
+
+// install global handlers
+window.i18nShow = I18n.i18nShow;
+window.i18nDisableWarning = I18n.disableWarning;
+
 
 /*I18n.translations = {
     'en': require('./i18n/en'),

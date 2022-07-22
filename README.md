@@ -642,6 +642,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added i18n tools for development
+
 ### 3.1.20 (2022-07-14)
 * (bluefox) Allowed to show select dialog with the expert mode enabled
 
