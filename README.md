@@ -642,7 +642,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.1.23 (2022-07-25)
 * (bluefox) Extend custom filter for object selector
 
 ### 3.1.22 (2022-07-22)
