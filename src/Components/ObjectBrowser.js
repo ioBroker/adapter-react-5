@@ -792,11 +792,56 @@ function applyFilter(item, filters, lang, objects, context, counter, customFilte
         const common = data.obj && data.obj.common;
 
         if (customFilter) {
-            if (customFilter.type && customFilter.type !== data.obj.type) {
-                filteredOut = true;
-            } else
-            if (customFilter.common && customFilter.common.custom) {
-                if (!common || !common.custom || (customFilter.common.custom !== true && !common.custom[customFilter.common.custom])) {
+            if (customFilter.type) {
+                if (typeof customFilter.type === 'string') {
+                    if (customFilter.type !== data.obj.type) {
+                        filteredOut = true;
+                    }
+                } else if (Array.isArray(customFilter.type)) {
+                    if (!customFilter.type.includes(data.obj.type)) {
+                        filteredOut = true;
+                    }
+                }
+            }
+            if (!filteredOut && customFilter.common?.type) {
+                if (!common || !common.type) {
+                    filteredOut = true;
+                } else if (typeof customFilter.common.type === 'string') {
+                    if (customFilter.common.type !== common.type) {
+                        filteredOut = true;
+                    }
+                } else if (Array.isArray(customFilter.common.type)) {
+                    if (!customFilter.type.includes(common.type)) {
+                        filteredOut = true;
+                    }
+                }
+            }
+            if (!filteredOut && customFilter.common?.role) {
+                if (!common || !common.role) {
+                    filteredOut = true;
+                } else if (typeof customFilter.common.role === 'string') {
+                    if (common.role.startsWith(customFilter.common.role)) {
+                        filteredOut = true;
+                    }
+                } else if (Array.isArray(customFilter.common.role)) {
+                    if (!customFilter.common.role.find(role => customFilter.role.includes(role))) {
+                        filteredOut = true;
+                    }
+                }
+            }
+            if (!filteredOut && customFilter.common?.custom) {
+                if (!common || !common.custom) {
+                    filteredOut = true;
+                } else
+                if (customFilter.common.custom === '_dataSources') {
+                    // TODO: make it configurable
+                    if (!Object.keys(common.custom).find(id => id.startsWith('history.') || id.startsWith('sql.') || id.startsWith('influxdb.'))) {
+                        filteredOut = true;
+                    }
+                } else
+                if (customFilter.common.custom !== true &&
+                    !Object.keys(common.custom).find(id => id.startsWith(customFilter.common.custom))
+                ) {
                     filteredOut = true;
                 }
             }
@@ -5020,7 +5065,17 @@ ObjectBrowser.propTypes = {
     modalNewObject: PropTypes.func,     // modal add object
     modalEditOfAccessControl: PropTypes.func, //modal Edit Of Access Control
     onObjectDelete: PropTypes.func,     // optional function (id, hasChildren, objectExists) {  }
-    customFilter: PropTypes.object,     // optional {common: {custom: true}} or {common: {custom: 'sql.0'}}
+    customFilter: PropTypes.object,     // optional
+                                        // `{common: {custom: true}}` - show only objects with some custom settings
+                                        // `{common: {custom: 'sql.0'}}` - show only objects with sql.0 custom settings (only of the specific instance)
+                                        // `{common: {custom: '_dataSources'}}` - show only objects of adapers `influxdb' or 'sql' or 'history'
+                                        // `{common: {custom: 'adapterName.'}}` - show only objects of custom settings of specific adapter (all instances)
+                                        // `{type: 'channel'}` - show only channels
+                                        // `{type: ['channel', 'device']}` - show only channels and devices
+                                        // `{common: {type: 'number'}` - show only states of type 'number
+                                        // `{common: {type: ['number', 'string']}` - show only states of type 'number and string
+                                        // `{common: {role: 'switch']}` - show only states with roles starting from switch
+                                        // `{common: {role: ['switch', 'button]}` - show only states with roles starting from `switch` and `button`
     objectBrowserValue: PropTypes.object,
     objectBrowserEditObject: PropTypes.object,
     objectBrowserEditRole: PropTypes.object, // on Edit role
