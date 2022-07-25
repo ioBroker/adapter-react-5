@@ -8,6 +8,7 @@ export { default as Connection } from './Connection';
 export * from './Connection';
 
 export { default as i18n } from './i18n';
+export { default as I18n } from './i18n';
 export * from './i18n';
 
 export { default as Prompt } from './Prompt';
