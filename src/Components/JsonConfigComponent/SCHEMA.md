@@ -126,12 +126,14 @@ Possible types:
     - `pattern` - my pattern
 
 - `sendto` - button that sends request to instance (https://github.com/iobroker-community-adapters/ioBroker.email/blob/master/admin/index_m.html#L128)
-    - `command` - (Default 'send')
-    - `jsonData` - string - `{"subject1": "${data.subject}", "options1": {"host": "${data.host}"}}`
+    - `command` - (Default `send`)
+    - `jsonData` - string - `{"subject1": "${data.subject}", "options1": {"host": "${data.host}"}}`. You can use special variable `_origin` to send to instance the caller URL, like `http://localhost:8081/admin`.
     - `data` - object - `{"subject1": 1, "data": "static"}`. You can specify jsonData or data, but not both.
     - `result` - `{result1: {en: 'A'}, result2: {en: 'B'}}`
     - `error` - `{error1: {en: 'E'}, error2: {en: 'E2'}}`
-    - `variant` - `contained`, `outlined`, ''
+    - `variant` - `contained`, `outlined` or nothing
+    - `openUrl` - if true - open URL in new tab, if response contains attribute `openUrl`, like `{"openUrl": "http://1.2.3.4:80/aaa", "window": "_blank", "saveConfig": true}`. If `saveConfig` is true, the user will be requested to save the configuration.
+    - `window` - if `openUrl` is true, this is name of new window. Could be overwritten if response consist `window` attribute.
       `this.props.socket.sendTo(adapterName.instance, command || 'send', data, result => {});`
 
 - `setState` - button that set instance's state
@@ -161,6 +163,7 @@ Possible types:
     - `objKeyName` - (legacy setting, don't use!) - name of the key in `{"192.168.1.1": {delay: 1000, enabled: true}, "192.168.1.2": {delay: 2000, enabled: false}}`
     - `objValueName` - (legacy setting, don't use!) - name of the value in `{"192.168.1.1": "value1", "192.168.1.2": "value2"}`
     - `allowAddByFilter` - if add allowed even if filter is set
+    - `showSecondAddAt` - Number of lines from which the second add button at the bottom of the table will be shown. Default 5
 - `json` - json editor
 
 - `language`
