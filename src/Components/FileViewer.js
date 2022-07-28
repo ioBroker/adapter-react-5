@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { withStyles } from '@mui/styles';
 import PropTypes from 'prop-types';
 
+import { Buffer } from 'buffer';
+
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -47,7 +49,7 @@ const styles = theme => ({
 
 export const EXTENSIONS = {
     images: ['png', 'jpg', 'svg', 'jpeg', 'bmp'],
-    code:   ['js', 'json', 'md'],
+    code:   ['js', 'json', 'json5', 'md'],
     txt:    ['log', 'txt', 'html', 'css', 'xml'],
     audio:  ['mp3', 'wav', 'ogg', 'acc'],
     video:  ['mp4', 'mov', 'avi'],
@@ -180,10 +182,12 @@ class FileViewer extends Component {
             .catch(e => window.alert('Cannot write file: ' + e));
     }
 
-    getEditFile(ext) {
+    static getEditFile(ext) {
         switch (ext) {
             case 'json':
                 return 'json';
+            case 'json5':
+                return 'json5';
             case 'js':
                 return 'javascript';
             case 'html':
@@ -217,7 +221,7 @@ class FileViewer extends Component {
                 multiline
                 value={ this.state.editingValue || this.state.code || this.state.text }
                 onChange={newValue => this.setState({ editingValue: newValue, changed: true })}
-                InputProps={{ readOnly: !this.state.editing,}}
+                InputProps={{ readOnly: !this.state.editing }}
             />;
         }
     }

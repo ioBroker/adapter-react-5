@@ -23,7 +23,6 @@ import Snackbar from '@mui/material/Snackbar';
 import Checkbox from '@mui/material/Checkbox';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
 import ListItemText from '@mui/material/ListItemText';
@@ -37,8 +36,9 @@ import Fab from '@mui/material/Fab';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import Slider from '@mui/material/Slider';
-import Typography from '@mui/material/Typography';
+// import ListItemButton from '@mui/material/ListItemButton';
+// import Slider from '@mui/material/Slider';
+// import Typography from '@mui/material/Typography';
 
 // Icons
 import IconEdit from '@mui/icons-material/Edit';
@@ -1714,7 +1714,7 @@ class ObjectBrowser extends Component {
             columns,
             columnsForAdmin: null,
             columnsSelectorShow: false,
-            columnsAuto: (window._localStorage || window.localStorage).getItem(`${props.dialogName || 'App'}.columnsAuto`) !== 'false',
+            columnsAuto: true, // (window._localStorage || window.localStorage).getItem(`${props.dialogName || 'App'}.columnsAuto`) !== 'false',
             columnsWidths,
             columnsDialogTransparent: 100,
             columnsEditCustomDialog: null,
@@ -2096,6 +2096,7 @@ class ObjectBrowser extends Component {
      * @private
      * @param {boolean} isLast
      */
+    /*
     _renderDefinedList(isLast) {
         const cols = [...this.possibleCols];
         cols.unshift('id');
@@ -2123,14 +2124,12 @@ class ObjectBrowser extends Component {
                         this.setState({ columns });
                     }
                 }} key={id}>
-                    {/* <ListItemIcon> */}
                     <Checkbox
                         edge="start"
                         disabled={id === 'id' || this.state.columnsAuto}
                         checked={id === 'id' || (this.state.columnsAuto ? this.visibleCols.includes(id) : (this.state.columns && this.state.columns.includes(id)))}
                         disableRipple
                     />
-                    {/* </ListItemIcon> */}
                     <ListItemText primary={this.texts['filter_' + id] || this.props.t('ra_' + id)} />
                     <ListItemSecondaryAction>
                         <FormControl
@@ -2157,6 +2156,7 @@ class ObjectBrowser extends Component {
                 </ListItemButton>
             );
     }
+    */
 
     /**
      * Renders the columns selector.
@@ -2171,9 +2171,9 @@ class ObjectBrowser extends Component {
                 open={true}
                 classes={{ root: Utils.clsx(this.props.classes.dialogColumns, this.props.classes['transparent_' + this.state.columnsDialogTransparent]) }}
             >
-                <DialogTitle className={this.props.classes.fontSizeTitle}>{this.props.t('ra_Configure visible columns')}</DialogTitle>
+                <DialogTitle className={this.props.classes.fontSizeTitle}>{this.props.t('ra_Configure')}</DialogTitle>
                 <DialogContent className={this.props.classes.fontSizeTitle}>
-                    <FormControlLabel
+                    {/*<FormControlLabel
                         className={this.props.classes.switchColumnAuto}
                         control={<Switch checked={this.state.columnsAuto} onChange={() => {
                             (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.columnsAuto', this.state.columnsAuto ? 'false' : 'true');
@@ -2191,7 +2191,7 @@ class ObjectBrowser extends Component {
                             }
                         }} />}
                         label={this.props.t('ra_Auto (no custom columns)')}
-                    />
+                    />*/}
                     <FormControlLabel
                         className={this.props.classes.switchColumnAuto}
                         control={<Switch checked={this.state.foldersFirst} onChange={() => {
@@ -2208,7 +2208,7 @@ class ObjectBrowser extends Component {
                         }} />}
                         label={this.props.t('ra_Show lines between rows')}
                     />
-                    <Typography classes={{ root: this.props.classes.dialogColumnsLabel }}>{this.props.t('ra_Transparent dialog')}</Typography>
+                    {/*<Typography classes={{ root: this.props.classes.dialogColumnsLabel }}>{this.props.t('ra_Transparent dialog')}</Typography>
                     <Slider classes={{ root: this.props.classes.width100 }} value={this.state.columnsDialogTransparent} min={20} max={100} step={10} onChange={(event, newValue) =>
                         this.setState({ columnsDialogTransparent: newValue })
                     } />
@@ -2268,7 +2268,7 @@ class ObjectBrowser extends Component {
                             )
                         )}
                         {this._renderDefinedList(true)}
-                    </List>
+                    </List>*/}
                 </DialogContent>
                 <DialogActions>
                     <Button
@@ -3230,10 +3230,10 @@ class ObjectBrowser extends Component {
                     </Tooltip>
                 }
                 {!this.props.disableColumnSelector &&
-                <Tooltip title={this.props.t('ra_Configure visible columns')}>
+                <Tooltip title={this.props.t('ra_Configure')}>
                     <IconButton
                         key="columnSelector"
-                        color={this.state.columnsAuto ? 'primary' : 'default'}
+                        // color={this.state.columnsAuto ? 'primary' : 'default'}
                         onClick={() => this.setState({ columnsSelectorShow: true })}
                         size="large"
                     >
@@ -3575,7 +3575,7 @@ class ObjectBrowser extends Component {
                         }
                     }
                 })
-                .catch(e => this.showError(e));
+                .catch(e => console.warn('Cannot read history: ' + e));
         }
     }
 
