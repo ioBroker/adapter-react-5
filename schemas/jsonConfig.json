@@ -16,7 +16,9 @@
   },
   "type": "object",
   "additionalProperties": false,
-  "required": ["type"],
+  "required": [
+    "type"
+  ],
   "properties": {
     "type": {
       "type": "string",
@@ -86,16 +88,20 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type", "system"]
+                "required": [
+                  "type",
+                  "system"
+                ]
               }
             },
             {
@@ -143,17 +149,21 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true,
                   "maxLength": true
                 },
                 "additionalProperties": false,
-                "required": ["type", "command"]
+                "required": [
+                  "type",
+                  "command"
+                ]
               }
             },
             {
@@ -198,15 +208,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type", "command"]
+                "required": [
+                  "type",
+                  "command"
+                ]
               }
             },
             {
@@ -251,12 +265,18 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type", "size", "text"]
+                "required": [
+                  "type",
+                  "size",
+                  "text"
+                ]
               }
             },
             {
@@ -284,16 +304,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -333,16 +356,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -390,16 +416,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -434,16 +463,20 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type", "items"]
+                "required": [
+                  "type",
+                  "items"
+                ]
               }
             },
             {
@@ -499,16 +532,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -580,16 +616,20 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type", "command"]
+                "required": [
+                  "type",
+                  "command"
+                ]
               }
             },
             {
@@ -629,17 +669,20 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true,
                   "maxLength": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -671,16 +714,20 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type", "filename"]
+                "required": [
+                  "type",
+                  "filename"
+                ]
               }
             },
             {
@@ -723,16 +770,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -764,16 +814,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -801,16 +854,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -850,16 +906,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -909,16 +968,20 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type", "options"]
+                "required": [
+                  "type",
+                  "options"
+                ]
               }
             },
             {
@@ -965,17 +1028,20 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true,
                   "maxLength": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -1006,6 +1072,7 @@
                           "description": "Value"
                         },
                         "hidden": {
+                          "type": "string",
                           "description": "JS function that could use `native.attribute` for calculation"
                         }
                       }
@@ -1026,16 +1093,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -1061,11 +1131,10 @@
                         "type",
                         "attr",
                         "width",
-                        "title",
-                        "filter",
-                        "sort"
+                        "title"
                       ],
                       "additionalProperties": false,
+                      "allOf": [{}],
                       "properties": {
                         "type": {
                           "type": "string"
@@ -1087,14 +1156,6 @@
                         },
                         "sort": {
                           "type": "boolean"
-                        },
-                        "repeat": {
-                          "type": "boolean",
-                          "description": "Used for type password if repeat field visible"
-                        },
-                        "visible": {
-                          "type": "boolean",
-                          "description": "Used for type password if button to show password is visible"
                         }
                       }
                     }
@@ -1114,16 +1175,20 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type", "items"]
+                "required": [
+                  "type",
+                  "items"
+                ]
               }
             },
             {
@@ -1159,16 +1224,20 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type", "pattern"]
+                "required": [
+                  "type",
+                  "pattern"
+                ]
               }
             },
             {
@@ -1236,16 +1305,21 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type", "id", "val"]
+                "required": [
+                  "type",
+                  "id",
+                  "val"
+                ]
               }
             },
             {
@@ -1277,16 +1351,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -1318,16 +1395,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -1359,16 +1439,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -1408,16 +1491,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -1454,16 +1540,20 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type", "certType"]
+                "required": [
+                  "type",
+                  "certType"
+                ]
               }
             },
             {
@@ -1510,16 +1600,21 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true,
                   "button": true
                 },
                 "additionalProperties": false,
-                "required": ["type", "href", "text"]
+                "required": [
+                  "type",
+                  "href",
+                  "text"
+                ]
               }
             },
             {
@@ -1558,15 +1653,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type", "text"]
+                "required": [
+                  "type",
+                  "text"
+                ]
               }
             },
             {
@@ -1602,16 +1701,20 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type", "adapter"]
+                "required": [
+                  "type",
+                  "adapter"
+                ]
               }
             },
             {
@@ -1647,15 +1750,18 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -1687,16 +1793,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             },
             {
@@ -1751,17 +1860,19 @@
                   "style": true,
                   "darkStyle": true,
                   "validator": true,
+                  "validatorNoSaveOnError": true,
+                  "noMultiEdit": true,
                   "tooltip": true,
                   "default": true,
                   "defaultFunc": true,
-                  "noMultiEdit": true,
-                  "onChange": true,
                   "onChange": true,
                   "noTranslation": true,
                   "confirm": true
                 },
                 "additionalProperties": false,
-                "required": ["type"]
+                "required": [
+                  "type"
+                ]
               }
             }
           ],
@@ -1876,6 +1987,10 @@
             "validator": {
               "description": "JS function: true no error, false - error",
               "type": "string"
+            },
+            "validatorNoSaveOnError": {
+              "description": "True if save must be disabled by errors",
+              "type": "boolean"
             },
             "tooltip": {
               "description": "Optional tooltip",
