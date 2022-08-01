@@ -722,11 +722,16 @@ class Connection {
      * Sets the given state value.
      * @param {string} id The state ID.
      * @param {string | number | boolean | ioBroker.State | ioBroker.SettableState | null} val The state value.
+     * @param {boolean | null} ack Acknowledge flag
      * @returns {Promise<void>}
      */
-    setState(id, val) {
+    setState(id, val, ack) {
         if (!this.connected) {
             return Promise.reject(NOT_CONNECTED);
+        }
+
+        if (typeof ack === 'boolean') {
+            val = { val, ack };
         }
 
         return new Promise((resolve, reject) =>
