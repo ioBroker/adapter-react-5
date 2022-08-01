@@ -316,5 +316,8 @@
   "ra_File is too big. Max %sk allowed. Try use SVG.": "Datei ist zu groß. Max %sk erlaubt. Versuchen Sie, SVG zu verwenden.",
   "ra_Cannot upload": "Kann nicht hochladen",
   "ra_Crop": "Ernte",
-  "ra_tooltip_comment": "Kommentar"
+  "ra_tooltip_comment": "Kommentar",
+  "ra_Disconnected": "Getrennt",
+  "ra_Connected": "Verbunden",
+  "ra_Configure": "Konfigurieren"
 }

@@ -316,5 +316,8 @@
   "ra_File is too big. Max %sk allowed. Try use SVG.": "Файл слишком большой. Разрешено максимальное количество %sk. Попробуйте использовать SVG.",
   "ra_Cannot upload": "Невозможно загрузить",
   "ra_Crop": "Обрезать",
-  "ra_tooltip_comment": "Комментарий"
+  "ra_tooltip_comment": "Комментарий",
+  "ra_Disconnected": "Отключено",
+  "ra_Connected": "Соединение установлено",
+  "ra_Configure": "Настроить"
 }
