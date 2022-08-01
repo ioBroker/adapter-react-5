@@ -41,7 +41,7 @@
     "@mui/x-date-pickers": "^5.0.0-beta.3",
     "react-cropper": "^2.1.8",
     "@sentry/browser": "^7.6.0",
-    "@sentry/integrations": "^7.6.0",
+    "@sentry/integrations": "^7.8.0",
     "@types/iobroker": "^4.0.4",
     "react-color": "^2.19.3",
     "react-colorful": "^5.5.1",
