@@ -642,7 +642,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.1.25 (2022-08-01)
 * (bluefox) Added translations
 
 ### 3.1.24 (2022-07-28)
