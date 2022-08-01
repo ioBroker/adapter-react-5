@@ -642,8 +642,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### 3.1.25 (2022-08-01)
+### **WORK IN PROGRESS**
 * (bluefox) Added translations
+* (bluefox) JSON schema was extended with missing definitions
 
 ### 3.1.24 (2022-07-28)
 * (bluefox) Updated file browser and object browser
