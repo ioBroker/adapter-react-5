@@ -11,6 +11,7 @@ const babel = require('gulp-babel');
 const sourcemaps = require('gulp-sourcemaps');
 const typescript = require('gulp-typescript');
 const fs = require('fs');
+const schema = require("./schemas/jsonConfig.json");
 
 gulp.task('copy', () => Promise.all([
     gulp.src(['src/**/*.d.ts']).pipe(gulp.dest('dist')),
@@ -57,8 +58,45 @@ function handleError (error) {
     this.emit('end');
 }
 
+gulp.task('patchJsonSchemeForTable', async () => {
+    const schema = require('./schemas/jsonConfig.json');
+    const allOf = JSON.parse(JSON.stringify(schema.properties.items.patternProperties['^.+'].allOf));
+    const pos = allOf.findIndex(item => item.if.properties.type.const === 'table');
+    if (pos !== -1) {
+        allOf.splice(pos, 1)
+    }
+    const properties = JSON.parse(JSON.stringify(schema.properties.items.patternProperties['^.+'].properties))
+    Object.assign(properties, {
+        "type": {
+            "type": "string"
+        },
+        "attr": {
+            "type": "string"
+        },
+        "width": {
+            "type": [
+                "number",
+                "string"
+            ]
+        },
+        "title": {
+            "type": "string"
+        },
+        "filter": {
+            "type": "boolean"
+        },
+        "sort": {
+            "type": "boolean"
+        }
+    });
+
+    schema.properties.items.patternProperties['^.+'].allOf[pos].then.properties.items.items.properties = properties;
+    schema.properties.items.patternProperties['^.+'].allOf[pos].then.properties.items.items.allOf = allOf;
+    fs.writeFileSync('./schemas/jsonConfig.json', JSON.stringify(schema, null, 2));
+});
+
 gulp.task('compile', gulp.parallel('copy',
-//    'typedefs',
+    'typedefs',
     () => Promise.all([
         gulp.src(['src/Dialogs/*.js', 'src/Dialogs/**/*.js', 'src/Dialogs/*.jsx', 'src/Dialogs/**/*.jsx'])
             .pipe(sourcemaps.init())
@@ -103,4 +141,4 @@ gulp.task('compile', gulp.parallel('copy',
     ])
 ));
 
-gulp.task('default', gulp.series('compile'));
+gulp.task('default', gulp.series('compile', 'patchJsonSchemeForTable'));
