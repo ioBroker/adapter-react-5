@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { withStyles } from '@mui/styles';
 import PropTypes from 'prop-types';
 
-import { Buffer } from 'buffer';
+// File viewer in adapter-react does not support write
+// import { Buffer } from 'buffer';
 
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -87,7 +88,8 @@ class FileViewer extends Component {
             text: null,
             code: null,
             ext,
-            editing: !!this.props.formatEditFile || false,
+            // File viewer in adapter-react does not support write
+            editing: /* !!this.props.formatEditFile || */ false,
             editingValue: null,
             copyPossible: EXTENSIONS.code.includes(ext) || EXTENSIONS.txt.includes(ext),
             forceUpdate: Date.now(),
@@ -177,9 +179,12 @@ class FileViewer extends Component {
         parts.splice(0, 2);
         const adapter = parts[0];
         const name = parts.splice(1).join('/');
+        // File viewer in adapter-react does not support write
+        /*
         this.props.socket.writeFile64(adapter, name, Buffer.from(data).toString('base64'))
             .then(_ => this.props.onClose())
             .catch(e => window.alert('Cannot write file: ' + e));
+        */
     }
 
     static getEditFile(ext) {
