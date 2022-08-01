@@ -303,5 +303,8 @@
   "ra_File is too big. Max %sk allowed. Try use SVG.": "Bestand is te groot. Max. %sk toegestaan. Probeer SVG te gebruiken.",
   "ra_Cannot upload": "Kan niet uploaden",
   "ra_Crop": "Bijsnijden",
-  "ra_tooltip_comment": "Opmerking"
+  "ra_tooltip_comment": "Opmerking",
+  "ra_Disconnected": "Verbinding verbroken",
+  "ra_Connected": "Verbonden",
+  "ra_Configure": "Configureren"
 }

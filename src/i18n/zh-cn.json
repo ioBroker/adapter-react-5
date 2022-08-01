@@ -303,5 +303,8 @@
   "ra_File is too big. Max %sk allowed. Try use SVG.": "文件太大。允许的最大字节%s数。尝试使用 SVG。",
   "ra_Cannot upload": "无法上传",
   "ra_Crop": "庄稼",
-  "ra_tooltip_comment": "评论"
+  "ra_tooltip_comment": "评论",
+  "ra_Disconnected": "断开连接",
+  "ra_Connected": "连接的",
+  "ra_Configure": "配置"
 }
