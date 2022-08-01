@@ -38,7 +38,7 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.2",
     "@mui/styles": "^5.9.2",
-    "@mui/x-date-pickers": "^5.0.0-beta.0",
+    "@mui/x-date-pickers": "^5.0.0-beta.3",
     "react-cropper": "^2.1.8",
     "@sentry/browser": "^7.6.0",
     "@sentry/integrations": "^7.6.0",
