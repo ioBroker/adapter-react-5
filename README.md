@@ -642,7 +642,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.1.26 (2022-08-01)
 * (bluefox) Added translations
 * (bluefox) JSON schema was extended with missing definitions
 
