@@ -28,7 +28,8 @@ const styles = theme => ({
         fontStyle: 'italic'
     },
     dialog: {
-        height: '95%'
+        height: '95%',
+        backgroundColor: theme.palette.mode === 'dark' ? '#303030' : '#fafafa',
     },
     dialogMobile: {
         padding: 4,

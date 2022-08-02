@@ -384,7 +384,7 @@ const styles = theme => ({
         },
     },
     specialFolder: {
-        color: theme.palette.mode === 'dark' ? '#229b0f' : '#5dd300'
+        color: theme.palette.mode === 'dark' ? '#166909' : '#5dd300'
     }
 });
 
