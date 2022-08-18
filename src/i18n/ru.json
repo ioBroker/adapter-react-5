@@ -319,5 +319,6 @@
   "ra_tooltip_comment": "Комментарий",
   "ra_Disconnected": "Отключено",
   "ra_Connected": "Соединение установлено",
-  "ra_Configure": "Настроить"
+  "ra_Configure": "Настроить",
+  "ra_Invalid CRON": "Неверный CRON"
 }

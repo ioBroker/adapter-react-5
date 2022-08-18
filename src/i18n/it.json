@@ -306,5 +306,6 @@
   "ra_tooltip_comment": "Commento",
   "ra_Disconnected": "Disconnesso",
   "ra_Connected": "Collegato",
-  "ra_Configure": "Configura"
+  "ra_Configure": "Configura",
+  "ra_Invalid CRON": "CRON non valido"
 }

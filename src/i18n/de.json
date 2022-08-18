@@ -319,5 +319,6 @@
   "ra_tooltip_comment": "Kommentar",
   "ra_Disconnected": "Getrennt",
   "ra_Connected": "Verbunden",
-  "ra_Configure": "Konfigurieren"
+  "ra_Configure": "Konfigurieren",
+  "ra_Invalid CRON": "Ungültiger CRON"
 }

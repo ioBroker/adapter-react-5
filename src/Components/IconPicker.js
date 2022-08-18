@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react';
 import PropTypes from 'prop-types';
-import {useDropzone} from 'react-dropzone';
+import { useDropzone } from 'react-dropzone';
 import makeStyles from '@mui/styles/makeStyles';
 
 import InputLabel from '@mui/material/InputLabel';
@@ -79,11 +79,11 @@ let IconPicker = function (props) {
         }
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
     return <div className={classes.formContainer}>
-        {IconCustom ? <IconCustom className={ classes.formIcon }/> : null}
-        <FormControl variant="standard" className={classes.formControl} style={{padding: 3}}>
+        {IconCustom ? <IconCustom className={classes.formIcon} /> : null}
+        <FormControl variant="standard" className={classes.formControl} style={{ padding: 3 }}>
             <InputLabel shrink classes={{root: props.customClasses?.label}}>
                 { props.label }
             </InputLabel>

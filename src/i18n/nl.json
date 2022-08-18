@@ -306,5 +306,6 @@
   "ra_tooltip_comment": "Opmerking",
   "ra_Disconnected": "Verbinding verbroken",
   "ra_Connected": "Verbonden",
-  "ra_Configure": "Configureren"
+  "ra_Configure": "Configureren",
+  "ra_Invalid CRON": "Ongeldige CRON"
 }

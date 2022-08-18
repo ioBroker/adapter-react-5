@@ -306,5 +306,6 @@
   "ra_tooltip_comment": "评论",
   "ra_Disconnected": "断开连接",
   "ra_Connected": "连接的",
-  "ra_Configure": "配置"
+  "ra_Configure": "配置",
+  "ra_Invalid CRON": "无效的 CRON"
 }
