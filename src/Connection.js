@@ -2313,7 +2313,7 @@ class Connection {
             return Promise.reject(NOT_CONNECTED);
         }
         return new Promise(resolve =>
-            this._socket.emit('sendToHost', host, 'getNotifications', {category}, notifications =>
+            this._socket.emit('sendToHost', host, 'getNotifications', { category }, notifications =>
                 resolve(notifications)));
     }
 
@@ -2463,6 +2463,12 @@ class Connection {
         return this._promises.compactAdapters;
     }
 
+    getAdaptersResetCache(adapter) {
+        adapter = adapter || '';
+        this._promises.compactAdapters = null;
+        this._promises['adapter_' + adapter] = null;
+    }
+
     // returns very optimized information for adapters to minimize connection load
     getCompactInstances(update) {
         if (Connection.isWeb()) {
@@ -2480,6 +2486,12 @@ class Connection {
                 err ? reject(err) : resolve(instances)));
 
         return this._promises.compactInstances;
+    }
+
+    getAdapternInstancesResetCache(adapter) {
+        adapter = adapter || '';
+        this._promises.compactInstances = null;
+        this._promises['instances_' + adapter] = null;
     }
 
     // returns very optimized information for adapters to minimize connection load
@@ -2530,6 +2542,54 @@ class Connection {
     }
 
     // returns very optimized information for adapters to minimize connection load
+    // reads only version of installed adapter
+    getCompactSystemRepositories(update, cmdTimeout) {
+        if (Connection.isWeb()) {
+            return Promise.reject('Allowed only in admin');
+        }
+
+        this._promises.installedCompact = this._promises.installedCompact || {};
+
+        if (!this.connected) {
+            return Promise.reject(NOT_CONNECTED);
+        }
+
+        this._promises.getCompactSystemRepositories = new Promise((resolve, reject) => {
+            let timeout = setTimeout(() => {
+                if (timeout) {
+                    timeout = null;
+                    reject('getCompactSystemRepositories timeout');
+                }
+            }, cmdTimeout || this.props.cmdTimeout);
+
+            this._socket.emit('getCompactSystemRepositories', data => {
+                if (timeout) {
+                    clearTimeout(timeout);
+                    timeout = null;
+                    if (data === PERMISSION_ERROR) {
+                        reject('May not read "getCompactSystemRepositories"');
+                    } else if (!data) {
+                        reject('Cannot read "getCompactSystemRepositories"');
+                    } else {
+                        resolve(data);
+                    }
+                }
+            });
+        });
+
+        return this._promises.getCompactSystemRepositories;
+    }
+
+    getInstalledResetCache(host) {
+        if (this._promises.installedCompact) {
+            this._promises.installedCompact[host] = null;
+        }
+        if (this._promises.installed) {
+            this._promises.installed[host] = null;
+        }
+    }
+
+    // returns very optimized information for adapters to minimize connection load
     getCompactSystemConfig(update) {
         if (!update && this._promises.systemConfigCommon) {
             return this._promises.systemConfigCommon;
@@ -2557,6 +2617,7 @@ class Connection {
         if (Connection.isWeb()) {
             return Promise.reject('Allowed only in admin');
         }
+
         if (!update && this._promises.repoCompact) {
             return this._promises.repoCompact;
         }
@@ -2593,6 +2654,11 @@ class Connection {
         });
 
         return this._promises.repoCompact;
+    }
+
+    getInstalledResetCache(host) {
+        this._promises.repoCompact = null;
+        this._promises.repo = null;
     }
 
     /**
