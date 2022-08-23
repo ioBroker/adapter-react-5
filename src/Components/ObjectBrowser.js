@@ -1844,6 +1844,8 @@ class ObjectBrowser extends Component {
                             type === 'folder'   ||
                             type === 'adapter'  ||
                             type === 'instance' ||
+                            type === 'chart'    ||
+                            type === 'host'     ||
                             props.types.includes(type))) {
                             this.objects[id] = objects[id];
                         }

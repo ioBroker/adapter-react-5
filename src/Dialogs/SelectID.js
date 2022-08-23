@@ -122,15 +122,15 @@ class DialogSelectID extends React.Component {
         if (this.state.name || this.state.selected.length) {
             if (this.state.selected.length === 1) {
                 title = [
-                    <span key="selected">{ I18n.t('ra_Selected') } </span>,
-                    <span key="id" className={ this.props.classes.headerID }>{
+                    <span key="selected">{I18n.t('ra_Selected')} </span>,
+                    <span key="id" className={this.props.classes.headerID}>{
                         (this.state.name || this.state.selected) + (this.state.name ? ' [' + this.state.selected + ']' : '')
                     }</span>
                 ];
             } else {
                 title = [
-                    <span key="selected">{ I18n.t('ra_Selected') } </span>,
-                    <span key="id" className={ this.props.classes.headerID }>{
+                    <span key="selected">{I18n.t('ra_Selected')} </span>,
+                    <span key="id" className={this.props.classes.headerID}>{
                         I18n.t('%s items', this.state.selected.length)
                     }</span>
                 ];
@@ -147,32 +147,32 @@ class DialogSelectID extends React.Component {
             open={true}
             aria-labelledby="selectid-dialog-title"
         >
-            <DialogTitle id="selectid-dialog-title" classes={{root: this.props.classes.titleRoot}}>{ title }</DialogTitle>
+            <DialogTitle id="selectid-dialog-title" classes={{root: this.props.classes.titleRoot}}>{title}</DialogTitle>
             <DialogContent className={Utils.clsx(this.props.classes.content, this.props.classes.contentMobile)}>
                 <ObjectBrowser
-                    foldersFirst={ this.props.foldersFirst }
-                    imagePrefix={ this.props.imagePrefix || this.props.prefix } // prefix is for back compatibility
-                    defaultFilters={ this.filters }
+                    foldersFirst={this.props.foldersFirst}
+                    imagePrefix={this.props.imagePrefix || this.props.prefix} // prefix is for back compatibility
+                    defaultFilters={this.filters}
                     dialogName={this.dialogName}
-                    showExpertButton={ this.props.showExpertButton !== undefined ? this.props.showExpertButton : true }
-                    expertMode={ this.props.expertMode }
-                    style={ {width: '100%', height: '100%'} }
-                    columns={ this.props.columns || ['name', 'type', 'role', 'room', 'func', 'val'] }
-                    types={ this.props.types || ['state'] }
-                    t={ I18n.t }
-                    lang={ this.props.lang || I18n.getLanguage() }
-                    socket={ this.props.socket }
-                    selected={ this.state.selected }
-                    multiSelect={ this.props.multiSelect }
-                    notEditable={ this.props.notEditable === undefined ? true : this.props.notEditable }
-                    name={ this.state.name }
-                    themeName={ this.props.themeName }
-                    themeType={ this.props.themeType }
-                    customFilter={ this.props.customFilter }
-                    onFilterChanged={ filterConfig => {
+                    showExpertButton={this.props.showExpertButton !== undefined ? this.props.showExpertButton : true}
+                    expertMode={this.props.expertMode}
+                    style={{ width: '100%', height: '100%' }}
+                    columns={this.props.columns || ['name', 'type', 'role', 'room', 'func', 'val']}
+                    types={this.props.types || ['state']}
+                    t={I18n.t}
+                    lang={this.props.lang || I18n.getLanguage()}
+                    socket={this.props.socket}
+                    selected={this.state.selected}
+                    multiSelect={this.props.multiSelect}
+                    notEditable={this.props.notEditable === undefined ? true : this.props.notEditable}
+                    name={this.state.name}
+                    themeName={this.props.themeName}
+                    themeType={this.props.themeType}
+                    customFilter={this.props.customFilter}
+                    onFilterChanged={filterConfig => {
                         this.filters = filterConfig;
                         (window._localStorage || window.localStorage).setItem(this.dialogName, JSON.stringify(filterConfig));
-                    } }
+                    }}
                     onSelect={(selected, name, isDouble) => {
                         if (JSON.stringify(selected) !== JSON.stringify(this.state.selected)) {
                             this.setState({selected, name}, () =>
@@ -185,8 +185,8 @@ class DialogSelectID extends React.Component {
                 />
             </DialogContent>
             <DialogActions>
-                <Button variant="contained" onClick={ () => this.handleOk() } startIcon={<IconOk />} disabled={ !this.state.selected.length } color="primary">{ this.props.ok || I18n.t('ra_Ok') }</Button>
-                <Button color="grey" variant="contained" onClick={ () => this.handleCancel() } startIcon={<IconCancel />}>{ this.props.cancel || I18n.t('ra_Cancel') }</Button>
+                <Button variant="contained" onClick={() => this.handleOk()} startIcon={<IconOk />} disabled={!this.state.selected.length} color="primary">{this.props.ok || I18n.t('ra_Ok')}</Button>
+                <Button color="grey" variant="contained" onClick={() => this.handleCancel()} startIcon={<IconCancel />}>{this.props.cancel || I18n.t('ra_Cancel')}</Button>
             </DialogActions>
         </Dialog>;
     }
