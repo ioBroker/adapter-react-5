@@ -32,7 +32,7 @@ Possible types:
 
 - `checkbox` - show checkbox
 
-- `slider` - show slider              
+- `slider` - show slider (only Admin6)              
   - `min` - (default 0)
   - `max` - (default 100)
   - `step` - (default `(max - min) / 100`)
@@ -46,10 +46,10 @@ Possible types:
 - `user` - Select user from system.user. (With color and icon)
   - `short` - no system.user.
 
-- `room` - Select room from `enum.room` (With color and icon)
+- `room` - Select room from `enum.room` (With color and icon) - (only Admin6)
   - `short` - no `enum.rooms.`
 
-- `func` - Select function from `enum.func` (With color and icon)
+- `func` - Select function from `enum.func` (With color and icon) - (only Admin6)
   - `short` - no `enum.func.`
 
 - `select` 
@@ -127,7 +127,7 @@ Possible types:
 
 - `sendto` - button that sends request to instance (https://github.com/iobroker-community-adapters/ioBroker.email/blob/master/admin/index_m.html#L128)
     - `command` - (Default `send`)
-    - `jsonData` - string - `{"subject1": "${data.subject}", "options1": {"host": "${data.host}"}}`. You can use special variable `_origin` to send to instance the caller URL, like `http://localhost:8081/admin`.
+    - `jsonData` - string - `{"subject1": "${data.subject}", "options1": {"host": "${data.host}"}}`. You can use special variables `data._origin` and `data._originIp` to send to instance the caller URL, like `http://localhost:8081/admin`.
     - `data` - object - `{"subject1": 1, "data": "static"}`. You can specify jsonData or data, but not both.
     - `result` - `{result1: {en: 'A'}, result2: {en: 'B'}}`
     - `error` - `{error1: {en: 'E'}, error2: {en: 'E2'}}`
@@ -135,6 +135,7 @@ Possible types:
     - `openUrl` - if true - open URL in new tab, if response contains attribute `openUrl`, like `{"openUrl": "http://1.2.3.4:80/aaa", "window": "_blank", "saveConfig": true}`. If `saveConfig` is true, the user will be requested to save the configuration.
     - `window` - if `openUrl` is true, this is name of new window. Could be overwritten if response consist `window` attribute.
       `this.props.socket.sendTo(adapterName.instance, command || 'send', data, result => {});`
+    - `icon` - if icon should be shown: `auth`, `send`, `web`, `warning`, `error`, `info`. You can use `base64` icons. (Request via issue if you need more icons)
 
 - `setState` - button that set instance's state
     - `id` - 'info.test'
@@ -151,7 +152,7 @@ Possible types:
     - `label` - multi-language text
     - `href` - link. Link could be dynamic like `#tab-objects/customs/${data.parentId}`
     - `button` - show link as button
-    - `icon` - icon for button
+  - `icon` - if icon should be shown: `auth`, `send`, `web`, `warning`, `error`, `info`. You can use `base64` icons. (Request via issue if you need more icons)
 
 - `staticImage` - static image
     - `href` - optional HTTP link
@@ -172,7 +173,7 @@ Possible types:
 - `certificate`
     - `certType` - on of: `public`, `private`, `chained`
 
-- `custom`
+- `custom` (only Admin6)
     - `name` - Component name that will be provided via props, like ComponentInstancesEditor
     - `url` - Location of component
         - `custom/customComponents.js`: in this case the files will be loaded from `/adapter/ADAPTER_NAME/custom/customComponents.js`
@@ -192,7 +193,7 @@ Possible types:
     - `complex` - show CRON with "minutes", "seconds" and so on
     - `simple` - show simple CRON settings
 
-- `fileSelector`
+- `fileSelector` (only Admin6)
     - `pattern` - File extension pattern. Allowed `**/*.ext` to show all files from sub-folders too, `*.ext` to show from root folder or `folderName/*.ext` to show all files in sub-folder `folderName`. Default `**/*.*`.
     - `objectID` - Object ID of type `meta`. You can use special placeholder `%INSTANCE%`: like `myAdapter.%INSTANCE%.files`
     - `upload` - path, where the uploaded files will be stored. Like `folderName`. If not defined, no upload field will be show. To upload in root set this field to `/`.
@@ -203,7 +204,7 @@ Possible types:
     - `noNone` - Do not show `none` option
     - `noSize` - Do not show size of files
 
-- `file`
+- `file` (only Admin6)
   Input field with file selector
     - `disableEdit` - if user can manually enter the file name and not only through select dialog
     - `limitPath` - limit selection to one specific object of type `meta` and following path (not mandatory)

@@ -644,6 +644,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 ## Changelog
 ### **WORK IN PROGRESS**
 * (bluefox) Added method `getCompactSystemRepositories`
+* (bluefox) corrected error in `ObjectBrowser`
 
 ### 3.1.27 (2022-08-01)
 * (bluefox) Disable file editing in FileViewer

@@ -4,6 +4,13 @@ import { withStyles } from '@mui/styles';
 
 import Button from '@mui/material/Button';
 
+import IconWarning from '@mui/icons-material/Warning';
+import IconError from '@mui/icons-material/Error';
+import IconInfo from '@mui/icons-material/Info';
+import IconAuth from '@mui/icons-material/Key';
+import IconSend from '@mui/icons-material/Send';
+import IconWeb from '@mui/icons-material/Public';
+
 import I18n from '../../i18n';
 import Icon from '../Icon';
 import DialogError from '../../Dialogs/Error';
@@ -11,11 +18,8 @@ import DialogMessage from '../../Dialogs/Message';
 import ConfirmDialog from '../../Dialogs/Confirm';
 
 import ConfigGeneric from './ConfigGeneric';
-import IconWarning from '@mui/icons-material/Warning';
-import IconError from '@mui/icons-material/Error';
-import IconInfo from '@mui/icons-material/Info';
 
-const styles = theme => ({
+const styles = () => ({
     fullWidth: {
         width: '100%'
     },
@@ -38,6 +42,8 @@ function findNetworkAddressOfHost(obj, localIp) {
     }
 
     let hostIp;
+
+    // check ipv4 addresses
     Object.keys(networkInterfaces).forEach(inter =>
         networkInterfaces[inter].forEach(ip => {
             if (ip.internal) {
@@ -47,9 +53,10 @@ function findNetworkAddressOfHost(obj, localIp) {
             } else if (localIp.includes('.') && !localIp.match(/[^.\d]/) && ip.family !== 'IPv4') {
                 return;
             }
-            if (localIp === '127.0.0.0' || localIp === 'localhost' || localIp.match(/[^.\d]/)) { // if DNS name
+            // if ip4 and not docker or wsl
+            if (ip.family === 'IPv4' && !ip.address.startsWith('172') && (localIp === '127.0.0.0' || localIp === 'localhost' || localIp.match(/[^.\d]/))) { // if DNS name
                 hostIp = ip.address;
-            } else {
+            } else if (!hostIp) {
                 if (ip.family === 'IPv4' && localIp.includes('.') &&
                     (ip2int(localIp) & ip2int(ip.netmask)) === (ip2int(ip.address) & ip2int(ip.netmask))) {
                     hostIp = ip.address;
@@ -58,6 +65,30 @@ function findNetworkAddressOfHost(obj, localIp) {
                 }
             }
         }));
+
+    // check ipv6 addresses
+    if (!hostIp) {
+        Object.keys(networkInterfaces).forEach(inter =>
+            networkInterfaces[inter].forEach(ip => {
+                if (ip.internal) {
+                    return;
+                } else if (localIp.includes(':') && ip.family !== 'IPv6') {
+                    return;
+                } else if (localIp.includes('.') && !localIp.match(/[^.\d]/) && ip.family !== 'IPv4') {
+                    return;
+                }
+                if (ip.family === 'IPv6' && (localIp === '127.0.0.0' || localIp === 'localhost' || localIp.match(/[^.\d]/))) { // if DNS name
+                    hostIp = ip.address;
+                } else if (!hostIp) {
+                    if (ip.family === 'IPv4' && localIp.includes('.') &&
+                        (ip2int(localIp) & ip2int(ip.netmask)) === (ip2int(ip.address) & ip2int(ip.netmask))) {
+                        hostIp = ip.address;
+                    } else {
+                        hostIp = ip.address;
+                    }
+                }
+            }));
+    }
 
     if (!hostIp) {
         Object.keys(networkInterfaces).forEach(inter => {
@@ -106,7 +137,7 @@ class ConfigSendto extends ConfigGeneric {
 
             const ip = findNetworkAddressOfHost(hostObj, window.location.hostname);
             if (ip) {
-                hostname = ip + ':' + window.location.port;
+                hostname = `${ip}:${window.location.port}`;
             } else {
                 console.warn(`Cannot find suitable IP in host ${instanceObj.common.host} for ${instanceObj._id}`);
                 return null;
@@ -134,12 +165,14 @@ class ConfigSendto extends ConfigGeneric {
     _onClick() {
         this.props.onCommandRunning(true);
 
-        const _origin = `${window.location.protocol}//${this.state.hostname}${window.location.pathname.replace(/\/index\.html$/, '')}`
+        const _origin = `${window.location.protocol}//${window.location.host}${window.location.pathname.replace(/\/index\.html$/, '')}`
+        const _originIp = `${window.location.protocol}//${this.state.hostname.split(':').length > 3 ? `[${this.state.hostname}]` : this.state.hostname}${window.location.pathname.replace(/\/index\.html$/, '')}`
 
         let data = this.props.schema.data;
         if (data === undefined && this.props.schema.jsonData) {
-            data = this.getPattern(this.props.schema.jsonData, {}, {
+            data = this.getPattern(this.props.schema.jsonData, {
                 _origin,
+                _originIp,
                 ...this.props.data
             });
             try {
@@ -152,7 +185,10 @@ class ConfigSendto extends ConfigGeneric {
             data = null;
         }
         if (this.props.schema.openUrl && !data) {
-            data = { _origin: `${window.location.protocol}//${this.state.hostname}${window.location.pathname.replace(/\/index\.html$/, '')}` };
+            data = {
+                _origin,
+                _originIp,
+            }
         }
 
         this.props.socket.sendTo(
@@ -231,22 +267,45 @@ class ConfigSendto extends ConfigGeneric {
         />;
     }
 
+    getIcon() {
+        let icon = null;
+        if (this.props.schema.icon === 'auth') {
+            icon = <IconAuth />;
+        } else if (this.props.schema.icon === 'send') {
+            icon = <IconSend />;
+        } else if (this.props.schema.icon === 'web') {
+            icon = <IconWeb />;
+        } else if (this.props.schema.icon === 'warning') {
+            icon = <IconWarning />;
+        } else if (this.props.schema.icon === 'error') {
+            icon = <IconError />;
+        } else if (this.props.schema.icon === 'info') {
+            icon = <IconInfo />;
+        } else if (this.props.schema.icon) {
+            icon = <Icon src={this.props.schema.icon} />;
+        }
+
+        return icon;
+    }
+
     renderItem(error, disabled, defaultValue) {
+        let icon = this.getIcon();
+
         return <div className={this.props.classes.fullWidth}>
             <Button
                 variant={this.props.schema.variant || undefined}
                 color={this.props.schema.color || 'grey'}
                 className={this.props.classes.fullWidth}
                 disabled={disabled}
+                startIcon={icon}
                 onClick={() => {
                     if (this.props.schema.confirm) {
-                        this.setState({confirmDialog: true});
+                        this.setState({ confirmDialog: true });
                     } else {
                         this._onClick();
                     }
                 }}
             >
-                {this.props.schema.icon ? <Icon src={this.props.schema.icon} className={this.props.classes.icon}/> : null}
                 {this.getText(this.props.schema.label, this.props.schema.noTranslation)}
             </Button>
             {this.renderErrorDialog()}

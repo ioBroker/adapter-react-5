@@ -416,12 +416,13 @@ class ConfigGeneric extends Component {
                 href={link}
                 target="_blank"
                 rel="noreferrer"
-                style={{color: this.props.themeType === 'dark' ? '#eee' : '#111'}}
+                style={{ color: this.props.themeType === 'dark' ? '#a147ff' : '#5b238f', textDecoration: 'underline' }}
             >{this.getText(text, noTranslation)}</a>;
         }
     }
 
-    getPattern(pattern) {
+    getPattern(pattern, data) {
+        data = data || this.props.data;
         if (!pattern) {
             return '';
         } else {
@@ -432,13 +433,12 @@ class ConfigGeneric extends Component {
             try {
                 if (this.props.custom) {
                     // eslint-disable-next-line no-new-func
-                    const f = new Function('data', 'originalData', '_system', 'instanceObj', 'customObj', '_socket', 'return `' + pattern.replace(/`/g, '\\`') + '`');
-                    const result = f(this.props.data, this.props.originalData, this.props.systemConfig, this.props.instanceObj,  this.props.customObj, this.props.socket);
-                    return result;
+                    const f = new Function('data', 'originalData',  'arrayIndex', 'globalData', '_system', 'instanceObj', 'customObj', '_socket', 'return `' + pattern.replace(/`/g, '\\`') + '`');
+                    return f(data, this.props.originalData, this.props.arrayIndex, this.props.globalData, this.props.systemConfig, this.props.instanceObj,  this.props.customObj, this.props.socket, this.props.arrayIndex, this.props.globalData);
                 } else {
                     // eslint-disable-next-line no-new-func
-                    const f = new Function('data', 'originalData', '_system', '_alive', '_common', '_socket', 'return `' + pattern.replace(/`/g, '\\`') + '`');
-                    return f(this.props.data, this.props.originalData, this.props.systemConfig, this.props.alive, this.props.common, this.props.socket);
+                    const f = new Function('data', 'originalData',  'arrayIndex', 'globalData', '_system', '_alive', '_common', '_socket', 'return `' + pattern.replace(/`/g, '\\`') + '`');
+                    return f(data, this.props.originalData, this.props.arrayIndex, this.props.globalData, this.props.systemConfig, this.props.alive, this.props.common, this.props.socket);
                 }
             } catch (e) {
                 console.error(`Cannot execute ${pattern}: ${e}`);
