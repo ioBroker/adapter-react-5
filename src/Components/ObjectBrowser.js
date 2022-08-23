@@ -1816,7 +1816,7 @@ class ObjectBrowser extends Component {
                     return props.socket.getObjectView(null, null, props.types[0]);
                 } else {
                     return props.socket.getObject('system.config')
-                        .then(obj => ({ 'system.config': obj });
+                        .then(obj => ({ 'system.config': obj }));
                 }
             })
             .then(moreObjects => {
