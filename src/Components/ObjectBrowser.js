@@ -1801,13 +1801,34 @@ class ObjectBrowser extends Component {
 
     loadAllObjects(update) {
         const props = this.props;
+        let objects;
 
-        return new Promise(resolve => this.setState({updating: true}, () => resolve()))
+        return new Promise(resolve => this.setState({ updating: true }, () => resolve()))
             .then(() => this.props.objectsWorker ?
                 this.props.objectsWorker.getObjects(update) :
                 props.socket.getObjects(update, true))
-            .then(objects => {
-                this.systemConfig = objects['system.config'] || {};
+            .then(_objects => {
+                objects = _objects;
+                if (props.types && props.types[0] !== 'state') {
+                    if (props.length >= 1) {
+                        console.error('more than one type does not supported!');
+                    }
+                    return props.socket.getObjectView(null, null, props.types[0]);
+                } else {
+                    return props.socket.getObject('system.config')
+                        .then(obj => ({ 'system.config': obj });
+                }
+            })
+            .then(moreObjects => {
+                this.systemConfig = objects['system.config'] || moreObjects['system.config'] || {};
+
+                if (moreObjects) {
+                    if (moreObjects['system.config']) {
+                        delete moreObjects['system.config'];
+                    }
+                    Object.assign(objects, moreObjects);
+                }
+
                 this.systemConfig.common = this.systemConfig.common || {};
                 this.systemConfig.common.defaultNewAcl = this.systemConfig.common.defaultNewAcl || {};
                 this.systemConfig.common.defaultNewAcl.owner = this.systemConfig.common.defaultNewAcl.owner || 'system.user.admin';
@@ -1837,6 +1858,7 @@ class ObjectBrowser extends Component {
                     this.objects = {};
                     Object.keys(objects).forEach(id => {
                         const type = objects[id] && objects[id].type;
+                        // include "folder" types too
                         if (type && (
                             type === 'channel'  ||
                             type === 'device'   ||
@@ -1844,8 +1866,6 @@ class ObjectBrowser extends Component {
                             type === 'folder'   ||
                             type === 'adapter'  ||
                             type === 'instance' ||
-                            type === 'chart'    ||
-                            type === 'host'     ||
                             props.types.includes(type))) {
                             this.objects[id] = objects[id];
                         }

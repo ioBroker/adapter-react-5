@@ -642,7 +642,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### 3.1.29 (2022-08-23)
+### **WORK IN PROGRESS**
 * (bluefox) Added method `getCompactSystemRepositories`
 * (bluefox) corrected error in `ObjectBrowser`
 
