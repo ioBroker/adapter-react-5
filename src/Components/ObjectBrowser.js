@@ -1811,7 +1811,7 @@ class ObjectBrowser extends Component {
                 objects = _objects;
                 if (props.types && props.types[0] !== 'state') {
                     if (props.length >= 1) {
-                        console.error('more than one type does not supported!');
+                        console.error('more than one type does not supported! Use filterFunc instead');
                     }
                     return props.socket.getObjectView(null, null, props.types[0]);
                 } else {
