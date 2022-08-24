@@ -1815,8 +1815,8 @@ class ObjectBrowser extends Component {
                     }
                     return props.socket.getObjectView(null, null, props.types[0]);
                 } else {
-                    return props.socket.getObject('system.config')
-                        .then(obj => ({ 'system.config': obj }));
+                    return !objects['system.config'] ? props.socket.getObject('system.config')
+                        .then(obj => ({ 'system.config': obj })) : Promise.resolve(null);
                 }
             })
             .then(moreObjects => {
@@ -2532,7 +2532,7 @@ class ObjectBrowser extends Component {
     subscribe(id) {
         if (!this.subscribes.includes(id)) {
             this.subscribes.push(id);
-            console.log('+ subscribe ' + id);
+            console.log(`+ subscribe ${id}`);
             !this.pausedSubscribes && this.props.socket.subscribeState(id, this.onStateChange);
         }
     }
@@ -2548,7 +2548,7 @@ class ObjectBrowser extends Component {
             if (this.states[id]) {
                 delete this.states[id];
             }
-            console.log('- unsubscribe ' + id);
+            console.log(`- unsubscribe ${id}`);
             this.props.socket.unsubscribeState(id, this.onStateChange);
 
             if (this.pausedSubscribes) {
@@ -3783,7 +3783,12 @@ class ObjectBrowser extends Component {
 
             // const hasIcons = !!enums.find(item => item.icon);
 
-            return <Dialog className={this.props.classes.enumDialog} onClose={() => this.setState({ enumDialog: null })} aria-labelledby="enum-dialog-title" open={true}>
+            return <Dialog
+                className={this.props.classes.enumDialog}
+                onClose={() => this.setState({ enumDialog: null })}
+                aria-labelledby="enum-dialog-title"
+                open={!0} // true
+            >
                 <DialogTitle id="enum-dialog-title">
                     {type === 'func' ? this.props.t('ra_Define functions') : this.props.t('ra_Define rooms')}
                     <Fab
@@ -4906,13 +4911,26 @@ class ObjectBrowser extends Component {
             onNewObject={obj =>
                 this.props.socket.setObject(obj._id, obj)
                     .then(() => this.setState({ editObjectDialog: obj._id }, () => this.onSelect(obj._id)))
-                    .catch(e => this.showError('Cannot write object: ' + e))}
+                    .catch(e => this.showError(`Cannot write object: ${e}`))}
             onClose={obj => {
-                this.setState({ editObjectDialog: '' });
                 if (obj) {
+                    let updateAlias;
+                    if (this.state.editObjectDialog.startsWith('alias.')) {
+                        if (JSON.stringify(this.objects[this.state.editObjectDialog].common?.alias) !== JSON.stringify(obj.common?.alias)) {
+                            updateAlias = this.state.editObjectDialog;
+                        }
+                    }
+
                     this.props.socket.setObject(obj._id, obj)
-                        .catch(e => this.showError('Cannot write object: ' + e));
+                        .then(() => {
+                            if (updateAlias && this.subscribes.includes(updateAlias)) {
+                                this.unsubscribe(updateAlias);
+                                setTimeout(() => this.subscribe(updateAlias), 100);
+                            }
+                        })
+                        .catch(e => this.showError(`Cannot write object: ${e}`));
                 }
+                this.setState({ editObjectDialog: '' });
             }}
         />
     }
