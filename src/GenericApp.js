@@ -137,12 +137,12 @@ class GenericApp extends Router {
         this.newReact = args.newReact === true; // it is admin5
 
         const location = Router.getLocation();
-        location.tab = location.tab || (window._localStorage || window.localStorage).getItem(this.adapterName + '-adapter') || '';
+        location.tab = location.tab || (window._localStorage || window.localStorage).getItem(`${this.adapterName}-adapter`) || '';
 
         const themeInstance = this.createTheme();
 
         this.state = {
-            selectedTab:    (window._localStorage || window.localStorage).getItem(this.adapterName + '-adapter') || '',
+            selectedTab:    (window._localStorage || window.localStorage).getItem(`${this.adapterName}-adapter`) || '',
             selectedTabNum: -1,
             native:         {},
             errorText:      '',
@@ -194,11 +194,11 @@ class GenericApp extends Router {
             doNotLoadAllObjects: settings?.doNotLoadAllObjects,
             onProgress: progress => {
                 if (progress === PROGRESS.CONNECTING) {
-                    this.setState({connected: false});
+                    this.setState({ connected: false });
                 } else if (progress === PROGRESS.READY) {
-                    this.setState({connected: true});
+                    this.setState({ connected: true });
                 } else {
-                    this.setState({connected: true});
+                    this.setState({ connected: true });
                 }
             },
             onReady: (objects, scripts) => {
@@ -259,11 +259,12 @@ class GenericApp extends Router {
                                     this.common = instanceObj?.common;
                                     this.onPrepareLoad(instanceObj.native, instanceObj.encryptedNative); // decode all secrets
                                     this.savedNative = JSON.parse(JSON.stringify(instanceObj.native));
-                                    this.setState({native: instanceObj.native, loaded: true, expertMode: this.getExpertMode()}, () =>
+                                    this.setState({ native: instanceObj.native, loaded: true, expertMode: this.getExpertMode() }, () =>
                                         this.onConnectionReady && this.onConnectionReady());
                                 } else {
                                     console.warn('Cannot load instance settings');
-                                    this.setState({native: {}, loaded: true, expertMode: this.getExpertMode()}, () => this.onConnectionReady && this.onConnectionReady());
+                                    this.setState({ native: {}, loaded: true, expertMode: this.getExpertMode()},
+                                        () => this.onConnectionReady && this.onConnectionReady());
                                 }
                             });
                     });
@@ -284,7 +285,7 @@ class GenericApp extends Router {
 
             if (this._systemConfig.expertMode !== !!obj?.common?.expertMode) {
                 this._systemConfig = obj?.common || {};
-                this.setState({expertMode: this.getExpertMode()});
+                this.setState({ expertMode: this.getExpertMode() });
             } else {
                 this._systemConfig = obj?.common || {};
             }
@@ -340,7 +341,7 @@ class GenericApp extends Router {
         this.resizeTimer && clearTimeout(this.resizeTimer);
         this.resizeTimer = setTimeout(() => {
             this.resizeTimer = null;
-            this.setState({width: GenericApp.getWidth()});
+            this.setState({ width: GenericApp.getWidth() });
         }, 200);
     };
 
@@ -487,8 +488,8 @@ class GenericApp extends Router {
      * @param {number} [index]
      */
     selectTab(tab, index) {
-        (window._localStorage || window.localStorage)[this.adapterName + '-adapter'] = tab;
-        this.setState({selectedTab: tab, selectedTabNum: index})
+        (window._localStorage || window.localStorage).setItem(this.adapterName + '-adapter', tab);
+        this.setState({ selectedTab: tab, selectedTabNum: index })
     }
 
     /**
@@ -539,7 +540,10 @@ class GenericApp extends Router {
                 if (err) {
                     resolve([]);
                 } else {
-                    resolve(doc.rows.filter(item => item.value.common.webExtendable).map(item => item.value));
+                    resolve(doc.rows
+                        .filter(item => item.value.common.webExtendable)
+                        .map(item => item.value)
+                    );
                 }
             });
         });
@@ -552,17 +556,17 @@ class GenericApp extends Router {
     getIpAddresses(host) {
         return new Promise((resolve, reject) => {
             this.socket._socket.emit('getHostByIp', host || this.common.host, (ip, _host) => {
-                const IPs4 = [{name: '[IPv4] 0.0.0.0 - ' + I18n.t('ra_Listen on all IPs'), address: '0.0.0.0', family: 'ipv4'}];
-                const IPs6 = [{name: '[IPv6] ::',      address: '::',      family: 'ipv6'}];
+                const IPs4 = [{ name: `[IPv4] 0.0.0.0 - ${I18n.t('ra_Listen on all IPs')}`, address: '0.0.0.0', family: 'ipv4' }];
+                const IPs6 = [{ name: '[IPv6] ::', address: '::', family: 'ipv6' }];
                 if (_host) {
                     host = _host;
                     if (host.native.hardware && host.native.hardware.networkInterfaces) {
                         Object.keys(host.native.hardware.networkInterfaces).forEach(eth =>
                             host.native.hardware.networkInterfaces[eth].forEach(inter => {
                                 if (inter.family !== 'IPv6') {
-                                    IPs4.push({name: '[' + inter.family + '] ' + inter.address + ' - ' + eth, address: inter.address, family: 'ipv4'});
+                                    IPs4.push({ name: `[${inter.family}] ${inter.address} - ${eth}`, address: inter.address, family: 'ipv4' });
                                 } else {
-                                    IPs6.push({name: '[' + inter.family + '] ' + inter.address + ' - ' + eth, address: inter.address, family: 'ipv6'});
+                                    IPs6.push({ name: `[${inter.family}] ${inter.address} - ${eth}`, address: inter.address, family: 'ipv6' });
                                 }
                             }));
                     }
@@ -580,7 +584,7 @@ class GenericApp extends Router {
     onSave(isClose) {
         let oldObj;
         if (this.state.isConfigurationError) {
-            this.setState({errorText: this.state.isConfigurationError});
+            this.setState({ errorText: this.state.isConfigurationError });
             return;
         }
 
@@ -623,7 +627,13 @@ class GenericApp extends Router {
             .then(() => {
                 this.savedNative = oldObj.native;
                 globalThis.changed = false;
-                this.setState({changed: false});
+                try {
+                    window.parent.postMessage('nochange', '*');
+                } catch (e) {
+                    // ignore
+                }
+
+                this.setState({ changed: false });
                 isClose && GenericApp.onClose();
             })
             .catch(e => {
@@ -647,10 +657,8 @@ class GenericApp extends Router {
             }}
             open={true}
             autoHideDuration={6000}
-            onClose={() => this.setState({toast: ''})}
-            ContentProps={{
-                'aria-describedby': 'message-id',
-            }}
+            onClose={() => this.setState({ toast: '' })}
+            ContentProps={{ 'aria-describedby': 'message-id' }}
             message={<span id="message-id">{this.state.toast}</span>}
             action={[
                 <IconButton
@@ -658,7 +666,7 @@ class GenericApp extends Router {
                     aria-label="Close"
                     color="inherit"
                     className={this.props.classes.close}
-                    onClick={() => this.setState({toast: ''})}
+                    onClick={() => this.setState({ toast: '' })}
                     size="large">
                     <IconClose />
                 </IconButton>,
@@ -692,7 +700,7 @@ class GenericApp extends Router {
         if (!this.state.errorText) {
             return null;
         } else {
-            return <DialogError text={this.state.errorText} onClose={() => this.setState({errorText: ''})}/>;
+            return <DialogError text={this.state.errorText} onClose={() => this.setState({ errorText: '' })}/>;
         }
     }
 
@@ -704,10 +712,20 @@ class GenericApp extends Router {
         native = native || this.state.native;
         const isChanged =  JSON.stringify(native) !== JSON.stringify(this.savedNative);
 
-        if(isChanged) {
+        if (isChanged) {
             globalThis.changed = true;
+            try {
+                window.parent.postMessage('change', '*');
+            } catch (e) {
+                // ignore
+            }
         } else {
             globalThis.changed = false;
+            try {
+                window.parent.postMessage('nochange', '*');
+            } catch (e) {
+                // ignore
+            }
         }
 
         return isChanged;
@@ -719,7 +737,7 @@ class GenericApp extends Router {
      */
     onLoadConfig(newNative) {
         if (JSON.stringify(newNative) !== JSON.stringify(this.state.native)) {
-            this.setState({native: newNative, changed: this.getIsChanged(newNative)})
+            this.setState({ native: newNative, changed: this.getIsChanged(newNative) })
         }
     }
 
@@ -729,7 +747,7 @@ class GenericApp extends Router {
      */
     setConfigurationError(errorText) {
         if (this.state.isConfigurationError !== errorText) {
-            this.setState({isConfigurationError: errorText});
+            this.setState({ isConfigurationError: errorText });
         }
     }
 
@@ -744,7 +762,7 @@ class GenericApp extends Router {
                 newReact={this.newReact}
                 noTextOnButtons={this.state.width === 'xs' || this.state.width === 'sm' || this.state.width === 'md'}
                 changed={this.state.changed}
-                onSave={(isClose) => this.onSave(isClose)}
+                onSave={isClose => this.onSave(isClose)}
                 onClose={() => GenericApp.onClose()}
             />;
         } else {
@@ -780,7 +798,7 @@ class GenericApp extends Router {
         } else {
             obj[attr] = obj[attr] || {};
             if (typeof obj[attr] !== 'object') {
-                throw new Error('attribute ' + attr + ' is no object, but ' + typeof obj[attr]);
+                throw new Error(`attribute ${attr} is no object, but ${typeof obj[attr]}`);
             }
             return this._updateNativeValue(obj[attr], attrs, value);
         }
@@ -796,7 +814,7 @@ class GenericApp extends Router {
         const native = JSON.parse(JSON.stringify(this.state.native));
         if (this._updateNativeValue(native, attr, value)) {
             const changed = this.getIsChanged(native);
-            this.setState({native, changed}, cb);
+            this.setState({ native, changed }, cb);
         }
     }
 
@@ -805,7 +823,7 @@ class GenericApp extends Router {
      * @param {string | JSX.Element} text
      */
     showError(text) {
-        this.setState({errorText: text});
+        this.setState({ errorText: text });
     }
 
     /**
@@ -813,7 +831,7 @@ class GenericApp extends Router {
      * @param {string} toast
      */
     showToast(toast) {
-        this.setState({toast});
+        this.setState({ toast });
     }
 
     /**
