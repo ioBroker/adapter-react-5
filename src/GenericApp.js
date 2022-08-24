@@ -744,8 +744,12 @@ class GenericApp extends Router {
      * @returns {JSX.Element | undefined} The JSX element.
      */
     renderSaveCloseButtons() {
-        if (this.state.bottomButtons) {
-            return <SaveCloseButtons
+        if (!this.state.confirmClose && !this.state.bottomButtons) {
+            return null;
+        }
+
+        return <>
+            {this.state.bottomButtons ? <SaveCloseButtons
                 theme={this.state.theme}
                 newReact={this.newReact}
                 noTextOnButtons={this.state.width === 'xs' || this.state.width === 'sm' || this.state.width === 'md'}
@@ -758,10 +762,17 @@ class GenericApp extends Router {
                         GenericApp.onClose();
                     }
                 }}
-            />;
-        } else {
-            return null;
-        }
+            /> : null}
+            {this.state.confirmClose ? <ConfirmDialog
+                title={I18n.t('ra_Please confirm')}
+                text={I18n.t('ra_Some data are not stored. Discard?')}
+                ok={I18n.t('ra_Discard')}
+                cancel={I18n.t('ra_Cancel')}
+                onClose={isYes =>
+                    this.setState({ confirmClose: false }, () =>
+                        isYes && GenericApp.onClose())}
+            /> : null}
+        </>;
     }
 
     /**
@@ -838,25 +849,6 @@ class GenericApp extends Router {
     }
 
     /**
-     * Render close confirm dialog.
-     */
-    renderCloseConfirmDialog() {
-        if (!this.state.confirmClose) {
-            return null;
-        }
-        return <ConfirmDialog
-            title={I18n.t('ra_Please confirm')}
-            text={I18n.t('ra_Some data are not stored. Discard?')}
-            ok={I18n.t('ra_Discard')}
-            cancel={I18n.t('ra_Cancel')}
-            onClose={isYes =>
-                this.setState({ confirmClose: false }, () =>
-                    isYes && GenericApp.onClose())}
-        />;
-    }
-
-
-    /**
      * Renders this component.
      * @returns {JSX.Element} The JSX element.
      */
@@ -866,7 +858,6 @@ class GenericApp extends Router {
         }
 
         return <div className="App">
-            {this.renderCloseConfirmDialog()}
             {this.renderError()}
             {this.renderToast()}
             {this.renderSaveCloseButtons()}
