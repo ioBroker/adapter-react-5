@@ -112,7 +112,7 @@ class I18n {
      * @param {string[]} args Optional arguments which will replace the first (second, third, ...) occurrences of %s
      */
     static t(word, ...args) {
-        const translation = I18n.translations[I18n.lang];
+        let translation = I18n.translations[I18n.lang];
         if (translation) {
             const w = translation[word];
             if (w) {
@@ -121,6 +121,13 @@ class I18n {
                 if (!I18n.unknownTranslations.includes(word)) {
                     I18n.unknownTranslations.push(word);
                     !I18n._disableWarning && console.log(`Translate: ${word}`);
+                }
+                // fallback to english
+                if (I18n.lang !== 'en' && I18n.translations.en) {
+                    const wordEn = I18n.translations.en[word];
+                    if (wordEn) {
+                        word = wordEn;
+                    }
                 }
             }
         }
