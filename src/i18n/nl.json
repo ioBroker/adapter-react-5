@@ -307,5 +307,7 @@
   "ra_Disconnected": "Verbinding verbroken",
   "ra_Connected": "Verbonden",
   "ra_Configure": "Configureren",
-  "ra_Invalid CRON": "Ongeldige CRON"
+  "ra_Invalid CRON": "Ongeldige CRON",
+  "ra_Discard": "Weggooien",
+  "ra_Some data are not stored. Discard?": "Sommige gegevens worden niet opgeslagen. Weggooien?"
 }

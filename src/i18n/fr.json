@@ -307,5 +307,7 @@
   "ra_Disconnected": "Débranché",
   "ra_Connected": "Lié",
   "ra_Configure": "Configurer",
-  "ra_Invalid CRON": "CRON invalide"
+  "ra_Invalid CRON": "CRON invalide",
+  "ra_Discard": "Jeter",
+  "ra_Some data are not stored. Discard?": "Certaines données ne sont pas stockées. Jeter?"
 }

@@ -307,5 +307,7 @@
   "ra_Disconnected": "Niepowiązany",
   "ra_Connected": "Połączony",
   "ra_Configure": "Konfiguruj",
-  "ra_Invalid CRON": "Nieprawidłowy CRON"
+  "ra_Invalid CRON": "Nieprawidłowy CRON",
+  "ra_Discard": "Wyrzucać",
+  "ra_Some data are not stored. Discard?": "Niektóre dane nie są przechowywane. Wyrzucać?"
 }

@@ -320,5 +320,7 @@
   "ra_Disconnected": "Отключено",
   "ra_Connected": "Соединение установлено",
   "ra_Configure": "Настроить",
-  "ra_Invalid CRON": "Неверный CRON"
+  "ra_Invalid CRON": "Неверный CRON",
+  "ra_Discard": "Отказаться",
+  "ra_Some data are not stored. Discard?": "Некоторые данные не сохранились. Отказаться?"
 }

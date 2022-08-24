@@ -307,5 +307,7 @@
   "ra_Disconnected": "断开连接",
   "ra_Connected": "连接的",
   "ra_Configure": "配置",
-  "ra_Invalid CRON": "无效的 CRON"
+  "ra_Invalid CRON": "无效的 CRON",
+  "ra_Discard": "丢弃",
+  "ra_Some data are not stored. Discard?": "部分数据未存储。丢弃？"
 }

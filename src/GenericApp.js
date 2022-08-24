@@ -22,6 +22,7 @@ import Loader from './Components/Loader';
 import Router from './Components/Router';
 import Utils from './Components/Utils';
 import SaveCloseButtons from './Components/SaveCloseButtons';
+import ConfirmDialog from './Dialogs/Confirm';
 import I18n from './i18n';
 
 // import './index.css';
@@ -157,6 +158,7 @@ class GenericApp extends Router {
             themeType:      this.getThemeType(themeInstance),
             bottomButtons:  (settings && settings.bottomButtons) === false ? false : ((props && props.bottomButtons) === false ? false : true),
             width:          GenericApp.getWidth(),
+            confirmClose:   false,
         };
 
         // init translations
@@ -712,21 +714,7 @@ class GenericApp extends Router {
         native = native || this.state.native;
         const isChanged =  JSON.stringify(native) !== JSON.stringify(this.savedNative);
 
-        if (isChanged) {
-            globalThis.changed = true;
-            try {
-                window.parent.postMessage('change', '*');
-            } catch (e) {
-                // ignore
-            }
-        } else {
-            globalThis.changed = false;
-            try {
-                window.parent.postMessage('nochange', '*');
-            } catch (e) {
-                // ignore
-            }
-        }
+        globalThis.changed = isChanged;
 
         return isChanged;
     }
@@ -763,7 +751,13 @@ class GenericApp extends Router {
                 noTextOnButtons={this.state.width === 'xs' || this.state.width === 'sm' || this.state.width === 'md'}
                 changed={this.state.changed}
                 onSave={isClose => this.onSave(isClose)}
-                onClose={() => GenericApp.onClose()}
+                onClose={() => {
+                    if (this.state.changed) {
+                        this.setState({ confirmClose: true });
+                    } else {
+                        GenericApp.onClose();
+                    }
+                }}
             />;
         } else {
             return null;
@@ -814,6 +808,15 @@ class GenericApp extends Router {
         const native = JSON.parse(JSON.stringify(this.state.native));
         if (this._updateNativeValue(native, attr, value)) {
             const changed = this.getIsChanged(native);
+
+            if (changed !== this.state.changed) {
+                try {
+                    window.parent.postMessage(changed ? 'change' : 'nochange', '*');
+                } catch (e) {
+                    // ignore
+                }
+            }
+
             this.setState({ native, changed }, cb);
         }
     }
@@ -835,6 +838,25 @@ class GenericApp extends Router {
     }
 
     /**
+     * Render close confirm dialog.
+     */
+    renderCloseConfirmDialog() {
+        if (!this.state.confirmClose) {
+            return null;
+        }
+        return <ConfirmDialog
+            title={I18n.t('ra_Please confirm')}
+            text={I18n.t('ra_Some data are not stored. Discard?')}
+            ok={I18n.t('ra_Discard')}
+            cancel={I18n.t('ra_Cancel')}
+            onClose={isYes =>
+                this.setState({ confirmClose: false }, () =>
+                    isYes && GenericApp.onClose())}
+        />;
+    }
+
+
+    /**
      * Renders this component.
      * @returns {JSX.Element} The JSX element.
      */
@@ -844,6 +866,7 @@ class GenericApp extends Router {
         }
 
         return <div className="App">
+            {this.renderCloseConfirmDialog()}
             {this.renderError()}
             {this.renderToast()}
             {this.renderSaveCloseButtons()}

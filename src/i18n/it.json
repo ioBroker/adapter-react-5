@@ -307,5 +307,7 @@
   "ra_Disconnected": "Disconnesso",
   "ra_Connected": "Collegato",
   "ra_Configure": "Configura",
-  "ra_Invalid CRON": "CRON non valido"
+  "ra_Invalid CRON": "CRON non valido",
+  "ra_Discard": "Scartare",
+  "ra_Some data are not stored. Discard?": "Alcuni dati non vengono memorizzati. Scartare?"
 }
