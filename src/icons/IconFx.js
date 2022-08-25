@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const IconFx = props => {
-    return <svg onClick={e => props.onClick && props.onClick(e)} style={props.style || {}} viewBox="0 0 95 95" width={props.width || 20} height={props.height || props.width || 20} xmlns="http://www.w3.org/2000/svg" className={ props.className }>
+    return <svg onClick={e => props.onClick && props.onClick(e)} style={props.style || {}} viewBox="0 0 95 95" width={props.width || 20} height={props.height || props.width || 20} xmlns="http://www.w3.org/2000/svg" className={props.className}>
         <path fill="currentColor" d="M93.779,63.676c-0.981-1.082-2.24-1.653-3.639-1.653c-1.145,0-3.953,0.396-5.318,4.062
 		c-0.344,0.922-0.443,1.413-0.907,1.363c-0.786-0.078-3.845-3.346-4.845-8.145l-2.482-11.6c1.961-3.177,3.977-5.629,5.988-7.292
 		c1.08-0.882,2.314-1.349,3.808-1.43c3.815-0.26,5.203-0.74,6.14-1.399c1.547-1.115,2.397-2.728,2.397-4.542

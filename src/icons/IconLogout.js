@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
  * @extends {React.Component<ExpertIconProps>}
  */
 const IconLogout = props => {
-    return <svg onClick={e => props.onClick && props.onClick(e)} viewBox="0 0 512 512" width={props.width || 20} height={props.height || props.width || 20} xmlns="http://www.w3.org/2000/svg" className={ props.className }>
+    return <svg onClick={e => props.onClick && props.onClick(e)} viewBox="0 0 512 512" width={props.width || 20} height={props.height || props.width || 20} xmlns="http://www.w3.org/2000/svg" className={props.className}>
         <path fill="currentColor" d="M510.371,226.513c-1.088-2.603-2.645-4.971-4.629-6.955l-63.979-63.979c-8.341-8.32-21.824-8.32-30.165,0
 			c-8.341,8.341-8.341,21.845,0,30.165l27.584,27.584H320.013c-11.797,0-21.333,9.557-21.333,21.333s9.536,21.333,21.333,21.333
 			h119.168l-27.584,27.584c-8.341,8.341-8.341,21.845,0,30.165c4.16,4.181,9.621,6.251,15.083,6.251s10.923-2.069,15.083-6.251
