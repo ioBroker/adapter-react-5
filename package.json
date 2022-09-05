@@ -44,7 +44,7 @@
     "@sentry/integrations": "^7.8.0",
     "@types/iobroker": "^4.0.4",
     "react-color": "^2.19.3",
-    "react-colorful": "^5.5.1",
+    "react-colorful": "^5.6.1",
     "react-dropzone": "^14.2.2",
     "react-icons": "^4.4.0",
     "react-inlinesvg": "^3.0.1",
