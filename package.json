@@ -57,7 +57,7 @@
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-transform-runtime": "^7.18.10",
     "babel-plugin-inline-json-import": "^0.3.2",
-    "@babel/preset-env": "^7.18.10",
+    "@babel/preset-env": "^7.19.3",
     "@babel/preset-flow": "^7.18.6",
     "@babel/preset-react": "^7.18.6",
     "@types/react": "^18.0.18",
@@ -67,6 +67,6 @@
     "gulp-babel": "^8.0.0",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
-    "typescript": "^4.8.2"
+    "typescript": "^4.8.4"
   }
 }
