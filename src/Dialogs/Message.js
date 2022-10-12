@@ -29,14 +29,13 @@ import I18n from '../i18n';
  * @extends {React.Component<DialogMessageProps>}
  */
 class DialogMessage extends React.Component {
-
     handleOk() {
         this.props.onClose && this.props.onClose();
     };
 
     render() {
         return <Dialog
-            open={true}
+            open={!0}
             maxWidth="sm"
             fullWidth={true}
             onClose={() => this.handleOk()}
