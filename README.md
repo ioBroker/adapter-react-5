@@ -613,10 +613,10 @@ The icons may not be reused in other projects without the proper flaticon licens
 
 ## Migration to v5
 ### In src/package.json => dependencies
-- `"@iobroker/adapter-react": "^2.0.22",` => `"@iobroker/adapter-react-v5": "^0.0.3",`
-- `"@material-ui/core": "^4.12.3",` => `"@mui/material": "^5.4.3",`
-- `"@material-ui/icons": "^4.11.2",` => `"@mui/icons-material": "^5.4.2",`
-- Add `"@mui/styles": "^5.4.2",`
+- `"@iobroker/adapter-react": "^2.0.22",` => `"@iobroker/adapter-react-v5": "^3.1.34",`
+- `"@material-ui/core": "^4.12.3",` => `"@mui/material": "^5.10.9",`
+- `"@material-ui/icons": "^4.11.2",` => `"@mui/icons-material": "^5.10.9",`
+- Add `"@mui/styles": "^5.10.9",`
 - Add `"babel-eslint": "^10.1.0",`
 
 ### In Source files
@@ -643,6 +643,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) small changes for material
+
 ### 3.1.34 (2022-08-24)
 * (bluefox) Implemented fallback to english by translations
 

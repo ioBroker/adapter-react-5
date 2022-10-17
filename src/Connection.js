@@ -201,6 +201,10 @@ class Connection {
                 const parts = path.split('/');
                 if (parts.length > 2) {
                     parts.pop();
+                    // if it is version, like in material, so remove it too
+                    if (parts[parts.length - 1].match(/\d+\.\d+\.\d+/)) {
+                        parts.pop();
+                    }
                     parts.pop();
                     path = parts.join('/');
                     if (!path.endsWith('/')) {
