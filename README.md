@@ -643,7 +643,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.1.35 (2022-10-17)
 * (bluefox) small changes for material
 
 ### 3.1.34 (2022-08-24)
