@@ -322,5 +322,17 @@
   "ra_Configure": "Настроить",
   "ra_Invalid CRON": "Неверный CRON",
   "ra_Discard": "Отказаться",
-  "ra_Some data are not stored. Discard?": "Некоторые данные не сохранились. Отказаться?"
+  "ra_Some data are not stored. Discard?": "Некоторые данные не сохранились. Отказаться?",
+  "ra_month_Jan": "Янв",
+  "ra_month_Feb": "Фев",
+  "ra_month_Mar": "Мрт",
+  "ra_month_Apr": "Апр",
+  "ra_month_Mai": "Май",
+  "ra_month_Jun": "Июн",
+  "ra_month_Jul": "Июл",
+  "ra_month_Aug": "Авг",
+  "ra_month_Sep": "Сен",
+  "ra_month_Oct": "Окт",
+  "ra_month_Nov": "Ноя",
+  "ra_month_Dec": "Дек"
 }

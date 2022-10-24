@@ -322,5 +322,17 @@
   "ra_Configure": "Configure",
   "ra_Invalid CRON": "Invalid CRON",
   "ra_Discard": "Discard",
-  "ra_Some data are not stored. Discard?": "Some data are not stored. Discard?"
+  "ra_Some data are not stored. Discard?": "Some data are not stored. Discard?",
+  "ra_month_Jan": "Jan",
+  "ra_month_Feb": "Feb",
+  "ra_month_Mar": "Mar",
+  "ra_month_Apr": "Apr",
+  "ra_month_Mai": "Mai",
+  "ra_month_Jun": "Jun",
+  "ra_month_Jul": "Jul",
+  "ra_month_Aug": "Aug",
+  "ra_month_Sep": "Sep",
+  "ra_month_Oct": "Oct",
+  "ra_month_Nov": "Nov",
+  "ra_month_Dec": "Dec"
 }
