@@ -1026,7 +1026,7 @@ class Utils {
                     parseInt(m[2], 10).toString(16).padStart(2, '0') +
                     parseInt(m[2], 10).toString(16).padStart(2, '0');
             }
-        } else if (hex.startsWith('rgba')) {
+        } else if (hex.startsWith('rgb')) {
             const m = hex.match(/rgb?\((\d+),\s*(\d+),\s*(\d+)\)/);
             if (m) {
                 hex = parseInt(m[1], 10).toString(16).padStart(2, '0') +

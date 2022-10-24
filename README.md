@@ -643,6 +643,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Corrected color inversion
+
 ### 3.2.0 (2022-10-19)
 * (bluefox) Added ukrainian translation
 
