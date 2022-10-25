@@ -643,6 +643,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added support of prefixes for translations
+
 ### 3.2.1 (2022-10-24)
 * (bluefox) Corrected color inversion
 

@@ -48,6 +48,27 @@ class I18n {
       * @param {ioBroker.Languages} lang
       */
      static extendTranslations(words, lang) {
+         // extend automatically all languages with prefix
+         if (words.prefix) {
+             if (typeof words.prefix === 'string') {
+                 const prefix = words.prefix;
+                 delete words.prefix;
+                 Object.keys(words).forEach(lang => {
+                     const _words = {};
+                     Object.keys(words[lang]).forEach(word => {
+                         if (!word.startsWith(prefix)) {
+                             _words[`${prefix}${word}`] = words[lang][word];
+                         } else {
+                             _words[word] = words[lang][word];
+                         }
+                     });
+                     words[lang] = _words;
+                 });
+             } else {
+                 console.warn('Found prefix in translations, but it is not a string');
+             }
+         }
+
          try {
              if (!lang) {
                  if (words.en && words.de && words.ru) {
