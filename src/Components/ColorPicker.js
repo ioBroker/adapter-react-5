@@ -181,7 +181,7 @@ class ColorPicker extends React.Component {
      */
     handleChange = color => {
         this.setState({ color }, () =>
-            this.props.onChange && this.props.onChange(ColorPicker.getColor(color));
+            this.props.onChange && this.props.onChange(ColorPicker.getColor(color)));
     };
 
     render() {
