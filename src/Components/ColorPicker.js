@@ -14,13 +14,12 @@
  * limitations under the License.
  **/
 import React from 'react';
-import {ChromePicker} from 'react-color';
+import { ChromePicker } from 'react-color';
 import PropTypes from 'prop-types';
 import withStyles from '@mui/styles/withStyles';
 
-import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
-import IconDelete from '@mui/icons-material/Delete';
+import { TextField, Menu, IconButton } from '@mui/material';
+import { Delete as IconDelete, Close as IconClose } from '@mui/icons-material';
 
 const styles = theme => ({
     color: {
@@ -29,8 +28,8 @@ const styles = theme => ({
         borderRadius: 2,
     },
     delButton: {
-        //width: 32,
-        //height: 32,
+        // width: 32,
+        // height: 32,
         marginTop: 16,
     },
     swatch: {
@@ -45,11 +44,23 @@ const styles = theme => ({
     },
     swatchDisabled: {
         opacity: 0.5,
-        cursor: 'default'
+        cursor: 'default',
     },
     popover: {
-        position: 'absolute',
-        zIndex: 2,
+        // position: 'absolute',
+        // zIndex: 2,
+        backgroundColor: '#00000000',
+        textAlign: 'right',
+    },
+    popoverList: {
+        padding: 0,
+    },
+    closeButton: {
+        backgroundColor: `${theme.palette.background.paper} !important`,
+        borderRadius: '0 0 25% 25%',
+        '&:hover': {
+            backgroundColor: `${theme.palette.secondary.main} !important`,
+        },
     },
     cover: {
         position: 'fixed',
@@ -61,7 +72,10 @@ const styles = theme => ({
     textDense: {
         marginTop: 0,
         marginBottom: 0,
-    }
+    },
+    picker: {
+        background: `${theme.palette.background.paper} !important`,
+    },
 });
 
 /**
@@ -93,6 +107,7 @@ class ColorPicker extends React.Component {
         this.state = {
             displayColorPicker: false,
             color: this.props.value || this.props.color,
+            anchorEl: null,
         };
     }
 
@@ -105,24 +120,23 @@ class ColorPicker extends React.Component {
         const pColor = ColorPicker.getColor(props.value || props.color);
         const sColor = ColorPicker.getColor(state.color);
         if (pColor !== sColor) {
-            return {color: props.value || props.color}
-        } else {
-            return null;
+            return {  color: props.value || props.color };
         }
+        return null;
     }
 
     /**
      * @private
      */
-    handleClick = () => {
-        this.setState({displayColorPicker: !this.state.displayColorPicker});
+    handleClick = e => {
+        this.setState({ displayColorPicker: !this.state.displayColorPicker, anchorEl: this.state.displayColorPicker ? null : e.currentTarget });
     };
 
     /**
      * @private
      */
     handleClose = () => {
-        this.setState({displayColorPicker: false});
+        this.setState({ displayColorPicker: false, anchorEl: null });
     };
 
     /**
@@ -135,20 +149,16 @@ class ColorPicker extends React.Component {
         if (color && typeof color === 'object') {
             if (color.rgb) {
                 if (isHex) {
-                    return '#' + color.rgb.r.toString(16).padStart(2, '0') + color.rgb.g.toString(16).padStart(2, '0') + color.rgb.b.toString(16).padStart(2, '0');
-                } else {
-                    return 'rgba(' + color.rgb.r + ',' + color.rgb.g + ',' + color.rgb.b + ',' + color.rgb.a + ')';
+                    return `#${color.rgb.r.toString(16).padStart(2, '0')}${color.rgb.g.toString(16).padStart(2, '0')}${color.rgb.b.toString(16).padStart(2, '0')}`;
                 }
-            } else {
-                if (isHex) {
-                    return '#' + color.r.toString(16).padStart(2, '0') + color.g.toString(16).padStart(2, '0') + color.b.toString(16).padStart(2, '0');
-                } else {
-                    return 'rgba(' + color.r + ',' + color.g + ',' + color.b + ',' + color.a + ')';
-                }
+                return `rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a})`;
             }
-        } else {
-            return isHex ? ColorPicker.rgb2hex(color || '') : color || '';
+            if (isHex) {
+                return `#${color.r.toString(16).padStart(2, '0')}${color.g.toString(16).padStart(2, '0')}${color.b.toString(16).padStart(2, '0')}`;
+            }
+            return `rgba(${color.r},${color.g},${color.b},${color.a})`;
         }
+        return isHex ? ColorPicker.rgb2hex(color || '') : color || '';
     }
 
     /**
@@ -156,46 +166,43 @@ class ColorPicker extends React.Component {
      * @param {string} rgb
      * @returns {string}
      */
-    static rgb2hex(rgb){
+    static rgb2hex(rgb) {
         const m = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
 
-        return m && m.length === 4 ? '#' +
-            parseInt(m[1],10).toString(16).padStart(2, '0') +
-            parseInt(m[2],10).toString(16).padStart(2, '0') +
-            parseInt(m[3],10).toString(16).padStart(2, '0') : rgb;
+        const r = parseInt(m[1], 10).toString(16).padStart(2, '0');
+        const g = parseInt(m[2], 10).toString(16).padStart(2, '0');
+        const b = parseInt(m[3], 10).toString(16).padStart(2, '0');
+
+        return m && m.length === 4 ? `#${r}${g}${b}` : rgb;
     }
 
     /**
      * @private
      */
     handleChange = color => {
-        this.setState({color});
-        this.props.onChange && this.props.onChange(ColorPicker.getColor(color));
+        this.setState({ color }, () =>
+            this.props.onChange && this.props.onChange(ColorPicker.getColor(color));
     };
 
     render() {
         const color = ColorPicker.getColor(this.state.color);
-        let style = {};
 
-        if (this.state.displayColorPicker && this.props.openAbove) {
-            style = {
-                top: -241,
-            };
-        }
+        const style = {...(this.props.style || {})};
+        style.position = 'relative';
 
         return <div
-            style={Object.assign({}, this.props.style || {}, {position: 'relative'})}
-            className={ this.props.className || ''}
+            style={ style }
+            className={this.props.className || ''}
         >
             <TextField
                 disabled={this.props.disabled}
                 variant="standard"
                 id="name"
-                style={color ? {width: 'calc(100% - 80px)'} : {width: 'calc(100% - 54px)', marginRight: 8}}
-                label={this.props.name || 'color'}
+                style={color ? { width: 'calc(100% - 80px)' } : { width: 'calc(100% - 54px)', marginRight: 8 }}
+                label={ this.props.name || 'color' }
                 value={color}
                 margin="dense"
-                classes={{root: this.props.classes.textDense}}
+                classes={{ root: this.props.classes.textDense }}
                 onChange={e => this.handleChange(e.target.value)}
             />
             {color ? <IconButton
@@ -203,15 +210,27 @@ class ColorPicker extends React.Component {
                 onClick={() => this.handleChange('')}
                 size="small"
                 className={this.props.classes.delButton}
-                style={color ? {} : {opacity: 0, cursor: 'default'}}
-            ><IconDelete/></IconButton> : null}
-            <div className={`${this.props.classes.swatch}${this.props.disabled ? ' ' + this.props.classes.swatchDisabled : ''}`} onClick={() => !this.props.disabled && this.handleClick()}>
-                <div className={this.props.classes.color} style={{background: color}} />
+                style={color ? {} : { opacity: 0, cursor: 'default' }}
+            >
+                <IconDelete />
+            </IconButton> : null}
+            <div className={`${this.props.classes.swatch}${this.props.disabled ? ` ${this.props.classes.swatchDisabled}` : ''}`} onClick={e => !this.props.disabled && this.handleClick(e)}>
+                <div className={this.props.classes.color} style={{ background: color }} />
             </div>
-            { this.state.displayColorPicker && !this.props.disabled ? <div className={this.props.classes.popover} style={style}>
-                <div className={this.props.classes.cover} onClick={() => this.handleClose()}/>
-                <ChromePicker color={ this.state.color } onChangeComplete={color => this.handleChange(color)} />
-            </div> : null }
+            { this.state.displayColorPicker && !this.props.disabled ? <Menu
+                classes={{ paper: this.props.classes.popover, list: this.props.classes.popoverList }}
+                anchorEl={this.state.anchorEl}
+                open={!0}
+                onClose={() => this.handleClose()}
+            >
+                <ChromePicker
+                    className={this.props.classes.picker}
+                    color={this.state.color}
+                    onChangeComplete={_color => this.handleChange(_color)}
+                    styles={{ picker: { background: '#112233' } }}
+                />
+                <IconButton className={this.props.classes.closeButton} onClick={() => this.handleClose()}><IconClose /></IconButton>
+            </Menu> : null }
         </div>;
     }
 }
@@ -223,7 +242,6 @@ ColorPicker.propTypes = {
     name: PropTypes.string,
     style: PropTypes.object,
     className: PropTypes.string,
-    openAbove: PropTypes.bool,
 };
 
 /** @type {typeof ColorPicker} */
