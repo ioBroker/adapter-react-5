@@ -22,27 +22,27 @@ import Utils from '../Components/Utils';
 import I18n from '../i18n';
 import ObjectBrowser from '../Components/ObjectBrowser';
 
-const styles = theme => ({
+const styles = () => ({
     headerID: {
         fontWeight: 'bold',
-        fontStyle: 'italic'
+        fontStyle: 'italic',
     },
     dialog: {
-        height: '95%'
+        height: '95%',
     },
     dialogMobile: {
         padding: 4,
         width: '100%',
         maxWidth: '100%',
         maxHeight: 'calc(100% - 16px)',
-        height: '100%'
+        height: '100%',
     },
     content: {
         height: '100%',
-        overflow: 'hidden'
+        overflow: 'hidden',
     },
     contentMobile: {
-        padding: '8px 4px'
+        padding: '8px 4px',
     },
     titleRoot: {
         whiteSpace: 'nowrap',
@@ -50,7 +50,7 @@ const styles = theme => ({
         overflow: 'hidden',
         display: 'inline-block',
         textOverflow: 'ellipsis',
-    }
+    },
 });
 
 /**
@@ -85,7 +85,7 @@ class DialogSelectID extends React.Component {
     constructor(props) {
         super(props);
         this.dialogName = this.props.dialogName || 'default';
-        this.dialogName = 'SelectID.' + this.dialogName;
+        this.dialogName = `SelectID.${this.dialogName}`;
 
         this.filters = (window._localStorage || window.localStorage).getItem(this.dialogName) || '{}';
 
@@ -104,35 +104,41 @@ class DialogSelectID extends React.Component {
         this.state =  {
             selected,
             name: '',
-            isMobile: window.innerWidth < 800
+            isMobile: window.innerWidth < 800,
         };
     }
 
     handleCancel() {
         this.props.onClose();
-    };
+    }
 
     handleOk() {
         this.props.onOk(this.props.multiSelect ? this.state.selected : this.state.selected[0] || '', this.state.name);
         this.props.onClose();
-    };
+    }
 
     render() {
         let title;
         if (this.state.name || this.state.selected.length) {
             if (this.state.selected.length === 1) {
                 title = [
-                    <span key="selected">{I18n.t('ra_Selected')} </span>,
-                    <span key="id" className={this.props.classes.headerID}>{
-                        (this.state.name || this.state.selected) + (this.state.name ? ' [' + this.state.selected + ']' : '')
-                    }</span>
+                    <span key="selected">
+                        {I18n.t('ra_Selected')}
+                        &nbsp;
+                    </span>,
+                    <span key="id" className={this.props.classes.headerID}>
+                        {(this.state.name || this.state.selected) + (this.state.name ? ` [${this.state.selected}]` : '')}
+                    </span>,
                 ];
             } else {
                 title = [
-                    <span key="selected">{I18n.t('ra_Selected')} </span>,
-                    <span key="id" className={this.props.classes.headerID}>{
-                        I18n.t('%s items', this.state.selected.length)
-                    }</span>
+                    <span key="selected">
+                        {I18n.t('ra_Selected')}
+                        &nbsp;
+                    </span>,
+                    <span key="id" className={this.props.classes.headerID}>
+                        {I18n.t('%s items', this.state.selected.length)}
+                    </span>,
                 ];
             }
         } else {
@@ -142,12 +148,12 @@ class DialogSelectID extends React.Component {
         return <Dialog
             onClose={() => {}}
             maxWidth={false}
-            classes={{paper: Utils.clsx(this.props.classes.dialog, this.props.classes.dialogMobile)}}
-            fullWidth={true}
-            open={true}
+            classes={{ paper: Utils.clsx(this.props.classes.dialog, this.props.classes.dialogMobile) }}
+            fullWidth
+            open={!0}
             aria-labelledby="selectid-dialog-title"
         >
-            <DialogTitle id="selectid-dialog-title" classes={{root: this.props.classes.titleRoot}}>{title}</DialogTitle>
+            <DialogTitle id="selectid-dialog-title" classes={{ root: this.props.classes.titleRoot }}>{title}</DialogTitle>
             <DialogContent className={Utils.clsx(this.props.classes.content, this.props.classes.contentMobile)}>
                 <ObjectBrowser
                     foldersFirst={this.props.foldersFirst}
@@ -175,7 +181,7 @@ class DialogSelectID extends React.Component {
                     }}
                     onSelect={(selected, name, isDouble) => {
                         if (JSON.stringify(selected) !== JSON.stringify(this.state.selected)) {
-                            this.setState({selected, name}, () =>
+                            this.setState({ selected, name }, () =>
                                 isDouble && this.handleOk());
                         } else if (isDouble) {
                             this.handleOk();
@@ -205,7 +211,7 @@ DialogSelectID.propTypes = {
     dateFormat: PropTypes.string,
     selected: PropTypes.oneOfType([
         PropTypes.string,
-        PropTypes.array
+        PropTypes.array,
     ]),
     customFilter: PropTypes.object, // optional {common: {custom: true}} or {common: {custom: 'sql.0'}}
     statesOnly: PropTypes.bool,
@@ -221,8 +227,8 @@ DialogSelectID.propTypes = {
     types: PropTypes.array,   // optional ['state', 'instance', 'channel']
     columns: PropTypes.array, // optional ['name', 'type', 'role', 'room', 'func', 'val', 'buttons']
 
-    filterFunc: PropTypes.func,         // function to filter out all unnecessary objects. It cannot be used together with "types"
-                                        // Example for function: `obj => obj.common && obj.common.type === 'boolean'` to show only boolean states
+    filterFunc: PropTypes.func, // function to filter out all unnecessary objects. It cannot be used together with "types"
+                                // Example for function: `obj => obj.common && obj.common.type === 'boolean'` to show only boolean states
 };
 
 /** @type {typeof DialogSelectID} */
