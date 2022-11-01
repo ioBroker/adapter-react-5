@@ -37,7 +37,7 @@
     "@emotion/styled": "^11.10.4",
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.12",
-    "@mui/styles": "^5.10.9",
+    "@mui/styles": "^5.10.10",
     "@mui/x-date-pickers": "5.0.2",
     "react-cropper": "^2.1.8",
     "@sentry/browser": "^7.16.0",
