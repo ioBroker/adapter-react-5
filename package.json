@@ -40,7 +40,7 @@
     "@mui/styles": "^5.10.10",
     "@mui/x-date-pickers": "5.0.2",
     "react-cropper": "^2.1.8",
-    "@sentry/browser": "^7.16.0",
+    "@sentry/browser": "^7.17.4",
     "@sentry/integrations": "^7.16.0",
     "@types/iobroker": "^4.0.5",
     "react-color": "^2.19.3",
