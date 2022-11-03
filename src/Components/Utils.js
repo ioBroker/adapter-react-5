@@ -486,6 +486,10 @@ class Utils {
             if (color.length === 3) {
                 color = color[0] + color[0] + color[1] + color[1] + color[2] + color[2];
             }
+            // remove alfa channel
+            if (color.length === 8) {
+                color = color.substring(0, 6);
+            } else
             if (color.length !== 6) {
                 return false;
             }
@@ -1041,6 +1045,11 @@ class Utils {
         if (hex.length === 3) {
             hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
         }
+        let alfa = null;
+        if (hex.length === 8) {
+            alfa = hex.substring(6, 8);
+            hex = hex.substring(0, 6);
+        } else
         if (hex.length !== 6) {
             console.warn('Cannot invert color: ' + hex);
             return hex;
@@ -1052,15 +1061,15 @@ class Utils {
         if (bw) {
             // http://stackoverflow.com/a/3943023/112731
             return (r * 0.299 + g * 0.587 + b * 0.114) > 186
-                ? '#000000'
-                : '#FFFFFF';
+                ? `#000000${alfa ? alfa : ''}`
+                : `#FFFFFF${alfa ? alfa : ''}`;
         }
         // invert color components
         r = (255 - r).toString(16);
         g = (255 - g).toString(16);
         b = (255 - b).toString(16);
         // pad each with zeros and return
-        return `#${r.padStart(2, '0')}${g.padStart(2, '0')}${b.padStart(2, '0')}`;
+        return `#${r.padStart(2, '0')}${g.padStart(2, '0')}${b.padStart(2, '0')}${alfa ? alfa : ''}`;
     }
 
     // https://github.com/lukeed/clsx/blob/master/src/index.js

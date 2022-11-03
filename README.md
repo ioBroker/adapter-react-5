@@ -643,6 +643,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added support for alfa channel for `invertColor`
+
 ### 3.2.3 (2022-10-26)
 * (bluefox) Corrected expert mode for object browser
 
