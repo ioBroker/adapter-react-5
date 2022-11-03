@@ -643,7 +643,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.2.4 (2022-11-03)
 * (bluefox) Added support for alfa channel for `invertColor`
 
 ### 3.2.3 (2022-10-26)
