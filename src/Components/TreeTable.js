@@ -415,19 +415,16 @@ class TreeTable extends React.Component {
                 }}
             />
 
-            <IconButton
-                className={this.props.classes.fieldButton}
-                contained
-                onClick={() => {
-                    this.selectCallback = newColor => {
-                        const editData = this.state.editData ? {...this.state.editData} : {};
-                        if (newColor === val) {
-                            delete editData[col.field];
-                        } else {
-                            editData[col.field] = newColor;
-                        }
-                        this.setState({editData});
-                    };
+            <IconButton className={this.props.classes.fieldButton} onClick={() => {
+	            this.selectCallback = newColor => {
+		            const editData = this.state.editData ? {...this.state.editData} : {};
+		            if (newColor === val) {
+			            delete editData[col.field];
+		            } else {
+			            editData[col.field] = newColor;
+		            }
+		            this.setState({editData});
+	            };
 
                     this.setState({showSelectColor: true, selectIdValue: val});
                 }}
@@ -475,19 +472,16 @@ class TreeTable extends React.Component {
                 }}
             />
 
-            <IconButton
-                className={this.props.classes.fieldButton}
-                contained
-                onClick={() => {
-                    this.selectCallback = selected => {
-                        const editData = this.state.editData ? {...this.state.editData} : {};
-                        if (selected === val) {
-                            delete editData[col.field];
-                        } else {
-                            editData[col.field] = selected;
-                        }
-                        this.setState({editData});
-                    };
+            <IconButton className={this.props.classes.fieldButton} onClick={() => {
+	            this.selectCallback = selected => {
+		            const editData = this.state.editData ? {...this.state.editData} : {};
+		            if (selected === val) {
+			            delete editData[col.field];
+		            } else {
+			            editData[col.field] = selected;
+		            }
+		            this.setState({editData});
+	            };
 
                     this.setState({showSelectId: true, selectIdValue: val});
                 }}
