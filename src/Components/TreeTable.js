@@ -625,6 +625,21 @@ class TreeTable extends React.Component {
                                 <IconEdit/>
                             </IconButton>}
                     </TableCell> : null}
+
+                    {this.props.onDelete && !this.props.onUpdate ?
+                        <TableCell className={Utils.clsx(this.props.classes.cell, this.props.classes.cellButton)}>
+                        {this.state.deleteMode === i ?
+                            <IconButton disabled={this.state.editMode !== false && (!this.state.editData || !Object.keys(this.state.editData).length)}
+                                        onClick={() => {
+                                            this.setState({deleteMode: false}, () => this.props.onDelete(item))
+                                        }} size='large'>
+                                <IconCheck/>
+                            </IconButton>
+                            :
+                            null
+                        }
+                    </TableCell> : null}
+                    
                     {this.props.onUpdate || this.props.onDelete ? <TableCell className={Utils.clsx(this.props.classes.cell, this.props.classes.cellButton)}>
                         {this.state.editMode === i || this.state.deleteMode === i ?
                             <IconButton
