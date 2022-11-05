@@ -275,11 +275,13 @@ class TreeTable extends React.Component {
                 return this.renderCellEditColor(item, col, val);
             } else if (col.type === 'oid') {
                 return this.renderCellEditObjectID(item, col, val);
-            } else {
-                return this.renderCellEditString(item, col, val);
-            }
-        }
-    }
+			} else if (col.type === 'numeric') {
+				return this.renderCellEditNumber(item, col, val);
+			} else {
+				return this.renderCellEditString(item, col, val);
+			}
+		}
+	}
 
     renderCellEditSelect(item, col, val) {
         return <Select
@@ -316,6 +318,23 @@ class TreeTable extends React.Component {
             }}
         />;
     }
+
+
+	renderCellEditNumber(item, col, val) {
+		return <TextField variant='standard' className={this.props.classes.fieldEdit} type='number' fullWidth
+		                  value={this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val}
+		                  onChange={e => {
+			                  const editData = this.state.editData ? {...this.state.editData} : {};
+			                  if (e.target.value === val) {
+				                  delete editData[col.field];
+			                  } else {
+				                  editData[col.field] = e.target.value;
+
+			                  }
+			                  this.setState({editData});
+		                  }}/>;
+	}
+
 
     renderCellEditCustom(item, col, val) {
         const EditComponent = col.editComponent;
