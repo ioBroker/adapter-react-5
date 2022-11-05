@@ -294,10 +294,8 @@ class TreeTable extends React.Component {
                     editData[col.field] = e.target.value;
                 }
                 this.setState({editData});
-            }}
-            value={(this.state.editData && this.state.editData[col.field]) || val}
-        >
-            {Object.keys(col.lookup).map(v => <MenuItem value={v}>{col.lookup[v]}</MenuItem>)}
+		}} value={(this.state.editData && this.state.editData[col.field]) || val}>
+            {Object.keys(col.lookup).map(v => <MenuItem key={Math.random().toString(36).substr(2, 30)} value={v}>{col.lookup[v]}</MenuItem>)}
         </Select>;
     }
 
