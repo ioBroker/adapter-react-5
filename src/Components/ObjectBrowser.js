@@ -1381,6 +1381,9 @@ function formatValue(id, state, obj, texts, dateFormat, isFloatComma) {
                 // we don't know what is that, so leave it as it is
             }
         } else {
+            if (v > 946681200 && v < 946681200000) { // '2000-01-01T00:00:00' => 946681200000
+                v *= 1000; // may be the time is in seconds (UNIX time)
+            }
             // null and undefined could not be here. See `let v = (isCommon && isCommon.type === 'file') ....` above
             v = v ? new Date(v).toString() : v;
         }
@@ -2785,7 +2788,7 @@ class ObjectBrowser extends Component {
         const rooms = this.info.roomEnums.map(id => ({
             name: getName(this.objects[id]?.common?.name || id.split('.').pop()),
             value: id,
-            icon: <Icon src={this.objects[id]?.common?.icon} className={this.props.classes.selectIcon} />,
+            icon: <Icon src={this.objects[id]?.common?.icon || ''} className={this.props.classes.selectIcon} />,
         }));
 
         return this.getFilterSelect('room', rooms);
@@ -2798,7 +2801,7 @@ class ObjectBrowser extends Component {
         const func = this.info.funcEnums.map(id => ({
             name: getName((this.objects[id] && this.objects[id].common && this.objects[id].common.name) || id.split('.').pop()),
             value: id,
-            icon: <Icon src={this.objects[id]?.common?.icon} className={this.props.classes.selectIcon} />,
+            icon: <Icon src={this.objects[id]?.common?.icon || ''} className={this.props.classes.selectIcon} />,
         }));
 
         return this.getFilterSelect('func', func);
@@ -2825,7 +2828,7 @@ class ObjectBrowser extends Component {
             const customs = this.info.customs.map(id => ({
                 name: id,
                 value: id,
-                icon: <Icon src={getSelectIdIcon(this.objects, id, this.imagePrefix)} className={this.props.classes.selectIcon} />,
+                icon: <Icon src={getSelectIdIcon(this.objects, id, this.imagePrefix) || ''} className={this.props.classes.selectIcon} />,
             }));
             return this.getFilterSelect('custom', customs);
         }
@@ -3103,8 +3106,8 @@ class ObjectBrowser extends Component {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button color="grey" variant="outlined" onClick={() => this.setState({ showExportDialog: false }, () => this._exportObjects(true))}>{this.props.t('ra_All objects')}</Button>
-                <Button color="primary" variant="contained" autoFocus onClick={() => this.setState({ showExportDialog: false }, () => this._exportObjects(false))}>{this.props.t('ra_Only selected')}</Button>
+                <Button color="grey" variant="outlined" onClick={() => this.setState({ showExportDialog: false }, () => this._exportObjects(true))}>{this.props.t('ra_All objects')} ({Object.keys(this.objects).length})</Button>
+                <Button color="primary" variant="contained" autoFocus onClick={() => this.setState({ showExportDialog: false }, () => this._exportObjects(false))}>{this.props.t('ra_Only selected')} ({this.state.showExportDialog})</Button>
                 <Button color="grey" variant="contained" onClick={() => this.setState({ showExportDialog: false })} startIcon={<IconClose />}>{this.props.t('ra_Cancel')}</Button>
             </DialogActions>
         </Dialog>;
@@ -3623,6 +3626,7 @@ class ObjectBrowser extends Component {
             this.objects[id].common &&
             this.objects[id].common.custom &&
             this.objects[id].common.custom[this.defaultHistory]) {
+
             const now = new Date();
             now.setHours(now.getHours() - 24);
             now.setMinutes(0);
@@ -3820,7 +3824,8 @@ class ObjectBrowser extends Component {
                 name: getName((this.objects[id] && this.objects[id].common && this.objects[id].common.name) || id.split('.').pop(), this.props.lang),
                 value: id,
                 icon: getSelectIdIcon(this.objects, id, this.imagePrefix),
-            }));
+            }))
+                .sort((a, b) => a.name > b.name ? 1 : -1);
 
             enums.forEach(_item => {
                 if (_item.icon && typeof _item.icon === 'string') {

@@ -95,6 +95,10 @@ class DialogSelectID extends React.Component {
             this.filters = {};
         }
 
+        if (props.filters) {
+            this.filters = {...this.filters, ...props.filters};
+        }
+
         let selected = this.props.selected || [];
         if (typeof selected !== 'object') {
             selected = [selected];
@@ -213,6 +217,7 @@ DialogSelectID.propTypes = {
         PropTypes.string,
         PropTypes.array,
     ]),
+    filters: PropTypes.object, // predefined filter fields, like {"id":"","name":"","room":"","func":"","role":"level","type":"","custom":""}
     customFilter: PropTypes.object, // optional {common: {custom: true}} or {common: {custom: 'sql.0'}}
     statesOnly: PropTypes.bool,
     socket: PropTypes.object.isRequired,

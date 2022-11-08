@@ -643,6 +643,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added the role filter for the object browser
+
 ### 3.2.4 (2022-11-03)
 * (bluefox) Added support for alfa channel for `invertColor`
 
