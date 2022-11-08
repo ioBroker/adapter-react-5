@@ -643,7 +643,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.2.5 (2022-11-08)
 * (bluefox) Added the role filter for the object browser
 
 ### 3.2.4 (2022-11-03)
