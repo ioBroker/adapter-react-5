@@ -1,6 +1,6 @@
-import {createTheme, adaptV4Theme, alpha} from '@mui/material/styles';
+import { createTheme, adaptV4Theme, alpha } from '@mui/material/styles';
 
-import {orange, grey} from '@mui/material/colors';
+import { orange, grey } from '@mui/material/colors';
 
 const step = (16 - 5) / 23 / 100;
 
