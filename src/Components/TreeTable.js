@@ -275,11 +275,13 @@ class TreeTable extends React.Component {
                 return this.renderCellEditColor(item, col, val);
             } else if (col.type === 'oid') {
                 return this.renderCellEditObjectID(item, col, val);
-            } else {
-                return this.renderCellEditString(item, col, val);
-            }
-        }
-    }
+			} else if (col.type === 'numeric') {
+				return this.renderCellEditNumber(item, col, val);
+			} else {
+				return this.renderCellEditString(item, col, val);
+			}
+		}
+	}
 
     renderCellEditSelect(item, col, val) {
         return <Select
@@ -292,10 +294,8 @@ class TreeTable extends React.Component {
                     editData[col.field] = e.target.value;
                 }
                 this.setState({editData});
-            }}
-            value={(this.state.editData && this.state.editData[col.field]) || val}
-        >
-            {Object.keys(col.lookup).map(v => <MenuItem value={v}>{col.lookup[v]}</MenuItem>)}
+		}} value={(this.state.editData && this.state.editData[col.field]) || val}>
+            {Object.keys(col.lookup).map(v => <MenuItem key={Math.random().toString(36).substr(2, 30)} value={v}>{col.lookup[v]}</MenuItem>)}
         </Select>;
     }
 
@@ -316,6 +316,23 @@ class TreeTable extends React.Component {
             }}
         />;
     }
+
+
+	renderCellEditNumber(item, col, val) {
+		return <TextField variant='standard' className={this.props.classes.fieldEdit} type='number' fullWidth
+		                  value={this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val}
+		                  onChange={e => {
+			                  const editData = this.state.editData ? {...this.state.editData} : {};
+			                  if (e.target.value === val) {
+				                  delete editData[col.field];
+			                  } else {
+				                  editData[col.field] = e.target.value;
+
+			                  }
+			                  this.setState({editData});
+		                  }}/>;
+	}
+
 
     renderCellEditCustom(item, col, val) {
         const EditComponent = col.editComponent;
@@ -396,19 +413,16 @@ class TreeTable extends React.Component {
                 }}
             />
 
-            <IconButton
-                className={this.props.classes.fieldButton}
-                contained
-                onClick={() => {
-                    this.selectCallback = newColor => {
-                        const editData = this.state.editData ? {...this.state.editData} : {};
-                        if (newColor === val) {
-                            delete editData[col.field];
-                        } else {
-                            editData[col.field] = newColor;
-                        }
-                        this.setState({editData});
-                    };
+            <IconButton className={this.props.classes.fieldButton} onClick={() => {
+	            this.selectCallback = newColor => {
+		            const editData = this.state.editData ? {...this.state.editData} : {};
+		            if (newColor === val) {
+			            delete editData[col.field];
+		            } else {
+			            editData[col.field] = newColor;
+		            }
+		            this.setState({editData});
+	            };
 
                     this.setState({showSelectColor: true, selectIdValue: val});
                 }}
@@ -456,19 +470,16 @@ class TreeTable extends React.Component {
                 }}
             />
 
-            <IconButton
-                className={this.props.classes.fieldButton}
-                contained
-                onClick={() => {
-                    this.selectCallback = selected => {
-                        const editData = this.state.editData ? {...this.state.editData} : {};
-                        if (selected === val) {
-                            delete editData[col.field];
-                        } else {
-                            editData[col.field] = selected;
-                        }
-                        this.setState({editData});
-                    };
+            <IconButton className={this.props.classes.fieldButton} onClick={() => {
+	            this.selectCallback = selected => {
+		            const editData = this.state.editData ? {...this.state.editData} : {};
+		            if (selected === val) {
+			            delete editData[col.field];
+		            } else {
+			            editData[col.field] = selected;
+		            }
+		            this.setState({editData});
+	            };
 
                     this.setState({showSelectId: true, selectIdValue: val});
                 }}
@@ -614,6 +625,21 @@ class TreeTable extends React.Component {
                                 <IconEdit/>
                             </IconButton>}
                     </TableCell> : null}
+
+                    {this.props.onDelete && !this.props.onUpdate ?
+                        <TableCell className={Utils.clsx(this.props.classes.cell, this.props.classes.cellButton)}>
+                        {this.state.deleteMode === i ?
+                            <IconButton disabled={this.state.editMode !== false && (!this.state.editData || !Object.keys(this.state.editData).length)}
+                                        onClick={() => {
+                                            this.setState({deleteMode: false}, () => this.props.onDelete(item))
+                                        }} size='large'>
+                                <IconCheck/>
+                            </IconButton>
+                            :
+                            null
+                        }
+                    </TableCell> : null}
+                    
                     {this.props.onUpdate || this.props.onDelete ? <TableCell className={Utils.clsx(this.props.classes.cell, this.props.classes.cellButton)}>
                         {this.state.editMode === i || this.state.deleteMode === i ?
                             <IconButton
