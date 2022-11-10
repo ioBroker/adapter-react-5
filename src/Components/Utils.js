@@ -1072,6 +1072,102 @@ class Utils {
         return `#${r.padStart(2, '0')}${g.padStart(2, '0')}${b.padStart(2, '0')}${alfa ? alfa : ''}`;
     }
 
+    /**
+     * Convert RGB to array [r, g, b]
+     * @param {string} hex Color in the format '#rrggbb' or '#rgb' (or without hash) or rgb(r,g,b) or rgba(r,g,b,a)
+     * @returns {Array<number>} Array with 3 elements [r, g, b]
+     */
+    static color2rgb(hex) {
+        if (hex === undefined || hex === null || hex === '' || typeof hex !== 'string') {
+            return '';
+        }
+        if (hex.startsWith('rgba')) {
+            const m = hex.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),\s*([.\d]+)\)/);
+            if (m) {
+                hex = parseInt(m[1], 10).toString(16).padStart(2, '0') +
+                    parseInt(m[2], 10).toString(16).padStart(2, '0') +
+                    parseInt(m[2], 10).toString(16).padStart(2, '0');
+            }
+        } else if (hex.startsWith('rgba')) {
+            const m = hex.match(/rgb?\((\d+),\s*(\d+),\s*(\d+)\)/);
+            if (m) {
+                hex = parseInt(m[1], 10).toString(16).padStart(2, '0') +
+                    parseInt(m[2], 10).toString(16).padStart(2, '0') +
+                    parseInt(m[2], 10).toString(16).padStart(2, '0');
+            }
+        } else
+        if (hex.startsWith('#')) {
+            hex = hex.slice(1);
+        }
+        // convert 3-digit hex to 6-digits.
+        if (hex.length === 3) {
+            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+        }
+        if (hex.length !== 6 && hex.length !== 8) {
+            console.warn(`Cannot invert color: ${hex}`);
+            return false;
+        }
+
+        return [
+            parseInt(hex.slice(0, 2), 16),
+            parseInt(hex.slice(2, 4), 16),
+            parseInt(hex.slice(4, 6), 16),
+        ];
+    }
+
+    // Big thanks to: https://github.com/antimatter15/rgb-lab
+    /**
+     * Convert RGB to LAB
+     * @param {Array<number>} rgb color in format [r,g,b]
+     * @returns {Array<number>} lab color in format [l,a,b]
+     */
+    static rgb2lab(rgb){
+        let r = rgb[0] / 255;
+        let g = rgb[1] / 255;
+        let b = rgb[2] / 255;
+
+        r = (r > 0.04045) ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92;
+        g = (g > 0.04045) ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92;
+        b = (b > 0.04045) ? Math.pow((b + 0.055) / 1.055, 2.4) : b / 12.92;
+
+        let x = (r * 0.4124 + g * 0.3576 + b * 0.1805) / 0.95047;
+        let y = (r * 0.2126 + g * 0.7152 + b * 0.0722); /*  / 1.00000; */
+        let z = (r * 0.0193 + g * 0.1192 + b * 0.9505) / 1.08883;
+
+        x = (x > 0.008856) ? Math.pow(x, 0.33333333) : (7.787 * x) + 0.137931; // 16 / 116;
+        y = (y > 0.008856) ? Math.pow(y, 0.33333333) : (7.787 * y) + 0.137931; // 16 / 116;
+        z = (z > 0.008856) ? Math.pow(z, 0.33333333) : (7.787 * z) + 0.137931; // 16 / 116;
+
+        return [(116 * y) - 16, 500 * (x - y), 200 * (y - z)];
+    }
+
+    /**
+     * Calculate the distance between two colors in LAB color space in the range 0-100^2
+     * If distance is less than 1000, the colors are similar
+     * @param {string} color1 Color in the format '#rrggbb' or '#rgb' (or without hash) or rgb(r,g,b) or rgba(r,g,b,a)
+     * @param {string} color2 Color in the format '#rrggbb' or '#rgb' (or without hash) or rgb(r,g,b) or rgba(r,g,b,a)
+     * @returns {number} distance in the range 0-100^2
+     */
+    static colorDistance(color1, color2) {
+        const lab1 = Utils.rgb2lab(Utils.color2rgb(color1));
+        const lab2 = Utils.rgb2lab(Utils.color2rgb(color2));
+        const dltL = lab1[0] - lab2[0];
+        const dltA = lab1[1] - lab2[1];
+        const dltB = lab1[2] - lab2[2];
+        const c1 = Math.sqrt(lab1[1] * lab1[1] + lab1[2] * lab1[2]);
+        const c2 = Math.sqrt(lab2[1] * lab2[1] + lab2[2] * lab2[2]);
+        const dltC = c1 - c2;
+        let dltH = dltA * dltA + dltB * dltB - dltC * dltC;
+        dltH = dltH < 0 ? 0 : Math.sqrt(dltH);
+        const sc = 1.0 + 0.045 * c1;
+        const sh = 1.0 + 0.015 * c1;
+        const dltLKlsl = dltL;
+        const dltCkcsc = dltC / sc;
+        const dltHkhsh = dltH / sh;
+        const i = dltLKlsl * dltLKlsl + dltCkcsc * dltCkcsc + dltHkhsh * dltHkhsh;
+        return i < 0 ? 0 : i;
+    }
+
     // https://github.com/lukeed/clsx/blob/master/src/index.js
     // License
     // MIT © Luke Edwards
@@ -1081,7 +1177,6 @@ class Utils {
      * @returns {string}
      */
     static _toVal(mix) {
-        let k;
         let y;
         let str = '';
 
@@ -1089,16 +1184,17 @@ class Utils {
             str += mix;
         } else if (typeof mix === 'object') {
             if (Array.isArray(mix)) {
-                for (k = 0; k < mix.length; k++) {
+                for (let k = 0; k < mix.length; k++) {
                     if (mix[k]) {
-                        if ((y = Utils._toVal(mix[k]))) {
+                        y = Utils._toVal(mix[k]);
+                        if (y) {
                             str && (str += ' ');
                             str += y;
                         }
                     }
                 }
             } else {
-                for (k in mix) {
+                for (const k in mix) {
                     if (mix[k]) {
                         str && (str += ' ');
                         str += k;
@@ -1143,7 +1239,7 @@ class Utils {
             return window.vendorPrefix;
         }
 
-        return themeName ? themeName : (window._localStorage || window.localStorage) && (window._localStorage || window.localStorage).getItem('App.themeName') ?
+        return themeName ? themeName : (window._localStorage || window.localStorage).getItem('App.themeName') ?
             (window._localStorage || window.localStorage).getItem('App.themeName') : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'colored';
     }
 
@@ -1157,7 +1253,7 @@ class Utils {
             return 'light';
         }
 
-        themeName = themeName || ((window._localStorage || window.localStorage) && (window._localStorage || window.localStorage).getItem('App.themeName'));
+        themeName = themeName || (window._localStorage || window.localStorage).getItem('App.themeName');
         return themeName === 'dark' || themeName === 'blue' ? 'dark' : 'light';
     }
 
@@ -1182,7 +1278,7 @@ class Utils {
         if (window.vendorPrefix && window.vendorPrefix !== '@@vendorPrefix@@') {
             return window.vendorPrefix;
         }
-        themeName = themeName || ((window._localStorage || window.localStorage) && (window._localStorage || window.localStorage).getItem('App.themeName'));
+        themeName = themeName || (window._localStorage || window.localStorage).getItem('App.themeName');
 
         // dark => blue => colored => light => dark
         const themes = Utils.getThemeNames();
