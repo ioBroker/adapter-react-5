@@ -721,7 +721,11 @@ const styles = theme => ({
     invertedBackground: {
         backgroundColor: theme.palette.mode  === 'dark' ? '#9a9a9a' : '#565656',
         padding: '0 3px',
-        borderRadius: 2,
+        borderRadius: '2px 0 0 2px',
+    },
+    invertedBackgroundFlex: {
+        backgroundColor: theme.palette.mode  === 'dark' ? '#9a9a9a' : '#565656',
+        borderRadius: '0 2px 2px 0',
     },
 });
 
@@ -4410,7 +4414,7 @@ class ObjectBrowser extends Component {
                     container
                     alignItems="center"
                     style={{
-                        color: checkColor,
+                        // color: checkColor,
                         // background: invertBackground,
                     }}
                 >
@@ -4431,7 +4435,7 @@ class ObjectBrowser extends Component {
                     {alias}
                     {icons}
                 </Grid>
-                <div className={classes.grow} />
+                <div className={Utils.clsx(classes.grow, invertBackground && classes.invertedBackgroundFlex)} />
                 <Grid
                     item
                     container
