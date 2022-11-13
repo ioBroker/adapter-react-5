@@ -89,9 +89,9 @@ class DialogConfirm extends React.Component {
         }
 
         return <Dialog
-            open={true}
+            open={!0}
             maxWidth="md"
-            fullWidth={true}
+            fullWidth={this.props.fullWidth !== undefined ? this.props.fullWidth : true}
             onClose={(event, reason) => {
                 if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
                     this.handleCancel()
@@ -125,6 +125,7 @@ class DialogConfirm extends React.Component {
 
 DialogConfirm.propTypes = {
     onClose: PropTypes.func.isRequired,
+    fullWidth: PropTypes.bool,
     title: PropTypes.string,
     text: PropTypes.string,
     ok: PropTypes.string,

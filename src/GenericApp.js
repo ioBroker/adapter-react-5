@@ -658,7 +658,7 @@ class GenericApp extends Router {
                 vertical: 'bottom',
                 horizontal: 'left',
             }}
-            open={true}
+            open={!0}
             autoHideDuration={6000}
             onClose={() => this.setState({ toast: '' })}
             ContentProps={{ 'aria-describedby': 'message-id' }}

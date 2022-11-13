@@ -388,7 +388,7 @@ class ComplexCron extends React.Component {
     render() {
         const tab = this.state.seconds !== false ? this.state.tab : this.state.tab + 1;
         return <div className={this.props.classes.mainDiv}>
-            <div style={{paddingLeft: 8, width: '100%'}}><TextField variant="standard" style={{width: '100%'}} value={this.state.cron} disabled={true}/></div>
+            <div style={{paddingLeft: 8, width: '100%'}}><TextField variant="standard" style={{width: '100%'}} value={this.state.cron} disabled/></div>
             <div style={{paddingLeft: 8, width: '100%', height: 60}}>{this.convertCronToText(this.state.cron, this.props.language || 'en')}</div>
             <FormControlLabel
                 control={<Checkbox checked={this.state.seconds}

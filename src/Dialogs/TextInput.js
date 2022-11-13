@@ -39,12 +39,17 @@ class TextInput extends React.Component {
         super(props);
 
         this.state = {
-            text: this.props.input || this.props.value || '', // input is deprectaed
+            text: this.props.input || this.props.value || '', // input is deprecated
             error: ''
         }
     }
     render() {
-        return <Dialog open={true} onClose={() => this.props.onClose(null)} aria-labelledby="form-dialog-title">
+        return <Dialog
+            open={!0}
+            onClose={() => this.props.onClose(null)}
+            aria-labelledby="form-dialog-title"
+            fullWidth={this.props.fullWidth !== undefined ? this.props.fullWidth : false}
+        >
             <DialogTitle id="form-dialog-title">{this.props.titleText}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
@@ -67,24 +72,39 @@ class TextInput extends React.Component {
                         }
 
                         if (this.props.rule) {
-                            this.setState({text: this.props.rule(e.target.value), error});
+                            this.setState({ text: this.props.rule(e.target.value), error });
                         } else {
-                            this.setState({text: e.target.value, error});
+                            this.setState({ text: e.target.value, error });
                         }
                     }}
                     fullWidth
                 />
             </DialogContent>
             <DialogActions>
-                <Button variant="contained" disabled={!this.state.text || this.state.error} onClick={() => this.props.onClose(this.state.text)}
-                        color="primary" startIcon={<IconCheck />}>{this.props.applyText || I18n.t('ra_Ok')}</Button>
-                <Button color="grey" variant="contained" onClick={() => this.props.onClose(null)} startIcon={<IconClose />}>{this.props.cancelText || I18n.t('ra_Cancel')}</Button>
+                <Button
+                    variant="contained"
+                    disabled={!this.state.text || this.state.error}
+                    onClick={() => this.props.onClose(this.state.text)}
+                    color="primary"
+                    startIcon={<IconCheck />}
+                >
+                    {this.props.applyText || I18n.t('ra_Ok')}
+                </Button>
+                <Button
+                    color="grey"
+                    variant="contained"
+                    onClick={() => this.props.onClose(null)}
+                    startIcon={<IconClose />}
+                >
+                    {this.props.cancelText || I18n.t('ra_Cancel')}
+                </Button>
             </DialogActions>
         </Dialog>;
     }
 }
 
 TextInput.propTypes = {
+    fullWidth: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     titleText: PropTypes.string.isRequired,
     promptText: PropTypes.string,

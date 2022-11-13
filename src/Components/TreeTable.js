@@ -448,7 +448,7 @@ class TreeTable extends React.Component {
                 dialogName={this.props.adapterName}
                 themeType={this.props.themeType}
                 socket={this.props.socket}
-                statesOnly={true}
+                statesOnly
                 selected={this.state.selectIdValue}
                 onClose={() => this.setState({ showSelectId: false })}
                 onOk={(selected, name) => {
@@ -511,7 +511,7 @@ class TreeTable extends React.Component {
         if (col.type === 'boolean') {
             return <Checkbox
                 checked={!!val}
-                disabled={true}
+                disabled
                 inputProps={{ 'aria-label': 'checkbox' }}
             />
         } else {
@@ -754,7 +754,7 @@ class TreeTable extends React.Component {
         }
 
         return <div className={Utils.clsx(this.props.classes.tableContainer, this.props.className)}>
-            <Table className={this.props.classes.table} aria-label="simple table" size="small" stickyHeader={true}>
+            <Table className={this.props.classes.table} aria-label="simple table" size="small" stickyHeader>
                 {this.renderHead()}
                 <TableBody>
                     {table.map(item => this.renderLine(item))}

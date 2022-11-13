@@ -37,7 +37,7 @@ class DialogMessage extends React.Component {
         return <Dialog
             open={!0}
             maxWidth="sm"
-            fullWidth={true}
+            fullWidth={this.props.fullWidth !== undefined ? this.props.fullWidth : true}
             onClose={() => this.handleOk()}
             aria-labelledby="message-dialog-title"
             aria-describedby="message-dialog-description"
@@ -56,6 +56,7 @@ class DialogMessage extends React.Component {
 }
 
 DialogMessage.propTypes = {
+    fullWidth: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     title: PropTypes.string,
     text: PropTypes.string,

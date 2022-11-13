@@ -128,8 +128,8 @@ class DialogFileSelect extends React.Component {
             onClose={() => {}}
             maxWidth={false}
             classes={{ paper: Utils.clsx(this.props.classes.dialog, this.props.classes.dialogMobile) }}
-            fullWidth={true}
-            open={true}
+            fullWidth
+            open={!0}
             aria-labelledby="file-dialog-title"
         >
             <DialogTitle id="file-dialog-title" classes={{ root: this.props.classes.titleRoot }}>{ title }</DialogTitle>

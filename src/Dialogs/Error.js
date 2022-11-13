@@ -45,9 +45,9 @@ class DialogError extends React.Component {
 
     render() {
         return <Dialog
-            open={true}
+            open={!0}
             maxWidth="sm"
-            fullWidth={true}
+            fullWidth={this.props.fullWidth !== undefined ? this.props.fullWidth : true}
             onClose={() => this.handleOk()}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
@@ -69,6 +69,7 @@ class DialogError extends React.Component {
 
 DialogError.propTypes = {
     onClose: PropTypes.func.isRequired,
+    fullWidth: PropTypes.bool,
     title: PropTypes.string,
     text: PropTypes.oneOfType([
         PropTypes.string,

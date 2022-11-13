@@ -2088,7 +2088,7 @@ class IconSelector extends Component {
                 title={this.props.t('ra_Select predefined icon')}
                 onClick={() => this.setState({opened: true}, () => this.loadAllIcons())} style={{minWidth: 40, marginRight: 8}}
             >...</Button>
-            {this.state.opened ? <Dialog onClose={() => this.setState({opened: false})} open={true}>
+            {this.state.opened ? <Dialog onClose={() => this.setState({opened: false})} open={!0}>
                 <DialogTitle>{this.props.t('ra_Select predefined icon')}
                     {this.state.isAnyName ? <TextField
                         variant="standard"
