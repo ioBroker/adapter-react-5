@@ -643,7 +643,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.2.7 (2022-11-13)
 * (bluefox) Added `fullWidth` property to `Dialog`
 
 ### 3.2.6 (2022-11-08)
