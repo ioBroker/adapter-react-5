@@ -11,7 +11,6 @@ const babel = require('gulp-babel');
 const sourcemaps = require('gulp-sourcemaps');
 const typescript = require('gulp-typescript');
 const fs = require('fs');
-const schema = require("./schemas/jsonConfig.json");
 
 gulp.task('copy', () => Promise.all([
     gulp.src(['src/**/*.d.ts']).pipe(gulp.dest('dist')),
@@ -67,32 +66,39 @@ gulp.task('patchJsonSchemeForTable', async () => {
     }
     const properties = JSON.parse(JSON.stringify(schema.properties.items.patternProperties['^.+'].properties))
     Object.assign(properties, {
-        "type": {
-            "type": "string"
+        type: {
+            type: 'string'
         },
-        "attr": {
-            "type": "string"
+        attr: {
+            type: 'string'
         },
-        "width": {
-            "type": [
-                "number",
-                "string"
+        width: {
+            type: [
+                'number',
+                'string'
             ]
         },
-        "title": {
-            "type": "string"
+        title: {
+            type: 'string'
         },
-        "filter": {
-            "type": "boolean"
+        filter: {
+            type: 'boolean'
         },
-        "sort": {
-            "type": "boolean"
+        sort: {
+            type: 'boolean'
         }
     });
 
     schema.properties.items.patternProperties['^.+'].allOf[pos].then.properties.items.items.properties = properties;
     schema.properties.items.patternProperties['^.+'].allOf[pos].then.properties.items.items.allOf = allOf;
     fs.writeFileSync('./schemas/jsonConfig.json', JSON.stringify(schema, null, 2));
+});
+
+gulp.task('patchReadme', async () => {
+    const pack = require('./package.json');
+    let readme = fs.readFileSync(__dirname + '/README.md').toString('utf8');
+    readme = readme.replace(/"@iobroker\/adapter-react": "\^\d\.\d\.\d",/g, `"@iobroker/adapter-react": "^${pack.version}",`);
+    fs.writeFileSync(__dirname + '/README.md', readme);
 });
 
 gulp.task('compile', gulp.parallel('copy',
@@ -141,4 +147,4 @@ gulp.task('compile', gulp.parallel('copy',
     ])
 ));
 
-gulp.task('default', gulp.series('compile', 'patchJsonSchemeForTable'));
+gulp.task('default', gulp.series('compile', 'patchReadme', 'patchJsonSchemeForTable'));

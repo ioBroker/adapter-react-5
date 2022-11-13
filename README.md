@@ -10,7 +10,7 @@ If you want to create the configuration page with react:
     - Change `name` from `src` to `ADAPTERNAME-admin` (Of course replace `ADAPTERNAME` with yours)
     - Add to devDependencies:
       ```
-      "@iobroker/adapter-react": "^1.5.5",
+      "@iobroker/adapter-react": "^3.2.7",
       ```
       Versions can be higher.
       So your src/package.json should look like:
@@ -20,13 +20,12 @@ If you want to create the configuration page with react:
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "clsx": "^1.1.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-icons": "^3.10.0",
-    "react-scripts": "^3.4.4",
-    "@iobroker/adapter-react": "^1.5.6",
-    "del": "^6.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.6.0",
+    "react-scripts": "^5.0.1",
+    "@iobroker/adapter-react-v5": "^3.2.7",
+    "del": "^6.1.1",
     "gulp": "^4.0.2"
   },
   "scripts": {
@@ -98,6 +97,7 @@ class App extends GenericApp {
             'it': require('./i18n/it'),
             'es': require('./i18n/es'),
             'pl': require('./i18n/pl'),
+            'uk': require('./i18n/uk'),
             'zh-cn': require('./i18n/zh-cn'),
         };
         // get actual admin port
