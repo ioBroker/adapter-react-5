@@ -1713,6 +1713,14 @@
                                 "description": "Placeholder (for text control)",
                                 "type": "string"
                               },
+                              "useNative": {
+                                "description": "if adapter returns result with `native` attribute it will be used for configuration. If `saveConfig` is true, the user will be requested to save the configuration",
+                                "type": "boolean"
+                              },
+                              "showProcess": {
+                                "description": "Show spinner while request is in progress",
+                                "type": "boolean"
+                              },
                               "label": true,
                               "type": true,
                               "sm": true,
