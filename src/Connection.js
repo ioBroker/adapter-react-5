@@ -64,6 +64,24 @@ function fixAdminUI(obj) {
     return obj;
 }
 
+/** Converts ioB pattern into regex
+ * @param {string} pattern
+ * @returns {string}
+ */
+
+export function pattern2RegEx(pattern) {
+    pattern = (pattern || '').toString();
+
+    const startsWithWildcard = pattern[0] === '*';
+    const endsWithWildcard = pattern[pattern.length - 1] === '*';
+
+    pattern = pattern
+        .replace(/[-/\\^$+?.()|[\]{}]/g, '\\$&')
+        .replace(/\*/g, '.*');
+
+    return (startsWithWildcard ? '' : '^') + pattern + (endsWithWildcard ? '' : '$');
+}
+
 class Connection {
     /**
      * @param {import('./types').ConnectionProps} props
@@ -101,6 +119,7 @@ class Connection {
 
         /** @type {Record<string, { reg: RegExp; cbs: import('./types').ObjectChangeHandler[]}>} */
         this.objectsSubscribes = {}; // subscribe for objects
+        this.filesSubscribes = {}; // subscribe for files
         this.onProgress = this.props.onProgress || function () { };
         this.onError = this.props.onError || function (err) { console.error(err); };
         this.loaded = false;
@@ -300,6 +319,9 @@ class Connection {
 
         this._socket.on('stateChange', (id, state) =>
             setTimeout(() => this.stateChange(id, state), 0));
+
+        this._socket.on('fileChange', (id, fileName, size) =>
+            setTimeout(() => this.fileChange(id, fileName, size), 0));
 
         this._socket.on('cmdStdout', (id, text) =>
             this.onCmdStdoutHandler && this.onCmdStdoutHandler(id, text));
@@ -595,6 +617,72 @@ class Connection {
             }
         }
         return Promise.resolve();
+    }
+
+    /**
+     * Called internally.
+     * @param id
+     * @param fileName
+     * @param size
+     */
+    fileChange(id, fileName, size) {
+        for (const sub of Object.values(this.filesSubscribes)) {
+            if (sub.regId.test(id) && sub.regFilePattern.test(fileName)) {
+                for (const cb of sub.cbs) {
+                    cb(id, fileName, size);
+                }
+            }
+        }
+    }
+
+    /**
+     * Subscribe to changes of the files.
+     * @param {string} id The ioBroker state ID for meat object. Could be a pattern
+     * @param {string} filePattern Pattern or file name, like 'main/*' or 'main/visViews.json`
+     * @param {function} cb The callback.
+     */
+    async subscribeFiles(id, filePattern, cb) {
+        if (typeof cb !== 'function') {
+            throw new Error('The state change handler must be a function!');
+        }
+        const key = `${id}$%$${filePattern}`;
+
+        if (!this.filesSubscribes[key]) {
+            this.filesSubscribes[key] = {
+                regId: new RegExp(pattern2RegEx(id)),
+                regFilePattern: new RegExp(pattern2RegEx(filePattern)),
+                cbs: [cb],
+            };
+            this.connected && this._socket.emit('subscribeFiles', id, filePattern);
+        } else {
+            !this.filesSubscribes[key].cbs.includes(cb) &&
+            this.filesSubscribes[key].cbs.push(cb);
+        }
+    }
+
+    /**
+     * Unsubscribes the given callback from changes of files.
+     * @param {string} id The ioBroker state ID.
+     * @param {string} filePattern Pattern or file name, like 'main/*' or 'main/visViews.json`
+     * @param {function} cb The callback.
+     */
+    unsubscribeFiles(id, filePattern, cb) {
+        const key = `${id}$%$${filePattern}`;
+        if (this.filesSubscribes[key]) {
+            const sub = this.filesSubscribes[key];
+            if (cb) {
+                const pos = sub.cbs.indexOf(cb);
+                pos !== -1 && sub.cbs.splice(pos, 1);
+            } else {
+                sub.cbs = [];
+            }
+
+            if (!sub.cbs || !sub.cbs.length) {
+                delete this.filesSubscribes[key];
+                this.connected &&
+                this._socket.emit('unsubscribeFiles', id, filePattern);
+            }
+        }
     }
 
     /**
