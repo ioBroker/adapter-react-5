@@ -334,5 +334,13 @@
   "ra_month_Sep": "Сен",
   "ra_month_Oct": "Окт",
   "ra_month_Nov": "Ноя",
-  "ra_month_Dec": "Дек"
+  "ra_month_Dec": "Дек",
+  "ra_Filter files": "Фильтровать файлы",
+  "ra_Please select file...": "Пожалуйста, выберите файл...",
+  "ra_fileType_all": "Все файлы",
+  "ra_fileType_audio": "Аудио",
+  "ra_fileType_code": "Код/JSON",
+  "ra_fileType_images": "Картинки",
+  "ra_fileType_txt": "Текст",
+  "ra_fileType_video,": "видео"
 }

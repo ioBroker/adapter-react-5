@@ -334,5 +334,13 @@
   "ra_month_Sep": "Sep",
   "ra_month_Oct": "Okt",
   "ra_month_Nov": "Nov",
-  "ra_month_Dec": "Dez"
+  "ra_month_Dec": "Dez",
+  "ra_Filter files": "Dateien filtern",
+  "ra_Please select file...": "Bitte Datei auswählen...",
+  "ra_fileType_all": "Alle Dateien",
+  "ra_fileType_audio": "Audio",
+  "ra_fileType_code": "Code/JSON",
+  "ra_fileType_images": "Bilder",
+  "ra_fileType_txt": "Text",
+  "ra_fileType_video,": "Video"
 }
