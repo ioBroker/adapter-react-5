@@ -45,11 +45,11 @@ class DialogMessage extends React.Component {
             <DialogTitle id="message-dialog-title">{this.props.title || I18n.t('ra_Message')}</DialogTitle>
             <DialogContent>
                 <DialogContentText id="message-dialog-description">
-                    {this.props.text}
+                    <span style={{ marginRight: this.props.icon ? 8 : 0 }}>{this.props.icon || null}</span>{this.props.text}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button variant="contained" onClick={() => this.handleOk()} color="primary" autoFocus startIcon={<IconClose />}>{I18n.t('ra_Close')}</Button>
+                <Button variant="contained" onClick={() => this.handleOk()} color="primary" autoFocus startIcon={<IconClose />}>{this.props.ok || I18n.t('ra_Close')}</Button>
             </DialogActions>
         </Dialog>;
     }
@@ -60,6 +60,7 @@ DialogMessage.propTypes = {
     onClose: PropTypes.func.isRequired,
     title: PropTypes.string,
     text: PropTypes.string,
+    ok: PropTypes.string,
     icon: PropTypes.object
 };
 
