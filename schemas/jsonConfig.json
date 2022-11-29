@@ -1038,6 +1038,14 @@
                     "description": "Placeholder (for text control)",
                     "type": "string"
                   },
+                  "minRows": {
+                    "description": "default is 1. Set this attribute to `2` or more if you want to have a textarea with more than one row",
+                    "type": "number"
+                  },
+                  "maxRows": {
+                    "description": "max rows of textarea. Used only if `minRows` > 1",
+                    "type": "number"
+                  },
                   "label": true,
                   "type": true,
                   "sm": true,
@@ -2140,6 +2148,14 @@
                               "placeholder": {
                                 "description": "Placeholder (for text control)",
                                 "type": "string"
+                              },
+                              "minRows": {
+                                "description": "default is 1. Set this attribute to `2` or more if you want to have a textarea with more than one row",
+                                "type": "number"
+                              },
+                              "maxRows": {
+                                "description": "max rows of textarea. Used only if `minRows` > 1",
+                                "type": "number"
                               },
                               "label": true,
                               "type": true,
