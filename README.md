@@ -643,6 +643,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added file selector
+
 ### 3.3.0 (2022-11-26)
 * (bluefox) Added subscribe on files
 

@@ -163,6 +163,9 @@ export * from './Dialogs/Message';
 export { default as SelectID } from './Dialogs/SelectID';
 export * from './Dialogs/SelectID';
 
+export { default as SelectFile } from './Dialogs/SelectFile';
+export * from './Dialogs/SelectFile';
+
 export { default as SimpleCronDialog } from './Dialogs/SimpleCron';
 export * from './Dialogs/SimpleCron';
 
