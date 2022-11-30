@@ -51,7 +51,7 @@ function deselectCurrent () {
         selection.removeAllRanges();
 
         if (!selection.rangeCount) {
-            ranges.forEach(function(range) {
+            ranges.forEach(function (range) {
                 selection.addRange(range);
             });
         }
