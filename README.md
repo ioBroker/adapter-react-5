@@ -643,6 +643,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Improved `renderTextWithA` function to support `<b>` and `<i>` tags 
+
 ### 3.5.2 (2022-11-30)
 * (bluefox) updated json config component
 
