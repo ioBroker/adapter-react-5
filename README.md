@@ -643,7 +643,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### 4.0.0 (2022-11-30)
+### **WORK IN PROGRESS**
 * (bluefox) use `@iobroker/socket-client` instead of `Connection.js`
 
 ### 3.5.3 (2022-11-30)
