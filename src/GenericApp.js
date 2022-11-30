@@ -5,7 +5,7 @@
  *
  **/
 import React from 'react';
-import Connection, { PROGRESS } from './Connection';
+import { Connection, PROGRESS } from '@iobroker/socket-client';
 import PropTypes from 'prop-types';
 import * as Sentry from '@sentry/browser';
 import * as SentryIntegrations from '@sentry/integrations';
@@ -94,6 +94,7 @@ class GenericApp extends Router {
      */
     constructor(props, settings) {
         const ConnectionClass = props.Connection || settings.Connection || Connection;
+        // const ConnectionClass = props.Connection === 'admin' || settings.Connection = 'admin' ? AdminConnection : (props.Connection || settings.Connection || Connection);
 
         if (!window.document.getElementById('generic-app-iobroker-component')) {
             const style = window.document.createElement('style');

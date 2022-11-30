@@ -175,4 +175,10 @@ export * from './Dialogs/TextInput';
 export { default as ConfigGeneric } from './Components/JsonConfigComponent/ConfigGeneric';
 export * from './Components/JsonConfigComponent/ConfigGeneric';
 
+export { default as Connection } from './Connection';
+export * from './Connection';
+export { PROGRESS } from './Connection';
+
+export { default as AdminConnection } from './AdminConnection';
+export * from './AdminConnection';
 
