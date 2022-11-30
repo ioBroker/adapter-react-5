@@ -10,7 +10,7 @@ Possible types:
 
 - `tabs` - Tabs with items
   - `items` - Object with panels `{"tab1": {}, "tab2": {}...}`
-
+  
 - `panel` - Tab with items
   - `icon` - tab can have icon (base64)
   - `label` - Label of tab
@@ -22,8 +22,8 @@ Possible types:
   - `maxLength` - max length of text in field
   - `readOnly` - read only field
   - `trim` - default is true. Set this attribute to `false` if trim is not desired.
-  - `minRows` - default is 1. Set this attribute to `2` or more if you want to have a textarea with more than one row.
-  - `maxRows` - max rows of textarea. Used only if `minRows` > 1.
+  - `minRows` - default is 1. Set this attribute to `2` or more if you want to have a textarea with more than one row.  
+  - `maxRows` - max rows of textarea. Used only if `minRows` > 1.  
 
 - `number`
   - `min` - minimal value
@@ -34,7 +34,7 @@ Possible types:
 
 - `checkbox` - show checkbox
 
-- `slider` - show slider (only Admin6)
+- `slider` - show slider (only Admin6)              
   - `min` - (default 0)
   - `max` - (default 100)
   - `step` - (default `(max - min) / 100`)
@@ -54,7 +54,7 @@ Possible types:
 - `func` - Select function from `enum.func` (With color and icon) - (only Admin6)
   - `short` - no `enum.func.`
 
-- `select`
+- `select` 
   - `options` - `[{label: {en: "option 1"}, value: 1}, ...]`
 
 - `autocomplete`
@@ -89,149 +89,149 @@ Possible types:
        "crop": true
      }
 ```
-`login-bg.png` is file name for writeFile('myAdapter.INSTANCE', 'login-bg.png')
-- `accept` - html accept attribute, like "image/*,.pdf"
-- `maxSize` -
-- `base64` - if true the image will be saved as data-url in attribute, elsewise as binary in file storage
-- `!maxWidth`
-- `!maxHeight`
-- `!crop` - if true, allow user to crop the image
-- `!square` - width must be equal to height or crop must allow only square as shape
+  `login-bg.png` is file name for writeFile('myAdapter.INSTANCE', 'login-bg.png')   
+  - `accept` - html accept attribute, like "image/*,.pdf"
+  - `maxSize` - 
+  - `base64` - if true the image will be saved as data-url in attribute, elsewise as binary in file storage
+  - `!maxWidth`
+  - `!maxHeight`
+  - `!crop` - if true, allow user to crop the image
+  - `!square` - width must be equal to height or crop must allow only square as shape
 
 - `objectId` - object ID - show it with name, color and icon
-  - `types` - Array of possible types: ['channel', 'device', ...] (has only `state` by default)
+    - `types` - Array of possible types: ['channel', 'device', ...] (has only `state` by default)
 
 - `password` (repeat - if repeat password must be shown with the same width settings)
-  - `repeat` password must be compared with password
-  - `visible` - true if allow to view the password by toggling the view button
-  - `maxLength` - max length of text in field
+    - `repeat` password must be compared with password
+    - `visible` - true if allow to view the password by toggling the view button
+    - `maxLength` - max length of text in field
 
 - `instance`
-  - `adapter` - name of adapter. With special name `_dataSources` you can get all adapters with flag `common.getHistory`.
-  - `allowDeactivate` - if true. Additional option "deactivate" is shown
-  - `long` - value will look like `system.adapter.ADAPTER.0` and not `ADAPTER.0`
-  - `short` - value will look like `0` and not `ADAPTER.0`
-  - `all` - Add to the options "all" option with value `*`
+    - `adapter` - name of adapter. With special name `_dataSources` you can get all adapters with flag `common.getHistory`.
+    - `allowDeactivate` - if true. Additional option "deactivate" is shown
+    - `long` - value will look like `system.adapter.ADAPTER.0` and not `ADAPTER.0`
+    - `short` - value will look like `0` and not `ADAPTER.0`
+    - `all` - Add to the options "all" option with value `*`
 
 - `chips` - user can enter the word, and it will be added (see cloud => services => White list). Option is an array if no `delimiter` defined.
-  - `delimiter` - if it is defined, so the option will be stored as string with delimiter instead of array. E.g. by `delimiter=;` you will get `a;b;c` instead of `['a', 'b', 'c']`
+    - `delimiter` - if it is defined, so the option will be stored as string with delimiter instead of array. E.g. by `delimiter=;` you will get `a;b;c` instead of `['a', 'b', 'c']`
 
 - `alive` - just indication if the instance is alive, and it could be used in "hidden" and "disabled" (will not be saved in config)
   Just text: Instance is running, Instance is not running
-  - `instance` - check if the instance is alive. If not defined, it will be used current instance. You can use `${data.number}` pattern in the text.
-  - `textAlive` - default text is `Instance %s is alive`, where %s will be replaced by `ADAPTER.0`.
-  - `textNotAlive` - default text is `Instance %s is not alive`, where %s will be replaced by `ADAPTER.0`.
+    - `instance` - check if the instance is alive. If not defined, it will be used current instance. You can use `${data.number}` pattern in the text.
+    - `textAlive` - default text is `Instance %s is alive`, where %s will be replaced by `ADAPTER.0`.
+    - `textNotAlive` - default text is `Instance %s is not alive`, where %s will be replaced by `ADAPTER.0`.
 
 - `pattern` - read only field with pattern like 'https://${data.ip}:${data.port}' (will not be saved in config)
   Text input with read only flag, that shows pattern.
-  - `copyToClipboard` - if true - show button
-  - `pattern` - my pattern
+    - `copyToClipboard` - if true - show button
+    - `pattern` - my pattern
 
 - `sendto` - button that sends request to instance (https://github.com/iobroker-community-adapters/ioBroker.email/blob/master/admin/index_m.html#L128)
-  - `command` - (Default `send`)
-  - `jsonData` - string - `{"subject1": "${data.subject}", "options1": {"host": "${data.host}"}}`. You can use special variables `data._origin` and `data._originIp` to send to instance the caller URL, like `http://localhost:8081/admin`.
-  - `data` - object - `{"subject1": 1, "data": "static"}`. You can specify jsonData or data, but not both.
-  - `result` - `{result1: {en: 'A'}, result2: {en: 'B'}}`
-  - `error` - `{error1: {en: 'E'}, error2: {en: 'E2'}}`
-  - `variant` - `contained`, `outlined` or nothing
-  - `openUrl` - if true - open URL in new tab, if response contains attribute `openUrl`, like `{"openUrl": "http://1.2.3.4:80/aaa", "window": "_blank", "saveConfig": true}`. If `saveConfig` is true, the user will be requested to save the configuration.
-  - `window` - if `openUrl` is true, this is name of new window. Could be overwritten if response consist `window` attribute.
-    `this.props.socket.sendTo(adapterName.instance, command || 'send', data, result => {});`
-  - `icon` - if icon should be shown: `auth`, `send`, `web`, `warning`, `error`, `info`, `search`. You can use `base64` icons. (Request via issue if you need more icons)
-  - `useNative` - if adapter returns result with `native` attribute it will be used for configuration. If `saveConfig` is true, the user will be requested to save the configuration.
-  - `showProcess` - Show spinner while request is in progress
+    - `command` - (Default `send`)
+    - `jsonData` - string - `{"subject1": "${data.subject}", "options1": {"host": "${data.host}"}}`. You can use special variables `data._origin` and `data._originIp` to send to instance the caller URL, like `http://localhost:8081/admin`.
+    - `data` - object - `{"subject1": 1, "data": "static"}`. You can specify jsonData or data, but not both.
+    - `result` - `{result1: {en: 'A'}, result2: {en: 'B'}}`
+    - `error` - `{error1: {en: 'E'}, error2: {en: 'E2'}}`
+    - `variant` - `contained`, `outlined` or nothing
+    - `openUrl` - if true - open URL in new tab, if response contains attribute `openUrl`, like `{"openUrl": "http://1.2.3.4:80/aaa", "window": "_blank", "saveConfig": true}`. If `saveConfig` is true, the user will be requested to save the configuration.
+    - `window` - if `openUrl` is true, this is name of new window. Could be overwritten if response consist `window` attribute.
+      `this.props.socket.sendTo(adapterName.instance, command || 'send', data, result => {});`
+    - `icon` - if icon should be shown: `auth`, `send`, `web`, `warning`, `error`, `info`, `search`. You can use `base64` icons. (Request via issue if you need more icons)
+    - `useNative` - if adapter returns result with `native` attribute it will be used for configuration. If `saveConfig` is true, the user will be requested to save the configuration.
+    - `showProcess` - Show spinner while request is in progress
 
 - `setState` - button that set instance's state
-  - `id` - 'info.test'
-  - `ack` - false (default false)
-  - `val` - '${data.myText}_test' or number. Type will be detected automatically from state type and converting done too
-  - `okText` - Alert which will be shown by pressing the button
-  - `variant` - `contained`, `outlined`, ''
+    - `id` - 'info.test'
+    - `ack` - false (default false)
+    - `val` - '${data.myText}_test' or number. Type will be detected automatically from state type and converting done too
+    - `okText` - Alert which will be shown by pressing the button
+    - `variant` - `contained`, `outlined`, ''
 
 - `staticText` - static text like description
-  - `label` - multi-language text
-  - `text` - same as label
+    - `label` - multi-language text
+    - `text` - same as label
 
 - `staticLink` - static link
-  - `label` - multi-language text
-  - `href` - link. Link could be dynamic like `#tab-objects/customs/${data.parentId}`
-  - `button` - show link as button
-  - `icon` - if icon should be shown: `auth`, `send`, `web`, `warning`, `error`, `info`, `search`. You can use `base64` icons. (Request via issue if you need more icons)
+    - `label` - multi-language text
+    - `href` - link. Link could be dynamic like `#tab-objects/customs/${data.parentId}`
+    - `button` - show link as button
+    - `icon` - if icon should be shown: `auth`, `send`, `web`, `warning`, `error`, `info`, `search`. You can use `base64` icons. (Request via issue if you need more icons)
 
 - `staticImage` - static image
-  - `href` - optional HTTP link
-  - `src` - name of picture (from admin directory)
+    - `href` - optional HTTP link
+    - `src` - name of picture (from admin directory)
 
 - `table` - table with items that could be deleted, added, movedUP, moved Down
-  - `items` - [{"type": see above, "width": px or %, "title": {"en": "header"}, "attr": "name", "filter": false, "sort": true, "default": ""}]
-  - `noDelete` - boolean if delete or add disabled, If noDelete is false, add, delete and move up/down should work
-  - `objKeyName` - (legacy setting, don't use!) - name of the key in `{"192.168.1.1": {delay: 1000, enabled: true}, "192.168.1.2": {delay: 2000, enabled: false}}`
-  - `objValueName` - (legacy setting, don't use!) - name of the value in `{"192.168.1.1": "value1", "192.168.1.2": "value2"}`
-  - `allowAddByFilter` - if add allowed even if filter is set
-  - `showSecondAddAt` - Number of lines from which the second add button at the bottom of the table will be shown. Default 5
+    - `items` - [{"type": see above, "width": px or %, "title": {"en": "header"}, "attr": "name", "filter": false, "sort": true, "default": ""}]
+    - `noDelete` - boolean if delete or add disabled, If noDelete is false, add, delete and move up/down should work
+    - `objKeyName` - (legacy setting, don't use!) - name of the key in `{"192.168.1.1": {delay: 1000, enabled: true}, "192.168.1.2": {delay: 2000, enabled: false}}`
+    - `objValueName` - (legacy setting, don't use!) - name of the value in `{"192.168.1.1": "value1", "192.168.1.2": "value2"}`
+    - `allowAddByFilter` - if add allowed even if filter is set
+    - `showSecondAddAt` - Number of lines from which the second add button at the bottom of the table will be shown. Default 5
 - `json` - json editor
 
 - `language`
-  - `system` - allow the usage of the system language from system.config as default
+    - `system` - allow the usage of the system language from system.config as default
 
 - `certificate`
-  - `certType` - on of: `public`, `private`, `chained`
+    - `certType` - on of: `public`, `private`, `chained`
 
 - `custom` (only Admin6)
-  - `name` - Component name that will be provided via props, like ComponentInstancesEditor
-  - `url` - Location of component
-    - `custom/customComponents.js`: in this case the files will be loaded from `/adapter/ADAPTER_NAME/custom/customComponents.js`
-    - `https://URL/myComponent`: direct from URL
-    - `./adapter/ADAPTER_NAME/custom/customComponent.js`: in this case the files will be loaded from `/adapter/ADAPTER_NAME/custom/customComponents.js`
-  - `i18n` - true if `i18n/xx.json` files are located in the same directory as component, or translation object `{"text1": {"en": Text1"}}`
+    - `name` - Component name that will be provided via props, like ComponentInstancesEditor
+    - `url` - Location of component
+        - `custom/customComponents.js`: in this case the files will be loaded from `/adapter/ADAPTER_NAME/custom/customComponents.js`
+        - `https://URL/myComponent`: direct from URL
+        - `./adapter/ADAPTER_NAME/custom/customComponent.js`: in this case the files will be loaded from `/adapter/ADAPTER_NAME/custom/customComponents.js`
+    - `i18n` - true if `i18n/xx.json` files are located in the same directory as component, or translation object `{"text1": {"en": Text1"}}`
 
 - `divider` - horizontal line
-  - `height` - optional height
-  - `color` - optional divider color or `primary`, `secondary`
+    - `height` - optional height
+    - `color` - optional divider color or `primary`, `secondary`
 
 - `header`
-  - `text`
-  - `size` - 1-5 => h1-h5
+    - `text`
+    - `size` - 1-5 => h1-h5
 
 - `cron`
-  - `complex` - show CRON with "minutes", "seconds" and so on
-  - `simple` - show simple CRON settings
+    - `complex` - show CRON with "minutes", "seconds" and so on
+    - `simple` - show simple CRON settings
 
 - `fileSelector` (only Admin6)
-  - `pattern` - File extension pattern. Allowed `**/*.ext` to show all files from sub-folders too, `*.ext` to show from root folder or `folderName/*.ext` to show all files in sub-folder `folderName`. Default `**/*.*`.
-  - `objectID` - Object ID of type `meta`. You can use special placeholder `%INSTANCE%`: like `myAdapter.%INSTANCE%.files`
-  - `upload` - path, where the uploaded files will be stored. Like `folderName`. If not defined, no upload field will be show. To upload in root set this field to `/`.
-  - `refresh` - Show refresh button near the select.
-  - `maxSize` - max file size (default 2MB)
-  - `withFolder` - show folder name even if all files in same folder
-  - `delete` - Allow deletion of files
-  - `noNone` - Do not show `none` option
-  - `noSize` - Do not show size of files
+    - `pattern` - File extension pattern. Allowed `**/*.ext` to show all files from sub-folders too, `*.ext` to show from root folder or `folderName/*.ext` to show all files in sub-folder `folderName`. Default `**/*.*`.
+    - `objectID` - Object ID of type `meta`. You can use special placeholder `%INSTANCE%`: like `myAdapter.%INSTANCE%.files`
+    - `upload` - path, where the uploaded files will be stored. Like `folderName`. If not defined, no upload field will be show. To upload in root set this field to `/`.
+    - `refresh` - Show refresh button near the select.
+    - `maxSize` - max file size (default 2MB)
+    - `withFolder` - show folder name even if all files in same folder
+    - `delete` - Allow deletion of files
+    - `noNone` - Do not show `none` option
+    - `noSize` - Do not show size of files
 
 - `file` (only Admin6)
   Input field with file selector
-  - `disableEdit` - if user can manually enter the file name and not only through select dialog
-  - `limitPath` - limit selection to one specific object of type `meta` and following path (not mandatory)
-  - `filterFiles` - like `['png', 'svg', 'bmp', 'jpg', 'jpeg']`
-  - `filterByType` - `images, code, txt, audio, video`
-  - `allowUpload` - allowed upload of files
-  - `allowDownload` - allowed download of files (default true)
-  - `allowCreateFolder` - allowed creation of folders
-  - `allowView` - allowed tile view (default true)
-  - `showToolbar` - show toolbar (default true)
-  - `selectOnlyFolders` - user can select only folders (e.g. for upload path)
+    - `disableEdit` - if user can manually enter the file name and not only through select dialog
+    - `limitPath` - limit selection to one specific object of type `meta` and following path (not mandatory)
+    - `filterFiles` - like `['png', 'svg', 'bmp', 'jpg', 'jpeg']`
+    - `filterByType` - `images, code, txt, audio, video`
+    - `allowUpload` - allowed upload of files
+    - `allowDownload` - allowed download of files (default true)
+    - `allowCreateFolder` - allowed creation of folders
+    - `allowView` - allowed tile view (default true)
+    - `showToolbar` - show toolbar (default true)
+    - `selectOnlyFolders` - user can select only folders (e.g. for upload path)
 
 - `selectSendTo`
   Shows drop down menu with the given from the instance values.
-  - `command` - sendTo command
-  - `jsonData` - string - `{"subject1": "${data.subject}", "options1": {"host": "${data.host}"}}`. This data will be sent to backend
-  - `data` - object - `{"subject1": 1, "data": "static"}`. You can specify jsonData or data, but not both. This data will be sent to backend if jsonData is not defined.
-  - `manual` - allow manual editing. Without drop down menu (if instance is offline). Default `true`.
-  - `multiple` - Multiple choice select
-  - `showAllValues` - show item even if no label was found for it (by multiple), default=`true`
-  - `noTranslation` - do not translate label of selects  
-    To use this option, your adapter must implement message handler:
-    The result of command must be an array in form `[{"value": 1, "label": "one"}, ...]`
+    - `command` - sendTo command
+    - `jsonData` - string - `{"subject1": "${data.subject}", "options1": {"host": "${data.host}"}}`. This data will be sent to backend
+    - `data` - object - `{"subject1": 1, "data": "static"}`. You can specify jsonData or data, but not both. This data will be sent to backend if jsonData is not defined.
+    - `manual` - allow manual editing. Without drop down menu (if instance is offline). Default `true`.
+    - `multiple` - Multiple choice select
+    - `showAllValues` - show item even if no label was found for it (by multiple), default=`true`
+    - `noTranslation` - do not translate label of selects  
+      To use this option, your adapter must implement message handler:
+      The result of command must be an array in form `[{"value": 1, "label": "one"}, ...]`
 ```
 adapter.on('message', obj => {
    if (obj) {
@@ -273,7 +273,7 @@ adapter.on('message', obj => {
   - `data` - object - `{"subject1": 1, "data": "static"}`. You can specify jsonData or data, but not both. This data will be sent to backend if jsonData is not defined.
   - `freeSolo` - Set freeSolo to true so the textbox can contain any arbitrary value.
   - `maxLength` - max length of text in field
-    To use this option, your adapter must implement message handler:
+  To use this option, your adapter must implement message handler:
     The result of command must be an array in form `["value1", {"value": "value2", "label": "Value2"}, ...]`
     See `selectSendTo` for handler example
 
@@ -285,7 +285,7 @@ adapter.on('message', obj => {
   - `command` - sendTo command
   - `jsonData` - string - `{"subject1": "${data.subject}", "options1": {"host": "${data.host}"}}`. This data will be sent to backend
   - `data` - object - `{"subject1": 1, "data": "static"}`. You can specify jsonData or data, but not both. This data will be sent to backend if jsonData is not defined.
-    To use this option, your adapter must implement message handler:
+  To use this option, your adapter must implement message handler:
     The result of command must be an array in form `"text"`
     See `selectSendTo` for handler example
 

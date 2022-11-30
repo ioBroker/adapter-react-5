@@ -4,13 +4,14 @@ import { withStyles } from '@mui/styles';
 
 import Button from '@mui/material/Button';
 
-import I18n from '../../i18n';
-import Icon from '../Icon';
-import ConfirmDialog from '../../Dialogs/Confirm';
 import ConfigGeneric from './ConfigGeneric';
 import IconWarning from '@mui/icons-material/Warning';
 import IconError from '@mui/icons-material/Error';
 import IconInfo from '@mui/icons-material/Info';
+
+import I18n from './wrapper/i18n';
+import Icon from './wrapper/Components/Icon';
+import ConfirmDialog from './wrapper/Dialogs/Confirm';
 
 const styles = theme => ({
     fullWidth: {

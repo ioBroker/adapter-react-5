@@ -8,9 +8,9 @@ import IconInfo from '@mui/icons-material/Info';
 import IconWarning from '@mui/icons-material/Warning';
 import IconError from '@mui/icons-material/Error';
 
-import I18n from '../../i18n';
-import Utils from '../Utils';
-import ConfirmDialog from '../../Dialogs/Confirm';
+import I18n from './wrapper/i18n';
+import Utils from './wrapper/Components/Utils';
+import ConfirmDialog from './wrapper/Dialogs/Confirm';
 
 class ConfigGeneric extends Component {
     static DIFFERENT_VALUE = '__different__';

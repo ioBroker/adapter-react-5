@@ -4,7 +4,6 @@ import { withStyles } from '@mui/styles';
 
 import Button from '@mui/material/Button';
 
-import Icon from '../Icon';
 import IconAuth from '@mui/icons-material/Key';
 import IconSend from '@mui/icons-material/Send';
 import IconWeb from '@mui/icons-material/Public';
@@ -12,6 +11,8 @@ import IconWarning from '@mui/icons-material/Warning';
 import IconError from '@mui/icons-material/Error';
 import IconInfo from '@mui/icons-material/Info';
 import IconSearch from '@mui/icons-material/Search';
+
+import Icon from './wrapper/Components/Icon';
 
 import ConfigGeneric from './ConfigGeneric';
 

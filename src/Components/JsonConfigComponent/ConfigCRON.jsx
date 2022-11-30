@@ -6,8 +6,8 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import { Button, TextField } from '@mui/material';
 
-import DialogCron from '../..//Dialogs/Cron';
-import I18n from '../../i18n';
+import I18n from './wrapper/i18n';
+import DialogCron from './wrapper/Dialogs/Cron';
 
 import ConfigGeneric from './ConfigGeneric';
 

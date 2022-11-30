@@ -4,9 +4,8 @@ import { withStyles } from '@mui/styles';
 
 import { Autocomplete, TextField, FormControl } from '@mui/material';
 
-import I18n from '../../i18n';
-import Utils from '../Utils';
-
+import I18n from './wrapper/i18n';
+import Utils from './wrapper/Components/Utils';
 
 import ConfigGeneric from './ConfigGeneric';
 

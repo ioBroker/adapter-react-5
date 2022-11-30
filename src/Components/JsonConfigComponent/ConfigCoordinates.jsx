@@ -7,7 +7,7 @@ import Fab from '@mui/material/Fab';
 
 import IconGpsFixed from '@mui/icons-material/GpsFixed';
 
-import I18n from '../../i18n';
+import I18n from './wrapper/i18n';
 
 import ConfigGeneric from './ConfigGeneric';
 

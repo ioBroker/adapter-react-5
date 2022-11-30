@@ -6,8 +6,8 @@ import InputLabel from '@mui/material/InputLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 
-import UploadImage from '../UploadImage';
-import I18n from '../../i18n';
+import UploadImage from './wrapper/Components/UploadImage';
+import I18n from './wrapper/i18n';
 
 import ConfigGeneric from './ConfigGeneric';
 

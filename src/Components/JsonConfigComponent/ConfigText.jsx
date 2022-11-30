@@ -8,8 +8,7 @@ import {
     TextareaAutosize,
 } from '@mui/material';
 
-
-import I18n from '../../i18n';
+import I18n from './wrapper/i18n';
 
 import ConfigGeneric from './ConfigGeneric';
 
@@ -107,6 +106,8 @@ class ConfigText extends ConfigGeneric {
                         style={{
                             width: '100%',
                             resize: 'vertical',
+                            backgroundColor: this.props.themeType === 'dark' ? '#363636' : '#cccccc',
+                            color: this.props.themeType === 'dark' ? '#fff' : '#111',
                         }}
                         minRows={this.props.schema.minRows}
                         maxRows={this.props.schema.maxRows}

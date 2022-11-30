@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import LinearProgress from '@mui/material/LinearProgress';
 import Grid from '@mui/material/Grid';
 
-import I18n from '../../i18n';
+import I18n from './wrapper/i18n';
+
 const getOrLoadRemote = (remote, shareScope, remoteFallbackUrl = undefined) =>
     new Promise((resolve, reject) => {
     // check if remote exists on window

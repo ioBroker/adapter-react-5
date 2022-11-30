@@ -6,8 +6,9 @@ import IconButton from '@mui/material/IconButton';
 
 import IconCopy from '@mui/icons-material/ContentCopy';
 
-import I18n from '../../i18n';
-import Utils from '../Utils';
+import I18n from './wrapper/i18n';
+import Utils from './wrapper/Components/Utils';
+
 import ConfigGeneric from './ConfigGeneric';
 
 class ConfigUUID extends ConfigGeneric {
@@ -31,7 +32,9 @@ class ConfigUUID extends ConfigGeneric {
                 endAdornment: <IconButton onClick={() => {
                     Utils.copyToClipboard(this.state.uuid);
                     window.alert(I18n.t('ra_Copied %s', this.state.uuid));
-                }}><IconCopy /></IconButton>
+                }}>
+                    <IconCopy />
+                </IconButton>
             }}
             value={this.state.uuid || ''}
             label={this.getText(this.props.schema.label) || I18n.t('ra_Serial number (UUID)')}

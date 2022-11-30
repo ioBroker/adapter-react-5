@@ -13,8 +13,8 @@ import {
 
 import IconSend from '@mui/icons-material/Send';
 
-import I18n from '../../i18n';
-import DialogError from '../../Dialogs/Error';
+import I18n from './wrapper/i18n';
+import DialogError from './wrapper/Dialogs/Error';
 
 import ConfigGeneric from './ConfigGeneric';
 
