@@ -151,6 +151,7 @@ class Connection {
     static isWeb() {
         return window.adapterName === 'material' ||
             window.adapterName === 'vis' ||
+            (window.adapterName && window.adapterName.startsWith('vis-')) ||
             window.adapterName === 'echarts-show' ||
             window.socketUrl !== undefined;
     }
