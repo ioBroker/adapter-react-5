@@ -65,7 +65,7 @@ function deselectCurrent () {
 const clipboardToIE11Formatting = {
     'text/plain': 'Text',
     'text/html': 'Url',
-    'default': 'Text",
+    'default': 'Text',
 };
 
 const defaultMessage = 'Copy to clipboard: #{key}, Enter';
@@ -76,8 +76,7 @@ function format(message) {
 }
 
 function copy(text, options) {
-    let debug,
-    let message;
+    let debug;
     let reselectPrevious;
     let range;
     let selection;
@@ -100,7 +99,7 @@ function copy(text, options) {
         // reset user styles for span element
         mark.style.all = 'unset';
         // prevents scrolling to the end of the page
-        mark.style.position = "fixed";
+        mark.style.position = 'fixed';
         mark.style.top = 0;
         mark.style.clip = 'rect(0, 0, 0, 0)';
         // used to preserve spaces and line breaks
@@ -110,7 +109,7 @@ function copy(text, options) {
         mark.style.MozUserSelect = 'text';
         mark.style.msUserSelect = 'text';
         mark.style.userSelect = 'text';
-        mark.addEventListener('copy', function(e) {
+        mark.addEventListener('copy', function (e) {
             e.stopPropagation();
             if (options.format) {
                 e.preventDefault();
@@ -136,7 +135,7 @@ function copy(text, options) {
         range.selectNodeContents(mark);
         selection.addRange(range);
 
-        var successful = document.execCommand('copy');
+        const successful = document.execCommand('copy');
         if (!successful) {
             throw new Error('copy command was unsuccessful');
         }
@@ -151,7 +150,7 @@ function copy(text, options) {
         } catch (err) {
             debug && console.error('unable to copy using clipboardData: ', err);
             debug && console.error('falling back to prompt');
-            message = format('message' in options ? options.message : defaultMessage);
+            let message = format('message' in options ? options.message : defaultMessage);
             window.prompt(message, text);
         }
     } finally {
