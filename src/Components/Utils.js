@@ -5,6 +5,7 @@
  *
  **/
 import React from 'react';
+import copy from './copy-to-clipboard';
 import I18n from '../i18n';
 
 const NAMESPACE    = 'material';
@@ -935,147 +936,15 @@ class Utils {
         }
     }
 
-    // copied from https://github.com/sudodoki/toggle-selection
-    /**
-     * MIT License
-     *
-     * Copyright (c) 2017 sudodoki <smd.deluzion@gmail.com>
-     *
-     * Permission is hereby granted, free of charge, to any person obtaining a copy
-     * of this software and associated documentation files (the "Software"), to deal
-     * in the Software without restriction, including without limitation the rights
-     * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-     * copies of the Software, and to permit persons to whom the Software is
-     * furnished to do so, subject to the following conditions:
-     *
-     * The above copyright notice and this permission notice shall be included in all
-     * copies or substantial portions of the Software.
-     *
-     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-     * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-     * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-     * SOFTWARE.
-     */
-    static _toggleSelection() {
-        const selection = document.getSelection();
-        if (!selection.rangeCount) {
-            return function () {};
-        }
-        const active = document.activeElement;
-
-        const ranges = [];
-        for (let i = 0; i < selection.rangeCount; i++) {
-            ranges.push(selection.getRangeAt(i));
-        }
-
-        switch (active.tagName.toUpperCase()) { // .toUpperCase handles XHTML
-            case 'INPUT':
-            case 'TEXTAREA':
-                active.blur();
-                break;
-
-            default:
-                active = null;
-                break;
-        }
-
-        selection.removeAllRanges();
-
-        return function () {
-            selection.type === 'Caret' &&
-            selection.removeAllRanges();
-
-            if (!selection.rangeCount) {
-                ranges.forEach(range => selection.addRange(range));
-            }
-
-            active &&
-            active.focus();
-        };
-    }
-
-    /**
-     * MIT License
-     *
-     * Copyright (c) 2017 sudodoki <smd.deluzion@gmail.com>
-     *
-     * Text see above
-     */
     /**
      * Copy text to the clipboard.
-     * Coped from copy-to-clipboard module:
      * @param {string} text
      * @param {Event} [e]
      */
     static copyToClipboard(text, e) {
         e && e.stopPropagation();
-        e && e.preventDefault();
-        let reselectPrevious;
-        let range;
-        let selection;
-        let mark;
-        let success = false;
-
-        try {
-            reselectPrevious = Utils._toggleSelection();
-
-            range = document.createRange();
-            selection = document.getSelection();
-
-            mark = document.createElement('span');
-            mark.textContent = text;
-            // avoid screen readers from reading out loud the text
-            mark.ariaHidden = 'true'
-            // reset user styles for span element
-            mark.style.all = 'unset';
-            // prevents scrolling to the end of the page
-            mark.style.position = 'fixed';
-            mark.style.top = 0;
-            mark.style.clip = 'rect(0, 0, 0, 0)';
-            // used to preserve spaces and line breaks
-            mark.style.whiteSpace = 'pre';
-            // do not inherit user-select (it may be `none`)
-            mark.style.webkitUserSelect = 'text';
-            mark.style.MozUserSelect = 'text';
-            mark.style.msUserSelect = 'text';
-            mark.style.userSelect = 'text';
-            mark.addEventListener('copy', e => e.stopPropagation());
-
-            document.body.appendChild(mark);
-
-            range.selectNodeContents(mark);
-            selection.addRange(range);
-
-            const successful = document.execCommand('copy');
-            if (!successful) {
-                throw new Error('copy command was unsuccessful');
-            }
-            success = true;
-        } catch (err) {
-            try {
-                window.clipboardData.setData('text', text);
-                success = true;
-            } catch (err) {
-            }
-        } finally {
-            if (selection) {
-                if (typeof selection.removeRange === 'function') {
-                    selection.removeRange(range);
-                } else {
-                    selection.removeAllRanges();
-                }
-            }
-
-            if (mark) {
-                document.body.removeChild(mark);
-            }
-            reselectPrevious();
-        }
-
-        return success;
+        e && e.preventDefault()
+        return copy(text);
     }
 
     /**
