@@ -10,7 +10,7 @@ If you want to create the configuration page with react:
     - Change `name` from `src` to `ADAPTERNAME-admin` (Of course replace `ADAPTERNAME` with yours)
     - Add to devDependencies:
       ```
-      "@iobroker/adapter-react": "^3.4.5",
+      "@iobroker/adapter-react": "^3.5.0",
       ```
       Versions can be higher.
       So your src/package.json should look like:
@@ -643,7 +643,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.5.0 (2022-11-30)
 * (bluefox) updated json config component
 
 ### 3.4.1 (2022-11-29)
