@@ -643,7 +643,7 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
-### 3.4.4 (2022-11-30)
+### **WORK IN PROGRESS**
 * (bluefox) updated json config component
 
 ### 3.4.1 (2022-11-29)
