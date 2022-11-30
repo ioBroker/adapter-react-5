@@ -2950,6 +2950,70 @@
                               "type"
                             ]
                           }
+                        },
+                        {
+                          "if": {
+                            "properties": {
+                              "type": {
+                                "const": "checkLicense"
+                              }
+                            }
+                          },
+                          "then": {
+                            "properties": {
+                              "uuid": {
+                                "description": "If UUID must be checked too",
+                                "type": "boolean"
+                              },
+                              "version": {
+                                "description": "Check version",
+                                "type": "boolean"
+                              },
+                              "label": true,
+                              "type": true,
+                              "sm": true,
+                              "md": true,
+                              "lg": true,
+                              "xs": true,
+                              "newLine": true,
+                              "hidden": true,
+                              "hideOnlyControl": true,
+                              "disabled": true,
+                              "style": true,
+                              "darkStyle": true,
+                              "noMultiEdit": true,
+                              "noTranslation": true
+                            },
+                            "additionalProperties": false
+                          }
+                        },
+                        {
+                          "if": {
+                            "properties": {
+                              "type": {
+                                "const": "uuid"
+                              }
+                            }
+                          },
+                          "then": {
+                            "properties": {
+                              "label": true,
+                              "type": true,
+                              "sm": true,
+                              "md": true,
+                              "lg": true,
+                              "xs": true,
+                              "newLine": true,
+                              "hidden": true,
+                              "hideOnlyControl": true,
+                              "disabled": true,
+                              "style": true,
+                              "darkStyle": true,
+                              "noMultiEdit": true,
+                              "noTranslation": true
+                            },
+                            "additionalProperties": false
+                          }
                         }
                       ],
                       "properties": {
@@ -3927,6 +3991,70 @@
                   "type"
                 ]
               }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "checkLicense"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "uuid": {
+                    "description": "If UUID must be checked too",
+                    "type": "boolean"
+                  },
+                  "version": {
+                    "description": "Check version",
+                    "type": "boolean"
+                  },
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "noMultiEdit": true,
+                  "noTranslation": true
+                },
+                "additionalProperties": false
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "uuid"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "label": true,
+                  "type": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "noMultiEdit": true,
+                  "noTranslation": true
+                },
+                "additionalProperties": false
+              }
             }
           ],
           "required": [
@@ -3980,7 +4108,9 @@
                 "divider",
                 "objectId",
                 "selectSendTo",
-                "autocompleteSendTo"
+                "autocompleteSendTo",
+                "checkLicense",
+                "uuid"
               ]
             },
             "sm": {
