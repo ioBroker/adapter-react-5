@@ -1,2 +1,2 @@
-import ColorPicker from '../../../../Dialogs/ColorPicker';
-export default ColorPicker;
+import Message from '../../../../Dialogs/Message';
+export default Message;
