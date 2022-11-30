@@ -351,5 +351,6 @@
   "ra_Invalid answer from server": "Invalid answer from server",
   "ra_License does not exist": "License does not exist",
   "ra_Cannot decode license": "Cannot decode license",
-  "ra_Serial number (UUID)": "Serial number (UUID)"
+  "ra_Serial number (UUID)": "Serial number (UUID)",
+  "ra_Check license": "Check license"
 }

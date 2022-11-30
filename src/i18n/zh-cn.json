@@ -351,5 +351,6 @@
   "ra_License for other product \"%s\"": "其他产品“%s”的许可证",
   "ra_License is for version %s, but required version is %s.": "许可证适用于版本 %s，但所需版本为 %s。",
   "ra_Serial number (UUID) \"%s\" in license is for other device.": "许可证中的序列号 (UUID)“%s”用于其他设备。",
-  "ra_Serial number (UUID)": "序列号 (UUID)"
+  "ra_Serial number (UUID)": "序列号 (UUID)",
+  "ra_Check license": "检查许可证"
 }

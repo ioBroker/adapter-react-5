@@ -351,5 +351,6 @@
   "ra_License for other product \"%s\"": "Licentie voor ander product \"%s\"",
   "ra_License is for version %s, but required version is %s.": "Licentie is voor versie %s, maar vereiste versie is %s.",
   "ra_Serial number (UUID) \"%s\" in license is for other device.": "Serienummer (UUID) \"%s\" in licentie is voor ander apparaat.",
-  "ra_Serial number (UUID)": "Serienummer (UUID)"
+  "ra_Serial number (UUID)": "Serienummer (UUID)",
+  "ra_Check license": "Licentie controleren"
 }
