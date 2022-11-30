@@ -23,9 +23,7 @@ class JsonConfigComponent extends Component {
         this.state = {
             originalData: JSON.stringify(this.props.data),
             changed: false,
-            errors: {
-
-            },
+            errors: {},
             updateData: this.props.updateData,
             systemConfig: null,
             alive: false,
@@ -62,8 +60,22 @@ class JsonConfigComponent extends Component {
                         return `${path}/${lang}.json`;
                     } else {
                         return socket.fileExists(adapterName + '.admin', `${path}/${lang}/translations.json`)
-                            .then(exists =>
-                                exists ? `${path}/${lang}/translations.json` : '')
+                            .then(exists => exists ? `${path}/${lang}/translations.json` : '')
+                            .then(fileName => {
+                                if (!fileName && lang !== 'en') {
+                                    // fallback to english
+                                    return socket.fileExists(adapterName + '.admin', `${path}/en.json`)
+                                        .then(exists => {
+                                            if (exists) {
+                                                return `${path}/en.json`;
+                                            } else {
+                                                return socket.fileExists(adapterName + '.admin', `${path}/en/translations.json`)
+                                                    .then(exists => exists ? `${path}/en/translations.json` : '');
+                                            }
+                                        });
+                                }
+                                return fileName;
+                            });
                     }
                 })
                 .then(fileName => {
@@ -80,7 +92,7 @@ class JsonConfigComponent extends Component {
                                 } catch (e) {
                                     console.error(`Cannot parse language file "${adapterName}.admin/${fileName}: ${e}`);
                                 }
-                            })
+                            });
                     } else {
                         console.warn(`Cannot find i18n for ${adapterName} / ${fileName}`);
                         return Promise.resolve();
@@ -94,7 +106,7 @@ class JsonConfigComponent extends Component {
         }
     }
 
-    onCommandRunning = commandRunning => this.setState( {commandRunning});
+    onCommandRunning = commandRunning => this.setState( { commandRunning });
 
     readSettings() {
         if ((this.props.custom || this.props.common) && this.props.data) {
@@ -151,16 +163,24 @@ class JsonConfigComponent extends Component {
     }
 
     onError = (attr, error) => {
-        const errors = JSON.parse(JSON.stringify(this.state.errors));
+        this.errorChached = this.errorChached || JSON.parse(JSON.stringify(this.state.errors));
+        const errors = this.errorChached;
         if (error) {
             errors[attr] = error;
         } else {
             delete errors[attr];
         }
 
-        if (JSON.stringify(errors) !== JSON.parse(JSON.stringify(this.state.errors))) {
-            this.setState({errors}, () =>
-                this.props.onError(!!Object.keys(this.state.errors).length));
+        this.errorTimeout && clearTimeout(this.errorTimeout);
+        if (JSON.stringify(errors) !== JSON.stringify(this.state.errors)) {
+            this.errorTimeout = setTimeout(() =>
+                this.setState({ errors: this.errorChached }, () => {
+                    this.errorTimeout = null;
+                    this.errorChached = null;
+                    this.props.onError(!!Object.keys(this.state.errors).length);
+                }), 50);
+        } else {
+            this.errorChached = null;
         }
     }
 

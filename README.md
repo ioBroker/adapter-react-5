@@ -643,6 +643,9 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) updated json config component
+
 ### 3.4.1 (2022-11-29)
 * (bluefox) Added button text for message dialog
 

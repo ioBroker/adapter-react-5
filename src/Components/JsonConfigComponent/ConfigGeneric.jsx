@@ -31,11 +31,11 @@ class ConfigGeneric extends Component {
 
         this.isError = {};
 
-        if (this.props.schema) {
-            if (this.props.custom) {
-                this.defaultValue = this.props.schema.defaultFunc ? this.executeCustom(this.props.schema.defaultFunc, this.props.schema.default, this.props.data, this.props.instanceObj, this.props.arrayIndex, this.props.globalData) : this.props.schema.default;
+        if (props.schema) {
+            if (props.custom) {
+                this.defaultValue = props.schema.defaultFunc ? this.executeCustom(props.schema.defaultFunc, props.schema.default, props.data, props.instanceObj, props.arrayIndex, props.globalData) : props.schema.default;
             } else {
-                this.defaultValue = this.props.schema.defaultFunc ? this.execute(this.props.schema.defaultFunc, this.props.schema.default, this.props.data, this.props.arrayIndex, this.props.globalData) : this.props.schema.default;
+                this.defaultValue = props.schema.defaultFunc ? this.execute(props.schema.defaultFunc, props.schema.default, props.data, props.arrayIndex, props.globalData) : props.schema.default;
             }
         }
 
@@ -52,7 +52,7 @@ class ConfigGeneric extends Component {
                 setTimeout(() => {
                     if (this.props.custom) {
                         this.props.onChange(this.props.attr, this.defaultValue, () =>
-                            this.props.forceUpdate([this.props.attr], this.props.data));
+                            setTimeout(() => this.props.forceUpdate([this.props.attr], this.props.data), 100));
                         //this.onChange(this.props.attr, this.defaultValue);
                     } else {
                         ConfigGeneric.setValue(this.props.data, this.props.attr, this.defaultValue);
@@ -218,17 +218,33 @@ class ConfigGeneric extends Component {
                         }
 
                         ConfigGeneric.setValue(data, this.state.confirmAttr, this.state.confirmNewValue);
-                        this.setState({confirmDialog: false, confirmDepAttr: null, confirmDepNewValue: null, confirmNewValue: null, confirmAttr: null, confirmOldValue: null, confirmData: null}, () =>
+                        this.setState({
+                            confirmDialog: false,
+                            confirmDepAttr: null,
+                            confirmDepNewValue: null,
+                            confirmNewValue: null,
+                            confirmAttr: null,
+                            confirmOldValue: null,
+                            confirmData: null,
+                        }, () =>
                             this.props.onChange(data));
                     } else {
-                        this.setState({confirmDialog: false, confirmDepAttr: null, confirmDepNewValue: null, confirmNewValue: null, confirmAttr: null, confirmOldValue: null, confirmData: null});
+                        this.setState({
+                            confirmDialog: false,
+                            confirmDepAttr: null,
+                            confirmDepNewValue: null,
+                            confirmNewValue: null,
+                            confirmAttr: null,
+                            confirmOldValue: null,
+                            confirmData: null,
+                        });
                     }
                 })
             }
         />;
     }
 
-    onChange(attr, newValue) {
+    onChange(attr, newValue, cb) {
         const data = JSON.parse(JSON.stringify(this.props.data));
         ConfigGeneric.setValue(data, attr, newValue);
 
@@ -268,13 +284,15 @@ class ConfigGeneric extends Component {
                     if (dep.onChange) {
                         const val = ConfigGeneric.getValue(data, dep.attr);
 
-                        const newValue = this.props.custom ?
-                            this.executeCustom(dep.onChange.calculateFunc, data, this.props.customObj, this.props.instanceObj, this.props.arrayIndex, this.props.globalData)
-                            :
-                            this.execute(dep.onChange.calculateFunc, val, data, this.props.arrayIndex, this.props.globalData);
+                        let _newValue;
+                        if (this.props.custom) {
+                            _newValue = this.executeCustom(dep.onChange.calculateFunc, data, this.props.customObj, this.props.instanceObj, this.props.arrayIndex, this.props.globalData);
+                        } else {
+                            _newValue = this.execute(dep.onChange.calculateFunc, val, data, this.props.arrayIndex, this.props.globalData);
+                        }
 
-                        if (newValue !== val) {
-                            ConfigGeneric.setValue(data, dep.attr, newValue);
+                        if (_newValue !== val) {
+                            ConfigGeneric.setValue(data, dep.attr, _newValue);
                             changed.push(dep.attr);
                         }
                     }
@@ -315,13 +333,15 @@ class ConfigGeneric extends Component {
             }
 
             if (this.props.custom) {
-                this.props.onChange(attr, newValue);
+                this.props.onChange(attr, newValue, () => cb && cb());
 
                 changed && changed.length && changed.forEach((_attr,  i) =>
-                    setTimeout(() => this.props.onChange(_attr, ConfigGeneric.getValue(data, attr)), i * 50));
+                    setTimeout(() => this.props.onChange(_attr, ConfigGeneric.getValue(data, _attr)), i * 50));
             } else {
-                this.props.onChange(data, undefined, () =>
-                    changed.length && this.props.forceUpdate(changed, data));
+                this.props.onChange(data, undefined, () => {
+                    changed.length && this.props.forceUpdate(changed, data);
+                    cb && cb();
+                });
             }
         }
     }

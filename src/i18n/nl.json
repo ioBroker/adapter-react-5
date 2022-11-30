@@ -342,5 +342,14 @@
   "ra_months_Mar": "mrt",
   "ra_months_Nov": "nov",
   "ra_months_Oct": "Okt",
-  "ra_months_Sep": "sept"
+  "ra_months_Sep": "sept",
+  "ra_Cannot decode license": "Kan licentie niet decoderen",
+  "ra_Invalid answer from server": "Ongeldig antwoord van de server",
+  "ra_License %s": "Licentie %s",
+  "ra_License does not exist": "Licentie bestaat niet",
+  "ra_License expired on %s": "Licentie verlopen op %s",
+  "ra_License for other product \"%s\"": "Licentie voor ander product \"%s\"",
+  "ra_License is for version %s, but required version is %s.": "Licentie is voor versie %s, maar vereiste versie is %s.",
+  "ra_Serial number (UUID) \"%s\" in license is for other device.": "Serienummer (UUID) \"%s\" in licentie is voor ander apparaat.",
+  "ra_Serial number (UUID)": "Serienummer (UUID)"
 }

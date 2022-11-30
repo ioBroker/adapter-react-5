@@ -342,5 +342,14 @@
   "ra_fileType_code": "Код/JSON",
   "ra_fileType_images": "Картинки",
   "ra_fileType_txt": "Текст",
-  "ra_fileType_video,": "видео"
+  "ra_fileType_video,": "видео",
+  "ra_Cannot decode license": "Не могу декодировать лицензию",
+  "ra_Invalid answer from server": "Неверный ответ от сервера",
+  "ra_License %s": "Лицензия %s",
+  "ra_License does not exist": "Лицензия не существует",
+  "ra_License expired on %s": "Срок действия лицензии истек %s",
+  "ra_License for other product \"%s\"": "Лицензия на другой продукт \"%s\"",
+  "ra_License is for version %s, but required version is %s.": "Лицензия предназначена для версии %s, но необходима версия %s.",
+  "ra_Serial number (UUID) \"%s\" in license is for other device.": "Серийный номер (UUID) «%s» в лицензии предназначен для другого устройства.",
+  "ra_Serial number (UUID)": "Серийный номер (UUID)"
 }

@@ -96,6 +96,9 @@ class ConfigNumber extends ConfigGeneric {
                 renderInput={params => <TextField
                     variant="standard"
                     {...params}
+                    inputProps={{
+                        readOnly: this.props.schema.readOnly || false,
+                    }}
                     error={!!error}
                     placeholder={this.getText(this.props.schema.placeholder)}
                     label={this.getText(this.props.schema.label)}
@@ -132,7 +135,12 @@ class ConfigNumber extends ConfigGeneric {
                     variant="standard"
                     type={type}
                     fullWidth
-                    inputProps={{ min: this.props.schema.min, max: this.props.schema.max, step: this.props.schema.step }}
+                    inputProps={{
+                        min: this.props.schema.min,
+                        max: this.props.schema.max,
+                        step: this.props.schema.step,
+                        readOnly: this.props.schema.readOnly || false,
+                    }}
                     value={this.state._value === null || this.state._value === undefined ? '' : this.state._value}
                     error={!!error}
                     disabled={!!disabled}

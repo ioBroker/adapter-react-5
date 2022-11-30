@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
-import Button from '@mui/material/Button';
+import { Button, CircularProgress } from '@mui/material';
 
 import IconWarning from '@mui/icons-material/Warning';
 import IconError from '@mui/icons-material/Error';
@@ -10,6 +10,7 @@ import IconInfo from '@mui/icons-material/Info';
 import IconAuth from '@mui/icons-material/Key';
 import IconSend from '@mui/icons-material/Send';
 import IconWeb from '@mui/icons-material/Public';
+import IconSearch from '@mui/icons-material/Search';
 
 import I18n from '../../i18n';
 import Icon from '../Icon';
@@ -148,7 +149,7 @@ class ConfigSendto extends ConfigGeneric {
 
     renderErrorDialog() {
         if (this.state._error) {
-            return <DialogError text={this.state._error} classes={undefined} onClose={() => this.setState({_error: ''})} />;
+            return <DialogError text={this.state._error} classes={undefined} onClose={() => this.setState({ _error: '' })} />;
         } else {
             return null;
         }
@@ -156,7 +157,7 @@ class ConfigSendto extends ConfigGeneric {
 
     renderMessageDialog() {
         if (this.state._message) {
-            return <DialogMessage text={this.state._message} classes={undefined} onClose={() => this.setState({_error: ''})} />;
+            return <DialogMessage text={this.state._message} classes={undefined} onClose={() => this.setState({ _message: '' })} />;
         } else {
             return null;
         }
@@ -164,6 +165,7 @@ class ConfigSendto extends ConfigGeneric {
 
     _onClick() {
         this.props.onCommandRunning(true);
+        this.setState({ running: true });
 
         const _origin = `${window.location.protocol}//${window.location.host}${window.location.pathname.replace(/\/index\.html$/, '')}`
         const _originIp = `${window.location.protocol}//${this.state.hostname.split(':').length > 3 ? `[${this.state.hostname}]` : this.state.hostname}${window.location.pathname.replace(/\/index\.html$/, '')}`
@@ -178,7 +180,7 @@ class ConfigSendto extends ConfigGeneric {
             try {
                 data = JSON.parse(data);
             } catch (e) {
-                console.error('Cannot parse json data: ' + data);
+                console.error(`Cannot parse json data: ${data}`);
             }
         }
         if (data === undefined) {
@@ -217,6 +219,11 @@ class ConfigSendto extends ConfigGeneric {
                             response.args.forEach(arg => text = text.replace('%s', arg));
                         }
                         window.alert(text);
+                    } if (response?.native && this.props.schema.useNative) {
+                        const attrs = Object.keys(response.native);
+                        attrs.forEach(attr =>
+                            this.onChange(attr, response.native[attr]));
+                        setTimeout(() => this.props.forceUpdate(attrs, this.props.data), 300);
                     } else {
                         if (response?.result) {
                             window.alert(typeof response.result === 'object' ? JSON.stringify(response.result) : response.result);
@@ -232,12 +239,15 @@ class ConfigSendto extends ConfigGeneric {
             })
             .catch(e => {
                 if (this.props.schema.error && this.props.schema.error[e.toString()]) {
-                    this.setState({_error: this.getText(this.props.schema.error[e.toString()])});
+                    this.setState({ _error: this.getText(this.props.schema.error[e.toString()]) });
                 } else {
-                    this.setState({_error: I18n.t(e.toString()) || I18n.t('ra_Error')});
+                    this.setState({ _error: I18n.t(e.toString()) || I18n.t('ra_Error') });
                 }
             })
-            .then(() => this.props.onCommandRunning(false))
+            .then(() => {
+                this.props.onCommandRunning(false);
+                this.setState({ running: false });
+            });
     }
 
     renderConfirmDialog() {
@@ -281,6 +291,8 @@ class ConfigSendto extends ConfigGeneric {
             icon = <IconError />;
         } else if (this.props.schema.icon === 'info') {
             icon = <IconInfo />;
+        } else if (this.props.schema.icon === 'search') {
+            icon = <IconSearch />;
         } else if (this.props.schema.icon) {
             icon = <Icon src={this.props.schema.icon} />;
         }
@@ -306,6 +318,7 @@ class ConfigSendto extends ConfigGeneric {
                     }
                 }}
             >
+                {this.props.schema.showProcess && this.state.running ? <CircularProgress size={20} style={{ marginRight: 8 }} /> : null}
                 {this.getText(this.props.schema.label, this.props.schema.noTranslation)}
             </Button>
             {this.renderErrorDialog()}

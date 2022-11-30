@@ -29,8 +29,8 @@ const getOrLoadRemote = (remote, shareScope, remoteFallbackUrl = undefined) =>
                         window[remote].__initialized = true;
                     }
                 } else {
-                    console.error('Cannot load ' + remote);
-                    return reject('Cannot load ' + remote);
+                    console.error(`Cannot load ${remote}`);
+                    return reject(`Cannot load ${remote}`);
                 }
                 // resolve promise so marking remote as loaded
                 resolve(window[remote]);
@@ -117,7 +117,17 @@ class ConfigCustom extends Component {
             await fetch(file)
                 .then(data => data.json())
                 .then(json => I18n.extendTranslations(json, lang))
-                .catch(error => console.log(`Cannot load i18n "${file}": ${error}`));
+                .catch(error => {
+                    if (lang !== 'en') {
+                        // try to load English
+                        return fetch(`${i18nURL}/i18n/en.json`)
+                            .then(data => data.json())
+                            .then(json => I18n.extendTranslations(json, lang))
+                            .catch(error => console.log(`Cannot load i18n "${file}": ${error}`));
+                    } else {
+                        console.log(`Cannot load i18n "${file}": ${error}`);
+                    }
+                });
         } else if (this.props.schema.i18n && typeof this.props.schema.i18n === 'object') {
             try {
                 I18n.extendTranslations(this.props.schema.i18n);

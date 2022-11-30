@@ -16,6 +16,7 @@ import ConfigAutocomplete from './ConfigAutocomplete';
 import ConfigAutocompleteSendTo from './ConfigAutocompleteSendTo';
 import ConfigCRON from './ConfigCRON';
 import ConfigCertificateSelect from './ConfigCertificateSelect';
+import ConfigCheckLicense from './ConfigCheckLicense';
 import ConfigCheckbox from './ConfigCheckbox';
 import ConfigChip from './ConfigChip';
 import ConfigColor from './ConfigColor';
@@ -49,6 +50,7 @@ import ConfigText from './ConfigText';
 import ConfigTextSendTo from './ConfigTextSendTo';
 import ConfigTimePicker from './ConfigTimePicker';
 import ConfigTopic from './ConfigTopic';
+import ConfigUUID from './ConfigUUID';
 import ConfigUser from './ConfigUser';
 
 const components = {
@@ -57,6 +59,7 @@ const components = {
     autocompleteSendTo: ConfigAutocompleteSendTo,
     certificate: ConfigCertificateSelect,
     checkbox: ConfigCheckbox,
+    checkLicense: ConfigCheckLicense,
     chip: ConfigChip, // deprecated. Use "chips"
     chips: ConfigChip,
     color: ConfigColor,
@@ -93,6 +96,7 @@ const components = {
     textSendTo: ConfigTextSendTo,
     timePicker: ConfigTimePicker,
     topic: ConfigTopic,
+    uuid: ConfigUUID,
     user: ConfigUser,
 };
 
@@ -150,7 +154,7 @@ class ConfigPanel extends ConfigGeneric {
                 if (this.props.customs && this.props.customs[items[attr].component]) {
                     ItemComponent = this.props.customs[items[attr].component];
                 } else {
-                    console.error('Cannot find custom component: ' + items[attr].component);
+                    console.error(`Cannot find custom component: ${items[attr].component}`);
                     ItemComponent = ConfigGeneric;
                 }
             } else if (type === 'panel') {
@@ -160,7 +164,7 @@ class ConfigPanel extends ConfigGeneric {
             }
 
             return <ItemComponent
-                key={attr + '_' + (this.props.index === undefined ? '' : this.props.index)}
+                key={`${attr}_${this.props.index === undefined ? '' : this.props.index}`}
                 index={this.props.index}
                 arrayIndex={this.props.arrayIndex}
                 globalData={this.props.globalData}
@@ -245,7 +249,7 @@ class ConfigPanel extends ConfigGeneric {
         } else
         if (this.props.custom) {
             return <Grid
-                key={this.props.attr + '_' + this.props.index}
+                key={`${this.props.attr}_${this.props.index}`}
                 container
                 className={classes.fullWidth}
                 spacing={2}
@@ -256,11 +260,11 @@ class ConfigPanel extends ConfigGeneric {
             let content;
             if (schema.collapsable) {
                 content = <Accordion
-                    key={this.props.attr + '_' + this.props.index}
+                    key={`${this.props.attr}_${this.props.index}`}
                     className={classes.fullWidth}
                     expanded={!!this.state.expanded}
                     onChange={() => {
-                        (window._localStorage || window.localStorage).setItem(this.props.adapterName + '.' + this.props.attr, this.state.expanded ? 'false' : 'true');
+                        (window._localStorage || window.localStorage).setItem(`${this.props.adapterName}.${this.props.attr}`, this.state.expanded ? 'false' : 'true');
                         this.setState({expanded: !this.state.expanded});
                     }}
                 >
@@ -272,14 +276,14 @@ class ConfigPanel extends ConfigGeneric {
                         <Typography className={classes.heading}>{this.getText(schema.label)}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Grid container className={classes.fullWidth + ' ' + classes.padding} spacing={2}>
+                        <Grid container className={`${classes.fullWidth} ${classes.padding}`} spacing={2}>
                             {this.renderItems(items, disabled)}
                         </Grid>
                     </AccordionDetails>
                 </Accordion>
             } else {
                 content = <div
-                    key={this.props.attr + '_' + this.props.index}
+                    key={`${this.props.attr}_${this.props.index}`}
                     className={clsx(this.props.className, this.props.isParentTab && classes.paper, classes.fullWidth)}
                 >
                     <Grid container className={clsx(classes.fullWidth, this.props.isParentTab && classes.padding)} spacing={2}>
@@ -296,13 +300,13 @@ class ConfigPanel extends ConfigGeneric {
                     lg={schema.lg || undefined}
                     md={schema.md || undefined}
                     sm={schema.sm || undefined}
-                    style={Object.assign({}, {marginBottom: 0, /*marginRight: 8, */textAlign: 'left'}, schema.style)}>
+                    style={Object.assign({}, { marginBottom: 0, /*marginRight: 8, */textAlign: 'left' }, schema.style)}>
                     {content}
                 </Grid>;
 
                 if (schema.newLine) {
                     return <>
-                        <div style={{flexBasis: '100%', height: 0}} />
+                        <div style={{ flexBasis: '100%', height: 0 }} />
                         {item}
                     </>;
                 } else {

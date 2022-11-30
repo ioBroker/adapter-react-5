@@ -342,5 +342,14 @@
   "ra_months_Mar": "marzo",
   "ra_months_Nov": "nov",
   "ra_months_Oct": "ottobre",
-  "ra_months_Sep": "Sett"
+  "ra_months_Sep": "Sett",
+  "ra_Cannot decode license": "Impossibile decodificare la licenza",
+  "ra_Invalid answer from server": "Risposta non valida dal server",
+  "ra_License %s": "Licenza %s",
+  "ra_License does not exist": "La licenza non esiste",
+  "ra_License expired on %s": "Licenza scaduta il %s",
+  "ra_License for other product \"%s\"": "Licenza per altro prodotto \"%s\"",
+  "ra_License is for version %s, but required version is %s.": "La licenza è per la versione %s, ma la versione richiesta è %s.",
+  "ra_Serial number (UUID) \"%s\" in license is for other device.": "Il numero di serie (UUID) \"%s\" nella licenza è per un altro dispositivo.",
+  "ra_Serial number (UUID)": "Numero di serie (UUID)"
 }

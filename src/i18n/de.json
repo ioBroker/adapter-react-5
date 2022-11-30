@@ -342,5 +342,14 @@
   "ra_fileType_code": "Code/JSON",
   "ra_fileType_images": "Bilder",
   "ra_fileType_txt": "Text",
-  "ra_fileType_video,": "Video"
+  "ra_fileType_video,": "Video",
+  "ra_Cannot decode license": "Lizenz kann nicht entschlüsselt werden",
+  "ra_Invalid answer from server": "Ungültige Antwort vom Server",
+  "ra_License %s": "Lizenz %s",
+  "ra_License does not exist": "Lizenz existiert nicht",
+  "ra_License expired on %s": "Lizenz am %s abgelaufen",
+  "ra_License for other product \"%s\"": "Lizenz für anderes Produkt „%s“",
+  "ra_License is for version %s, but required version is %s.": "Lizenz ist für Version %s, aber erforderliche Version ist %s.",
+  "ra_Serial number (UUID) \"%s\" in license is for other device.": "Seriennummer (UUID) „%s“ in der Lizenz gilt für ein anderes Gerät.",
+  "ra_Serial number (UUID)": "Seriennummer (UUID)"
 }

@@ -11,7 +11,7 @@ import IconWeb from '@mui/icons-material/Public';
 import IconWarning from '@mui/icons-material/Warning';
 import IconError from '@mui/icons-material/Error';
 import IconInfo from '@mui/icons-material/Info';
-
+import IconSearch from '@mui/icons-material/Search';
 
 import ConfigGeneric from './ConfigGeneric';
 
@@ -22,7 +22,9 @@ const styles = theme => ({
     },
     link: {
         textDecoration: 'underline',
-        color: theme.palette.mode === 'dark' ? '#a147ff' : '#5b238f',
+        color: theme.palette.mode === 'dark' ? '#4dabf5' : '#254e72',
+        cursor: 'pointer',
+
     },
 });
 
@@ -41,6 +43,8 @@ class ConfigStaticText extends ConfigGeneric {
             icon = <IconError />;
         } else if (this.props.schema.icon === 'info') {
             icon = <IconInfo />;
+        } else if (this.props.schema.icon === 'search') {
+            icon = <IconSearch />;
         } else if (this.props.schema.icon) {
             icon = <Icon src={this.props.schema.icon} />;
         }

@@ -11,9 +11,14 @@ import Select from '@mui/material/Select';
 import I18n from '../../i18n';
 import ConfigGeneric from './ConfigGeneric';
 
-const styles = theme => ({
+const styles = () => ({
     fullWidth: {
         width: '100%'
+    },
+    noMargin: {
+        '&>div': {
+            marginTop: 0,
+        },
     }
 });
 
@@ -52,7 +57,11 @@ class ConfigSelect extends ConfigGeneric {
         // eslint-disable-next-line
         const item = selectOptions.find(item => item.value == this.state.value); // let "==" be and not ===
 
-        return <FormControl variant="standard" className={this.props.classes.fullWidth} id={`jsonSelect_${this.props.schema.attr}_${this.props.index || this.props.index === 0 ? this.props.index : ''}`}>
+        return <FormControl
+            variant="standard"
+            className={Utils.clsx(this.props.classes.fullWidth, this.props.arrayIndex !== undefined && this.props.classes.noMargin)}
+            id={`jsonSelect_${this.props.schema.attr}_${this.props.index || this.props.index === 0 ? this.props.index : ''}`}
+        >
             <InputLabel>{this.getText(this.props.schema.label)}</InputLabel>
             <Select
                 variant="standard"
