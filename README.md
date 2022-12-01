@@ -638,9 +638,21 @@ The icons may not be reused in other projects without the proper flaticon licens
 If you still have questions, try to find an answer [here](https://mui.com/guides/migration-v4/).
 
 ## Migration from adapter-react-v5@3.x to adapter-react-v5@4.x
-- Look for getObjectView socket requests and replace ´socket.getObjectView('startKey', 'endKey', 'instance')` to ´socket.getObjectViewSystem('instance', 'startKey', 'endKey')`
-- Look for calls of custom like `
-
+- Look for getObjectView socket requests and replace `socket.getObjectView('startKey', 'endKey', 'instance')` to `socket.getObjectViewSystem('instance', 'startKey', 'endKey')`
+- Look for calls of custom like
+```
+this.props.socket._socket.emit('getObjectView', 'system', 'custom', {startKey: '', endKey:'\u9999'}, (err, objs) => {
+    (objs?.rows || [])
+        .forEach(item => console.log(item.id, item.value));
+});
+``` 
+to 
+```
+socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
+   .then(objects => {
+      Object.keys(objects).forEach(obj => console.log(obj._id));
+   });
+```
 
 <!--
 	Placeholder for the next version (at the beginning of the line):
