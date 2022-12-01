@@ -1,5 +1,5 @@
-import { Connection, PROGRESS } from '@iobroker/socket-client';
+import { Connection, PROGRESS, ERRORS, PERMISSION_ERROR } from '@iobroker/socket-client';
 
-export { PROGRESS };
+export { PROGRESS, ERRORS, PERMISSION_ERROR };
 
 export default Connection;

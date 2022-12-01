@@ -660,7 +660,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### 4.0.1 (2022-11-30)
+### **WORK IN PROGRESS**
 * (bluefox) use `@iobroker/socket-client` instead of `Connection.js`
 
 ### 3.5.3 (2022-11-30)
