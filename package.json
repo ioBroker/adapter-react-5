@@ -41,7 +41,7 @@
     "@mui/x-date-pickers": "5.0.9",
     "@iobroker/socket-client": "^2.0.0",
     "react-cropper": "^2.1.8",
-    "@sentry/browser": "^7.18.0",
+    "@sentry/browser": "^7.22.0",
     "@sentry/integrations": "^7.22.0",
     "@types/iobroker": "^4.0.5",
     "react-color": "^2.19.3",
