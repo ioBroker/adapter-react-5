@@ -611,7 +611,7 @@ This project uses icons from [Flaticon](https://www.flaticon.com/).
 ioBroker GmbH has a valid license for all of used icons.
 The icons may not be reused in other projects without the proper flaticon license or flaticon subscription.
 
-## Migration to v5
+## Migration from adapter-react to adapter-react-v5
 ### In src/package.json => dependencies
 - `"@iobroker/adapter-react": "^2.0.22",` => `"@iobroker/adapter-react-v5": "^3.1.34",`
 - `"@material-ui/core": "^4.12.3",` => `"@mui/material": "^5.10.9",`
@@ -636,6 +636,11 @@ The icons may not be reused in other projects without the proper flaticon licens
 - Replace `this.selectTab(e.target.parentNode.dataset.name, index)` => `this.selectTab(e.target.dataset.name, index)`
 
 If you still have questions, try to find an answer [here](https://mui.com/guides/migration-v4/).
+
+## Migration from adapter-react-v5@3.x to adapter-react-v5@4.x
+- Look for getObjectView socket requests and replace ´socket.getObjectView('startKey', 'endKey', 'instance')` to ´socket.getObjectViewSystem('instance', 'startKey', 'endKey')`
+- Look for calls of custom like `
+
 
 <!--
 	Placeholder for the next version (at the beginning of the line):
