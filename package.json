@@ -36,7 +36,7 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.10.16",
-    "@mui/material": "^5.10.12",
+    "@mui/material": "^5.10.16",
     "@mui/styles": "^5.10.16",
     "@mui/x-date-pickers": "5.0.2",
     "@iobroker/socket-client": "^2.0.0",
