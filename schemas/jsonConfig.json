@@ -195,6 +195,7 @@
                     "type": "boolean"
                   },
                   "noTranslation": true,
+                  "multible": true,
                   "label": true,
                   "type": true,
                   "sm": true,
@@ -1375,6 +1376,7 @@
                                 "type": "boolean"
                               },
                               "noTranslation": true,
+                              "multible": true,
                               "label": true,
                               "type": true,
                               "sm": true,
