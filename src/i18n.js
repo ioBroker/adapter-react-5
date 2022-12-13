@@ -56,6 +56,9 @@ class I18n {
                  Object.keys(words).forEach(lang => {
                      const _words = {};
                      Object.keys(words[lang]).forEach(word => {
+                         if (!word) {
+                             return;
+                         }
                          if (!word.startsWith(prefix)) {
                              _words[`${prefix}${word}`] = words[lang][word];
                          } else {
