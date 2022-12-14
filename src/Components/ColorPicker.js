@@ -77,8 +77,8 @@ const styles = theme => ({
         background: `${theme.palette.background.paper} !important`,
     },
     iconButton: {
-        width: 24,
-        height: 24,
+        width: 16,
+        height: 16,
     },
     button: {
         width: 32,
