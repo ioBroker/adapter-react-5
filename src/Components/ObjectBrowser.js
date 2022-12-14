@@ -6,7 +6,6 @@
  **/
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
-import copy from './copy-to-clipboard';
 import withStyles from '@mui/styles/withStyles';
 import SVG from 'react-inlinesvg';
 
@@ -284,6 +283,18 @@ const styles = theme => ({
     },
     cellIdIconOwn: {
 
+    },
+    cellIdTooltip: {
+        fontSize: 14,
+    },
+    cellIdTooltipLink: {
+        color: "#7ec2fd",
+        "&:hover": {
+            color: "#7ec2fd"
+        },
+        "&:visited": {
+            color: "#7ec2fd"
+        }
     },
     cellCopyButton: {
         width: SMALL_BUTTON_SIZE,
@@ -790,11 +801,12 @@ function getSelectIdIcon(objects, id, imagePrefix) {
             } else {
                 return null; // '<i class="material-icons iob-list-icon">' + objects[_id_].common.icon + '</i>';
             }
-        }
-        if (aIcon.startsWith('data:image/svg')) {
-            src = <SVG className="iconOwn" src={aIcon} width={28} height={28} />;
         } else {
-            src = aIcon;
+            if (aIcon.startsWith('data:image/svg')) {
+                src = <SVG className="iconOwn" src={aIcon} width={28} height={28} />;
+            } else {
+                src = aIcon;
+            }
         }
     } else {
         const common = objects[id] && objects[id].common;
@@ -1057,6 +1069,37 @@ function getSystemIcon(objects, id, k, imagePrefix) {
     }
 
     return icon || null;
+}
+
+function getIdFieldTooltip(data, classes, lang) {
+    if (data?.obj?.common?.desc && data.obj.common.desc !== '') {
+        let tooltip = '';
+
+        if (typeof data?.obj?.common?.desc === 'object' && data.obj.common.desc[lang] !== undefined) {
+            tooltip = data.obj.common.desc[lang];
+        } else if (typeof data?.obj?.common?.desc === 'object' && data.obj.common.desc['en'] !== undefined) {
+            tooltip = data.obj.common.desc['en'];
+        } else if (typeof data?.obj?.common?.desc === 'object' && data.obj.common.desc[lang] === undefined) {
+            return data.id;
+        } else {
+            tooltip = data.obj.common.desc;
+        }
+
+        if (tooltip?.startsWith('http')) {
+            return <a
+                className={Utils.clsx(classes.cellIdTooltipLink)}
+                href={tooltip}
+                target="_blank"
+                rel="noreferrer"
+            >
+                {tooltip}
+            </a>;
+        }
+
+        return <span className={Utils.clsx(classes.cellIdTooltip)}>{tooltip}</span>;
+    }
+
+    return data.id;
 }
 
 function buildTree(objects, options) {
@@ -3465,7 +3508,7 @@ class ObjectBrowser extends Component {
     onCopy(e, text) {
         e.stopPropagation();
         e.preventDefault();
-        copy(text, null);
+        Utils.copyToClipboard(text, null);
         if (text.length < 50) {
             this.setState({ toast: this.props.t('ra_Copied %s', text) });
         } else {
@@ -3544,7 +3587,22 @@ class ObjectBrowser extends Component {
                     size="small"
                     aria-label="delete"
                     title={this.texts.deleteObject}
-                    onClick={() => this.props.onObjectDelete(id, !!(item.children && item.children.length), false)}
+                    onClick={() => {
+                        // calculate number of children
+                        const keys = Object.keys(this.objects);
+                        keys.sort();
+                        let count = 0;
+                        const start = `${id}.`;
+                        for (let i = 0; i < keys.length; i++) {
+                            if (keys[i].startsWith(start)) {
+                                count++;
+                            } else if (keys[i] > start) {
+                                break;
+                            }
+                        }
+
+                        this.props.onObjectDelete(id, !!(item.children && item.children.length), false, count + 1);
+                    }}
                 >
                     <IconDelete className={classes.cellButtonsButtonIcon} />
                 </IconButton> : null}
@@ -3584,7 +3642,20 @@ class ObjectBrowser extends Component {
                 className={classes.cellButtonsButton}
                 size="small"
                 aria-label="delete"
-                onClick={() => this.props.onObjectDelete(id, !!item.children?.length, !item.data.obj.common?.dontDelete)}
+                onClick={() => {
+                    const keys = Object.keys(this.objects);
+                    keys.sort();
+                    let count = 0;
+                    const start = `${id}.`;
+                    for (let i = 0; i < keys.length; i++) {
+                        if (keys[i].startsWith(start)) {
+                            count++;
+                        } else if (keys[i] > start) {
+                            break;
+                        }
+                    }
+                    this.props.onObjectDelete(id, !!item.children?.length, !item.data.obj.common?.dontDelete, count);
+                }}
                 title={this.texts.deleteObject}
             >
                 <IconDelete className={classes.cellButtonsButtonIcon} />
@@ -4309,9 +4380,15 @@ class ObjectBrowser extends Component {
                 invertBackground = this.props.themeType === 'dark' ? '#9a9a9a' : '#565656';
             }
         }
+        if (id === 'system') {
+            checkColor = COLOR_NAME_SYSTEM;
+        } else if (id === 'system.adapter') {
+            checkColor = COLOR_NAME_SYSTEM_ADAPTER;
+        } else
         if (!checkColor || this.state.selected.includes(id)) {
             checkColor = 'inherit';
         }
+
         const icons = [];
 
         if (common?.statusStates) {
@@ -4423,15 +4500,10 @@ class ObjectBrowser extends Component {
                 </Grid>
                 <Grid
                     item
-                    title={id}
+                    style={{ color: checkColor }}
                     className={Utils.clsx(classes.cellIdSpan, invertBackground && classes.invertedBackground)}
-                    style={{
-                        color: id === 'system' ?
-                            COLOR_NAME_SYSTEM : (id === 'system.adapter' ? COLOR_NAME_SYSTEM_ADAPTER :
-                                checkColor),
-                    }}
                 >
-                    {item.data.name}
+                    <Tooltip title={getIdFieldTooltip(item.data, this.props.classes, this.props.lang)}><div>{item.data.name}</div></Tooltip>
                     {alias}
                     {icons}
                 </Grid>
@@ -5207,7 +5279,7 @@ ObjectBrowser.propTypes = {
     objectEditOfAccessControl: PropTypes.bool, // Access Control
     modalNewObject: PropTypes.func,     // modal add object
     modalEditOfAccessControl: PropTypes.func, // modal Edit Of Access Control
-    onObjectDelete: PropTypes.func,     // optional function (id, hasChildren, objectExists) {  }
+    onObjectDelete: PropTypes.func,     // optional function (id, hasChildren, objectExists, childrenCount+1) {  }
     customFilter: PropTypes.object,     // optional
                                         // `{common: {custom: true}}` - show only objects with some custom settings
                                         // `{common: {custom: 'sql.0'}}` - show only objects with sql.0 custom settings (only of the specific instance)
