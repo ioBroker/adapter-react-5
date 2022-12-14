@@ -1874,7 +1874,7 @@ class ObjectBrowser extends Component {
                     if (props.length >= 1) {
                         console.error('more than one type does not supported! Use filterFunc instead');
                     }
-                    return props.socket.getObjectView(null, null, props.types[0]);
+                    return props.socket.getObjectViewSystem(props.types[0], null, null);
                 }
                 return !objects['system.config'] ? props.socket.getObject('system.config')
                     .then(obj => ({ 'system.config': obj })) : Promise.resolve(null);
