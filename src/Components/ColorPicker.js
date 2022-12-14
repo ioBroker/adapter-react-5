@@ -18,7 +18,7 @@ import { ChromePicker } from 'react-color';
 import PropTypes from 'prop-types';
 import withStyles from '@mui/styles/withStyles';
 
-import { TextField, Menu, IconButton } from '@mui/material';
+import { TextField, Menu, IconButton, Button } from '@mui/material';
 import { Delete as IconDelete, Close as IconClose } from '@mui/icons-material';
 
 const styles = theme => ({
@@ -75,6 +75,16 @@ const styles = theme => ({
     },
     picker: {
         background: `${theme.palette.background.paper} !important`,
+    },
+    iconButton: {
+        width: 24,
+        height: 24,
+    },
+    button: {
+        width: 32,
+        height: 32,
+        minWidth: 32,
+        minHeight: 32,
     },
 });
 
@@ -184,6 +194,25 @@ class ColorPicker extends React.Component {
             this.props.onChange && this.props.onChange(ColorPicker.getColor(color)));
     };
 
+    renderCustomPalette() {
+        if (!this.props.customPalette) {
+            return null;
+        }
+        return <div style={{ width: '100%', display: 'flex', flexWrap: 'flex' }}>
+            {this.props.customPalette.map(color =>
+                <Button
+                    className={this.props.classes.button}
+                    key={color}
+                    onClick={() => {
+                        this.handleChange(color);
+                        setTimeout(() => this.handleClose(), 300);
+                    }}
+                >
+                    <div className={this.props.classes.iconButton} style={{ background: color }} />
+                </Button>)}
+        </div>;
+    }
+
     render() {
         const color = ColorPicker.getColor(this.state.color);
 
@@ -230,6 +259,7 @@ class ColorPicker extends React.Component {
                     styles={{ picker: { background: '#112233' } }}
                 />
                 <IconButton className={this.props.classes.closeButton} onClick={() => this.handleClose()}><IconClose /></IconButton>
+                {this.renderCustomPalette()}
             </Menu> : null }
         </div>;
     }
@@ -242,6 +272,7 @@ ColorPicker.propTypes = {
     name: PropTypes.string,
     style: PropTypes.object,
     className: PropTypes.string,
+    customPalette: PropTypes.array,
 };
 
 /** @type {typeof ColorPicker} */

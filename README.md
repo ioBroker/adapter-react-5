@@ -660,6 +660,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added support of custom palette for color picker
+
 ### 4.0.2 (2022-12-01)
 * (bluefox) use `@iobroker/socket-client` instead of `Connection.js`
 
