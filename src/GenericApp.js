@@ -195,7 +195,7 @@ class GenericApp extends Router {
         if (window.socketUrl) {
             if (window.socketUrl.startsWith(':')) {
                 window.socketUrl = `${window.location.protocol}//${window.location.hostname}${window.socketUrl}`;
-            } else if (!window.socketUrl.startsWith('http')) {
+            } else if (!window.socketUrl.startsWith('http://') && !window.socketUrl.startsWith('https://')) {
                 window.socketUrl = `${window.location.protocol}//${window.socketUrl}`;
             }
         }
