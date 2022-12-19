@@ -653,13 +653,16 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
       Object.keys(objects).forEach(obj => console.log(obj._id));
    });
 ```
-
+- Replace all `socket.log.error('text')` to `socket.log('text', 'error')`
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Extended socket with `log` command
+
 ### 4.0.6 (2022-12-19)
 * (bluefox) Corrected URL for the connection
 
