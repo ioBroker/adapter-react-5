@@ -660,6 +660,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Corrected URL for the connection
+
 ### 4.0.5 (2022-12-14)
 * (bluefox) Added support of custom palette for color picker
 

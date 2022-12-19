@@ -192,6 +192,14 @@ class GenericApp extends Router {
 
         this.sentryDSN = (settings && settings.sentryDSN) || props.sentryDSN;
 
+        if (window.socketUrl) {
+            if (window.socketUrl.startsWith(':')) {
+                window.socketUrl = `${window.location.protocol}//${window.location.hostname}${window.socketUrl}`;
+            } else if (!window.socketUrl.startsWith('http')) {
+                window.socketUrl = `${window.location.protocol}//${window.socketUrl}`;
+            }
+        }
+
         this.socket = new ConnectionClass({
             ...(props?.socket || settings?.socket),
             name: this.adapterName,
