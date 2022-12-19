@@ -10,7 +10,7 @@ If you want to create the configuration page with react:
     - Change `name` from `src` to `ADAPTERNAME-admin` (Of course replace `ADAPTERNAME` with yours)
     - Add to devDependencies:
       ```
-      "@iobroker/adapter-react": "^4.0.5",
+      "@iobroker/adapter-react": "^4.0.6",
       ```
       Versions can be higher.
       So your src/package.json should look like:
@@ -660,7 +660,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.0.6 (2022-12-19)
 * (bluefox) Corrected URL for the connection
 
 ### 4.0.5 (2022-12-14)
