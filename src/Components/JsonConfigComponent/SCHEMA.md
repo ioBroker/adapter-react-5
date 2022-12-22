@@ -101,7 +101,8 @@ Possible types:
 - `objectId` - object ID - show it with name, color and icon
     - `types` - Array of possible types: ['channel', 'device', ...] (has only `state` by default)
 
-- `password` (repeat - if repeat password must be shown with the same width settings)
+- `password` (repeat - if repeat password must be shown with the same width settings)  
+    This field-type just have an effect in the UI. Passwords and other sensitive data should be stored encrypted! To do this the key must be provided in the io-package.json under [nativeEncrypted](https://github.com/ioBroker/ioBroker.js-controller#automatically-encryptdecrypt-configuration-fields). Additionally you can protect this property from being served to other adapters but `admin` and `cloud` by adding it to `protectedNative` in `io-package.json` file.
     - `repeat` password must be compared with password
     - `visible` - true if allow to view the password by toggling the view button
     - `maxLength` - max length of text in field
