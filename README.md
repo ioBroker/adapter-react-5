@@ -654,6 +654,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
    });
 ```
 - Replace all `socket.log.error('text')` to `socket.log('text', 'error')`
+- Add to App.js `import { AdminConnection } from '@iobroker/adapter-react-v5';` and `super(props, { Connection: AdminConnection });` if run in admin
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
