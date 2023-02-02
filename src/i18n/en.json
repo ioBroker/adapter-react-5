@@ -352,5 +352,7 @@
   "ra_License does not exist": "License does not exist",
   "ra_Cannot decode license": "Cannot decode license",
   "ra_Serial number (UUID)": "Serial number (UUID)",
-  "ra_Check license": "Check license"
+  "ra_Check license": "Check license",
+  "ra_Request timed out": "Request timed out",
+  "ra_Instance is not alive": "Instance is not alive"
 }
