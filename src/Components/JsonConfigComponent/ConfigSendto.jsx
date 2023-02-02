@@ -27,8 +27,8 @@ const styles = () => ({
     icon: {
         width: 24,
         height: 24,
-        marginRight: 4
-    }
+        marginRight: 4,
+    },
 });
 
 function ip2int(ip) {
@@ -124,7 +124,6 @@ function findNetworkAddressOfHost(obj, localIp) {
     return hostIp;
 }
 
-
 class ConfigSendto extends ConfigGeneric {
     async componentDidMount() {
         super.componentDidMount();
@@ -175,7 +174,7 @@ class ConfigSendto extends ConfigGeneric {
             data = this.getPattern(this.props.schema.jsonData, {
                 _origin,
                 _originIp,
-                ...this.props.data
+                ...this.props.data,
             });
             try {
                 data = JSON.parse(data);
@@ -190,7 +189,14 @@ class ConfigSendto extends ConfigGeneric {
             data = {
                 _origin,
                 _originIp,
-            }
+            };
+        }
+        let timeout;
+        if (this.props.schema.timeout) {
+            timeout = setTimeout(() => {
+                this.props.onCommandRunning(false);
+                this.setState({ _error: I18n.t('ra_Request timed out'), running: false });
+            }, parseInt(this.props.schema.timeout, 10) || 10000);
         }
 
         this.props.socket.sendTo(
@@ -199,15 +205,19 @@ class ConfigSendto extends ConfigGeneric {
             data
         )
             .then(response => {
+                if (timeout) {
+                    clearTimeout(timeout);
+                    timeout = null;
+                }
                 if (response?.error) {
                     if (this.props.schema.error && this.props.schema.error[response.error]) {
                         let error = this.getText(this.props.schema.error[response.error]);
                         if (response.args) {
                             response.args.forEach(arg => error = error.replace('%s', arg));
                         }
-                        this.setState({_error: error});
+                        this.setState({ _error: error });
                     } else {
-                        this.setState({_error: response.error ? I18n.t(response.error) : I18n.t('ra_Error')});
+                        this.setState({ _error: response.error ? I18n.t(response.error) : I18n.t('ra_Error') });
                     }
                 } else {
                     if (response?.openUrl && this.props.schema.openUrl) {
@@ -265,13 +275,13 @@ class ConfigSendto extends ConfigGeneric {
         }
 
         return <DialogConfirm
-            title={ this.getText(confirm.title) || I18n.t('ra_Please confirm') }
-            text={ this.getText(confirm.text) }
-            ok={ this.getText(confirm.ok) || I18n.t('ra_Ok') }
-            cancel={ this.getText(confirm.cancel) || I18n.t('ra_Cancel') }
+            title={this.getText(confirm.title) || I18n.t('ra_Please confirm')}
+            text={this.getText(confirm.text)}
+            ok={this.getText(confirm.ok) || I18n.t('ra_Ok')}
+            cancel={this.getText(confirm.cancel) || I18n.t('ra_Cancel')}
             icon={icon}
             onClose={isOk =>
-                this.setState({ confirmDialog: false}, () =>
+                this.setState({ confirmDialog: false }, () =>
                     isOk && this._onClick())
             }
         />;
@@ -308,8 +318,9 @@ class ConfigSendto extends ConfigGeneric {
                 variant={this.props.schema.variant || undefined}
                 color={this.props.schema.color || 'grey'}
                 className={this.props.classes.fullWidth}
-                disabled={disabled}
+                disabled={disabled || !this.props.alive}
                 startIcon={icon}
+                title={this.props.alive ? this.getText(this.props.schema.title) || '' : I18n.t('ra_Instance is not alive')}
                 onClick={() => {
                     if (this.props.schema.confirm) {
                         this.setState({ confirmDialog: true });

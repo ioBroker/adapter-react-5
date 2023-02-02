@@ -352,5 +352,7 @@
   "ra_License is for version %s, but required version is %s.": "A licença é para a versão %s, mas a versão necessária é %s.",
   "ra_Serial number (UUID) \"%s\" in license is for other device.": "O número de série (UUID) \"%s\" na licença é para outro dispositivo.",
   "ra_Serial number (UUID)": "Número de série (UUID)",
-  "ra_Check license": "Verifique a licença"
+  "ra_Check license": "Verifique a licença",
+  "ra_Request timed out": "Solicitação expirou",
+  "ra_Instance is not alive": "A instância não está ativa"
 }
