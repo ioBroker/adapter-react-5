@@ -10,7 +10,7 @@ If you want to create the configuration page with react:
     - Change `name` from `src` to `ADAPTERNAME-admin` (Of course replace `ADAPTERNAME` with yours)
     - Add to devDependencies:
       ```
-      "@iobroker/adapter-react": "^4.0.9",
+      "@iobroker/adapter-react": "^4.0.10",
       ```
       Versions can be higher.
       So your src/package.json should look like:
@@ -661,7 +661,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.0.10 (2023-02-10)
 * (bluefox) Updated packages
 * (bluefox) made the fix for `material`
 
