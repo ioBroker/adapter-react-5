@@ -661,6 +661,10 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Updated packages
+* (bluefox) The `chartReady` event was omitted
+
 ### 4.0.10 (2023-02-10)
 * (bluefox) Updated packages
 * (bluefox) made the fix for `material`

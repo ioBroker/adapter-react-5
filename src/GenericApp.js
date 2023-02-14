@@ -340,8 +340,8 @@ class GenericApp extends Router {
                 });
             } else if (message.data === 'updateExpertMode') {
                 this.onToggleExpertMode && this.onToggleExpertMode(this.getExpertMode());
-            } else {
-                console.warn('Received unknown message: ' + JSON.stringify(message.data));
+            } else if (message.data !== 'chartReady') { // if not "echart ready" message
+                console.debug(`Received unknown message: "${JSON.stringify(message.data)}". May be it will be processed later`);
             }
         }
     };
