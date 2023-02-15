@@ -661,6 +661,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) made the fix for `echarts`
+
 ### 4.0.11 (2023-02-14)
 * (bluefox) Updated packages
 * (bluefox) The `chartReady` event was omitted
