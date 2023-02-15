@@ -661,7 +661,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.0.12 (2023-02-15)
 * (bluefox) made the fix for `echarts`
 
 ### 4.0.11 (2023-02-14)
