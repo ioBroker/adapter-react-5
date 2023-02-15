@@ -661,6 +661,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Corrected the theme button
+
 ### 4.0.12 (2023-02-15)
 * (bluefox) made the fix for `echarts`
 
