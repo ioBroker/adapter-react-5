@@ -14,18 +14,18 @@ import SimpleCron from '../Components/SimpleCron';
 
 import I18n from '../i18n';
 
-// Generate cron expression
+// Generates cron expression
 
-const styles = theme => ({
+const styles = () => ({
     headerID: {
         fontWeight: 'bold',
-        fontStyle: 'italic'
+        fontStyle: 'italic',
     },
     radio: {
-        display: 'inline-block'
+        display: 'inline-block',
     },
     dialogPaper: {
-        height: 'calc(100% - 96px)'
+        height: 'calc(100% - 96px)',
     },
 });
 

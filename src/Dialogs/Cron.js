@@ -23,17 +23,17 @@ import I18n from '../i18n';
 const styles = theme => ({
     headerID: {
         fontWeight: 'bold',
-        fontStyle: 'italic'
+        fontStyle: 'italic',
     },
     radio: {
-        display: 'inline-block'
+        display: 'inline-block',
     },
     dialogPaper: {
-        height: 'calc(100% - 96px)'
+        height: 'calc(100% - 96px)',
     },
     buttonIcon: {
         marginRight: theme.spacing(1),
-    }
+    },
 });
 
 class DialogCron extends React.Component {
@@ -55,7 +55,7 @@ class DialogCron extends React.Component {
                 (this.props.complex ? 'complex' :
                 (typeof cron === 'object' || cron[0] === '{' ?
                     'wizard' :
-                    (SimpleCron.cron2state(this.props.cron || '* * * * *') ? 'simple' : 'complex')))
+                    (SimpleCron.cron2state(this.props.cron || '* * * * *') ? 'simple' : 'complex'))),
         };
     }
 
@@ -69,7 +69,7 @@ class DialogCron extends React.Component {
     }
 
     setMode(mode) {
-        this.setState({mode});
+        this.setState({ mode });
     }
 
     render() {
@@ -87,37 +87,44 @@ class DialogCron extends React.Component {
                     {!this.props.simple && !this.props.complex && <><Radio
                         key="wizard"
                         checked={this.state.mode === 'wizard'}
-                        onChange={e => this.setMode('wizard')}
-                    /><label onClick={e => this.setMode('wizard')}
-                             style={this.state.mode !== 'wizard' ? {color: 'lightgrey'} : {}}>{I18n.t('sc_wizard')}</label></>}
+                        onChange={() => this.setMode('wizard')}
+                    /><label
+                        onClick={() => this.setMode('wizard')}
+                        style={this.state.mode !== 'wizard' ? { color: 'lightgrey' } : {}}
+                    >{I18n.t('sc_wizard')}</label></>}
 
                     {((!this.props.simple && !this.props.complex) || this.props.simple) && <><Radio
                         key="simple"
                         checked={this.state.mode === 'simple'}
-                        onChange={e => this.setMode('simple')}
-                    /><label onClick={e => this.setMode('simple')}
-                             style={this.state.mode !== 'simple' ? {color: 'lightgrey'} : {}}>{I18n.t('sc_simple')}</label></>}
+                        onChange={() => this.setMode('simple')}
+                    /><label
+                        onClick={() => this.setMode('simple')}
+                         style={this.state.mode !== 'simple' ? { color: 'lightgrey' } : {}}
+                    >{I18n.t('sc_simple')}</label></>}
 
                     {((!this.props.simple && !this.props.complex) || this.props.complex) && <><Radio
                         key="complex"
                         checked={this.state.mode === 'complex'}
-                        onChange={e => this.setMode('complex')}
-                    /><label onClick={e => this.setMode('complex')} style={this.state.mode !== 'complex' ? {color: 'lightgrey'} : {}}>{I18n.t('sc_cron')}</label></>}
+                        onChange={() => this.setMode('complex')}
+                    /><label
+                        onClick={() => this.setMode('complex')}
+                        style={this.state.mode !== 'complex' ? { color: 'lightgrey' } : {}}
+                    >{I18n.t('sc_cron')}</label></>}
                 </div> : null}
 
                 {this.state.mode === 'simple' && <SimpleCron
                     cronExpression={this.state.cron}
-                    onChange={cron => this.setState({cron})}
+                    onChange={cron => this.setState({ cron })}
                     language={I18n.getLanguage()}
                 />}
                 {this.state.mode === 'wizard' && <Schedule
                     schedule={this.state.cron}
-                    onChange={cron => this.setState({cron})}
+                    onChange={cron => this.setState({ cron })}
                     language={I18n.getLanguage()}
                 />}
                 {this.state.mode === 'complex' && <ComplexCron
                     cronExpression={this.state.cron}
-                    onChange={cron => this.setState({cron})}
+                    onChange={cron => this.setState({ cron })}
                     language={I18n.getLanguage()}
                 />}
             </DialogContent>
@@ -139,7 +146,7 @@ DialogCron.propTypes = {
     ok: PropTypes.string,
     simple: PropTypes.bool, // show only simple configuration
     complex: PropTypes.bool, // show only complex configuration
-    language: PropTypes.string
+    language: PropTypes.string,
 };
 
 export default withStyles(styles)(DialogCron);

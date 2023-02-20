@@ -17,17 +17,17 @@ import ComplexCron from '../Components/ComplexCron';
 import I18n from '../i18n';
 
 // Generate cron expression
-const styles = theme => ({
+const styles = () => ({
     headerID: {
         fontWeight: 'bold',
-        fontStyle: 'italic'
+        fontStyle: 'italic',
     },
     radio: {
-        display: 'inline-block'
+        display: 'inline-block',
     },
     dialogPaper: {
-        height: 'calc(100% - 96px)'
-    }
+        height: 'calc(100% - 96px)',
+    },
 });
 
 class DialogComplexCron extends React.Component {
@@ -67,15 +67,15 @@ class DialogComplexCron extends React.Component {
             onClose={() => {}}
             maxWidth="md"
             fullWidth
-            classes={{paper: this.props.classes.dialogPaper}}
+            classes={{ paper: this.props.classes.dialogPaper }}
             open={!0}
             aria-labelledby="cron-dialog-title"
         >
             <DialogTitle id="cron-dialog-title">{this.props.title || I18n.t('ra_Define schedule...')}</DialogTitle>
-            <DialogContent style={{height: '100%', overflow: 'hidden'}}>
+            <DialogContent style={{ height: '100%', overflow: 'hidden' }}>
                 <ComplexCron
                     cronExpression={this.state.cron}
-                    onChange={cron => this.setState({cron})}
+                    onChange={cron => this.setState({ cron })}
                     language={I18n.getLanguage()}
                 />
             </DialogContent>
