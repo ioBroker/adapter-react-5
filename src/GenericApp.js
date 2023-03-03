@@ -160,6 +160,9 @@ class GenericApp extends Router {
             bottomButtons:  (settings && settings.bottomButtons) === false ? false : ((props && props.bottomButtons) === false ? false : true),
             width:          GenericApp.getWidth(),
             confirmClose:   false,
+            _alert:         false,
+            _alertType:     'info',
+            _alertMessage:  '',
         };
 
         // init translations
@@ -200,6 +203,23 @@ class GenericApp extends Router {
             }
         }
 
+        this.alerDialogRendered = false;
+
+        window.oldAlert = window.alert;
+        window.alert = message => {
+            if (!this.alerDialogRendered) {
+                window.oldAlert(message);
+                return;
+            }
+            if (message && message.toString().toLowerCase().includes('error')) {
+                console.error(message);
+                this.showAlert(message.toString(), 'error');
+            } else {
+                console.log(message);
+                this.showAlert(message.toString(), 'info');
+            }
+        };
+
         this.socket = new ConnectionClass({
             ...(props?.socket || settings?.socket),
             name: this.adapterName,
@@ -213,7 +233,7 @@ class GenericApp extends Router {
                     this.setState({ connected: true });
                 }
             },
-            onReady: (objects, scripts) => {
+            onReady: (/* objects, scripts */) => {
                 I18n.setLanguage(this.socket.systemLang);
 
                 // subscribe because of language and expert mode
@@ -279,13 +299,40 @@ class GenericApp extends Router {
                                         () => this.onConnectionReady && this.onConnectionReady());
                                 }
                             });
-                    });
+                    })
+                    .catch(e => window.alert(`Cannot settings: ${e}`));
             },
             onError: err => {
                 console.error(err);
                 this.showError(err);
             }
         });
+    }
+
+    showAlert(message, type) {
+        if (type !== 'error' && type !== 'warning' && type !== 'info' && type !== 'success') {
+            type = 'info';
+        }
+
+        this.setState({
+            _alert: true,
+            _alertType: type,
+            _alertMessage: message,
+        });
+    }
+
+    renderAlertSnackbar() {
+        this.alerDialogRendered = true;
+
+        return <Snackbar
+            style={this.state._alertType === 'error' ?
+                { backgroundColor: '#f44336' } :
+                (this.state._alertType === 'success' ? { backgroundColor: '#4caf50' } : undefined)}
+            open={this.state._alert}
+            autoHideDuration={6000}
+            onClose={reason => reason !== 'clickaway' && this.setState({ _alert: false })}
+            message={this.state.alertMessage}
+        />
     }
 
     onSystemConfigChanged = (id, obj) => {
@@ -859,6 +906,19 @@ class GenericApp extends Router {
     }
 
     /**
+     * Renders helper dialogs
+     * @returns {JSX.Element} The JSX element.
+     */
+    renderHelperDialogs() {
+        return <>
+            {this.renderError()}
+            {this.renderToast()}
+            {this.renderSaveCloseButtons()}
+            {this.renderAlertSnackbar()}
+        </>;
+    }
+
+    /**
      * Renders this component.
      * @returns {JSX.Element} The JSX element.
      */
@@ -871,6 +931,7 @@ class GenericApp extends Router {
             {this.renderError()}
             {this.renderToast()}
             {this.renderSaveCloseButtons()}
+            {this.renderAlertSnackbar()}
         </div>;
     }
 }
