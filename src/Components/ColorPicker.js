@@ -228,7 +228,7 @@ class ColorPicker extends React.Component {
                 variant="standard"
                 id="name"
                 style={color ? { width: 'calc(100% - 80px)' } : { width: 'calc(100% - 54px)', marginRight: 8 }}
-                label={ this.props.name || 'color' }
+                label={this.props.label || this.props.name || 'color'}
                 value={color}
                 margin="dense"
                 classes={{ root: this.props.classes.textDense }}
@@ -269,7 +269,8 @@ ColorPicker.propTypes = {
     disabled: PropTypes.bool,
     value: PropTypes.string,
     onChange: PropTypes.func.isRequired,
-    name: PropTypes.string,
+    label: PropTypes.string,
+    name: PropTypes.string, // same as label
     style: PropTypes.object,
     className: PropTypes.string,
     customPalette: PropTypes.array,
