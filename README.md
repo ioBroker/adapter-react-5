@@ -661,7 +661,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.0.14 (2023-03-03)
 * (bluefox) added handler of alert messages
 
 ### 4.0.13 (2023-02-15)
