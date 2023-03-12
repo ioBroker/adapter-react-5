@@ -1,5 +1,5 @@
 /**
- * Copyright 2020-2022, bluefox <dogafox@gmail.com>
+ * Copyright 2020-2023, bluefox <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -1107,7 +1107,7 @@ class FileBrowser extends Component {
             id={item.id}
             onDoubleClick={() => {
                 if (!this.props.onSelect) {
-                    this.setState({ viewer: this.imagePrefix + item.id });
+                    this.setState({ viewer: this.imagePrefix + item.id, formatEditFile: ext });
                 } else if (
                     (!this.props.filterFiles || this.props.filterFiles.includes(item.ext)) &&
                     (!this.state.filterByType || EXTENSIONS[this.state.filterByType].includes(item.ext))

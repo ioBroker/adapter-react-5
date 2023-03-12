@@ -23,7 +23,7 @@ import Brightness5Icon from '@mui/icons-material/Brightness6';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
 
-const styles = theme => ({
+const styles = () => ({
     dialog: {
         height: '100%',
     },
@@ -44,8 +44,8 @@ const styles = theme => ({
     },
     dialogTitle: {
         justifyContent: 'space-between',
-        display: 'flex'
-    }
+        display: 'flex',
+    },
 });
 
 export const EXTENSIONS = {
@@ -56,11 +56,11 @@ export const EXTENSIONS = {
     video:  ['mp4', 'mov', 'avi'],
 };
 
-function bufferToBase64(buffer) {
+function bufferToBase64(buffer, isFull) {
     let binary = '';
     let bytes = new Uint8Array(buffer);
     let len = bytes.byteLength;
-    for (let i = 0; i < len && i < 50; i++) {
+    for (let i = 0; i < len && (isFull || i < 50); i++) {
         binary += String.fromCharCode(bytes[i]);
     }
     return window.btoa(binary);
@@ -111,21 +111,32 @@ class FileViewer extends Component {
                         data = data.file;
                     }
 
-                    const newState = {copyPossible: this.state.copyPossible};
+                    const newState = { copyPossible: this.state.copyPossible, ext: this.state.ext };
                     // try to detect valid extension
                     if (data.type === 'Buffer') {
-                        const ext = Utils.detectMimeType(bufferToBase64(data.data));
-                        if (ext) {
-                            newState.ext = ext;
-                            newState.copyPossible = EXTENSIONS.code.includes(ext) || EXTENSIONS.txt.includes(ext);
+                        if (name.toLowerCase().endsWith('.json5')) {
+                            newState.ext = 'json5';
+                            newState.copyPossible = true;
+                            try {
+                                data = atob(bufferToBase64(data.data, true));
+                            } catch (e) {
+                                console.error('Cannot convert base64 to string');
+                                data = '';
+                            }
+                        } else {
+                            const ext = Utils.detectMimeType(bufferToBase64(data.data));
+                            if (ext) {
+                                newState.ext = ext;
+                                newState.copyPossible = EXTENSIONS.code.includes(ext) || EXTENSIONS.txt.includes(ext);
+                            }
                         }
                     }
 
                     if (newState.copyPossible) {
-                        if (EXTENSIONS.txt.includes(this.state.ext)) {
+                        if (EXTENSIONS.txt.includes(newState.ext)) {
                             newState.text = data;
                             newState.editingValue = data;
-                        } else if (EXTENSIONS.code.includes(this.state.ext)) {
+                        } else if (EXTENSIONS.code.includes(newState.ext)) {
                             newState.code = data;
                             newState.editingValue = data;
                         }
@@ -133,7 +144,7 @@ class FileViewer extends Component {
 
                     this.setState(newState);
                 })
-                .catch(e => window.alert('Cannot read file: ' + e));
+                .catch(e => window.alert(`Cannot read file: ${e}`));
         }
     }
 
@@ -174,16 +185,16 @@ class FileViewer extends Component {
     };
 
     writeFile64 = () => {
+        /*
+        // File viewer in adapter-react does not support write
         const parts = this.props.href.split('/');
         const data = this.state.editingValue;
         parts.splice(0, 2);
         const adapter = parts[0];
         const name = parts.splice(1).join('/');
-        // File viewer in adapter-react does not support write
-        /*
         this.props.socket.writeFile64(adapter, name, Buffer.from(data).toString('base64'))
             .then(_ => this.props.onClose())
-            .catch(e => window.alert('Cannot write file: ' + e));
+            .catch(e => window.alert(`Cannot write file: ${e}`));
         */
     }
 
@@ -215,7 +226,7 @@ class FileViewer extends Component {
                         this.setState({ imgError: true });
                     }}
                     className={Utils.clsx(this.props.classes.img, this.props.getClassBackgroundImage())}
-                    src={this.props.href + '?ts=' + this.state.forceUpdate}
+                    src={`${this.props.href}?ts=${this.state.forceUpdate}`}
                     alt={this.props.href}
                 />;
             }

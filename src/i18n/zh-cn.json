@@ -354,5 +354,11 @@
   "ra_Serial number (UUID)": "序列号 (UUID)",
   "ra_Check license": "检查许可证",
   "ra_Request timed out": "请求超时",
-  "ra_Instance is not alive": "实例不存在"
+  "ra_Instance is not alive": "实例不存在",
+  "ra_Show/Hide object descriptions": "显示/隐藏对象描述",
+  "ra_Use system settings for position": "使用系统设置定位",
+  "ra_Longitude": "经度",
+  "ra_Latitude": "纬度",
+  "ra_Take browser position": "从浏览器获取位置",
+  "ra_Take position from system settings": "r从系统设置中获取位置"
 }

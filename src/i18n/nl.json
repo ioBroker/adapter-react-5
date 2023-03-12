@@ -354,5 +354,11 @@
   "ra_Serial number (UUID)": "Serienummer (UUID)",
   "ra_Check license": "Licentie controleren",
   "ra_Request timed out": "Verzoek verlopen",
-  "ra_Instance is not alive": "Instantie leeft niet"
+  "ra_Instance is not alive": "Instantie leeft niet",
+  "ra_Show/Hide object descriptions": "Toon/verberg objectbeschrijvingen",
+  "ra_Use system settings for position": "Gebruik systeeminstellingen voor positie",
+  "ra_Longitude": "Lengtegraad",
+  "ra_Latitude": "Breedtegraad",
+  "ra_Take browser position": "Positie innemen vanuit de browser",
+  "ra_Take position from system settings": "rNeem positie over van systeeminstellingen"
 }

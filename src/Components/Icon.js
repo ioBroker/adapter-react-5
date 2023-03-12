@@ -60,23 +60,23 @@ export function getSelectIdIcon(obj, imagePrefix) {
                 if (cIcon.includes('.')) {
                     let instance;
                     if (obj.type === 'instance' || obj.type === 'adapter') {
-                        src = imagePrefix + '/adapter/' + common.name + '/' + cIcon;
+                        src = `${imagePrefix}/adapter/${common.name}/${cIcon}`;
                     } else if (obj._id && obj._id.startsWith('system.adapter.')) {
                         instance = obj._id.split('.', 3);
                         if (cIcon[0] === '/') {
                             instance[2] += cIcon;
                         } else {
-                            instance[2] += '/' + cIcon;
+                            instance[2] += `/${cIcon}`;
                         }
-                        src = imagePrefix + '/adapter/' + instance[2];
+                        src = `${imagePrefix}/adapter/${instance[2]}`;
                     } else {
                         instance = obj._id.split('.', 2);
                         if (cIcon[0] === '/') {
                             instance[0] += cIcon;
                         } else {
-                            instance[0] += '/' + cIcon;
+                            instance[0] += `/${cIcon}`;
                         }
-                        src = imagePrefix + '/adapter/' + instance[0];
+                        src = `${imagePrefix}/adapter/${instance[0]}`;
                     }
                 } else {
                     return null;

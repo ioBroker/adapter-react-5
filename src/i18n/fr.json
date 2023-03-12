@@ -354,5 +354,11 @@
   "ra_Serial number (UUID)": "Numéro de série (UUID)",
   "ra_Check license": "Vérifier la licence",
   "ra_Request timed out": "La demande a expiré",
-  "ra_Instance is not alive": "L'instance n'est pas active"
+  "ra_Instance is not alive": "L'instance n'est pas active",
+  "ra_Show/Hide object descriptions": "Afficher/Masquer les descriptions d'objets",
+  "ra_Use system settings for position": "Utiliser les paramètres système pour la position",
+  "ra_Longitude": "Longitude",
+  "ra_Latitude": "Latitude",
+  "ra_Take browser position": "Prendre position depuis le navigateur",
+  "ra_Take position from system settings": "rPrendre position à partir des paramètres système"
 }

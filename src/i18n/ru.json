@@ -354,5 +354,11 @@
   "ra_Serial number (UUID)": "Серийный номер (UUID)",
   "ra_Check license": "Проверить лицензию",
   "ra_Request timed out": "Истекло время запроса",
-  "ra_Instance is not alive": "Экземпляр не живой"
+  "ra_Instance is not alive": "Экземпляр не живой",
+  "ra_Show/Hide object descriptions": "Показать/скрыть описания объектов",
+  "ra_Use system settings for position": "Использовать системные настройки для позиции",
+  "ra_Longitude": "Долгота",
+  "ra_Latitude": "Широта",
+  "ra_Take browser position": "Взять позицию из браузера",
+  "ra_Take position from system settings": "rЗанять позицию из системных настроек"
 }
