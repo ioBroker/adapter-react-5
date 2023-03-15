@@ -362,5 +362,6 @@
   "ra_Take browser position": "Займіть позицію з браузера",
   "ra_Take position from system settings": "Займіть позицію в налаштуваннях системи",
   "ra_Port is already used by %s": "Порт уже використовується %s",
-  "ra_Port could be used by %s": "Порт може використовуватися %s"
+  "ra_Port could be used by %s": "Порт може використовуватися %s",
+  "ra_filter_customs_without": "без"
 }

@@ -362,5 +362,6 @@
   "ra_Take browser position": "Positie innemen vanuit de browser",
   "ra_Take position from system settings": "Neem positie over van systeeminstellingen",
   "ra_Port is already used by %s": "Poort wordt al gebruikt door %s",
-  "ra_Port could be used by %s": "Poort kan worden gebruikt door %s"
+  "ra_Port could be used by %s": "Poort kan worden gebruikt door %s",
+  "ra_filter_customs_without": "zonder"
 }

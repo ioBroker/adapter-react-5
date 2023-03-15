@@ -362,5 +362,6 @@
   "ra_Take browser position": "Tomar posição do navegador",
   "ra_Take position from system settings": "Tomar posição a partir das configurações do sistema",
   "ra_Port is already used by %s": "A porta já está sendo usada por %s",
-  "ra_Port could be used by %s": "A porta pode ser usada por %s"
+  "ra_Port could be used by %s": "A porta pode ser usada por %s",
+  "ra_filter_customs_without": "sem"
 }
