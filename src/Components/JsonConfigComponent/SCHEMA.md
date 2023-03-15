@@ -132,7 +132,7 @@ Possible types:
 
 - `sendto` - button that sends request to instance (https://github.com/iobroker-community-adapters/ioBroker.email/blob/master/admin/index_m.html#L128)
     - `command` - (Default `send`)
-    - `jsonData` - string - `{"subject1": "${data.subject}", "options1": {"host": "${data.host}"}}`. You can use special variables `data._origin` and `data._originIp` to send to instance the caller URL, like `http://localhost:8081/admin`.
+    - `jsonData` - string - `"{\"subject1\": \"${data.subject}\", \"options1\": {\"host\": \"${data.host}\"}}"`. You can use special variables `data._origin` and `data._originIp` to send to instance the caller URL, like `http://localhost:8081/admin`.
     - `data` - object - `{"subject1": 1, "data": "static"}`. You can specify jsonData or data, but not both.
     - `result` - `{result1: {en: 'A'}, result2: {en: 'B'}}`
     - `error` - `{error1: {en: 'E'}, error2: {en: 'E2'}}`
@@ -293,8 +293,18 @@ adapter.on('message', obj => {
   - `jsonData` - string - `{"subject1": "${data.subject}", "options1": {"host": "${data.host}"}}`. This data will be sent to backend
   - `data` - object - `{"subject1": 1, "data": "static"}`. You can specify jsonData or data, but not both. This data will be sent to backend if jsonData is not defined.
   To use this option, your adapter must implement message handler:
-    The result of command must be an array in form `"text"`
-    See `selectSendTo` for handler example
+    The result of command must be a string.
+```
+adapter.on('message', obj => {
+    if (obj) {
+      switch (obj.command) {
+        case 'command':
+          obj.callback && adapter.sendTo(obj.from, obj.command, 'Received ' + JSON.stringify(obj.message), obj.callback);
+          break;
+      }
+    }
+});
+```    
 
 - `coordinates`
   Determines current location and used `system.config` coordinates if not possible in form "latitude,longitude"
@@ -309,6 +319,7 @@ adapter.on('message', obj => {
   - `version` - Check version
 
 - `uuid` - Show iobroker UUID
+- `port` - Special input for ports. It checks automatically if port is used by other instances and shows warning
 
 ## Common attributes of controls
 All types could have:

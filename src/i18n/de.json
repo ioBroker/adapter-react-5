@@ -360,5 +360,7 @@
   "ra_Longitude": "Längengrad",
   "ra_Latitude": "Breite",
   "ra_Take browser position": "Position vom Browser einnehmen",
-  "ra_Take position from system settings": "Position aus den Systemeinstellungen übernehmen"
+  "ra_Take position from system settings": "Position aus den Systemeinstellungen übernehmen",
+  "ra_Port is already used by %s": "Port wird bereits von %s verwendet",
+  "ra_Port could be used by %s": "Port könnte von %s verwendet werden"
 }

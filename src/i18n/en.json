@@ -360,5 +360,7 @@
   "ra_Longitude": "Longitude",
   "ra_Latitude": "Latitude",
   "ra_Take browser position": "Take position from browser",
-  "ra_Take position from system settings": "Take position from system settings"
+  "ra_Take position from system settings": "Take position from system settings",
+  "ra_Port is already used by %s": "Port is already used by %s",
+  "ra_Port could be used by %s": "Port could be used by %s"
 }

@@ -360,5 +360,7 @@
   "ra_Longitude": "Довгота",
   "ra_Latitude": "Широта",
   "ra_Take browser position": "Займіть позицію з браузера",
-  "ra_Take position from system settings": "Займіть позицію в налаштуваннях системи"
+  "ra_Take position from system settings": "Займіть позицію в налаштуваннях системи",
+  "ra_Port is already used by %s": "Порт уже використовується %s",
+  "ra_Port could be used by %s": "Порт може використовуватися %s"
 }

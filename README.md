@@ -661,6 +661,10 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added translations
+* (bluefox) Added port controller to JSON config
+
 ### 4.0.15 (2023-03-12)
 * (bluefox) Updated the object browser and file browser
 
