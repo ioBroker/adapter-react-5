@@ -661,7 +661,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.0.18 (2023-03-16)
 * (bluefox) Packages were updated
 
 ### 4.0.17 (2023-03-15)
