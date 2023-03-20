@@ -363,5 +363,11 @@
   "ra_Take position from system settings": "Занять позицию из системных настроек",
   "ra_Port is already used by %s": "Порт уже используется %s",
   "ra_Port could be used by %s": "Порт может использоваться %s",
-  "ra_filter_customs_without": "без"
+  "ra_filter_customs_without": "без",
+  "ra_Use iobroker.acme adapter for letsencrypt certificates": "Используйте адаптер iobroker.acme для сертификатов letsencrypt",
+  "ra_Do not use let's encrypt": "Не используйте Let’s Encrypt",
+  "ra_Use all available let's encrypt certificates": "Используйте все доступные сертификаты let’s encrypt",
+  "ra_Public certificate": "Публичный сертификат",
+  "ra_Private certificate": "Частный сертификат",
+  "ra_Chained certificate": "Chained сертификат"
 }

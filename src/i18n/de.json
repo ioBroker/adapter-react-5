@@ -363,5 +363,11 @@
   "ra_Take position from system settings": "Position aus den Systemeinstellungen übernehmen",
   "ra_Port is already used by %s": "Port wird bereits von %s verwendet",
   "ra_Port could be used by %s": "Port könnte von %s verwendet werden",
-  "ra_filter_customs_without": "ohne"
+  "ra_filter_customs_without": "ohne",
+  "ra_Use iobroker.acme adapter for letsencrypt certificates": "Verwenden Sie den iobroker.acme-Adapter für letsencrypt-Zertifikate",
+  "ra_Do not use let's encrypt": "Verwenden Sie nicht let's encrypt",
+  "ra_Use all available let's encrypt certificates": "Verwenden Sie alle verfügbaren Zertifikate von let's encrypt",
+  "ra_Public certificate": "Öffentliches Zertifikat",
+  "ra_Private certificate": "Privates Zertifikat",
+  "ra_Chained certificate": "Chained Zertifikat"
 }

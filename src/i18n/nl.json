@@ -363,5 +363,11 @@
   "ra_Take position from system settings": "Neem positie over van systeeminstellingen",
   "ra_Port is already used by %s": "Poort wordt al gebruikt door %s",
   "ra_Port could be used by %s": "Poort kan worden gebruikt door %s",
-  "ra_filter_customs_without": "zonder"
+  "ra_filter_customs_without": "zonder",
+  "ra_Use iobroker.acme adapter for letsencrypt certificates": "Gebruik de iobroker.acme-adapter voor letsencrypt-certificaten",
+  "ra_Do not use let's encrypt": "Gebruik geen let's encrypt",
+  "ra_Use all available let's encrypt certificates": "Gebruik alle beschikbare Let's Encrypt-certificaten",
+  "ra_Public certificate": "Openbaar certificaat",
+  "ra_Private certificate": "Privé certificaat",
+  "ra_Chained certificate": "Geketend certificaat"
 }

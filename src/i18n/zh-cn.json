@@ -363,5 +363,11 @@
   "ra_Take position from system settings": "从系统设置中获取位置",
   "ra_Port is already used by %s": "端口已被 %s 使用",
   "ra_Port could be used by %s": "%s 可以使用端口",
-  "ra_filter_customs_without": "没有"
+  "ra_filter_customs_without": "没有",
+  "ra_Use iobroker.acme adapter for letsencrypt certificates": "使用 iobroker.acme 适配器获取 letsencrypt 证书",
+  "ra_Do not use let's encrypt": "不要使用让我们加密",
+  "ra_Use all available let's encrypt certificates": "使用所有可用的让我们加密证书",
+  "ra_Public certificate": "公共证书",
+  "ra_Private certificate": "私有证书",
+  "ra_Chained certificate": "链式证书"
 }
