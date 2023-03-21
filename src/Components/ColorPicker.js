@@ -21,6 +21,8 @@ import withStyles from '@mui/styles/withStyles';
 import { TextField, Menu, IconButton, Button } from '@mui/material';
 import { Delete as IconDelete, Close as IconClose } from '@mui/icons-material';
 
+import Utils from './Utils';
+
 const styles = theme => ({
     color: {
         width: 36,
@@ -35,7 +37,7 @@ const styles = theme => ({
     swatch: {
         marginTop: 16,
         padding: 5,
-        background: '#fff',
+        background: theme.palette.background.paper,
         borderRadius: 1,
         boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
         display: 'inline-block',
@@ -227,7 +229,7 @@ class ColorPicker extends React.Component {
                 disabled={this.props.disabled}
                 variant="standard"
                 id="name"
-                style={color ? { width: 'calc(100% - 80px)' } : { width: 'calc(100% - 54px)', marginRight: 8 }}
+                style={color ? { width: 'calc(100% - 80px)' } : { width: 'calc(100% - 56px)', marginRight: 8 }}
                 label={this.props.label || this.props.name || 'color'}
                 value={color}
                 margin="dense"
@@ -243,7 +245,15 @@ class ColorPicker extends React.Component {
             >
                 <IconDelete />
             </IconButton> : null}
-            <div className={`${this.props.classes.swatch}${this.props.disabled ? ` ${this.props.classes.swatchDisabled}` : ''}`} onClick={e => !this.props.disabled && this.handleClick(e)}>
+            <div
+                className={Utils.clsx(this.props.classes.swatch, this.props.disabled && this.props.classes.swatchDisabled)}
+                onClick={e => !this.props.disabled && this.handleClick(e)}
+                style={{
+                    background: color ? undefined : 'transparent',
+                    border: color ? undefined : '1px dashed #ccc',
+                    boxSizing: 'border-box',
+                }}
+            >
                 <div className={this.props.classes.color} style={{ background: color }} />
             </div>
             { this.state.displayColorPicker && !this.props.disabled ? <Menu
