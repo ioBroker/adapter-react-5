@@ -1,5 +1,5 @@
 /**
- * Copyright 2020-2022, bluefox <dogafox@gmail.com>
+ * Copyright 2020-2023, bluefox <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -134,6 +134,8 @@ class Connection {
 
         /** @type {Record<string, Promise<any>>} */
         this._promises = {};
+        this.ignoreState = '';
+        this.simStates = {};
 
         this.log.error = text => this.log(text, 'error');
         this.log.warn = text => this.log(text, 'warn');
@@ -239,10 +241,11 @@ class Connection {
         this._socket = window.io.connect(
             url,
             {
-                path: path.endsWith('/') ? path + 'socket.io' : path + '/socket.io',
+                path: path.endsWith('/') ? `${path}socket.io` : `${path}/socket.io`,
                 query: 'ws=true',
                 name: this.props.name,
-                timeout: this.props.ioTimeout
+                timeout: this.props.ioTimeout,
+                uuid: this.props.uuid,
             }
         );
 
@@ -414,7 +417,7 @@ class Connection {
     onConnect() {
         this._getUserPermissions((err, acl) => {
             if (err) {
-                return this.onError('Cannot read user permissions: ' + err);
+                return this.onError(`Cannot read user permissions: ${err}`);
             } else
             if (!this.doNotLoadACL) {
                 if (this.loaded) {
@@ -451,8 +454,11 @@ class Connection {
                     } else {
                         this.systemLang = window.navigator.userLanguage || window.navigator.language;
 
-                        if (this.systemLang !== 'en' && this.systemLang !== 'de' && this.systemLang !== 'ru') {
-                            this.systemConfig.common.language = 'en';
+                        if (/^(en|de|ru|pt|nl|fr|it|es|pl|uk)-?/.test(this._systemLang)) {
+                            this.systemLang = this._systemLang.substr(0, 2);
+                        } else if (
+                            !/^(en|de|ru|pt|nl|fr|it|es|pl|uk|zh-cn)$/.test(this._systemLang)
+                        ) {
                             this.systemLang = 'en';
                         }
                     }
@@ -472,7 +478,7 @@ class Connection {
                     }
                     return undefined;
                 })
-                .catch(e => this.onError('Cannot read system config: ' + e));
+                .catch(e => this.onError(`Cannot read system config: ${e}`));
         });
     }
 
@@ -520,7 +526,9 @@ class Connection {
             this.statesSubscribes[id] = { reg: new RegExp(reg), cbs: [] };
             this.statesSubscribes[id].cbs.push(cb);
             if (this.connected) {
-                this._socket.emit('subscribe', id);
+                if (this.connected && id !== this.ignoreState) {
+                    this._socket.emit('subscribe', id);
+                }
             }
         } else {
             !this.statesSubscribes[id].cbs.includes(cb) && this.statesSubscribes[id].cbs.push(cb);
@@ -566,7 +574,9 @@ class Connection {
 
             if (!this.statesSubscribes[id].cbs || !this.statesSubscribes[id].cbs.length) {
                 delete this.statesSubscribes[id];
-                this.connected && this._socket.emit('unsubscribe', id);
+                if (this.connected && id !== this.ignoreState) {
+                    this._socket.emit('unsubscribe', id);
+                }
             }
         }
     }
@@ -630,7 +640,13 @@ class Connection {
         for (const sub of Object.values(this.filesSubscribes)) {
             if (sub.regId.test(id) && sub.regFilePattern.test(fileName)) {
                 for (const cb of sub.cbs) {
-                    cb(id, fileName, size);
+                    try {
+                        cb(id, fileName, size);
+                    } catch (e) {
+                        console.error(
+                            `Error by callback of fileChange: ${e}`,
+                        );
+                    }
                 }
             }
         }
@@ -724,7 +740,13 @@ class Connection {
         Object.keys(this.objectsSubscribes).forEach(_id => {
             if (_id === id || this.objectsSubscribes[_id].reg.test(id)) {
                 //@ts-ignore
-                this.objectsSubscribes[_id].cbs.forEach(cb => cb(id, obj, oldObj));
+                this.objectsSubscribes[_id].cbs.forEach(cb => {
+                    try {
+                        cb(id, obj, oldObj);
+                    } catch (e) {
+                        console.error(`Error by callback of objectChange: ${e}`);
+                    }
+                });
             }
         });
 
@@ -742,7 +764,13 @@ class Connection {
     stateChange(id, state) {
         for (const task in this.statesSubscribes) {
             if (this.statesSubscribes.hasOwnProperty(task) && this.statesSubscribes[task].reg.test(id)) {
-                this.statesSubscribes[task].cbs.forEach(cb => cb(id, state));
+                this.statesSubscribes[task].cbs.forEach(cb => {
+                    try {
+                        cb(id, state);
+                    } catch (e) {
+                        console.error(`Error by callback of stateChange: ${e}`);
+                    }
+                });
             }
         }
     }
@@ -775,12 +803,15 @@ class Connection {
         if (!this.connected) {
             return Promise.reject(NOT_CONNECTED);
         }
-
+        if (id && id === this.ignoreState) {
+            return Promise.resolve(this.simStates[id] || { val: null, ack: true });
+        }
         return new Promise((resolve, reject) =>
             this._socket.emit('getState', id, (err, state) => err ? reject(err) : resolve(state)));
     }
 
     /**
+     * @deprecated since js-controller 5.0. Use files instead.
      * Gets the given binary state.
      * @param {string} id The state ID.
      * @returns {Promise<Buffer | undefined>}
@@ -796,6 +827,7 @@ class Connection {
     }
 
     /**
+     * @deprecated since js-controller 5.0. Use files instead.
      * Sets the given binary state.
      * @param {string} id The state ID.
      * @param {string} base64 The Base64 encoded binary data.
@@ -825,6 +857,42 @@ class Connection {
 
         if (typeof ack === 'boolean') {
             val = { val, ack };
+        }
+
+        // extra handling for "nothing_selected" state for vis
+        if (id && id === this.ignoreState) {
+            let state;
+
+            if (typeof ack === 'boolean') {
+                state = val;
+            } else if (typeof val === 'object' && val.val !== undefined) {
+                state = val;
+            } else {
+                state = {
+                    val,
+                    ack: false,
+                    ts: Date.now(),
+                    lc: Date.now(),
+                    from: 'system.adapter.vis.0',
+                };
+            }
+
+            this.simStates[id] = state;
+
+            // inform subscribers about changes
+            if (this.statesSubscribes[id]) {
+                for (const cb of this.statesSubscribes[id].cbs) {
+                    try {
+                        cb(id, state);
+                    } catch (e) {
+                        console.error(
+                            `Error by callback of stateChanged: ${e}`,
+                        );
+                    }
+                }
+            }
+
+            return Promise.resolve()
         }
 
         return new Promise((resolve, reject) =>
@@ -974,6 +1042,17 @@ class Connection {
         if (!this.connected) {
             return Promise.reject(NOT_CONNECTED);
         }
+        if (id && id === this.ignoreState) {
+            return Promise.resolve({
+                _id: this.ignoreState,
+                type: 'state',
+                common: {
+                    name: 'ignored state',
+                    type: 'mixed',
+                },
+            };
+        }
+
         return new Promise((resolve, reject) =>
             this._socket.emit('getObject', id, (err, obj) =>
                 err ? reject(err) : resolve(obj)));
@@ -997,20 +1076,20 @@ class Connection {
         }
         adapter = adapter || '';
 
-        if (!update && this._promises['instances_' + adapter]) {
-            return this._promises['instances_' + adapter];
+        if (!update && this._promises[`instances_${adapter}`]) {
+            return this._promises[`instances_${adapter}`];
         }
 
         if (!this.connected) {
             return Promise.reject(NOT_CONNECTED);
         }
 
-        this._promises['instances_' + adapter] = new Promise((resolve, reject) => {
+        this._promises[`instances_${adapter}`] = new Promise((resolve, reject) => {
             let timeout = setTimeout(() => {
                 timeout = null;
                 this.getObjectView(
-                    `system.adapter.${adapter ? adapter + '.' : ''}`,
-                    `system.adapter.${adapter ? adapter + '.' : ''}\u9999`,
+                    `system.adapter.${adapter ? `${adapter}.` : ''}`,
+                    `system.adapter.${adapter ? `${adapter}.` : ''}\u9999`,
                     'instance'
                 )
                     .then(items => resolve(Object.keys(items).map(id => fixAdminUI(items[id]))))
@@ -1052,15 +1131,15 @@ class Connection {
 
         adapter = adapter || '';
 
-        if (!update && this._promises['adapter_' + adapter]) {
-            return this._promises['adapter_' + adapter];
+        if (!update && this._promises[`adapter_${adapter}`]) {
+            return this._promises[`adapter_${adapter}`];
         }
 
         if (!this.connected) {
             return Promise.reject(NOT_CONNECTED);
         }
 
-        this._promises['adapter_' + adapter] = new Promise((resolve, reject) => {
+        this._promises[`adapter_${adapter}`] = new Promise((resolve, reject) => {
             let timeout = setTimeout(() => {
                 timeout = null;
                 this.getObjectView(
@@ -1081,7 +1160,7 @@ class Connection {
             });
         });
 
-        return this._promises['adapter_' + adapter];
+        return this._promises[`adapter_${adapter}`];
     }
 
     /**
@@ -1277,20 +1356,20 @@ class Connection {
      * @returns {Promise<Record<string, ioBroker.Object>>}
      */
     getEnums(_enum, update) {
-        if (!update && this._promises['enums_' + (_enum || 'all')]) {
-            return this._promises['enums_' + (_enum || 'all')];
+        if (!update && this._promises[`enums_${_enum || 'all'}`]) {
+            return this._promises[`enums_${_enum || 'all'}`];
         }
 
         if (!this.connected) {
             return Promise.reject(NOT_CONNECTED);
         }
 
-        this._promises['enums_' + (_enum || 'all')] = new Promise((resolve, reject) => {
-            this._socket.emit('getObjectView', 'system', 'enum', { startkey: 'enum.' + (_enum || ''), endkey: 'enum.' + (_enum ? (_enum + '.') : '') + '\u9999' }, (err, res) => {
+        this._promises[`enums_${_enum || 'all'}`] = new Promise((resolve, reject) => {
+            this._socket.emit('getObjectView', 'system', 'enum', { startkey: `enum.${_enum || ''}`, endkey: `enum.${_enum ? (_enum + '.') : ''}\u9999` }, (err, res) => {
                 if (!err && res) {
                     const _res = {};
                     for (let i = 0; i < res.rows.length; i++) {
-                        if (_enum && res.rows[i].id === 'enum.' + _enum) {
+                        if (_enum && res.rows[i].id === `enum.${_enum}`) {
                             continue;
                         }
                         _res[res.rows[i].id] = res.rows[i].value;
@@ -1302,26 +1381,19 @@ class Connection {
             });
         });
 
-        return this._promises['enums_' + (_enum || 'all')];
+        return this._promises[`enums_${_enum || 'all'}`];
     }
 
     /**
      * Query a predefined object view.
-     * @param {string} start The start ID.
-     * @param {string} end The end ID.
-     * @param {string} type The type of object.
-     * @returns {Promise<Record<string, ioBroker.Object>>}
+     * @param design design - 'system' or other designs like `custom`.
+     * @param type The type of object.
+     * @param start The start ID.
+     * @param [end] The end ID.
      */
-    getObjectView(start, end, type) {
-        if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
-        }
-
-        start = start || '';
-        end   = end   || '\u9999';
-
+    getObjectViewCustom(design, type, start, end) {
         return new Promise((resolve, reject) => {
-            this._socket.emit('getObjectView', 'system', type, { startkey: start, endkey: end }, (err, res) => {
+            this._socket.emit('getObjectView', design, type, { startkey: start, endkey: end }, (err, res) => {
                 if (!err) {
                     const _res = {};
                     if (res && res.rows) {
@@ -1335,6 +1407,33 @@ class Connection {
                 }
             });
         });
+    }
+    /**
+     * Query a predefined object view.
+     * @param type The type of object.
+     * @param start The start ID.
+     * @param [end] The end ID.
+     */
+    getObjectViewSystem(type, start, end) {
+        return this.getObjectViewCustom('system', type, start, end);
+    }
+
+    /**
+     * @deprecated since version 1.1.15, cause parameter order does not match backend
+     * Query a predefined object view.
+     * @param {string} start The start ID.
+     * @param {string} end The end ID.
+     * @param {string} type The type of object.
+     * @returns {Promise<Record<string, ioBroker.Object>>}
+     */
+    getObjectView(start, end, type) {
+        if (!this.connected) {
+            return Promise.reject(NOT_CONNECTED);
+        }
+
+        start = start || '';
+        end   = end   || '\u9999';
+        return this.getObjectViewCustom('system', type, start, end);
     }
 
     /**
@@ -1533,24 +1632,6 @@ class Connection {
     }
 
     /**
-     * Rename a file or folder of an adapter.
-     *
-     * All files in folder will be renamed too.
-     * @param {string} adapter The adapter name.
-     * @param {string} oldName The file name of the file to be renamed.
-     * @param {string} newName The new file name.
-     * @returns {Promise<void>}
-     */
-    rename(adapter, oldName, newName) {
-        if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
-        }
-        return new Promise((resolve, reject) =>
-            this._socket.emit('rename', adapter, oldName, newName, err =>
-                err ? reject(err) : resolve()));
-    }
-
-    /**
      * Delete a file of an adapter.
      * @param {string} adapter The adapter name.
      * @param {string} fileName The file name.
@@ -1690,18 +1771,19 @@ class Connection {
             return Promise.reject('Allowed only in admin');
         }
         if (!host.startsWith('system.host.')) {
-            host += 'system.host.' + host;
+            host += `system.host.${host}`;
         }
+        const cache = `hostInfo${host}`;
 
-        if (!update && this._promises['hostInfo' + host]) {
-            return this._promises['hostInfo' + host];
+        if (!update && this._promises[cache]) {
+            return this._promises[cache];
         }
 
         if (!this.connected) {
             return Promise.reject(NOT_CONNECTED);
         }
 
-        this._promises['hostInfo' + host] = new Promise((resolve, reject) => {
+        this._promises[cache] = new Promise((resolve, reject) => {
             let timeout = setTimeout(() => {
                 if (timeout) {
                     timeout = null;
@@ -1724,7 +1806,7 @@ class Connection {
             });
         });
 
-        return this._promises['hostInfo' + host];
+        return this._promises[cache];
     }
 
     /**
@@ -1739,18 +1821,19 @@ class Connection {
             return Promise.reject('Allowed only in admin');
         }
         if (!host.startsWith('system.host.')) {
-            host += 'system.host.' + host;
+            host += `system.host.${host}`;
         }
+        const cache = `hostInfoShort${host}`;
 
-        if (!update && this._promises['hostInfoShort' + host]) {
-            return this._promises['hostInfoShort' + host];
+        if (!update && this._promises[cache]) {
+            return this._promises[cache];
         }
 
         if (!this.connected) {
             return Promise.reject(NOT_CONNECTED);
         }
 
-        this._promises['hostInfoShort' + host] = new Promise((resolve, reject) => {
+        this._promises[cache] = new Promise((resolve, reject) => {
             let timeout = setTimeout(() => {
                 if (timeout) {
                     timeout = null;
@@ -1773,7 +1856,7 @@ class Connection {
             });
         });
 
-        return this._promises['hostInfoShort' + host];
+        return this._promises[cache];
     }
 
     /**
@@ -1849,7 +1932,7 @@ class Connection {
         }
 
         if (!host.startsWith('system.host.')) {
-            host += 'system.host.' + host;
+            host += `system.host.${host}`;
         }
 
         this._promises.installed[host] = new Promise((resolve, reject) => {
@@ -1879,6 +1962,34 @@ class Connection {
     }
 
     /**
+     * Rename file or folder in ioBroker DB
+     * @param adapter instance name
+     * @param oldName current file name, e.g main/vis-views.json
+     * @param newName new file name, e.g main/vis-views-new.json
+     */
+    rename(adapter, oldName, newName) {
+        if (!this.connected) {
+            return Promise.reject(NOT_CONNECTED);
+        }
+        return new Promise((resolve, reject) =>
+            this._socket.emit('rename', adapter, oldName, newName, err => err ? reject(err) : resolve()));
+    }
+
+    /**
+     * Rename file in ioBroker DB
+     * @param adapter instance name
+     * @param oldName current file name, e.g main/vis-views.json
+     * @param newName new file name, e.g main/vis-views-new.json
+     */
+    renameFile(adapter, oldName, newName,) {
+        if (!this.connected) {
+            return Promise.reject(NOT_CONNECTED);
+        }
+        return new Promise((resolve, reject) =>
+            this._socket.emit('renameFile', adapter, oldName, newName, err => err ? reject(err) : resolve()));
+    }
+
+    /**
      * Execute a command on a host.
      * @param {string} host The host name.
      * @param {string} cmd The command.
@@ -1895,7 +2006,7 @@ class Connection {
         }
 
         if (!host.startsWith(host)) {
-            host += 'system.host.' + host;
+            host += `system.host.${host}`;
         }
 
         return new Promise((resolve, reject) => {
@@ -1927,20 +2038,21 @@ class Connection {
      * @returns {Promise<any>}
      */
     checkFeatureSupported(feature, update) {
-        if (!update && this._promises['supportedFeatures_' + feature]) {
-            return this._promises['supportedFeatures_' + feature];
+        const cache = `supportedFeatures_${feature}`;
+        if (!update && this._promises[cache]) {
+            return this._promises[cache];
         }
 
         if (!this.connected) {
             return Promise.reject(NOT_CONNECTED);
         }
 
-        this._promises['supportedFeatures_' + feature] = new Promise((resolve, reject) =>
+        this._promises[cache] = new Promise((resolve, reject) =>
             this._socket.emit('checkFeatureSupported', feature, (err, features) => {
                 err ? reject(err) : resolve(features)
             }));
 
-        return this._promises['supportedFeatures_' + feature];
+        return this._promises[cache];
     }
 
     /**
@@ -2207,16 +2319,16 @@ class Connection {
             return Promise.reject('Allowed only in admin');
         }
         if (!host.startsWith('system.host.')) {
-            host = 'system.host.' + host;
+            host = `system.host.${host}`;
         }
 
-        if (!update && this._promises['IPs_' + host]) {
-            return this._promises['IPs_' + host];
+        if (!update && this._promises[`IPs_${host}`]) {
+            return this._promises[`IPs_${host}`];
         }
-        this._promises['IPs_' + host] = this.getObject(host)
+        this._promises[`IPs_${host}`] = this.getObject(host)
             .then(obj => obj && obj.common ? obj.common.address || [] : []);
 
-        return this._promises['IPs_' + host];
+        return this._promises[`IPs_${host}`];
     }
 
     /**
@@ -2232,11 +2344,12 @@ class Connection {
         if (ipOrHostName.startsWith('system.host.')) {
             ipOrHostName = ipOrHostName.replace(/^system\.host\./, '');
         }
+        const cache = `rIPs_${ipOrHostName}`;
 
-        if (!update && this._promises['rIPs_' + ipOrHostName]) {
-            return this._promises['rIPs_' + ipOrHostName];
+        if (!update && this._promises[cache]) {
+            return this._promises[cache];
         }
-        this._promises['rIPs_' + ipOrHostName] = new Promise(resolve =>
+        this._promises[cache] = new Promise(resolve =>
             this._socket.emit('getHostByIp', ipOrHostName, (ip, host) => {
                 const IPs4 = [{name: '[IPv4] 0.0.0.0 - Listen on all IPs', address: '0.0.0.0', family: 'ipv4'}];
                 const IPs6 = [{name: '[IPv6] :: - Listen on all IPs',      address: '::',      family: 'ipv6'}];
@@ -2260,7 +2373,7 @@ class Connection {
                 resolve(IPs4);
             }));
 
-        return this._promises['rIPs_' + ipOrHostName];
+        return this._promises[cache];
     }
 
     /**
@@ -2820,6 +2933,14 @@ class Connection {
         return new Promise((resolve, reject) =>
             this._socket.emit('logout', err =>
                 err ? reject(err) : resolve(null)));
+    }
+    /**
+     * This is special method for vis.
+     * It is used to not send to server the changes about "nothing_selected" state
+     * @param id The state that has to be ignored by communication
+     */
+    setStateToIgnore(id) {
+        this.ignoreState = id;
     }
 }
 

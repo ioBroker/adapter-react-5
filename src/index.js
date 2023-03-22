@@ -179,3 +179,5 @@ export { PROGRESS } from './Connection';
 export { default as AdminConnection } from './AdminConnection';
 export * from './AdminConnection';
 
+export { default as LegacyConnection } from './LegacyConnection';
+
