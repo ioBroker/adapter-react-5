@@ -369,5 +369,12 @@
   "ra_Use all available let's encrypt certificates": "Gebruik alle beschikbare Let's Encrypt-certificaten",
   "ra_Public certificate": "Openbaar certificaat",
   "ra_Private certificate": "Privé certificaat",
-  "ra_Chained certificate": "Geketend certificaat"
+  "ra_Chained certificate": "Geketend certificaat",
+  "ra_Suitable license not found in license manager": "Geschikte licentie niet gevonden in licentiebeheer",
+  "ra_Please enter the license": "Voer de licentie in",
+  "ra_Checked": "Gecontroleerd",
+  "ra_locally": "plaatselijk",
+  "ra_via internet": "via internet",
+  "ra_Yes": "Ja",
+  "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "Licentie niet gevonden in licentiebeheer. Wilt u licenties van iobroker.net bijwerken?"
 }

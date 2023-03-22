@@ -369,5 +369,12 @@
   "ra_Use all available let's encrypt certificates": "Используйте все доступные сертификаты let’s encrypt",
   "ra_Public certificate": "Публичный сертификат",
   "ra_Private certificate": "Частный сертификат",
-  "ra_Chained certificate": "Chained сертификат"
+  "ra_Chained certificate": "Chained сертификат",
+  "ra_Suitable license not found in license manager": "Подходящая лицензия не найдена в менеджере лицензий",
+  "ra_Please enter the license": "Пожалуйста, введите лицензию",
+  "ra_Checked": "Проверено",
+  "ra_locally": "локально",
+  "ra_via internet": "через интернет",
+  "ra_Yes": "Да",
+  "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "Лицензия не найдена в диспетчере лицензий. Вы хотите обновить лицензии от iobroker.net?"
 }

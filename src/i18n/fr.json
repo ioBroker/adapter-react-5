@@ -369,5 +369,12 @@
   "ra_Use all available let's encrypt certificates": "Utilisez tous les certificats let's encrypt disponibles",
   "ra_Public certificate": "Certificat public",
   "ra_Private certificate": "Certificat privé",
-  "ra_Chained certificate": "Certificat chaîné"
+  "ra_Chained certificate": "Certificat chaîné",
+  "ra_Suitable license not found in license manager": "Licence appropriée introuvable dans le gestionnaire de licences",
+  "ra_Please enter the license": "Veuillez entrer la licence",
+  "ra_Checked": "Vérifié",
+  "ra_locally": "localement",
+  "ra_via internet": "par Internet",
+  "ra_Yes": "Oui",
+  "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "Licence introuvable dans le gestionnaire de licences. Voulez-vous mettre à jour les licences depuis iobroker.net ?"
 }

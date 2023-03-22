@@ -369,5 +369,12 @@
   "ra_Use all available let's encrypt certificates": "使用所有可用的让我们加密证书",
   "ra_Public certificate": "公共证书",
   "ra_Private certificate": "私有证书",
-  "ra_Chained certificate": "链式证书"
+  "ra_Chained certificate": "链式证书",
+  "ra_Suitable license not found in license manager": "在许可证管理器中找不到合适的许可证",
+  "ra_Please enter the license": "请输入许可证",
+  "ra_Checked": "勾选",
+  "ra_locally": "本地",
+  "ra_via internet": "通过互联网",
+  "ra_Yes": "是的",
+  "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "在许可证管理器中找不到许可证。您要从 iobroker.net 更新许可证吗？"
 }
