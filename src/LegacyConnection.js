@@ -1050,7 +1050,7 @@ class Connection {
                     name: 'ignored state',
                     type: 'mixed',
                 },
-            };
+            });
         }
 
         return new Promise((resolve, reject) =>

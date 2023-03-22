@@ -96,9 +96,9 @@ gulp.task('patchJsonSchemeForTable', async () => {
 
 gulp.task('patchReadme', async () => {
     const pack = require('./package.json');
-    let readme = fs.readFileSync(__dirname + '/README.md').toString('utf8');
+    let readme = fs.readFileSync(`${__dirname}/README.md`).toString('utf8');
     readme = readme.replace(/"@iobroker\/adapter-react": "\^\d\.\d\.\d",/g, `"@iobroker/adapter-react": "^${pack.version}",`);
-    fs.writeFileSync(__dirname + '/README.md', readme);
+    fs.writeFileSync(`${__dirname}/README.md`, readme);
 });
 
 gulp.task('compile', gulp.parallel('copy',
