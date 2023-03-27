@@ -376,5 +376,6 @@
   "ra_locally": "localmente",
   "ra_via internet": "via internet",
   "ra_Yes": "Sim",
-  "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "Licença não encontrada no gerenciador de licenças. Deseja atualizar as licenças do iobroker.net?"
+  "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "Licença não encontrada no gerenciador de licenças. Deseja atualizar as licenças do iobroker.net?",
+  "ra_Fallback custom certificates": "Certificados personalizados alternativos"
 }

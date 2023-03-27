@@ -376,5 +376,6 @@
   "ra_locally": "локально",
   "ra_via internet": "через интернет",
   "ra_Yes": "Да",
-  "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "Лицензия не найдена в диспетчере лицензий. Вы хотите обновить лицензии от iobroker.net?"
+  "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "Лицензия не найдена в диспетчере лицензий. Вы хотите обновить лицензии от iobroker.net?",
+  "ra_Fallback custom certificates": "Резервные пользовательские сертификаты"
 }

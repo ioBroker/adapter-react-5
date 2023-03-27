@@ -376,5 +376,6 @@
   "ra_locally": "本地",
   "ra_via internet": "通过互联网",
   "ra_Yes": "是的",
-  "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "在许可证管理器中找不到许可证。您要从 iobroker.net 更新许可证吗？"
+  "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "在许可证管理器中找不到许可证。您要从 iobroker.net 更新许可证吗？",
+  "ra_Fallback custom certificates": "后备自定义证书"
 }

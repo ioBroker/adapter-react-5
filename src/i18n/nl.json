@@ -376,5 +376,6 @@
   "ra_locally": "plaatselijk",
   "ra_via internet": "via internet",
   "ra_Yes": "Ja",
-  "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "Licentie niet gevonden in licentiebeheer. Wilt u licenties van iobroker.net bijwerken?"
+  "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "Licentie niet gevonden in licentiebeheer. Wilt u licenties van iobroker.net bijwerken?",
+  "ra_Fallback custom certificates": "Fallback aangepaste certificaten"
 }
