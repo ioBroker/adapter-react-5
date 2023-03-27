@@ -661,6 +661,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added translations
+
 ### 4.0.22 (2023-03-22)
 * (bluefox) Re-Activate legacy connection
 
