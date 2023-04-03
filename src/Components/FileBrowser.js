@@ -106,9 +106,9 @@ const styles = theme => ({
         position: 'absolute',
         bottom: 0,
         left: 20,
-        opacity: 0.5,
+        opacity: 0.7,
         fontStyle: 'italic',
-        fontSize: 10,
+        fontSize: 12,
     },
     filesDivTable: {
         height: `calc(100% - ${48 + parseInt(theme.spacing(1), 10)}px)`,
