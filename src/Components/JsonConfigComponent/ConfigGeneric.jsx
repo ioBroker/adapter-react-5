@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
+import {
+    Grid,
+    Button,
+} from '@mui/material';
 
 import IconInfo from '@mui/icons-material/Info';
 import IconWarning from '@mui/icons-material/Warning';
@@ -503,7 +505,7 @@ class ConfigGeneric extends Component {
                     sm={schema.sm || undefined}
                     style={Object.assign(
                         {},
-                        {marginBottom: 0, /*marginRight: 8, */textAlign: 'left'},
+                        { marginBottom: 0, /*marginRight: 8, */textAlign: 'left' },
                         schema.style,
                         this.props.themeType === 'dark' ? schema.darkStyle : {}
                     )}
@@ -511,7 +513,7 @@ class ConfigGeneric extends Component {
 
                 if (schema.newLine) {
                     return <>
-                        <div style={{flexBasis: '100%', height: 0}} />
+                        <div style={{ flexBasis: '100%', height: 0 }} />
                         {item}
                     </>;
                 } else {
@@ -551,7 +553,7 @@ class ConfigGeneric extends Component {
                     textAlign: 'left',
                     width: schema.type === 'divider' || schema.type === 'header' ? schema.width || '100%' : undefined
                 }, schema.style, this.props.themeType === 'dark' ? schema.darkStyle : {})}>
-                { this.props.schema.defaultSendTo && this.props.schema.button ? <Grid container style={{ width: '100%' }}>
+                {this.props.schema.defaultSendTo && this.props.schema.button ? <Grid container style={{ width: '100%' }}>
                         <Grid item flex={1}>{renderedItem}</Grid>
                         <Grid item><Button
                             variant="outlined"
@@ -560,8 +562,7 @@ class ConfigGeneric extends Component {
                         >{this.getText(this.props.schema.button)}</Button></Grid>
                     </Grid>
                     :
-                    renderedItem
-                }
+                    renderedItem}
             </Grid>;
 
             if (schema.newLine) {

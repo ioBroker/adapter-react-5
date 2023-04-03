@@ -377,5 +377,8 @@
   "ra_via internet": "przez internet",
   "ra_Yes": "Tak",
   "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "Nie znaleziono licencji w menedżerze licencji. Chcesz zaktualizować licencje z iobroker.net?",
-  "ra_Fallback custom certificates": "Niestandardowe certyfikaty zastępcze"
+  "ra_Fallback custom certificates": "Niestandardowe certyfikaty zastępcze",
+  "ra_Clone current row": "Sklonuj bieżący wiersz",
+  "ra_fileType_video": "Wideo",
+  "ra_select_folder_hint": "Aby wybrać folder, wystarczy przytrzymać klawisz „shift”, klikając folder."
 }

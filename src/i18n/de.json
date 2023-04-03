@@ -377,5 +377,8 @@
   "ra_via internet": "übers Internet",
   "ra_Yes": "Ja",
   "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "Lizenz im Lizenzmanager nicht gefunden. Möchten Sie Lizenzen von iobroker.net aktualisieren?",
-  "ra_Fallback custom certificates": "Benutzerdefinierte Fallback-Zertifikate"
+  "ra_Fallback custom certificates": "Benutzerdefinierte Fallback-Zertifikate",
+  "ra_Clone current row": "Aktuelle Zeile klonen",
+  "ra_fileType_video": "Video",
+  "ra_select_folder_hint": "Um einen Ordner auszuwählen, halten Sie einfach die Taste \"Shift\" gedrückt, indem Sie auf den Ordner klicken."
 }

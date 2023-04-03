@@ -377,5 +377,8 @@
   "ra_via internet": "через інтернет",
   "ra_Yes": "Так",
   "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "Ліцензія не знайдена в менеджері ліцензій. Хочете оновити ліцензії з iobroker.net?",
-  "ra_Fallback custom certificates": "Запасні спеціальні сертифікати"
+  "ra_Fallback custom certificates": "Запасні спеціальні сертифікати",
+  "ra_Clone current row": "Клонувати поточний рядок",
+  "ra_fileType_video": "відео",
+  "ra_select_folder_hint": "Щоб вибрати папку, просто клацніть папку, утримуючи клавішу «Shift»."
 }

@@ -661,6 +661,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Updated the file selector in tile mode
+
 ### 4.0.23 (2023-03-27)
 * (bluefox) Added translations
 

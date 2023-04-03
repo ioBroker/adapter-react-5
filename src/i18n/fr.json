@@ -377,5 +377,8 @@
   "ra_via internet": "par Internet",
   "ra_Yes": "Oui",
   "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "Licence introuvable dans le gestionnaire de licences. Voulez-vous mettre à jour les licences depuis iobroker.net ?",
-  "ra_Fallback custom certificates": "Certificats personnalisés de secours"
+  "ra_Fallback custom certificates": "Certificats personnalisés de secours",
+  "ra_Clone current row": "Cloner la ligne actuelle",
+  "ra_fileType_video": "Vidéo",
+  "ra_select_folder_hint": "Pour sélectionner un dossier, maintenez simplement la touche \"shift\" enfoncée en cliquant sur le dossier."
 }

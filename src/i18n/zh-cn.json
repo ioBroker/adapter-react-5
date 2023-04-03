@@ -377,5 +377,8 @@
   "ra_via internet": "通过互联网",
   "ra_Yes": "是的",
   "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "在许可证管理器中找不到许可证。您要从 iobroker.net 更新许可证吗？",
-  "ra_Fallback custom certificates": "后备自定义证书"
+  "ra_Fallback custom certificates": "后备自定义证书",
+  "ra_Clone current row": "克隆当前行",
+  "ra_fileType_video": "视频",
+  "ra_select_folder_hint": "要选择文件夹，只需按住“shift”键单击文件夹即可。"
 }

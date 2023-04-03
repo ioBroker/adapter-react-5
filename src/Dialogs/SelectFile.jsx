@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 bluefox <dogafox@gmail.com>
+ * Copyright 2022-2023 bluefox <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -113,7 +113,6 @@ class DialogSelectFile extends React.Component {
 
         this.state =  {
             selected,
-            isFolder: false,
         };
     }
 
@@ -179,7 +178,7 @@ class DialogSelectFile extends React.Component {
                     filterByType={this.props.filterByType}
                     selected={this.props.selected}
                     onSelect={(selected, isDoubleClick, isFolder) => {
-                        this.setState({ selected, isFolder }, () =>
+                        this.setState({ selected }, () =>
                             isDoubleClick && (!this.props.selectOnlyFolders || isFolder) && this.handleOk());
                     }}
                     t={this.props.t || I18n.t}
@@ -206,7 +205,8 @@ DialogSelectFile.propTypes = {
     selected: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.array, // not implemented
-    ]),    classes: PropTypes.object,
+    ]),
+    classes: PropTypes.object,
     onClose: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
     ok: PropTypes.string,

@@ -1,10 +1,15 @@
 import React, { createRef } from 'react';
 import PropTypes from 'prop-types';
 import { /*lighten,*/ withStyles } from '@mui/styles';
-import clsx from 'clsx';
 
 import FormHelperText from '@mui/material/FormHelperText';
-import { IconButton, InputAdornment, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography } from '@mui/material';
+import {
+    IconButton, InputAdornment, Paper,
+    Table, TableBody, TableCell, TableContainer,
+    TableHead, TableRow, TableSortLabel,
+    TextField, Toolbar, Tooltip,
+    Typography,
+} from '@mui/material';
 
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -13,8 +18,10 @@ import UpIcon from '@mui/icons-material/ArrowUpward';
 import DownIcon from '@mui/icons-material/ArrowDownward';
 import IconFilterOn from '@mui/icons-material/FilterAlt';
 import IconFilterOff from '@mui/icons-material/FilterAltOff';
+import CopyContentIcon from '@mui/icons-material/ContentCopy';
 
 import I18n from './wrapper/i18n';
+import Utils from './wrapper/Components/Utils';
 
 import ConfigGeneric from './ConfigGeneric';
 import ConfigPanel from './ConfigPanel';
@@ -268,7 +275,7 @@ class ConfigTable extends ConfigGeneric {
                 {schema.items && schema.items.map((headCell, i) =>
                     <TableCell
                         style={{ width: typeof headCell.width === 'string' && headCell.width.endsWith('%') ? headCell.width : headCell.width }}
-                        key={headCell.attr + '_' + i}
+                        key={`${headCell.attr}_${i}`}
                         align="left"
                         sortDirection={orderBy === headCell.attr ? order : false}
                     >
@@ -282,7 +289,7 @@ class ConfigTable extends ConfigGeneric {
                             </Tooltip> : null}
                             {headCell.sort && <TableSortLabel
                                 active
-                                className={clsx(orderBy !== headCell.attr && classes.silver)}
+                                className={Utils.clsx(orderBy !== headCell.attr && classes.silver)}
                                 direction={orderBy === headCell.attr ? order : 'asc'}
                                 onClick={() => this.handleRequestSort(headCell.attr)}
                             />}
@@ -348,6 +355,33 @@ class ConfigTable extends ConfigGeneric {
             this.applyFilter(false, null, () =>
                 this.onChangeWrapper(newValue)));
     };
+
+    onClone = index => () => {
+        const newValue = JSON.parse(JSON.stringify(this.state.value));
+        const cloned = JSON.parse(JSON.stringify(newValue[index]));
+        if (typeof this.props.schema.clone === 'string' && typeof cloned[this.props.schema.clone] === 'string') {
+            let i = 1;
+            let text = cloned[this.props.schema.clone];
+            const pattern = text.match(/(\d+)$/);
+            if (pattern) {
+                text = text.replace(pattern[0], '');
+                i = parseInt(pattern[0], 10) + 1;
+            } else {
+                text += '_';
+            }
+            // eslint-disable-next-line no-loop-func
+            while (newValue.find(it => it[this.props.schema.clone] === text + i.toString())) {
+                i++;
+            }
+            cloned[this.props.schema.clone] = `${cloned[this.props.schema.clone]}_${i}`;
+        }
+
+        newValue.splice(index, 0, cloned);
+
+        this.setState({ value: newValue, iteration: this.state.iteration + 10000 }, () =>
+            this.applyFilter(false, null, () =>
+                this.onChangeWrapper(newValue)));
+    }
 
     onChangeWrapper = (newValue, updateVisible = false) => {
         this.typingTimer && clearTimeout(this.typingTimer);
@@ -501,6 +535,11 @@ class ConfigTable extends ConfigGeneric {
                                             <DeleteIcon />
                                         </IconButton>
                                     </Tooltip>
+                                    {this.props.schema.clone ? <Tooltip title={I18n.t('ra_Clone current row')}>
+                                        <IconButton size="small" onClick={this.onClone(idx)}>
+                                            <CopyContentIcon />
+                                        </IconButton>
+                                    </Tooltip> : null}
                                 </TableCell>}
                             </TableRow>)}
                         {!schema.noDelete && visibleValue.length >= (schema.showSecondAddAt || 5) ?

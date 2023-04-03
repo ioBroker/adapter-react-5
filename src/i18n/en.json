@@ -377,5 +377,8 @@
   "ra_via internet": "via internet",
   "ra_Yes": "Yes",
   "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "License not found in the license manager. Do you want to update licenses from iobroker.net?",
-  "ra_Fallback custom certificates": "Fallback custom certificates"
+  "ra_Fallback custom certificates": "Fallback custom certificates",
+  "ra_Clone current row": "Clone current row",
+  "ra_fileType_video": "Video",
+  "ra_select_folder_hint": "To select folder, just hold the key \"shift\" by clicking the folder."
 }

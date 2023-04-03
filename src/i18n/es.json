@@ -377,5 +377,8 @@
   "ra_via internet": "vía Internet",
   "ra_Yes": "Sí",
   "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "Licencia no encontrada en el administrador de licencias. ¿Quieres actualizar las licencias de iobroker.net?",
-  "ra_Fallback custom certificates": "Certificados personalizados alternativos"
+  "ra_Fallback custom certificates": "Certificados personalizados alternativos",
+  "ra_Clone current row": "Clonar fila actual",
+  "ra_fileType_video": "Video",
+  "ra_select_folder_hint": "Para seleccionar la carpeta, simplemente mantenga presionada la tecla \"shift\" haciendo clic en la carpeta."
 }

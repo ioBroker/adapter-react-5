@@ -377,5 +377,8 @@
   "ra_via internet": "через интернет",
   "ra_Yes": "Да",
   "ra_License not found in license manager. Do you want to read licenses from iobroker.net?": "Лицензия не найдена в диспетчере лицензий. Вы хотите обновить лицензии от iobroker.net?",
-  "ra_Fallback custom certificates": "Резервные пользовательские сертификаты"
+  "ra_Fallback custom certificates": "Резервные пользовательские сертификаты",
+  "ra_Clone current row": "Клонировать текущую строку",
+  "ra_fileType_video": "видео",
+  "ra_select_folder_hint": "Чтобы выбрать папку, просто удерживайте клавишу «Shift», щелкнув папку."
 }
