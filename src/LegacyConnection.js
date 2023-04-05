@@ -520,7 +520,7 @@ class Connection {
                 .replace(/\+/g, '\\+')
                 .replace(/\[/g, '\\[');
 
-            if (reg.indexOf('*') === -1) {
+            if (!reg.includes('*')) {
                 reg += '$';
             }
             this.statesSubscribes[id] = { reg: new RegExp(reg), cbs: [] };
@@ -1468,7 +1468,7 @@ class Connection {
                             type: ''
                         };
                         // If it is filename, it could be everything
-                        if (cert.length < 700 && (cert.indexOf('/') !== -1 || cert.indexOf('\\') !== -1)) {
+                        if (cert.length < 700 && (cert.includes('/') || cert.includes('\\'))) {
                             if (c.toLowerCase().includes('private')) {
                                 _cert.type = 'private';
                             } else if (cert.toLowerCase().includes('private')) {
