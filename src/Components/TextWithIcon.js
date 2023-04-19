@@ -13,7 +13,7 @@ const styles = () => ({
         whiteSpace: 'nowrap',
         overflow: 'hidden',
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     icon: {
         width: 16,
@@ -24,7 +24,7 @@ const styles = () => ({
     text: {
         display: 'inline-block',
         overflow: 'hidden',
-        textOverflow: 'ellipsis'
+        textOverflow: 'ellipsis',
     }
 });
 
@@ -94,7 +94,8 @@ const TextWithIcon = props => {
     } : {};
 
     return <div style={Object.assign({}, props.style, style)} className={Utils.clsx(props.className, props.classes.div, props.moreClasses?.root)} title={props.title || item.value}>
-        {item?.icon ? <Icon src={item?.icon} className={Utils.clsx(props.classes.icon, props.moreClasses?.icon)} /> : null}<div className={Utils.clsx(props.classes.text, props.moreClasses?.text)}>{item?.name}</div>
+        {item?.icon ? <Icon src={item?.icon} className={Utils.clsx(props.classes.icon, props.moreClasses?.icon)} /> : null}
+        <div className={Utils.clsx(props.classes.text, props.moreClasses?.text)}>{item?.name}</div>
     </div>;
 }
 
