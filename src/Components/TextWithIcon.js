@@ -5,7 +5,7 @@ import withStyles from '@mui/styles/withStyles';
 import Icon from './Icon';
 import Utils from './Utils';
 
-const styles = theme => ({
+const styles = () => ({
     div: {
         borderRadius: 3,
         padding: '0 3px',
