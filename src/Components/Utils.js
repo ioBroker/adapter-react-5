@@ -395,18 +395,18 @@ class Utils {
             } else {
                 const parts = id.split('.');
                 if (parts[0] === 'system') {
-                    icon = 'adapter/' + parts[2] + (icon.startsWith('/') ? '' : '/') + icon;
+                    icon = `adapter/${parts[2]}${icon.startsWith('/') ? '' : '/'}${icon}`;
                 } else {
-                    icon = 'adapter/' + parts[0] + (icon.startsWith('/') ? '' : '/') + icon;
+                    icon = `adapter/${parts[0]}${icon.startsWith('/') ? '' : '/'}${icon}`;
                 }
 
                 if (window.location.pathname.match(/adapter\/[^/]+\/[^/]+\.html/)) {
-                    icon = '../../' + icon;
+                    icon = `../../${icon}`;
                 } else if (window.location.pathname.match(/material\/[.\d]+/)) {
-                    icon = '../../' + icon;
+                    icon = `../../${icon}`;
                 } else
                 if (window.location.pathname.match(/material\//)) {
-                    icon = '../' + icon;
+                    icon = `../${icon}`;
                 }
                 return icon;
             }

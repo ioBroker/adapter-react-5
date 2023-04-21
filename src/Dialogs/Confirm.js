@@ -94,7 +94,7 @@ class DialogConfirm extends React.Component {
             fullWidth={this.props.fullWidth !== undefined ? this.props.fullWidth : true}
             onClose={(event, reason) => {
                 if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
-                    this.handleCancel()
+                    this.handleCancel();
                 }
             }}
             aria-labelledby="confirmation-dialog-title"
