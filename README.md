@@ -661,6 +661,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Extended `TextWithIcon` with defined color and icon
+
 ### 4.0.24 (2023-04-03)
 * (bluefox) Updated the file selector in tile mode
 

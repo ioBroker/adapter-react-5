@@ -41,8 +41,8 @@ const TextWithIcon = props => {
                     item = {
                         name: Utils.getObjectNameFromObj(_item, props.lang).replace('system.group.', ''),
                         value: _item._id,
-                        icon: _item.common?.icon,
-                        color: _item.common?.color,
+                        icon: props.icon || _item.common?.icon,
+                        color: props.color || _item.common?.color,
                     };
                 } else {
                     item = {
@@ -54,25 +54,31 @@ const TextWithIcon = props => {
                 item = {
                     name: Utils.getObjectNameFromObj(list[prefix + item], props.lang).replace('system.group.', ''),
                     value: list[prefix + item]._id,
-                    icon: list[prefix + item].common?.icon,
-                    color: list[prefix + item].common?.color,
+                    icon: props.icon || list[prefix + item].common?.icon,
+                    color: props.color || list[prefix + item].common?.color,
                 };
             } else {
                 item = {
                     name: item,
                     value: prefix + item,
+                    icon: props.icon,
+                    color: props.color,
                 };
             }
         } else {
             item = {
                 name: item,
                 value: prefix + item,
+                icon: props.icon,
+                color: props.color,
             };
         }
     } else if (!item || typeof item !== 'object') {
         item = {
             name: '',
             value: '',
+            icon: props.icon,
+            color: props.color,
         };
     } else {
         item = {
@@ -82,8 +88,8 @@ const TextWithIcon = props => {
                 .replace('enum.rooms.', '')
                 .replace('enum.functions.', ''),
             value: item._id,
-            icon: item.common?.icon,
-            color: item.common?.color,
+            icon: props.icon || item.common?.icon,
+            color: props.color || item.common?.color,
         };
     }
 
@@ -110,6 +116,8 @@ TextWithIcon.propTypes = {
     title: PropTypes.string,
     removePrefix: PropTypes.string,
     moreClasses: PropTypes.object,
+    icon: PropTypes.string,
+    color: PropTypes.string,
 };
 
 export default withStyles(styles)(TextWithIcon);
