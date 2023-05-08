@@ -661,7 +661,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.0.26 (2023-05-08)
 * (bluefox) Added IDs to the buttons in the dialog for GUI tests
 
 ### 4.0.25 (2023-04-23)
