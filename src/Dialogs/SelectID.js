@@ -155,9 +155,9 @@ class DialogSelectID extends React.Component {
             classes={{ paper: Utils.clsx(this.props.classes.dialog, this.props.classes.dialogMobile) }}
             fullWidth
             open={!0}
-            aria-labelledby="selectid-dialog-title"
+            aria-labelledby="ar_dialog_selectid_title"
         >
-            <DialogTitle id="selectid-dialog-title" classes={{ root: this.props.classes.titleRoot }}>{title}</DialogTitle>
+            <DialogTitle id="ar_dialog_selectid_title" classes={{ root: this.props.classes.titleRoot }}>{title}</DialogTitle>
             <DialogContent className={Utils.clsx(this.props.classes.content, this.props.classes.contentMobile)}>
                 <ObjectBrowser
                     foldersFirst={this.props.foldersFirst}
@@ -195,8 +195,8 @@ class DialogSelectID extends React.Component {
                 />
             </DialogContent>
             <DialogActions>
-                <Button variant="contained" onClick={() => this.handleOk()} startIcon={<IconOk />} disabled={!this.state.selected.length} color="primary">{this.props.ok || I18n.t('ra_Ok')}</Button>
-                <Button color="grey" variant="contained" onClick={() => this.handleCancel()} startIcon={<IconCancel />}>{this.props.cancel || I18n.t('ra_Cancel')}</Button>
+                <Button id={`ar_dialog_selectid_ok_${this.props.dialogName || ''}`} variant="contained" onClick={() => this.handleOk()} startIcon={<IconOk />} disabled={!this.state.selected.length} color="primary">{this.props.ok || I18n.t('ra_Ok')}</Button>
+                <Button id={`ar_dialog_selectid_cancel_${this.props.dialogName || ''}`} color="grey" variant="contained" onClick={() => this.handleCancel()} startIcon={<IconCancel />}>{this.props.cancel || I18n.t('ra_Cancel')}</Button>
             </DialogActions>
         </Dialog>;
     }

@@ -1735,9 +1735,9 @@ class FileBrowser extends Component {
                 key="deleteDialog"
                 open={!0}
                 onClose={() => this.setState({ deleteItem: '' })}
-                aria-labelledby="form-dialog-title"
+                aria-labelledby="ar_dialog_file_delete_title"
             >
-                <DialogTitle id="form-dialog-title">{this.props.t('ra_Confirm deletion of %s', this.state.deleteItem.split('/').pop())}</DialogTitle>
+                <DialogTitle id="ar_dialog_file_delete_title">{this.props.t('ra_Confirm deletion of %s', this.state.deleteItem.split('/').pop())}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         {this.props.t('ra_Are you sure?')}

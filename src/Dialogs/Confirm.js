@@ -97,27 +97,27 @@ class DialogConfirm extends React.Component {
                     this.handleCancel();
                 }
             }}
-            aria-labelledby="confirmation-dialog-title"
-            aria-describedby="confirmation-dialog-description"
+            aria-labelledby="ar_confirmation_dialog_title"
+            aria-describedby="ar_confirmation_dialog_description"
         >
-            <DialogTitle id="confirmation-dialog-title">{this.props.title || I18n.t('ra_Are you sure?')}</DialogTitle>
+            <DialogTitle id="ar_confirmation_dialog_title">{this.props.title || I18n.t('ra_Are you sure?')}</DialogTitle>
             <DialogContent>
-                <DialogContentText id="confirmation-dialog-description">
+                <DialogContentText id="ar_confirmation_dialog_description">
                     {this.props.icon || null}
                     {this.props.text}
                     {this.props.suppressQuestionMinutes ? <br/> : null}
                     {this.props.suppressQuestionMinutes ?
                         <FormControlLabel
                             classes={{label: this.props.classes.suppress, root: this.props.classes.suppressRoot}}
-                            control={<Checkbox checked={!!this.state.suppress} onChange={() => this.setState({suppress: !this.state.suppress})} />}
+                            control={<Checkbox id={`ar_dialog_confirm_suppress_${this.props.dialogName || ''}`} checked={!!this.state.suppress} onChange={() => this.setState({suppress: !this.state.suppress})} />}
                             label={this.props.suppressText || I18n.t('ra_Suppress question for next %s minutes', this.props.suppressQuestionMinutes)}
                         /> :
                         null}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button variant="contained" onClick={() => this.handleOk()} color="primary" autoFocus startIcon={<IconCheck />}>{this.props.ok || I18n.t('ra_Ok')}</Button>
-                <Button variant="contained" onClick={() => this.handleCancel()} color="grey" startIcon={<IconClose />}>{this.props.cancel || I18n.t('ra_Cancel')}</Button>
+                <Button id={`ar_dialog_confirm_ok_${this.props.dialogName || ''}`} variant="contained" onClick={() => this.handleOk()} color="primary" autoFocus startIcon={<IconCheck />}>{this.props.ok || I18n.t('ra_Ok')}</Button>
+                <Button id={`ar_dialog_confirm_cancel_${this.props.dialogName || ''}`} variant="contained" onClick={() => this.handleCancel()} color="grey" startIcon={<IconClose />}>{this.props.cancel || I18n.t('ra_Cancel')}</Button>
             </DialogActions>
         </Dialog>;
     }

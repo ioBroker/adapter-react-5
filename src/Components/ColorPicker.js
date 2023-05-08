@@ -228,7 +228,7 @@ class ColorPicker extends React.Component {
             <TextField
                 disabled={this.props.disabled}
                 variant="standard"
-                id="name"
+                id="ar_color_picker_name"
                 style={color ? { width: 'calc(100% - 80px)' } : { width: 'calc(100% - 56px)', marginRight: 8 }}
                 label={this.props.label || this.props.name || 'color'}
                 value={color}

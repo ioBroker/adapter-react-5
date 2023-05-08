@@ -159,9 +159,9 @@ class DialogSelectFile extends React.Component {
             classes={{ paper: Utils.clsx(this.props.classes.dialog, this.props.classes.dialogMobile) }}
             fullWidth
             open={!0}
-            aria-labelledby="selectfile-dialog-title"
+            aria-labelledby="ar_dialog_selectfile_title"
         >
-            <DialogTitle id="selectfile-dialog-title" classes={{ root: this.props.classes.titleRoot }}>{title}</DialogTitle>
+            <DialogTitle id="ar_dialog_selectfile_title" classes={{ root: this.props.classes.titleRoot }}>{title}</DialogTitle>
             <DialogContent className={Utils.clsx(this.props.classes.content, this.props.classes.contentMobile)}>
                 <FileBrowser
                     ready

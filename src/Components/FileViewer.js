@@ -250,10 +250,10 @@ class FileViewer extends Component {
             onClose={() => this.props.onClose()}
             fullWidth
             maxWidth="xl"
-            aria-labelledby="form-dialog-title"
+            aria-labelledby="ar_dialog_file_view_title"
         >
             <div className={this.props.classes.dialogTitle}>
-                <DialogTitle id="form-dialog-title">{this.props.t(this.state.editing ? 'Edit' : 'View') + ': ' + this.props.href}</DialogTitle>
+                <DialogTitle id="ar_dialog_file_view_title">{`${this.props.t(this.state.editing ? 'Edit' : 'View')}: ${this.props.href}`}</DialogTitle>
                 {EXTENSIONS.images.includes(this.state.ext) && <div>
                     <IconButton size="large"
                         color={'inherit'}

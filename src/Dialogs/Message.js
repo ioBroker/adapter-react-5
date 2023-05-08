@@ -39,17 +39,17 @@ class DialogMessage extends React.Component {
             maxWidth="sm"
             fullWidth={this.props.fullWidth !== undefined ? this.props.fullWidth : true}
             onClose={() => this.handleOk()}
-            aria-labelledby="message-dialog-title"
-            aria-describedby="message-dialog-description"
+            aria-labelledby="ar_dialog_message_title"
+            aria-describedby="ar_dialog_message_description"
         >
-            <DialogTitle id="message-dialog-title">{this.props.title || I18n.t('ra_Message')}</DialogTitle>
+            <DialogTitle id="ar_dialog_message_title">{this.props.title || I18n.t('ra_Message')}</DialogTitle>
             <DialogContent>
-                <DialogContentText id="message-dialog-description">
+                <DialogContentText id="ar_dialog_message_description">
                     <span style={{ marginRight: this.props.icon ? 8 : 0 }}>{this.props.icon || null}</span>{this.props.text}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button variant="contained" onClick={() => this.handleOk()} color="primary" autoFocus startIcon={<IconClose />}>{this.props.ok || I18n.t('ra_Close')}</Button>
+                <Button id="ar_dialog_message_ok" variant="contained" onClick={() => this.handleOk()} color="primary" autoFocus startIcon={<IconClose />}>{this.props.ok || I18n.t('ra_Close')}</Button>
             </DialogActions>
         </Dialog>;
     }

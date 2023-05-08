@@ -52,16 +52,20 @@ class DialogError extends React.Component {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle className={this.props.classes.titleBackground}
-                         classes={{root: this.props.classes.titleColor}}
-                         id="alert-dialog-title">{this.props.title || I18n.t('ra_Error')}</DialogTitle>
+            <DialogTitle
+                className={this.props.classes.titleBackground}
+                classes={{root: this.props.classes.titleColor}}
+                id="ar_alert_dialog_title"
+            >
+                {this.props.title || I18n.t('ra_Error')}
+            </DialogTitle>
             <DialogContent>
-                <DialogContentText id="alert-dialog-description">
+                <DialogContentText id="ar_alert_dialog_description">
                     {this.props.text || I18n.t('ra_Unknown error!')}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button variant="contained" onClick={() => this.handleOk()} color="primary" autoFocus startIcon={<IconCheck />}>{I18n.t('ra_Ok')}</Button>
+                <Button id="ar_dialog_error_ok" variant="contained" onClick={() => this.handleOk()} color="primary" autoFocus startIcon={<IconCheck />}>{I18n.t('ra_Ok')}</Button>
             </DialogActions>
         </Dialog>;
     }
