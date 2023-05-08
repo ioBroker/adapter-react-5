@@ -86,7 +86,7 @@ gulp.task('patchJsonSchemeForTable', async () => {
         },
         sort: {
             type: 'boolean'
-        }
+        },
     });
 
     schema.properties.items.patternProperties['^.+'].allOf[pos].then.properties.items.items.properties = properties;
