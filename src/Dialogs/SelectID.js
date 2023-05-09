@@ -169,6 +169,7 @@ class DialogSelectID extends React.Component {
                     style={{ width: '100%', height: '100%' }}
                     columns={this.props.columns || ['name', 'type', 'role', 'room', 'func', 'val']}
                     types={this.props.types || ['state']}
+                    root={this.props.root}
                     t={I18n.t}
                     lang={this.props.lang || I18n.getLanguage()}
                     socket={this.props.socket}
@@ -231,6 +232,7 @@ DialogSelectID.propTypes = {
     multiSelect: PropTypes.bool,
     types: PropTypes.array,   // optional ['state', 'instance', 'channel']
     columns: PropTypes.array, // optional ['name', 'type', 'role', 'room', 'func', 'val', 'buttons']
+    root: PropTypes.string,   // optional. Root of tree. Show only this branch of tree
 
     filterFunc: PropTypes.func, // function to filter out all unnecessary objects. It cannot be used together with "types"
                                 // Example for function: `obj => obj.common && obj.common.type === 'boolean'` to show only boolean states

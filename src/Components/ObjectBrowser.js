@@ -1,5 +1,5 @@
 /**
- * Copyright 2020-2022, bluefox <dogafox@gmail.com>
+ * Copyright 2020-2023, bluefox <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -942,7 +942,11 @@ function applyFilter(item, filters, lang, objects, context, counter, customFilte
                     }
                 }
             }
-            if (!filteredOut && customFilter.common?.custom) {
+            if (!filteredOut && customFilter.common?.custom === '_' && common?.custom) {
+                filteredOut = true;
+            }
+
+            if (!filteredOut && customFilter.common?.custom && customFilter.common?.custom !== '_') {
                 if (!common?.custom) {
                     filteredOut = true;
                 } else
@@ -1009,7 +1013,11 @@ function applyFilter(item, filters, lang, objects, context, counter, customFilte
         }
         if (!filteredOut && context.custom) {
             if (common) {
-                filteredOut = !common.custom || !common.custom[context.custom];
+                if (context.custom === '_') {
+                    filteredOut = !!common.custom;
+                } else {
+                    filteredOut = !common.custom || !common.custom[context.custom];
+                }
             } else {
                 filteredOut = true;
             }
@@ -1110,7 +1118,6 @@ function getObjectTooltip(data, lang) {
     return null;
 }
 
-
 function getIdFieldTooltip(data, classes, lang) {
     const tooltip = getObjectTooltip(data, lang);
     if (tooltip?.startsWith('http')) {
@@ -1131,15 +1138,23 @@ function buildTree(objects, options) {
     options = options || {};
     const imagePrefix = options.imagePrefix || '.';
 
-    const ids = Object.keys(objects);
+    let ids = Object.keys(objects);
 
     ids.sort((a, b) => {
-        if (a === b) return 0;
+        if (a === b) {
+            return 0;
+        }
         a = a.replace(/\./g, '!!!');
         b = b.replace(/\./g, '!!!');
-        if (a > b) return 1;
+        if (a > b) {
+            return 1;
+        }
         return -1;
     });
+
+    if (options.root) {
+        ids = ids.filter(id => id === options.root || id.startsWith(`${options.root}.`));
+    }
 
     // find empty nodes and create names for it
     let currentPathArr = [];
@@ -1160,7 +1175,7 @@ function buildTree(objects, options) {
         ids:       [],
         types:     [],
         objects,
-        customs:   [],
+        customs:   ['_'],
         enums:     [],
         hasSomeCustoms: false,
     };
@@ -1831,6 +1846,7 @@ class ObjectBrowser extends Component {
             filter_room:              props.t('ra_filter_room'),
             filter_func:              props.t('ra_filter_func'),
             filter_custom:            props.t('ra_filter_customs'), //
+            filterCustomsWithout:     props.t('ra_filter_customs_without'), //
             objectChangedByUser:      props.t('ra_object_changed_by_user'), // Object last changed at
             objectChangedBy:          props.t('ra_object_changed_by'), // Object changed by
             objectChangedFrom:        props.t('ra_state_changed_from'), // Object changed from
@@ -1951,7 +1967,8 @@ class ObjectBrowser extends Component {
                             type === 'folder'   ||
                             type === 'adapter'  ||
                             type === 'instance' ||
-                            props.types.includes(type))) {
+                            props.types.includes(type))
+                        ) {
                             this.objects[id] = objects[id];
                         }
                     });
@@ -2337,7 +2354,7 @@ class ObjectBrowser extends Component {
                             <ListItemButton onClick={() => {
                                 if (!this.state.columnsAuto) {
                                     const columns = [...(this.state.columns || [])];
-                                    const id = '_' + adapter + '_' + column.path;
+                                    const id = `_${adapter}_${column.path}`;
                                     const pos = columns.indexOf(id);
                                     if (pos === -1) {
                                         columns.push(id);
@@ -2346,19 +2363,19 @@ class ObjectBrowser extends Component {
                                         columns.splice(pos, 1);
                                     }
                                     this.calculateColumnsVisibility(null, columns);
-                                    (window._localStorage || window.localStorage).setItem((this.props.dialogName || 'App') + '.columns', JSON.stringify(columns));
+                                    (window._localStorage || window.localStorage).setItem(`${this.props.dialogName || 'App'}.columns`, JSON.stringify(columns));
                                     this.setState({ columns });
                                 }
-                            }} key={adapter + '_' + column.name}>
+                            }} key={`${adapter}_${column.name}`}>
                                 <ListItemIcon>
                                     <Checkbox
                                         disabled={this.state.columnsAuto}
                                         edge="start"
-                                        checked={!this.state.columnsAuto && this.state.columns && this.state.columns.includes('_' + adapter + '_' + column.path)}
+                                        checked={!this.state.columnsAuto && this.state.columns && this.state.columns.includes(`_${adapter}_${column.path}`)}
                                         disableRipple
                                     />
                                 </ListItemIcon>
-                                <ListItemText primary={column.name + ' (' + adapter + ')'} />
+                                <ListItemText primary={`${column.name} (${adapter})`} />
                                 {/*
                                 <ListItemSecondaryAction>
                                     <FormControl
@@ -2900,11 +2917,11 @@ class ObjectBrowser extends Component {
      * @private
      */
     getFilterSelectCustoms() {
-        if (this.info.customs.length) {
+        if (this.info.customs.length > 1) {
             const customs = this.info.customs.map(id => ({
-                name: id,
+                name: id === '_' ? this.texts.filterCustomsWithout : id,
                 value: id,
-                icon: <Icon src={getSelectIdIcon(this.objects, id, this.imagePrefix) || ''} className={this.props.classes.selectIcon} />,
+                icon: id === '_' ? null : <Icon src={getSelectIdIcon(this.objects, id, this.imagePrefix) || ''} className={this.props.classes.selectIcon} />,
             }));
             return this.getFilterSelect('custom', customs);
         }
@@ -3658,7 +3675,7 @@ class ObjectBrowser extends Component {
                     onClick={() => this.setState({ modalEditOfAccess: true, modalEditOfAccessObjData: item.data })}
                     size="large"
                 >
-                    <div className={classes.aclText}>{Number.isNaN(Number(acl).toString(16)) ? Number(aclSystemConfig).toString(16) : Number(acl).toString(16)}</div>
+                    <div className={classes.aclText}>{Number.isNaN(Number(acl)) ? Number(aclSystemConfig).toString(16) : Number(acl).toString(16)}</div>
                 </IconButton>
             </Tooltip> : <div key="aclEmpty" className={classes.cellButtonMinWidth} />,
             <IconButton
@@ -5356,6 +5373,7 @@ ObjectBrowser.propTypes = {
     ]),
     types: PropTypes.array,             // optional ['state', 'instance', 'channel']
     columns: PropTypes.array,           // optional ['name', 'type', 'role', 'room', 'func', 'val', 'buttons']
+    root: PropTypes.string,             // optional, shows only elements of this root
 
     objectsWorker: PropTypes.object,    // optional cache of objects
     filterFunc: PropTypes.func,         // function to filter out all unnecessary objects. It cannot be used together with "types"
