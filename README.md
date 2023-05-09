@@ -661,7 +661,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.0.27 (2023-05-09)
 * (bluefox) Allowed to show only specific root in SelectIDDialog
 
 ### 4.0.26 (2023-05-08)
