@@ -661,7 +661,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.1.0 (2023-05-10)
 * (bluefox) `craco-module-federation.js` was added. For node 16
 
 ### 4.0.27 (2023-05-09)
