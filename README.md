@@ -661,8 +661,11 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) `craco-module-federation.js` was added. For node 16
+
 ### 4.0.27 (2023-05-09)
-* (bluefox) Allowed to show only specific root in SelectIDDialog
+* (bluefox) Allowed showing only specific root in SelectIDDialog
 
 ### 4.0.26 (2023-05-08)
 * (bluefox) Added IDs to the buttons in the dialog for GUI tests

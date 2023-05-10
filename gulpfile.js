@@ -24,6 +24,7 @@ gulp.task('copy', () => Promise.all([
     gulp.src(['src/Components/assets/*.*']).pipe(gulp.dest('dist/Components/assets')),
     gulp.src(['src/assets/devices/*.*']).pipe(gulp.dest('dist/assets/devices')),
     gulp.src(['src/assets/rooms/*.*']).pipe(gulp.dest('dist/assets/rooms')),
+    gulp.src(['craco-module-federation.js']).pipe(gulp.dest('dist')),
     new Promise(resolve => {
         const package_ = require('./package.json');
         const packageSrc = require('./src/package.json');
