@@ -25,7 +25,7 @@ const styles = () => ({
         display: 'inline-block',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
-    }
+    },
 });
 
 const TextWithIcon = props => {
@@ -96,7 +96,7 @@ const TextWithIcon = props => {
     const style = item?.color ? {
         border:`1px solid ${Utils.invertColor(item?.color)}`,
         color: Utils.getInvertedColor(item?.color, props.themeType, true) || undefined,
-        backgroundColor: item?.color
+        backgroundColor: item?.color,
     } : {};
 
     return <div style={Object.assign({}, props.style, style)} className={Utils.clsx(props.className, props.classes.div, props.moreClasses?.root)} title={props.title || item.value}>

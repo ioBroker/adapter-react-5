@@ -8,15 +8,15 @@ import Icon from './Icon';
 import Utils from './Utils';
 import I18n from '../i18n';
 
-const styles = theme => ({
+const styles = () => ({
     different: {
-        opacity: 0.5
+        opacity: 0.5,
     },
     icon: {
         width: 16,
         height: 16,
-        marginRight: 8
-    }
+        marginRight: 8,
+    },
 });
 
 class SelectWithIcon extends Component {
@@ -57,7 +57,7 @@ class SelectWithIcon extends Component {
         }
 
         if (this.props.allowNone) {
-            list.unshift({value: '', name: I18n.t('ra_none')});
+            list.unshift({ value: '', name: I18n.t('ra_none') });
         }
 
         this.state = {
@@ -70,8 +70,8 @@ class SelectWithIcon extends Component {
             this.timeout = this.timeout || setTimeout(() => {
                 this.timeout = null;
                 const list = JSON.parse(JSON.stringify(this.state.list));
-                list.unshift({value: '', name: I18n.t('ra_none')});
-                this.setState({list});
+                list.unshift({ value: '', name: I18n.t('ra_none') });
+                this.setState({ list });
             }, 100);
         } else if (!this.props.allowNone && this.state.list.find(obj => obj.value === '')) {
             this.timeout = this.timeout || setTimeout(() => {
@@ -79,7 +79,7 @@ class SelectWithIcon extends Component {
                 const list = JSON.parse(JSON.stringify(this.state.list));
                 const i = this.state.list.findIndex(obj => obj.value === '');
                 list.splice(i, 1);
-                this.setState({list});
+                this.setState({ list });
             }, 100);
         }
 
@@ -88,7 +88,7 @@ class SelectWithIcon extends Component {
         const style = this.props.value === this.props.different ? {} :
             {
                 color: item?.color || undefined,
-                backgroundColor: Utils.getInvertedColor(item?.color, this.props.themeType)
+                backgroundColor: Utils.getInvertedColor(item?.color, this.props.themeType),
             };
 
         if (this.props.dense && this.props.style) {
@@ -103,7 +103,7 @@ class SelectWithIcon extends Component {
             renderValue={value => <span>{item?.icon ? <Icon src={item?.icon} className={this.props.classes.icon} /> : null}{item?.name}</span>}
             classes={{root: Utils.clsx(
                 this.props.value === this.props.different ? this.props.classes.different : '',
-                this.props.dense ? this.props.className : ''
+                this.props.dense ? this.props.className : '',
             )}}
             style={style}
             onChange={el => {
@@ -143,7 +143,6 @@ class SelectWithIcon extends Component {
                 <InputLabel>{this.props.label}</InputLabel>
                 {select}
             </FormControl>;
-
         }
     }
 }

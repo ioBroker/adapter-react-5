@@ -92,7 +92,7 @@ const styles = theme => ({
 
     },
     rowNoEdit: {
-        opacity: 0.3
+        opacity: 0.3,
     },
     cellExpand: {
         width: 30,
@@ -164,7 +164,7 @@ const styles = theme => ({
     },
     glow: {
         animation: 'glow 0.2s 2 alternate'
-    }
+    },
 });
 
 function descendingComparator(a, b, orderBy, lookup) {
@@ -313,7 +313,7 @@ class TreeTable extends React.Component {
                 } else {
                     editData[col.field] = e.target.value;
                 }
-                this.setState({editData});
+                this.setState({ editData });
             }}
         />;
     }
@@ -390,10 +390,9 @@ class TreeTable extends React.Component {
             open={this.state.showSelectColor}>
             <ColorPicker
                 color={this.state.selectIdValue}
-                onChange={color => {
-                    this.setState({selectIdValue: color}, () =>
-                        this.selectCallback && this.selectCallback(color));
-                }}
+                onChange={color =>
+                    this.setState({ selectIdValue: color }, () =>
+                        this.selectCallback && this.selectCallback(color))}
             />
         </Dialog>;
     }
@@ -406,7 +405,7 @@ class TreeTable extends React.Component {
                 fullWidth
                 className={this.props.classes.fieldEditWithButton}
                 value={_val}
-                inputProps={{style: {backgroundColor: _val, color: Utils.isUseBright(_val, null) ? '#FFF' : '#000'}}}
+                inputProps={{ style: { backgroundColor: _val, color: Utils.isUseBright(_val, null) ? '#FFF' : '#000'} }}
                 onChange={e => {
                     const editData = this.state.editData ? { ...this.state.editData } : {};
                     if (e.target.value === val) {
