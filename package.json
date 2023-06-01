@@ -63,7 +63,7 @@
     "@babel/preset-env": "^7.22.4",
     "@babel/preset-flow": "^7.21.4",
     "@babel/preset-react": "^7.22.3",
-    "@types/react": "^17.0.59",
+    "@types/react": "^18.2.7",
     "babel": "^6.23.0",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
