@@ -39,7 +39,7 @@
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.3",
     "@mui/styles": "^5.13.2",
-    "@mui/x-date-pickers": "6.4.0",
+    "@mui/x-date-pickers": "6.5.0",
     "@iobroker/socket-client": "^2.0.7",
     "react-cropper": "^2.3.3",
     "@sentry/browser": "^7.52.1",
