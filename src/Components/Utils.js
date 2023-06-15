@@ -470,7 +470,7 @@ class Utils {
             return defaultValue === undefined ? true : defaultValue;
         }
         color = color.toString();
-        if (color.indexOf('#') === 0) {
+        if (color.startsWith('#')) {
             color = color.slice(1);
         }
         let r;
@@ -818,14 +818,14 @@ class Utils {
     static updateSmartName(obj, newSmartName, byON, smartType, instanceId, noCommon) {
         const language = I18n.getLanguage();
 
-        // convert Old format
+        // convert the old format
         if (typeof obj.common.smartName === 'string') {
             const nnn = obj.common.smartName;
             obj.common.smartName = {};
             obj.common.smartName[language] = nnn;
         }
 
-        // convert old settings
+        // convert the old settings
         if (obj.native && obj.native.byON) {
             delete obj.native.byON;
             let _smartName = obj.common.smartName;
@@ -853,9 +853,9 @@ class Utils {
                 } else {
                     obj.common.smartName.smartType = smartType;
                 }
-
             }
         }
+
         if (byON !== undefined) {
             if (noCommon) {
                 obj.common.custom = obj.common.custom || {};
@@ -867,6 +867,7 @@ class Utils {
                 obj.common.smartName.byON = byON;
             }
         }
+
         if (newSmartName !== undefined) {
             let smartName;
             if (noCommon) {
@@ -883,10 +884,10 @@ class Utils {
             // If smart name deleted
             if (smartName && (!smartName[language] ||
                 (smartName[language] === obj.common.name &&
-                    (!obj.common.role || obj.common.role.indexOf('button') >= 0)))) {
+                    (!obj.common.role || obj.common.role.includes('button'))))) {
                 delete smartName[language];
                 let empty = true;
-                // Check if structure has any definitions
+                // Check if the structure has any definitions
                 for (const key in smartName) {
                     if (smartName.hasOwnProperty(key)) {
                         empty = false;
@@ -908,6 +909,7 @@ class Utils {
                             delete obj.common.custom[instanceId].fr;
                             delete obj.common.custom[instanceId].pt;
                             delete obj.common.custom[instanceId].es;
+                            delete obj.common.custom[instanceId].uk;
                             delete obj.common.custom[instanceId]['zh-cn'];
                         }
                     } else {
@@ -921,6 +923,7 @@ class Utils {
                             delete obj.common.smartName.fr;
                             delete obj.common.smartName.pt;
                             delete obj.common.smartName.es;
+                            delete obj.common.smartName.uk;
                             delete obj.common.smartName['zh-cn'];
                         } else {
                             obj.common.smartName = null;

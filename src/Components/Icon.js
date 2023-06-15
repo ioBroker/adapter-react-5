@@ -22,7 +22,7 @@ export function getSystemIcon(obj) {
         return null;
     }
 
-    // system or design have special icons
+    // system or design has special icons
     if (id.startsWith('_design/') || (id === 'system')) {
         icon = <IconSystem className="iconOwn" />;
     } else if (id === '0_userdata' || id === '0_userdata.0') {
