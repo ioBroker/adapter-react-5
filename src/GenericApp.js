@@ -458,27 +458,30 @@ class GenericApp extends Router {
 
     /**
      * Changes the current theme
-     */
-    toggleTheme() {
+     * @param {string} newThemeName Theme name
+     **/
+    toggleTheme(newThemeName) {
         const themeName = this.state.themeName;
 
         // dark => blue => colored => light => dark
-        const newThemeName = themeName === 'dark' ? 'blue' :
+        newThemeName = newThemeName || (themeName === 'dark' ? 'blue' :
             (themeName === 'blue' ? 'colored' :
-                (themeName === 'colored' ? 'light' : 'dark'));
+                (themeName === 'colored' ? 'light' : 'dark')));
 
-        Utils.setThemeName(newThemeName);
+        if (newThemeName !== themeName) {
+            Utils.setThemeName(newThemeName);
 
-        const theme = this.createTheme(newThemeName);
+            const theme = this.createTheme(newThemeName);
 
-        this.setState({
-            theme,
-            themeName: this.getThemeName(theme),
-            themeType: this.getThemeType(theme),
-        }, () => {
-            this.props.onThemeChange && this.props.onThemeChange(newThemeName);
-            this.onThemeChanged && this.onThemeChanged(newThemeName);
-        });
+            this.setState({
+                theme,
+                themeName: this.getThemeName(theme),
+                themeType: this.getThemeType(theme),
+            }, () => {
+                this.props.onThemeChange && this.props.onThemeChange(newThemeName);
+                this.onThemeChanged && this.onThemeChanged(newThemeName);
+            });
+        }
     }
 
     /**

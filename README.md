@@ -661,6 +661,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Allowed setting theme name directly by theme toggle
+
 ### 4.1.0 (2023-05-10)
 * (bluefox) `craco-module-federation.js` was added. For node 16
 
