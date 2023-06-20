@@ -10,9 +10,9 @@
     "prepublishOnly": "echo \"Error: publish from dist directory and write gulp\" && exit 1",
     "build": "gulp",
     "release": "release-script",
-    "release-patch": "release-script patch --yes updateLockfile --no",
-    "release-minor": "release-script minor --yes updateLockfile --no",
-    "release-major": "release-script major --yes updateLockfile --no",
+    "release-patch": "release-script patch --yes --updateLockfile=no",
+    "release-minor": "release-script minor --yes --updateLockfile=no",
+    "release-major": "release-script major --yes --updateLockfile=no",
     "update-packages": "ncu --upgrade"
   },
   "repository": {
