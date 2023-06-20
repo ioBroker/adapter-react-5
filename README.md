@@ -661,7 +661,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.1.1 (2023-06-20)
 * (bluefox) Allowed setting theme name directly by theme toggle
 
 ### 4.1.0 (2023-05-10)
