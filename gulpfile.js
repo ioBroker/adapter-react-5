@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2022 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2023 bluefox <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -11,6 +11,44 @@ const babel = require('gulp-babel');
 const sourcemaps = require('gulp-sourcemaps');
 const typescript = require('gulp-typescript');
 const fs = require('fs');
+const cp = require('child_process');
+
+function npmInstall(dir) {
+    dir = dir || `${__dirname}/`;
+    return new Promise((resolve, reject) => {
+        // Install node modules
+        const cwd = dir.replace(/\\/g, '/');
+
+        const cmd = `npm install -f`;
+        console.log(`"${cmd} in ${cwd}`);
+
+        // System call used for update of js-controller itself,
+        // because during the installation of the npm packet will be deleted too, but some files must be loaded even during the installation process.
+        const child = cp.exec(cmd, {cwd});
+
+        child.stderr.pipe(process.stderr);
+        child.stdout.pipe(process.stdout);
+
+        child.on('exit', (code /* , signal */) => {
+            // code 1 is a strange error that cannot be explained. Everything is installed but error :(
+            if (code && code !== 1) {
+                reject(`Cannot install: ${code}`);
+            } else {
+                console.log(`"${cmd} in ${cwd} finished.`);
+                // command succeeded
+                resolve();
+            }
+        });
+    });
+}
+
+gulp.task('npm', () => {
+    if (fs.existsSync(`${__dirname}/src/node_modules`)) {
+        return Promise.resolve();
+    } else {
+        return npmInstall();
+    }
+});
 
 gulp.task('copy', () => Promise.all([
     gulp.src(['src/**/*.d.ts']).pipe(gulp.dest('dist')),
@@ -148,4 +186,4 @@ gulp.task('compile', gulp.parallel('copy',
     ])
 ));
 
-gulp.task('default', gulp.series('compile', 'patchReadme', 'patchJsonSchemeForTable'));
+gulp.task('default', gulp.series('npm', 'compile', 'patchReadme', 'patchJsonSchemeForTable'));
