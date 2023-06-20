@@ -474,7 +474,7 @@ class GenericApp extends Router {
         this.setState({
             theme,
             themeName: this.getThemeName(theme),
-            themeType: this.getThemeType(theme)
+            themeType: this.getThemeType(theme),
         }, () => {
             this.props.onThemeChange && this.props.onThemeChange(newThemeName);
             this.onThemeChanged && this.onThemeChanged(newThemeName);
