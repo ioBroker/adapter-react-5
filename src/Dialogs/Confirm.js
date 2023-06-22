@@ -1,5 +1,5 @@
 /**
- * Copyright 2019-2022 bluefox <dogafox@gmail.com>
+ * Copyright 2019-2023 bluefox <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -29,8 +29,8 @@ const styles = {
         fontSize: 12,
     },
     suppressRoot: {
-        marginTop: 16
-    }
+        marginTop: 16,
+    },
 };
 
 /**
