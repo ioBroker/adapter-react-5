@@ -42,7 +42,7 @@
     "@mui/x-date-pickers": "6.8.0",
     "@iobroker/socket-client": "^2.1.0",
     "react-cropper": "^2.3.3",
-    "@sentry/browser": "^7.56.0",
+    "@sentry/browser": "^7.57.0",
     "@sentry/integrations": "^7.56.0",
     "@types/iobroker": "^4.0.5",
     "react-color": "^2.19.3",
