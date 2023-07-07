@@ -2,7 +2,7 @@
 You can find demo on https://github.com/ioBroker/adapter-react-demo
 
 ## Getting started
-If you want to create the configuration page with react:
+If you want to create the configuration page with ReactJS:
 1. Create github repo for adapter.
 2. execute `npx create-react-app src` . It will take a while.
 3. `cd src`
@@ -181,7 +181,7 @@ onPrepareSave(settings) {
 ## Components
 
 ### Connection.js
-This is non-react class to provide the communication for socket connection with server. 
+This is a non-react class to provide the communication for socket connection with server. 
 
 ### GenericApp.js
 
@@ -322,7 +322,7 @@ function renderCron() {
 ##### getObjectNameFromObj
 `getObjectNameFromObj(obj, settings, options, isDesc)`
 
-Get object name from single object.
+Get object name from a single object.
 
 Usage: `Utils.getObjectNameFromObj(this.objects[id], null, {language: I18n.getLanguage()})`
 
@@ -661,6 +661,10 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Updated packages
+* (bluefox) Added new method `getObjectsById` to the socket communication
+
 ### 4.1.2 (2023-06-20)
 * (bluefox) Allowed setting theme name directly by theme toggle
 

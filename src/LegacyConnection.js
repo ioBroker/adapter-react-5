@@ -930,6 +930,21 @@ class Connection {
     }
 
     /**
+     * Gets objects by list of IDs.
+     * @param {string[]} list Array of object IDs to retrieve.
+     * @returns {void}
+     */
+    getObjectsById(list) {
+        if (!this.connected) {
+            return Promise.reject(NOT_CONNECTED);
+        } else {
+            return new Promise((resolve, reject) =>
+                this._socket.emit('getObjects', list, (err, res) =>
+                    err ? reject(err) : resolve(res)));
+        }
+    }
+
+    /**
      * Called internally.
      * @private
      * @param {boolean} isEnable
