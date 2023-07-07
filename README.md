@@ -661,7 +661,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.2.0 (2023-07-07)
 * (bluefox) Updated packages
 * (bluefox) Added new method `getObjectsById` to the socket communication
 
