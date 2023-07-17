@@ -71,7 +71,14 @@ Possible types:
   - `square` - width must be equal to height or crop must allow only square as shape
 
 - `image` - saves image as file of the `adapter.X` object or as base64 in attribute
-  - `filename` - name of file is structure name
+  - `filename` - name of file is structure name. In the below example `login-bg.png` is file name for `writeFile("myAdapter.INSTANCE", "login-bg.png")`
+  - `accept` - html accept attribute, like `image/*,.pdf`
+  - `maxSize` - maximal size of file to upload
+  - `base64` - if true the image will be saved as data-url in attribute, elsewise as binary in file storage
+  - `!maxWidth`
+  - `!maxHeight`
+  - `!crop` - if true, allow user to crop the image
+  - `!square` - width must be equal to height or crop must allow only square as shape
 ```
   "login-bg.png": {
        "type": "image",
@@ -90,19 +97,23 @@ Possible types:
        },
        "crop": true
      }
+  }
 ```
-  `login-bg.png` is file name for writeFile('myAdapter.INSTANCE', 'login-bg.png')   
-  - `accept` - html accept attribute, like "image/*,.pdf"
-  - `maxSize` - 
-  - `base64` - if true the image will be saved as data-url in attribute, elsewise as binary in file storage
-  - `!maxWidth`
-  - `!maxHeight`
-  - `!crop` - if true, allow user to crop the image
-  - `!square` - width must be equal to height or crop must allow only square as shape
 
 - `objectId` - object ID: show it with name, color and icon
-    - `type` - Desired type: `channel`, `device`, ... (has only `state` by default)
+    - `types` - Desired type: `channel`, `device`, ... (has only `state` by default). It is singular, because `type` is already occupied.
     - `root` - [optional] Show only this root object and its children
+    - `customFilter` - [optional] Cannot be used together with `type` settings. Examples
+       `{common: {custom: true}}` - show only objects with some custom settings
+       `{common: {custom: 'sql.0'}}` - show only objects with sql.0 custom settings (only of the specific instance)
+       `{common: {custom: '_dataSources'}}` - show only objects of adapters `influxdb` or `sql` or `history`
+       `{common: {custom: 'adapterName.'}}` - show only objects of custom settings of specific adapter (all instances)
+       `{type: 'channel'}` - show only channels
+       `{type: ['channel', 'device']}` - show only channels and devices
+       `{common: {type: 'number'}` - show only states of type 'number
+       `{common: {type: ['number', 'string']}` - show only states of type 'number and string
+       `{common: {role: 'switch']}` - show only states with roles starting from switch
+       `{common: {role: ['switch', 'button]}` - show only states with roles starting from `switch` and `button`
 
 - `password` - password field
   This field-type just have an effect in the UI.
@@ -120,7 +131,7 @@ Possible types:
     - `short` - value will look like `0` and not `ADAPTER.0`
     - `all` - Add to the options "all" option with value `*`
 
-- `chips` - user can enter the word, and it will be added (see cloud => services => White list). Option is an array if no `delimiter` defined.
+- `chips` - user can enter the word, and it will be added (see cloud => services => White list). Output is an array if no `delimiter` defined.
     - `delimiter` - if it is defined, so the option will be stored as string with delimiter instead of an array. E.g. by `delimiter=;` you will get `a;b;c` instead of `['a', 'b', 'c']`
 
 - `alive` - just indication if the instance is alive, and it could be used in "hidden" and "disabled" (will not be saved in config)
@@ -164,21 +175,30 @@ Possible types:
     - `label` - multi-language text
     - `href` - link. Link could be dynamic like `#tab-objects/customs/${data.parentId}`
     - `button` - show link as button
-    - `icon` - if icon should be shown: `auth`, `send`, `web`, `warning`, `error`, `info`, `search`. You can use `base64` icons. (Request via issue if you need more icons)
+    - `variant` - type of button (`outlined`, `contained`, `text`)
+    - `color` - color of button (e.g. `primary`)
+    - `icon` - if icon should be shown: `auth`, `send`, `web`, `warning`, `error`, `info`, `search`, `book`, `help`, `upload`. You can use `base64` icons (start with `data:image/svg+xml;base64,...`). (Request via issue if you need more icons)
 
 - `staticImage` - static image
     - `href` - optional HTTP link
     - `src` - name of picture (from admin directory)
 
-- `table` - table with items that could be deleted, added, movedUP, moved Down
-    - `items` - [{"type": see above, "width": px or %, "title": {"en": "header"}, "attr": "name", "filter": false, "sort": true, "default": ""}]
+- `table` - table with items that could be deleted, added, moved up, moved down
+    - `items` - `[{"type": see above, "width": px or %, "title": {"en": "header"}, "attr": "name", "filter": false, "sort": true, "default": ""}]`
     - `noDelete` - boolean if delete or add disabled, If `noDelete` is false, add, delete and move up/down should work
     - `objKeyName` - (legacy setting, don't use!) - name of the key in `{"192.168.1.1": {delay: 1000, enabled: true}, "192.168.1.2": {delay: 2000, enabled: false}}`
     - `objValueName` - (legacy setting, don't use!) - name of the value in `{"192.168.1.1": "value1", "192.168.1.2": "value2"}`
     - `allowAddByFilter` - if add allowed even if filter is set
     - `showSecondAddAt` - Number of lines from which the second add button at the bottom of the table will be shown. Default 5
     - `clone` - [optional] - if clone button should be shown. If true, the clone button will be shown. If attribute name, this name will be unique.
-- `json` - json editor
+
+- `accordion` - accordion with items that could be deleted, added, moved up, moved down (Admin 6.6.0 and newer)
+    - `items` - `[{"type": see above, "attr": "name", "default": ""}]` - items can be placed like on a `panel` (xs, sm, md, lg and newLine)
+    - `titleAttr` - key of the items list which should be used as name
+    - `noDelete` - boolean if delete or add disabled, If `noDelete` is false, add, delete and move up/down should work
+    - `clone` - [optional] - if clone button should be shown. If true, the clone button will be shown. If attribute name, this name will be unique.
+
+- `jsonEditor` - json editor
 
 - `language` - select language
     - `system` - allow the usage of the system language from `system.config` as default
@@ -348,7 +368,14 @@ adapter.on('message', obj => {
   - `autoInit` - init field with current coordinates if empty
   - `longitudeName` - if defined, the longitude will be stored in this attribute, divider will be ignored
   - `latitudeName` - if defined, the latitude will be stored in this attribute, divider will be ignored
-  - `useSystemName` - if defined, the checkbox with "Use system settings" will be shown and latitude, longitude will be read from system.config
+  - `useSystemName` - if defined, the checkbox with "Use system settings" will be shown and latitude, longitude will be read from system.config, a boolean will be saved to the given name
+
+- `license` - shows the license information if not already accepted. One of attributes `texts` or `licenseUrl` must be defined. When the license is accepted, the defined configuration attribute will be set to `true`.
+  - `texts` - array of paragraphs with texts, which will be shown each as a separate paragraph
+  - `licenseUrl` - URL to the license file (e.g. https://raw.githubusercontent.com/ioBroker/ioBroker.docs/master/LICENSE)
+  - `title` - Title of the license dialog
+  - `agreeText` - Text of the agreed button
+  - `checkBox` - If defined, the checkbox with the given name will be shown. If checked, the agreed button will be enabled.
 
 - `checkLicense` - Very special component to check the license online. It's required exactly `license` and `useLicenseManager` properties in native.
   - `uuid` - Check UUID
@@ -427,8 +454,8 @@ All types could have:
                     "label": "Type",
                     "sm": 6, // 1 - 12
                     "options": [
-                        {"label": "option 1", value: 1},
-                        {"label": "option 2", value: 2}
+                        {"label": "option 1", "value": 1},
+                        {"label": "option 2", "value": 2}
                     ] 
                 },
                 "myBool": {
@@ -496,7 +523,7 @@ Component must look like
 />
 ```
 
-If no schema provided, the schema must be created automatically from data.
+If no schema is provided, the schema must be created automatically from data.
 - `boolean` => checkbox
 - `text` => text input
 - `number` => number
@@ -508,7 +535,7 @@ If element has no attribute `type`, assume it has default type 'panel'.
 
 ## i18n
 There are several options to provide the translations.
-Only the first one is compatible with our Community Translation Tool Weblate, so it should be favoured over the others!
+Only the first one is compatible with our Community Translation Tool Weblate, so it should be favored over the others!
 
 1. Users can provide texts from files.
 

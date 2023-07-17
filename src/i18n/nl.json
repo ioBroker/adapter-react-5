@@ -380,5 +380,7 @@
   "ra_Fallback custom certificates": "Fallback aangepaste certificaten",
   "ra_Clone current row": "Kloon de huidige rij",
   "ra_fileType_video": "Video",
-  "ra_select_folder_hint": "Om een map te selecteren, houdt u gewoon de toets \"shift\" ingedrukt door op de map te klikken."
+  "ra_select_folder_hint": "Om een map te selecteren, houdt u gewoon de toets \"shift\" ingedrukt door op de map te klikken.",
+  "ra_Accept license": "Accepteer licentie",
+  "ra_License agreement": "Licentieovereenkomst"
 }

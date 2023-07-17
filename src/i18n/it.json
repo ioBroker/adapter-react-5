@@ -380,5 +380,7 @@
   "ra_Fallback custom certificates": "Certificati personalizzati di fallback",
   "ra_Clone current row": "Clona riga corrente",
   "ra_fileType_video": "video",
-  "ra_select_folder_hint": "Per selezionare la cartella, basta tenere premuto il tasto \"shift\" facendo clic sulla cartella."
+  "ra_select_folder_hint": "Per selezionare la cartella, basta tenere premuto il tasto \"shift\" facendo clic sulla cartella.",
+  "ra_Accept license": "Accetta licenza",
+  "ra_License agreement": "Contratto di licenza"
 }

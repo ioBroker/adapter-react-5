@@ -380,5 +380,7 @@
   "ra_Fallback custom certificates": "Benutzerdefinierte Fallback-Zertifikate",
   "ra_Clone current row": "Aktuelle Zeile klonen",
   "ra_fileType_video": "Video",
-  "ra_select_folder_hint": "Um einen Ordner auszuwählen, halten Sie einfach die Taste \"Shift\" gedrückt, indem Sie auf den Ordner klicken."
+  "ra_select_folder_hint": "Um einen Ordner auszuwählen, halten Sie einfach die Taste \"Shift\" gedrückt, indem Sie auf den Ordner klicken.",
+  "ra_Accept license": "Lizenz akzeptieren",
+  "ra_License agreement": "Lizenzvereinbarung"
 }

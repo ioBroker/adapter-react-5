@@ -380,5 +380,7 @@
   "ra_Fallback custom certificates": "Niestandardowe certyfikaty zastępcze",
   "ra_Clone current row": "Sklonuj bieżący wiersz",
   "ra_fileType_video": "Wideo",
-  "ra_select_folder_hint": "Aby wybrać folder, wystarczy przytrzymać klawisz „shift”, klikając folder."
+  "ra_select_folder_hint": "Aby wybrać folder, wystarczy przytrzymać klawisz „shift”, klikając folder.",
+  "ra_Accept license": "Zaakceptuj licencję",
+  "ra_License agreement": "Umowa licencyjna"
 }

@@ -380,5 +380,7 @@
   "ra_Fallback custom certificates": "Резервные пользовательские сертификаты",
   "ra_Clone current row": "Клонировать текущую строку",
   "ra_fileType_video": "видео",
-  "ra_select_folder_hint": "Чтобы выбрать папку, просто удерживайте клавишу «Shift», щелкнув папку."
+  "ra_select_folder_hint": "Чтобы выбрать папку, просто удерживайте клавишу «Shift», щелкнув папку.",
+  "ra_Accept license": "Принять лицензию",
+  "ra_License agreement": "Лицензионное соглашение"
 }

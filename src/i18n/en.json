@@ -380,5 +380,7 @@
   "ra_Fallback custom certificates": "Fallback custom certificates",
   "ra_Clone current row": "Clone current row",
   "ra_fileType_video": "Video",
-  "ra_select_folder_hint": "To select folder, just hold the key \"shift\" by clicking the folder."
+  "ra_select_folder_hint": "To select folder, just hold the key \"shift\" by clicking the folder.",
+  "ra_Accept license": "Accept license",
+  "ra_License agreement": "License agreement"
 }

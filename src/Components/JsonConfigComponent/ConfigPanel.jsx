@@ -13,6 +13,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Utils from './wrapper/Components/Utils';
 
 import ConfigGeneric from './ConfigGeneric';
+import ConfigAccordion from './ConfigAccordion';
 import ConfigAlive from './ConfigAlive';
 import ConfigAutocomplete from './ConfigAutocomplete';
 import ConfigAutocompleteSendTo from './ConfigAutocompleteSendTo';
@@ -36,6 +37,7 @@ import ConfigImageUpload from './ConfigImageUpload';
 import ConfigInstanceSelect from './ConfigInstanceSelect';
 import ConfigJsonEditor from './ConfigJsonEditor';
 import ConfigLanguage from './ConfigLanguage';
+import ConfigLicense from './ConfigLicense';
 import ConfigNumber from './ConfigNumber';
 import ConfigObjectId from './ConfigObjectId';
 import ConfigPassword from './ConfigPassword';
@@ -60,6 +62,7 @@ import ConfigUUID from './ConfigUUID';
 import ConfigUser from './ConfigUser';
 
 const components = {
+    accordion: ConfigAccordion,
     alive: ConfigAlive,
     autocomplete: ConfigAutocomplete,
     autocompleteSendTo: ConfigAutocompleteSendTo,
@@ -86,6 +89,7 @@ const components = {
     ip: ConfigIP,
     jsonEditor: ConfigJsonEditor,
     language: ConfigLanguage,
+    license: ConfigLicense,
     number: ConfigNumber,
     objectId: ConfigObjectId,
     password: ConfigPassword,
