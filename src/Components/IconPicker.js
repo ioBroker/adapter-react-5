@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import { useDropzone } from 'react-dropzone';
 import makeStyles from '@mui/styles/makeStyles';
 
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import IconButton from '@mui/material/IconButton';
-import ClearIcon from '@mui/icons-material/Clear';
+import {
+    InputLabel,
+    FormControl,
+    IconButton,
+} from '@mui/material';
+import { Clear as ClearIcon } from '@mui/icons-material';
 
 import IconSelector from './IconSelector';
 import Icon from './Icon';
@@ -26,7 +28,7 @@ import Utils from './Utils';
  *
  * @extends {React.Component<IconPickerProps>}
  */
-let IconPicker = function (props) {
+const IconPicker = props => {
     let IconCustom = props.icon;
 
     const useStyles = makeStyles(theme => ({

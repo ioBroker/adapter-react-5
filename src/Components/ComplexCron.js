@@ -2,15 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@mui/styles/withStyles';
 
-import Checkbox from '@mui/material/Checkbox';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import AppBar from '@mui/material/AppBar';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import TextField from '@mui/material/TextField';
+import {
+    Checkbox,
+    Button,
+    MenuItem,
+    Select,
+    FormControlLabel,
+    AppBar,
+    Tabs,
+    Tab,
+    TextField,
+} from '@mui/material';
 
 import I18n from '../i18n';
 import convertCronToText from './SimpleCron/cronText';

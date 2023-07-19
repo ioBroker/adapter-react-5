@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import CircularProgress from '@mui/material/CircularProgress';
-import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
+import {
+    Dialog,
+    DialogTitle,
+    DialogActions,
+    DialogContent,
+    Button,
+    IconButton,
+    TextField,
+    Tooltip,
+    CircularProgress,
+} from '@mui/material';
 
-import CloseIcon from '@mui/icons-material/Close';
-import ClearIcon from '@mui/icons-material/Clear';
+import {
+    Close as CloseIcon,
+    Clear as ClearIcon,
+} from '@mui/icons-material';
 
 import Icon from './Icon';
 import Utils from './Utils';

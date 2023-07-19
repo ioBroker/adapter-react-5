@@ -2,14 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import SVG from 'react-inlinesvg';
 
-import IconSystem from '@mui/icons-material/SettingsApplications';
-import IconPhoto from '@mui/icons-material/Photo';
-import IconGroup from '@mui/icons-material/SupervisedUserCircle';
-import IconUser from '@mui/icons-material/PersonOutlined';
-import IconHost from '@mui/icons-material/Router';
-import IconConnection from '@mui/icons-material/Wifi';
-import IconInfo from '@mui/icons-material/Info';
-import IconMeta from '@mui/icons-material/Description';
+import {
+    SettingsApplications as IconSystem,
+    Photo as IconPhoto,
+    SupervisedUserCircle as IconGroup,
+    PersonOutlined as IconUser,
+    Router as IconHost,
+    Wifi as IconConnection,
+    Info as IconInfo,
+    Description as IconMeta,
+} from '@mui/icons-material';
 import IconAlias from '../icons/IconAlias';
 
 import Utils from './Utils';

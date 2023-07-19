@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { withStyles } from '@mui/styles';
 
-import Button from '@mui/material/Button';
 import {
     Dialog, DialogActions, DialogContent,
-    DialogTitle, IconButton, TextField,
+    DialogTitle, IconButton, TextField, Button,
 } from '@mui/material';
-import { withStyles } from '@mui/styles';
 
 import {
     Check as CheckIcon,
     Close as CloseIcon,
     Language as LanguageIcon,
-} from '@mui/icons-material/Check';
+} from '@mui/icons-material';
 
 import Utils from './Utils';
 import I18n from '../i18n';

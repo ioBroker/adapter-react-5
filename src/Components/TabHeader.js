@@ -1,7 +1,7 @@
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
 
-import Grid from '@mui/material/Grid';
+import { Grid } from '@mui/material';
 
 /**
  * @typedef {object} TabHeaderProps
@@ -15,7 +15,7 @@ class TabHeader extends React.Component {
             container
             alignItems="center"
         >
-            { this.props.children }
+            {this.props.children}
         </Grid>;
     }
 }

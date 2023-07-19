@@ -382,5 +382,13 @@
   "ra_fileType_video": "Video",
   "ra_select_folder_hint": "To select folder, just hold the key \"shift\" by clicking the folder.",
   "ra_Accept license": "Accept license",
-  "ra_License agreement": "License agreement"
+  "ra_License agreement": "License agreement",
+  "ra_Import from %s": "Import from %s",
+  "ra_Export data to %s file": "Export data to %s file",
+  "ra_Import data from %s file": "Import data from %s file",
+  "ra_No data found in file": "No data found in file",
+  "ra_Append or replace?": "Append or replace?",
+  "ra_Append %s entries or replace existing?": "Append %s entries or replace existing?",
+  "ra_Replace": "Replace",
+  "ra_Append": "Append"
 }

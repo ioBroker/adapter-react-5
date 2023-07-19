@@ -1,25 +1,27 @@
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
 import withStyles from '@mui/styles/withStyles';
-import Fab from '@mui/material/Fab';
+import { Fab } from '@mui/material';
 import PropTypes from 'prop-types';
 
 import I18n from '../i18n';
 
-import IconHelp from '@mui/icons-material/Help'
-import IconUpload from '@mui/icons-material/VerticalAlignTop'
-import IconDownload from '@mui/icons-material/VerticalAlignBottom'
+import {
+    Help as IconHelp,
+    VerticalAlignTop as IconUpload,
+    VerticalAlignBottom as IconDownload,
+} from '@mui/icons-material';
 
-const styles = theme => ({
+const styles = () => ({
     buttons: {
         marginRight: 5,
         marginTop: 5,
-        float: 'right'
+        float: 'right',
     },
     logo: {
         padding: 8,
-        width: 64
-    }
+        width: 64,
+    },
 });
 
 /**
@@ -34,10 +36,9 @@ const styles = theme => ({
  * @extends {React.Component<LogoProps>}
  */
 class Logo extends React.Component {
-
     static generateFile(filename, obj) {
         const el = window.document.createElement('a');
-        el.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(obj, null, 2)));
+        el.setAttribute('href', `data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify(obj, null, 2))}`);
         el.setAttribute('download', filename);
 
         el.style.display = 'none';
@@ -93,14 +94,14 @@ class Logo extends React.Component {
         }
 
         //window.open('data:application/iobroker; content-disposition=attachment; filename=' + result._id + '.json,' + JSON.stringify(result, null, 2));
-        Logo.generateFile(result._id + '.json', result);
+        Logo.generateFile(`${result._id}.json`, result);
     }
 
     upload() {
         const input = window.document.createElement('input');
         input.setAttribute('type', 'file');
         input.setAttribute('id', 'files');
-        input.setAttribute('opacity', 0);
+        input.setAttribute('opacity', '0');
         input.addEventListener('change', e => this.handleFileSelect(e, () => {}), false);
         (input.click)();
     }
@@ -117,7 +118,7 @@ class Logo extends React.Component {
                     className={this.props.classes.buttons}
                     onClick={() => {
                         const win = window.open(this.props.common.readme, '_blank');
-                        win.focus();
+                        win?.focus();
                     }}
                 ><IconHelp /></Fab> : null}
             <Fab size="small" color="primary" aria-label="Load config" className={this.props.classes.buttons}

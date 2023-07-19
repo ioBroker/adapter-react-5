@@ -1,24 +1,23 @@
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
 import withStyles from '@mui/styles/withStyles';
-
 import PropTypes from 'prop-types';
-import Utils from './Utils';
 
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
+import { Grid, Paper } from '@mui/material';
+
+import Utils from './Utils';
 
 const styles = {
     root: {
         width: '100%',
-        height: '100%'
+        height: '100%',
     },
     overflowHidden: {
-        overflow: 'hidden'
+        overflow: 'hidden',
     },
     container: {
-        height: '100%'
-    }
+        height: '100%',
+    },
 };
 
 /**
@@ -35,16 +34,16 @@ class TabContainer extends React.Component {
         const { classes } = this.props;
 
         return <Paper
-            elevation={ !isNaN(this.props.elevation) ? this.props.elevation : 1 }
-            className={ Utils.clsx(classes.root, {[classes.overflowHidden]: this.props.overflow !== 'visible'}) }
+            elevation={!isNaN(this.props.elevation) ? this.props.elevation : 1}
+            className={Utils.clsx(classes.root, {[classes.overflowHidden]: this.props.overflow !== 'visible'})}
         >
             <Grid
                 container
                 direction="column"
                 wrap="nowrap"
-                className={ classes.container }
+                className={classes.container}
             >
-                { this.props.children }
+                {this.props.children}
             </Grid>
         </Paper>;
     }
@@ -52,7 +51,7 @@ class TabContainer extends React.Component {
 
 TabContainer.propTypes = {
     elevation: PropTypes.number,
-    overflow: PropTypes.string
+    overflow: PropTypes.string,
 };
 
 /** @type {typeof TabContainer} */

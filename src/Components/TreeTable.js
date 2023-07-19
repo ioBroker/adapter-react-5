@@ -4,29 +4,33 @@ import PropTypes from 'prop-types';
 import withStyles from '@mui/styles/withStyles';
 import { HexColorPicker as ColorPicker } from 'react-colorful';
 
-import Fab from '@mui/material/Fab';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import IconButton from '@mui/material/IconButton';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
-import Checkbox from '@mui/material/Checkbox';
-import Dialog from '@mui/material/Dialog';
+import {
+    Fab,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    TableSortLabel,
+    IconButton,
+    Select,
+    MenuItem,
+    TextField,
+    Checkbox,
+    Dialog,
+} from '@mui/material';
 
-import IconEdit from '@mui/icons-material/Edit';
-import IconDelete from '@mui/icons-material/Delete';
-import IconExpand from '@mui/icons-material/NavigateNext';
-import IconCollapse from '@mui/icons-material/ExpandMore';
-import IconCheck from '@mui/icons-material/Check';
-import IconClose from '@mui/icons-material/Close';
-import IconAdd from '@mui/icons-material/Add';
-import IconList from '@mui/icons-material/ViewHeadline';
-import IconColor from '@mui/icons-material/Colorize';
+import {
+    Edit as IconEdit,
+    Delete as IconDelete,
+    NavigateNext as IconExpand,
+    ExpandMore as IconCollapse,
+    Check as IconCheck,
+    Close as IconClose,
+    Add as IconAdd,
+    ViewHeadline as IconList,
+    Colorize as IconColor,
+} from '@mui/icons-material';
 
 import DialogSelectID from '../Dialogs/SelectID';
 import Utils from './Utils';
@@ -72,7 +76,7 @@ const styles = theme => ({
     tableContainer: {
         width: '100%',
         height: '100%',
-        overflow: 'auto'
+        overflow: 'auto',
     },
     table: {
         width: '100%',
@@ -163,7 +167,7 @@ const styles = theme => ({
         fontStyle: 'italic',
     },
     glow: {
-        animation: 'glow 0.2s 2 alternate'
+        animation: 'glow 0.2s 2 alternate',
     },
 });
 
@@ -294,7 +298,9 @@ class TreeTable extends React.Component {
                     editData[col.field] = e.target.value;
                 }
                 this.setState({editData});
-		}} value={(this.state.editData && this.state.editData[col.field]) || val}>
+		    }}
+            value={(this.state.editData && this.state.editData[col.field]) || val}
+        >
             {Object.keys(col.lookup)
                 .map((v, i) => <MenuItem key={i} value={v}>{col.lookup[v]}</MenuItem>)}
         </Select>;
@@ -337,7 +343,6 @@ class TreeTable extends React.Component {
             }}
         />;
 	}
-
 
     renderCellEditCustom(item, col, val) {
         const EditComponent = col.editComponent;
@@ -533,7 +538,8 @@ class TreeTable extends React.Component {
                 key={col.field}
                 className={Utils.clsx(this.props.classes.cell, level && this.props.classes.cellSecondary)}
                 style={col.cellStyle}
-                component="th" >
+                component="th"
+            >
                     {this.renderCellNonEdit(item, col)}
                 </TableCell>;
         }
@@ -569,7 +575,7 @@ class TreeTable extends React.Component {
                 <TableRow
                     key={item.id}
                     className={Utils.clsx(
-                        'table-row-' + (item.id || '').toString().replace(/[.$]/g, '_'),
+                        `table-row-${(item.id || '').toString().replace(/[.$]/g, '_')}`,
                         this.state.update && this.state.update.includes(item.id) && this.props.classes.glow,
                         this.props.classes.row,
                         level  && this.props.classes.rowSecondary,
@@ -596,7 +602,7 @@ class TreeTable extends React.Component {
                                 this.setState({opened});
                             }}
                             size="small">
-                            {opened ? <IconCollapse/> : <IconExpand/>}
+                            {opened ? <IconCollapse /> : <IconExpand />}
                         </IconButton>  : null}
                     </TableCell>
                     <TableCell
@@ -627,15 +633,16 @@ class TreeTable extends React.Component {
                                         this.setState({deleteMode: false}, () => this.props.onDelete(item))
                                     }
                                 }}
-                                size="large">
-                                <IconCheck/>
+                                size="large"
+                            >
+                                <IconCheck />
                             </IconButton>
                             :
                             <IconButton
                                 disabled={this.state.editMode !== false}
                                 onClick={() => this.setState({editMode: i, editData: null})}
                                 size="large">
-                                <IconEdit/>
+                                <IconEdit />
                             </IconButton>}
                     </TableCell> : null}
 
@@ -647,7 +654,7 @@ class TreeTable extends React.Component {
                                     onClick={() => this.setState({deleteMode: false}, () => this.props.onDelete(item))}
                                     size='large'
                                 >
-                                    <IconCheck/>
+                                    <IconCheck />
                                 </IconButton>
                                 :
                                 null}
@@ -657,8 +664,9 @@ class TreeTable extends React.Component {
                         {this.state.editMode === i || this.state.deleteMode === i ?
                             <IconButton
                                 onClick={() => this.setState({editMode: false, deleteMode: false})}
-                                size="large">
-                                <IconClose/>
+                                size="large"
+                            >
+                                <IconClose />
                             </IconButton>
                             :
                             (this.props.onDelete ? <IconButton
@@ -666,7 +674,7 @@ class TreeTable extends React.Component {
                                 onClick={() => this.setState({deleteMode: i})}
                                 size="large"
                             >
-                                <IconDelete/>
+                                <IconDelete />
                             </IconButton> : null)
                         }
                     </TableCell> : null}
@@ -710,7 +718,7 @@ class TreeTable extends React.Component {
                 {this.props.columns.map((col, i) =>
                     !i && !col.hidden ? null : <TableCell
                         key={col.field}
-                        className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes['width_' + col.field.replace(/\./g, '_')])}
+                        className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes[`width_${col.field.replace(/\./g, '_')}`])}
                         style={col.headerStyle || col.cellStyle}
                         component="th"
                     >
@@ -732,10 +740,11 @@ class TreeTable extends React.Component {
                         size="small"
                         disabled={this.state.editMode !== false}
                         onClick={() => this.props.onUpdate(true)}>
-                        <IconAdd/>
+                        <IconAdd />
                     </Fab>: null }
                 </TableCell> : null}
-                {this.props.onDelete || this.props.onUpdate ? <TableCell component="th" className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes.cellButton)}/> : null}
+                {this.props.onDelete || this.props.onUpdate ?
+                    <TableCell component="th" className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes.cellButton)} /> : null}
             </TableRow>
         </TableHead>;
     }
@@ -870,7 +879,7 @@ TreeTable.propTypes = {
     noAdd: PropTypes.bool, // hide add button
     themeType: PropTypes.string,
     glowOnChange: PropTypes.bool,
-    socket: PropTypes.object, // only if oid type is used
+    socket: PropTypes.object, // only if an oid type is used
     levelShift: PropTypes.number, // Shift in pixels for every level
 };
 

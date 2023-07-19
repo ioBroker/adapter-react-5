@@ -5,13 +5,15 @@ import PropTypes from 'prop-types';
 // File viewer in adapter-react does not support write
 // import { Buffer } from 'buffer';
 
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import { IconButton } from '@mui/material';
+import {
+    TextField,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    IconButton,
+} from '@mui/material';
 
 import IconNoIcon from '../icons/IconNoIcon';
 import withWidth from './withWidth';
@@ -19,9 +21,11 @@ import Utils from './Utils';
 
 // Icons
 import { FaCopy as CopyIcon } from 'react-icons/fa';
-import Brightness5Icon from '@mui/icons-material/Brightness6';
-import CloseIcon from '@mui/icons-material/Close';
-import SaveIcon from '@mui/icons-material/Save';
+import {
+    Close as CloseIcon,
+    Save as SaveIcon,
+    Brightness6 as Brightness5Icon,
+} from '@mui/icons-material';
 
 const styles = () => ({
     dialog: {

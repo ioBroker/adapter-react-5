@@ -382,5 +382,13 @@
   "ra_fileType_video": "Video",
   "ra_select_folder_hint": "Om een map te selecteren, houdt u gewoon de toets \"shift\" ingedrukt door op de map te klikken.",
   "ra_Accept license": "Accepteer licentie",
-  "ra_License agreement": "Licentieovereenkomst"
+  "ra_License agreement": "Licentieovereenkomst",
+  "ra_Import from %s": "Importeren uit %s",
+  "ra_Export data to %s file": "Exporteer gegevens naar %s bestand",
+  "ra_Import data from %s file": "Importeer gegevens uit %s bestand",
+  "ra_No data found in file": "Geen gegevens gevonden in bestand",
+  "ra_Append or replace?": "Toevoegen of vervangen?",
+  "ra_Append %s entries or replace existing?": "%s ingangen toevoegen of bestaande vervangen?",
+  "ra_Replace": "Vervangen",
+  "ra_Append": "toevoegen"
 }

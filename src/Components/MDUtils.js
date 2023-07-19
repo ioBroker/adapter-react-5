@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2022 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2023 bluefox <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -73,7 +73,7 @@ class MDUtils {
                 text = text.substring(pos + 7);
             }
         }
-        return {header: attrs, body: text};
+        return { header: attrs, body: text };
     }
 
     static removeDocsify(text) {

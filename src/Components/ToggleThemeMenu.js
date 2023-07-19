@@ -2,10 +2,12 @@ import React from 'react';
 
 import { IconButton, Tooltip } from '@mui/material';
 
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness5Icon from '@mui/icons-material/Brightness5';
-import Brightness6Icon from '@mui/icons-material/Brightness6';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
+import {
+    Brightness4 as Brightness4Icon,
+    Brightness5 as Brightness5Icon,
+    Brightness6 as Brightness6Icon,
+    Brightness7 as Brightness7Icon,
+} from '@mui/icons-material';
 
 export default function ToggleThemeMenu({ themeName, toggleTheme, t, className, style, size }) {
     return <div className={className || undefined} style={style || undefined}>

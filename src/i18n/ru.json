@@ -382,5 +382,13 @@
   "ra_fileType_video": "видео",
   "ra_select_folder_hint": "Чтобы выбрать папку, просто удерживайте клавишу «Shift», щелкнув папку.",
   "ra_Accept license": "Принять лицензию",
-  "ra_License agreement": "Лицензионное соглашение"
+  "ra_License agreement": "Лицензионное соглашение",
+  "ra_Import from %s": "Импорт из %s",
+  "ra_Export data to %s file": "Экспорт данных в файл %s",
+  "ra_Import data from %s file": "Импорт данных из файла %s",
+  "ra_No data found in file": "Данные в файле не найдены",
+  "ra_Append or replace?": "Дополнить или заменить?",
+  "ra_Append %s entries or replace existing?": "Добавить записи %s или заменить существующие?",
+  "ra_Replace": "Заменять",
+  "ra_Append": "Добавить"
 }

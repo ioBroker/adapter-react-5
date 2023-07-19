@@ -399,8 +399,9 @@ const styles = theme => ({
         top: 50
     },
     error: {
-        border: '2px solid red'
-    }
+        border: '2px solid red',
+        boxSizing: 'border-box',
+    },
 });
 
 class UploadImage extends Component {
@@ -430,7 +431,7 @@ class UploadImage extends Component {
         reader.onabort = () => console.log('file reading was aborted');
         reader.onerror = () => console.log('file reading has failed');
         reader.onload = () => {
-            let ext = 'image/' + file.name.split('.').pop().toLowerCase();
+            let ext = `image/${file.name.split('.').pop().toLowerCase()}`;
             if (ext === 'image/jpg') {
                 ext = 'image/jpeg';
             } else if (ext.includes('svg')) {
@@ -474,7 +475,7 @@ class UploadImage extends Component {
                     uploadFile === 'dragging' && classes.uploadDivDragging,
                     classes.dropZone,
                     disabled && classes.disabledOpacity,
-                    !icon && classes.dropZoneEmpty
+                    !icon && classes.dropZoneEmpty,
                 )}
                 {...getRootProps()}>
                 <input {...getInputProps()} />

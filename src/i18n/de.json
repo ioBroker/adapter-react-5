@@ -382,5 +382,13 @@
   "ra_fileType_video": "Video",
   "ra_select_folder_hint": "Um einen Ordner auszuwählen, halten Sie einfach die Taste \"Shift\" gedrückt, indem Sie auf den Ordner klicken.",
   "ra_Accept license": "Lizenz akzeptieren",
-  "ra_License agreement": "Lizenzvereinbarung"
+  "ra_License agreement": "Lizenzvereinbarung",
+  "ra_Import from %s": "Von %s importieren",
+  "ra_Export data to %s file": "Daten in %s-Datei exportieren",
+  "ra_Import data from %s file": "Daten aus %s-Datei importieren",
+  "ra_No data found in file": "Keine Daten in der Datei gefunden",
+  "ra_Append or replace?": "Anhängen oder ersetzen?",
+  "ra_Append %s entries or replace existing?": "%s Einträge anhängen oder vorhandene ersetzen?",
+  "ra_Replace": "Ersetzen",
+  "ra_Append": "Anhängen"
 }

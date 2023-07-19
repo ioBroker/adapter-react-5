@@ -382,5 +382,13 @@
   "ra_fileType_video": "视频",
   "ra_select_folder_hint": "要选择文件夹，只需按住“shift”键单击文件夹即可。",
   "ra_Accept license": "接受许可",
-  "ra_License agreement": "许可协议"
+  "ra_License agreement": "许可协议",
+  "ra_Import from %s": "从 %s 导入",
+  "ra_Export data to %s file": "将数据导出到 %s 文件",
+  "ra_Import data from %s file": "从 %s 文件导入数据",
+  "ra_No data found in file": "文件中未找到数据",
+  "ra_Append or replace?": "追加还是替换？",
+  "ra_Append %s entries or replace existing?": "追加 %s 条目还是替换现有条目？",
+  "ra_Replace": "代替",
+  "ra_Append": "附加"
 }

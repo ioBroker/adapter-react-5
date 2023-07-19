@@ -2,7 +2,7 @@
 import React from 'react';
 
 /**
- * @template P Type of the properties object.
+ * @template P Type of the properties' object.
  * @template S Type of the internal state object.
  * @extends {React.Component<P, S>}
  */
@@ -36,9 +36,9 @@ class Router extends React.Component {
         hash = hash.replace(/^#/, '');
         const parts = hash.split('/').map(item => {
             try {
-                return item ? decodeURIComponent(item) : ''
+                return item ? decodeURIComponent(item) : '';
             } catch (e) {
-                console.error('Router: Cannot decode ' + item);
+                console.error(`Router: Cannot decode ${item}`);
                 return item || '';
             }
         });
@@ -47,7 +47,7 @@ class Router extends React.Component {
             tab:    parts[0] || '',
             dialog: parts[1] || '',
             id:     parts[2] || '',
-            arg:    parts[3] || ''
+            arg:    parts[3] || '',
         };
     }
 
@@ -75,14 +75,14 @@ class Router extends React.Component {
         }
 
         if (tab) {
-            hash = '#' + tab;
+            hash = `#${tab}`;
             if (dialog) {
-                hash += '/' + dialog;
+                hash += `/${dialog}`;
 
                 if (id) {
-                    hash += '/' + id;
+                    hash += `/${id}`;
                     if (arg !== undefined) {
-                        hash += '/' + arg;
+                        hash += `/${arg}`;
                     }
                 }
             }

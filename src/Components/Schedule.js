@@ -1,28 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@mui/styles/withStyles';
-
-import Input from '@mui/material/Input';
-import Radio from '@mui/material/Radio';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
-import Checkbox from '@mui/material/Checkbox';
 import MaskedInput from 'react-text-mask';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import TextField from '@mui/material/TextField';
+
+import {
+    Input,
+    Radio,
+    FormControlLabel,
+    FormGroup,
+    Checkbox,
+    MenuItem,
+    Select,
+    TextField,
+} from '@mui/material';
 
 import I18n from '../i18n';
 
 const styles = theme => ({
     hr: {
         border: 0,
-        borderTop: '1px solid gray'
+        borderTop: '1px solid gray',
     },
     scrollWindow: {
         width: '100%',
         overflow: 'auto',
-        height: 'calc(100% - 22px)'
+        height: 'calc(100% - 22px)',
     },
     rowDiv: {
         width: '100%',
@@ -30,16 +32,16 @@ const styles = theme => ({
     modeDiv: {
         width: 200,
         display: 'inline-block',
-        verticalAlign: 'top'
+        verticalAlign: 'top',
     },
     settingsDiv: {
         display: 'inline-block',
-        verticalAlign: 'top'
+        verticalAlign: 'top',
     },
     inputTime: {
         width: 90,
         marginTop: 0,
-        marginLeft: 5
+        marginLeft: 5,
     },
     inputDate: {
         width: 140,
@@ -57,7 +59,7 @@ const styles = theme => ({
     },
     inputGroup: {
         maxWidth: 400,
-        display: 'inline-block'
+        display: 'inline-block',
     },
     inputGroupElement: {
         width: 120,
@@ -71,40 +73,41 @@ const styles = theme => ({
     inputSmallCheck: {
         padding: 0,
     },
-    rowOnce: {},
+    rowOnce: {
 
+    },
     rowDays: {
-        background: theme.palette.mode !== 'dark' ? '#ddeaff' : '#4b5057'
+        background: theme.palette.mode !== 'dark' ? '#ddeaff' : '#4b5057',
     },
     rowDows: {
-        background: theme.palette.mode !== 'dark' ? '#DDFFDD' : '#52646c'
+        background: theme.palette.mode !== 'dark' ? '#DDFFDD' : '#52646c',
     },
     rowDates: {
-        background: theme.palette.mode !== 'dark' ? '#DDDDFF' : '#747a86'
+        background: theme.palette.mode !== 'dark' ? '#DDDDFF' : '#747a86',
     },
     rowWeeks: {
-        background: theme.palette.mode !== 'dark' ? '#DDDDFF' : '#717680'
+        background: theme.palette.mode !== 'dark' ? '#DDDDFF' : '#717680',
     },
     rowMonths: {
-        background: theme.palette.mode !== 'dark' ? '#DDFFFF' : '#1f5557'
+        background: theme.palette.mode !== 'dark' ? '#DDFFFF' : '#1f5557',
     },
     rowMonthsDates: {
         background: theme.palette.mode !== 'dark' ? '#EEFFFF' : '#3c5737',
         maxWidth: 600
     },
     rowYears: {
-        background: theme.palette.mode !== 'dark' ? '#fbffdd' : '#574b33'
+        background: theme.palette.mode !== 'dark' ? '#fbffdd' : '#574b33',
     },
     rowDaysDows: {
         background: theme.palette.mode !== 'dark' ? '#EEEAFF' : '#573544',
         paddingLeft: 10,
-        paddingBottom: 10
+        paddingBottom: 10,
     },
     rowDowsDows: {
         background: theme.palette.mode !== 'dark' ? '#EEFFEE' : '#3d4c54',
         paddingLeft: 10,
-        paddingBottom: 10
-    }
+        paddingBottom: 10,
+    },
 });
 
 const WEEKDAYS = [
@@ -129,7 +132,7 @@ const MONTHS = [
     'September',
     'October',
     'November',
-    'December'
+    'December',
 ];
 const PERIODS = {
     'minutes': 'minutes',
@@ -154,14 +157,14 @@ const ASTRO = [
 
 function padding(num) {
     if (num < 10) {
-        return '0' + num;
+        return `0${num}`;
     } else {
         return '' + num;
     }
 }
 
 function TextTime(props) {
-    const {inputRef, ...other} = props;
+    const { inputRef, ...other } = props;
 
     return <MaskedInput
         {...other}
@@ -216,14 +219,14 @@ const DEFAULT = {
     },
     valid: {
         from: '',
-        to: ''
-    }
+        to: '',
+    },
 };
 
 function string2USdate(date) {
     const parts = date.split('.');
     if (parts.length === 3) {
-        return parts[2] + '-' + parts[1] + '-' + parts[0];
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
     }
 
 }
@@ -360,7 +363,7 @@ class Schedule extends React.Component {
 
             //
             if (once < now) {
-                // will ne be not executed any more, because start is in the past
+                // will be not executed anymore, because start is in the past
                 return I18n.t('sch_desc_onceInPast');
             } else {
                 // only once
@@ -482,7 +485,7 @@ class Schedule extends React.Component {
         if (schedule.time.exactTime) {
             if (ASTRO.indexOf(schedule.time.start) !== -1) {
                 // at sunset
-                desc.push(I18n.t('sch_desc_atTime', I18n.t('sch_astro_' + schedule.time.start)));
+                desc.push(I18n.t('sch_desc_atTime', I18n.t(`sch_astro_${schedule.time.start}`)));
             } else {
                 // at HH:MM
                 desc.push(I18n.t('sch_desc_atTime', schedule.time.start));
@@ -505,8 +508,8 @@ class Schedule extends React.Component {
                     desc.push(I18n.t('sch_desc_everyNHours', schedule.time.interval));
                 }
             }
-            const start = ASTRO.indexOf(schedule.time.start) !== -1 ? I18n.t('sch_astro_' + schedule.time.start) : schedule.time.start;
-            const end = ASTRO.indexOf(schedule.time.end) !== -1 ? I18n.t('sch_astro_' + schedule.time.end) : schedule.time.end;
+            const start = ASTRO.indexOf(schedule.time.start) !== -1 ? I18n.t(`sch_astro_${schedule.time.start}`) : schedule.time.start;
+            const end = ASTRO.indexOf(schedule.time.end) !== -1 ? I18n.t(`sch_astro_${schedule.time.end}`) : schedule.time.end;
             if (start !== '00:00' || (end !== '24:00' && end !== '23:59')) {
                 // from HH:mm to HH:mm
                 desc.push(I18n.t('sch_desc_intervalFromTo', start, end));
@@ -556,22 +559,28 @@ class Schedule extends React.Component {
                             const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                             _schedule.time.exactTime = false;
                             this.onChange(_schedule);
-                        }}/>} label={I18n.t('sch_intervalTime')}/>
+                        }}
+                    />}
+                    label={I18n.t('sch_intervalTime')}
+                />
             </div>
             <div className={this.props.classes.settingsDiv}>
                 <div className={this.props.classes.settingsDiv}>
                     {!schedule.time.exactTime && <div>
-                        <div><FormControlLabel
-                            control={<Radio
-                                className={this.props.classes.inputRadio}
-                                checked={!!fromTo}
-                                onClick={() => {
-                                    const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                                    _schedule.time.start = '00:00';
-                                    _schedule.time.end = '23:59';
-                                    this.onChange(_schedule);
-                                }}/>}
-                            label={!fromTo ? I18n.t('sch_fromTo') : ''}/>
+                        <div>
+                            <FormControlLabel
+                                control={<Radio
+                                    className={this.props.classes.inputRadio}
+                                    checked={!!fromTo}
+                                    onClick={() => {
+                                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                                        _schedule.time.start = '00:00';
+                                        _schedule.time.end = '23:59';
+                                        this.onChange(_schedule);
+                                    }}
+                                />}
+                                label={!fromTo ? I18n.t('sch_fromTo') : ''}
+                            />
                             {fromTo && [
                                 <TextField
                                     variant="standard"
@@ -586,7 +595,7 @@ class Schedule extends React.Component {
                                         _schedule.time.start = e.target.value;
                                         this.onChange(_schedule);
                                     }}
-                                    InputLabelProps={{shrink: true,}}
+                                    InputLabelProps={{ shrink: true }}
                                     label={I18n.t('sch_from')}
                                     margin="normal"
                                 />,
@@ -602,7 +611,7 @@ class Schedule extends React.Component {
                                         _schedule.time.end = e.target.value;
                                         this.onChange(_schedule);
                                     }}
-                                    InputLabelProps={{shrink: true,}}
+                                    InputLabelProps={{ shrink: true }}
                                     label={I18n.t('sch_to')}
                                     margin="normal"
                                 />
@@ -610,37 +619,52 @@ class Schedule extends React.Component {
                         </div>
                     </div>}
 
-                    {!schedule.time.exactTime && <div><FormControlLabel
-                        control={<Radio
-                            className={this.props.classes.inputRadio}
-                            checked={!!wholeDay}
-                            onClick={() => {
-                                const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                                _schedule.time.start = '00:00';
-                                _schedule.time.end = '24:00';
-                                this.onChange(_schedule);
-                            }}/>} label={I18n.t('sch_wholeDay')}/></div>}
+                    {!schedule.time.exactTime && <div>
+                        <FormControlLabel
+                            control={<Radio
+                                className={this.props.classes.inputRadio}
+                                checked={!!wholeDay}
+                                onClick={() => {
+                                    const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                                    _schedule.time.start = '00:00';
+                                    _schedule.time.end = '24:00';
+                                    this.onChange(_schedule);
+                                }}
+                            />}
+                            label={I18n.t('sch_wholeDay')}/>
+                    </div>}
 
-                    {!schedule.time.exactTime && <div><FormControlLabel
-                        control={<Radio
-                            className={this.props.classes.inputRadio}
-                            checked={!!day}
-                            onClick={() => {
-                                const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                                _schedule.time.start = 'sunrise';
-                                _schedule.time.end = 'sunset';
-                                this.onChange(_schedule);
-                            }}/>} label={I18n.t('sch_astroDay')}/></div>}
+                    {!schedule.time.exactTime && <div>
+                        <FormControlLabel
+                            control={<Radio
+                                className={this.props.classes.inputRadio}
+                                checked={!!day}
+                                onClick={() => {
+                                    const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                                    _schedule.time.start = 'sunrise';
+                                    _schedule.time.end = 'sunset';
+                                    this.onChange(_schedule);
+                                }}
+                            />}
+                            label={I18n.t('sch_astroDay')}
+                        />
+                    </div>}
 
-                    {!schedule.time.exactTime && <div><FormControlLabel
-                        control={<Radio
-                            className={this.props.classes.inputRadio}
-                            checked={!!night} onClick={() => {
-                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                            _schedule.time.start = 'sunset';
-                            _schedule.time.end = 'sunrise';
-                            this.onChange(_schedule);
-                        }}/>} label={I18n.t('sch_astroNight')}/></div>}
+                    {!schedule.time.exactTime && <div>
+                        <FormControlLabel
+                            control={<Radio
+                                className={this.props.classes.inputRadio}
+                                checked={!!night}
+                                onClick={() => {
+                                    const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                                    _schedule.time.start = 'sunset';
+                                    _schedule.time.end = 'sunrise';
+                                    this.onChange(_schedule);
+                                }}
+                            />}
+                            label={I18n.t('sch_astroNight')}
+                        />
+                    </div>}
                 </div>
                 {!schedule.time.exactTime && this.getPeriodSettingsMinutes()}
             </div>
@@ -648,18 +672,22 @@ class Schedule extends React.Component {
     }
 
     getTimeExactElements() {
-        const isAstro = ASTRO.indexOf(this.state.schedule.time.start) !== -1;
+        const isAstro = ASTRO.includes(this.state.schedule.time.start);
 
         return <div key="timeExact" className={this.props.classes.rowDiv}>
             <div className={this.props.classes.modeDiv}>
-                <FormControlLabel control={<Radio
-                    className={this.props.classes.inputRadio}
-                    checked={!!this.state.schedule.time.exactTime}
-                    onClick={() => {
-                        const schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                        schedule.time.exactTime = true;
-                        this.onChange(schedule);
-                    }}/>} label={I18n.t('sch_exactTime')}/>
+                <FormControlLabel
+                    control={<Radio
+                        className={this.props.classes.inputRadio}
+                        checked={!!this.state.schedule.time.exactTime}
+                        onClick={() => {
+                            const schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                            schedule.time.exactTime = true;
+                            this.onChange(schedule);
+                        }}
+                    />}
+                    label={I18n.t('sch_exactTime')}
+                />
             </div>
             {this.state.schedule.time.exactTime && <Select
                 variant="standard"
@@ -671,31 +699,33 @@ class Schedule extends React.Component {
                 }}
             >
                 <MenuItem key="specific" value={'00:00'}>{I18n.t('sch_specificTime')}</MenuItem>
-                {ASTRO.map(event => <MenuItem key={event} value={event}>{I18n.t('sch_astro_' + event)}</MenuItem>)}
+                {ASTRO.map(event => <MenuItem key={event} value={event}>{I18n.t(`sch_astro_${event}`)}</MenuItem>)}
             </Select>
             }
             {this.state.schedule.time.exactTime && !isAstro &&
-            <div className={this.props.classes.settingsDiv}><TextField
-                variant="standard"
-                className={this.props.classes.inputTime}
-                key="exactTimeValue"
-                value={this.state.schedule.time.start}
-                type="time"
-                // inputComponent={TextTime}
-                onChange={e => {
-                    const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                    _schedule.time.start = e.target.value;
-                    this.onChange(_schedule);
-                }}
-                InputLabelProps={{shrink: true,}}
-                margin="normal"
-            /></div>
+            <div className={this.props.classes.settingsDiv}>
+                <TextField
+                    variant="standard"
+                    className={this.props.classes.inputTime}
+                    key="exactTimeValue"
+                    value={this.state.schedule.time.start}
+                    type="time"
+                    // inputComponent={TextTime}
+                    onChange={e => {
+                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                        _schedule.time.start = e.target.value;
+                        this.onChange(_schedule);
+                    }}
+                    InputLabelProps={{ shrink: true }}
+                    margin="normal"
+                />
+            </div>
             }
         </div>;
     }
 
     getDivider() {
-        return <hr className={this.props.classes.hr}/>;
+        return <hr className={this.props.classes.hr} />;
     }
 
     getPeriodModes() {
@@ -707,7 +737,7 @@ class Schedule extends React.Component {
 
         return [
             // ----- once ---
-            <div key="once" className={this.props.classes.rowDiv + ' ' + this.props.classes.rowOnce}>
+            <div key="once" className={`${this.props.classes.rowDiv} ${this.props.classes.rowOnce}`}>
                 <div className={this.props.classes.modeDiv}>
                     <FormControlLabel
                         control={<Radio
@@ -726,10 +756,11 @@ class Schedule extends React.Component {
                                 _schedule.period.days = 0;
                                 this.onChange(_schedule);
                             }}/>}
-                        label={I18n.t('sch_periodOnce')}/>
+                        label={I18n.t('sch_periodOnce')}
+                    />
                 </div>
                 {isOnce && <div className={this.props.classes.settingsDiv}>
-                    {<TextField
+                    <TextField
                         variant="standard"
                         className={this.props.classes.inputDate}
                         type="date"
@@ -747,21 +778,20 @@ class Schedule extends React.Component {
                                 const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                                 const date = Schedule.string2date(value);
                                 if (date.toString() !== 'Invalid Date') {
-                                    _schedule.period.once = padding(date.getDate()) + '.' + padding(date.getMonth() + 1) + '.' + date.getFullYear();
+                                    _schedule.period.once = `${padding(date.getDate())}.${padding(date.getMonth() + 1)}.${date.getFullYear()}`;
                                     this.onChange(_schedule);
                                 }
                             }, 1500, e.target.value);
                         }}
-                        InputLabelProps={{shrink: true,}}
+                        InputLabelProps={{ shrink: true }}
                         label={I18n.t('sch_at')}
                         margin="normal"
-                    />}
+                    />
                 </div>}
             </div>,
 
-
             // ----- days ---
-            <div key="days" className={this.props.classes.rowDiv + ' ' + this.props.classes.rowDays}>
+            <div key="days" className={`${this.props.classes.rowDiv} ${this.props.classes.rowDays}`}>
                 <div className={this.props.classes.modeDiv}>
                     <FormControlLabel
                         control={<Radio
@@ -779,8 +809,10 @@ class Schedule extends React.Component {
                                 _schedule.period.weeks = 0;
                                 _schedule.period.once = '';
                                 this.onChange(_schedule);
-                            }}/>}
-                        label={I18n.t('sch_periodDaily')}/>
+                            }}
+                        />}
+                        label={I18n.t('sch_periodDaily')}
+                    />
                 </div>
                 <div className={this.props.classes.settingsDiv}>
                     {this.getPeriodSettingsDaily()}
@@ -806,7 +838,7 @@ class Schedule extends React.Component {
                 </div>,
 */
             // ----- weeks ---
-            <div key="weeks" className={this.props.classes.rowDiv + ' ' + this.props.classes.rowDows}>
+            <div key="weeks" className={`${this.props.classes.rowDiv} ${this.props.classes.rowDows}`}>
                 <div className={this.props.classes.modeDiv}>
                     <FormControlLabel
                         control={<Radio
@@ -824,19 +856,22 @@ class Schedule extends React.Component {
                                 _schedule.period.days = 0;
                                 _schedule.period.once = '';
                                 this.onChange(_schedule);
-                            }}/>}
-                        label={I18n.t('sch_periodWeekly')}/>
+                            }}
+                        />}
+                        label={I18n.t('sch_periodWeekly')}
+                    />
                 </div>
                 <div className={this.props.classes.settingsDiv}>
                     <div className={this.props.classes.settingsDiv}>{this.getPeriodSettingsWeekly()}</div>
                     <div
-                        className={this.props.classes.settingsDiv + ' ' + this.props.classes.rowDowsDows}>{this.state.schedule.period.weeks ? this.getPeriodSettingsWeekdays() : null}</div>
+                        className={`${this.props.classes.settingsDiv} ${this.props.classes.rowDowsDows}`}>
+                        {this.state.schedule.period.weeks ? this.getPeriodSettingsWeekdays() : null}
+                    </div>
                 </div>
             </div>,
 
-
             // ----- months ---
-            <div key="months" className={this.props.classes.rowDiv + ' ' + this.props.classes.rowMonths}>
+            <div key="months" className={`${this.props.classes.rowDiv} ${this.props.classes.rowMonths}`}>
                 <div className={this.props.classes.modeDiv}>
                     <FormControlLabel
                         control={<Radio
@@ -854,13 +889,15 @@ class Schedule extends React.Component {
                                 _schedule.period.days = 0;
                                 _schedule.period.once = '';
                                 this.onChange(_schedule);
-                            }}/>}
-                        label={I18n.t('sch_periodMonthly')}/>
+                            }}
+                        />}
+                        label={I18n.t('sch_periodMonthly')}
+                    />
                 </div>
                 <div className={this.props.classes.settingsDiv}>
                     {this.getPeriodSettingsMonthly()}
                     {schedule.period.months ? <div>
-                        <div className={this.props.classes.settingsDiv + ' ' + this.props.classes.rowMonthsDates}>
+                        <div className={`${this.props.classes.settingsDiv} ${this.props.classes.rowMonthsDates}`}>
                             <FormControlLabel
                                 control={<Checkbox
                                     className={this.props.classes.inputRadio}
@@ -884,16 +921,15 @@ class Schedule extends React.Component {
                                         this.onChange(_schedule);
                                     }}/>}
                                 label={I18n.t('sch_periodDates')}/></div>
-                        <div className={this.props.classes.settingsDiv + ' ' + this.props.classes.rowMonthsDates}>
+                        <div className={`${this.props.classes.settingsDiv} ${this.props.classes.rowMonthsDates}`}>
                             {this.getPeriodSettingsDates()}
                         </div>
                     </div> : null}
                 </div>
             </div>,
 
-
             // ----- years ---
-            <div key="years" className={this.props.classes.rowDiv + ' ' + this.props.classes.rowYears}>
+            <div key="years" className={`${this.props.classes.rowDiv} ${this.props.classes.rowYears}`}>
                 <div className={this.props.classes.modeDiv}>
                     <FormControlLabel
                         control={<Radio
@@ -911,8 +947,10 @@ class Schedule extends React.Component {
                                 _schedule.period.days = 0;
                                 _schedule.period.once = '';
                                 this.onChange(_schedule);
-                            }}/>}
-                        label={I18n.t('sch_periodYearly')}/>
+                            }}
+                        />}
+                        label={I18n.t('sch_periodYearly')}
+                    />
                 </div>
                 <div className={this.props.classes.settingsDiv}>
                     <div className={this.props.classes.settingsDiv}>{this.getPeriodSettingsYearly()}</div>
@@ -923,8 +961,8 @@ class Schedule extends React.Component {
                             value={this.state.schedule.period.yearDate}
                             className={this.props.classes.inputEvery}
                             type="number"
-                            min="1"
-                            max="31"
+                            min={1}
+                            max={31}
                             onChange={e => {
                                 const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                                 _schedule.period.yearDate = parseInt(e.target.value, 10);
@@ -958,7 +996,7 @@ class Schedule extends React.Component {
                 style={{verticalAlign: 'bottom'}}
                 className={this.props.classes.inputEvery}
                 type="number"
-                min="1"
+                min={1}
                 onChange={e => {
                     const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                     _schedule.time.interval = parseInt(e.target.value, 10);
@@ -984,56 +1022,66 @@ class Schedule extends React.Component {
         const schedule = this.state.schedule;
         const isSpecific = schedule.period.dows && schedule.period.dows !== '[1, 2, 3, 4, 5]' && schedule.period.dows !== '[0, 6]';
         return [
-            <div key="workdays"><FormControlLabel
-                control={<Radio
-                    className={this.props.classes.inputRadio}
-                    checked={schedule.period.dows === '[1, 2, 3, 4, 5]'}
-                    onClick={() => {
-                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                        _schedule.period.dows = '[1, 2, 3, 4, 5]';
-                        if (_schedule.period.days) {
-                            _schedule.period.days = 1;
-                        }
-                        this.onChange(_schedule);
-                    }}/>}
-                label={I18n.t('sch_periodWorkdays')}/></div>,
+            <div key="workdays">
+                <FormControlLabel
+                    control={<Radio
+                        className={this.props.classes.inputRadio}
+                        checked={schedule.period.dows === '[1, 2, 3, 4, 5]'}
+                        onClick={() => {
+                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                            _schedule.period.dows = '[1, 2, 3, 4, 5]';
+                            if (_schedule.period.days) {
+                                _schedule.period.days = 1;
+                            }
+                            this.onChange(_schedule);
+                        }}/>}
+                    label={I18n.t('sch_periodWorkdays')}
+                />
+            </div>,
 
-            <div key="weekend"><FormControlLabel
-                control={<Radio
-                    className={this.props.classes.inputRadio}
-                    checked={schedule.period.dows === '[0, 6]'}
-                    onClick={() => {
-                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                        _schedule.period.dows = '[0, 6]';
-                        if (_schedule.period.days) {
-                            _schedule.period.days = 1;
-                        }
-                        this.onChange(_schedule);
-                    }}/>}
-                label={I18n.t('sch_periodWeekend')}/></div>,
+            <div key="weekend">
+                <FormControlLabel
+                    control={<Radio
+                        className={this.props.classes.inputRadio}
+                        checked={schedule.period.dows === '[0, 6]'}
+                        onClick={() => {
+                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                            _schedule.period.dows = '[0, 6]';
+                            if (_schedule.period.days) {
+                                _schedule.period.days = 1;
+                            }
+                            this.onChange(_schedule);
+                        }}
+                    />}
+                    label={I18n.t('sch_periodWeekend')}
+                />
+            </div>,
 
             <div
                 key="specific"
-                style={{verticalAlign: 'top'}}
-            ><FormControlLabel
-                style={{verticalAlign: 'top'}}
-                control={<Radio
-                    className={this.props.classes.inputRadio}
-                    checked={!!isSpecific}
-                    onClick={() => {
-                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                        _schedule.period.dows = '[0,1,2,3,4,5,6]';
-                        if (_schedule.period.days) {
-                            _schedule.period.days = 1;
-                        }
-                        this.onChange(_schedule);
-                    }}/>}
-                label={I18n.t('sch_periodWeekdays')}/>
+                style={{ verticalAlign: 'top' }}
+            >
+                <FormControlLabel
+                    style={{ verticalAlign: 'top' }}
+                    control={<Radio
+                        className={this.props.classes.inputRadio}
+                        checked={!!isSpecific}
+                        onClick={() => {
+                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                            _schedule.period.dows = '[0,1,2,3,4,5,6]';
+                            if (_schedule.period.days) {
+                                _schedule.period.days = 1;
+                            }
+                            this.onChange(_schedule);
+                        }}
+                    />}
+                    label={I18n.t('sch_periodWeekdays')}
+                />
                 {isSpecific && (schedule.period.days === 1 || schedule.period.weeks) &&
                 <FormGroup row className={this.props.classes.inputGroup} style={{width: 150}}>
                     {[1, 2, 3, 4, 5, 6, 0].map(i =>
                         <FormControlLabel
-                            key={'specific_' + i}
+                            key={`specific_${i}`}
                             className={this.props.classes.inputGroupElement}
                             control={
                                 <Checkbox
@@ -1074,41 +1122,51 @@ class Schedule extends React.Component {
         }
         const schedule = this.state.schedule;
         return [
-            <div key="every_day"><FormControlLabel
-                control={<Radio
-                    className={this.props.classes.inputRadio}
-                    checked={schedule.period.days === 1 && !schedule.period.dows}
-                    onClick={() => {
-                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                        _schedule.period.days = 1;
-                        _schedule.period.dows = '';
-                        this.onChange(_schedule);
-                    }}/>}
-                label={I18n.t('sch_periodEveryDay')}/></div>,
-            <div key="everyN_day"><FormControlLabel
-                control={<Radio
-                    className={this.props.classes.inputRadio}
-                    checked={schedule.period.days > 1}
-                    onClick={() => {
-                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                        _schedule.period.days = 2;
-                        _schedule.period.dows = '';
-                        this.onChange(_schedule);
-                    }}/>}
-                label={I18n.t('sch_periodEvery')}/>
-                {schedule.period.days > 1 && [<Input
-                    key="input"
-                    value={this.state.schedule.period.days}
-                    className={this.props.classes.inputEvery}
-                    type="number"
-                    min="2"
-                    onChange={e => {
-                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                        _schedule.period.days = parseInt(e.target.value, 10);
-                        _schedule.period.dows = '';
-                        this.onChange(_schedule);
-                    }}/>,
-                    <span key="span" style={{paddingRight: 10}}>{I18n.t('sch_periodDay')}</span>]}
+            <div key="every_day">
+                <FormControlLabel
+                    control={<Radio
+                        className={this.props.classes.inputRadio}
+                        checked={schedule.period.days === 1 && !schedule.period.dows}
+                        onClick={() => {
+                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                            _schedule.period.days = 1;
+                            _schedule.period.dows = '';
+                            this.onChange(_schedule);
+                        }}
+                    />}
+                label={I18n.t('sch_periodEveryDay')}
+                />
+            </div>,
+            <div key="everyN_day">
+                <FormControlLabel
+                    control={<Radio
+                        className={this.props.classes.inputRadio}
+                        checked={schedule.period.days > 1}
+                        onClick={() => {
+                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                            _schedule.period.days = 2;
+                            _schedule.period.dows = '';
+                            this.onChange(_schedule);
+                        }}
+                    />}
+                    label={I18n.t('sch_periodEvery')}
+                />
+                {schedule.period.days > 1 && [
+                    <Input
+                        key="input"
+                        value={this.state.schedule.period.days}
+                        className={this.props.classes.inputEvery}
+                        type="number"
+                        min={2}
+                        onChange={e => {
+                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                            _schedule.period.days = parseInt(e.target.value, 10);
+                            _schedule.period.dows = '';
+                            this.onChange(_schedule);
+                        }}
+                    />,
+                    <span key="span" style={{ paddingRight: 10 }}>{I18n.t('sch_periodDay')}</span>,
+                ]}
             </div>,
         ];
     }
@@ -1119,18 +1177,21 @@ class Schedule extends React.Component {
         }
         const schedule = this.state.schedule;
         return [
-            <div key="radios" style={{display: 'inline-block', verticalAlign: 'top'}}>
-                <div><FormControlLabel
-                    control={<Radio
-                        className={this.props.classes.inputRadio}
-                        checked={schedule.period.weeks === 1}
-                        onClick={() => {
-                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                            _schedule.period.weeks = 1;
-                            this.onChange(_schedule);
-                        }}/>
-                    }
-                    label={I18n.t('sch_periodEveryWeek')}/></div>
+            <div key="radios" style={{ display: 'inline-block', verticalAlign: 'top' }}>
+                <div>
+                    <FormControlLabel
+                        control={<Radio
+                            className={this.props.classes.inputRadio}
+                            checked={schedule.period.weeks === 1}
+                            onClick={() => {
+                                const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                                _schedule.period.weeks = 1;
+                                this.onChange(_schedule);
+                            }}/>
+                        }
+                        label={I18n.t('sch_periodEveryWeek')}
+                    />
+                </div>
                 <div>
                     <FormControlLabel
                         control={<Radio
@@ -1142,17 +1203,23 @@ class Schedule extends React.Component {
                                 this.onChange(_schedule);
                             }}/>
                         }
-                        label={I18n.t('sch_periodEvery')}/>
-                    {schedule.period.weeks > 1 && [<Input
-                        value={this.state.schedule.period.weeks}
-                        className={this.props.classes.inputEvery}
-                        type="number"
-                        min="2"
-                        onChange={e => {
-                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                            _schedule.period.weeks = parseInt(e.target.value, 10);
-                            this.onChange(_schedule);
-                        }}/>, <span>{I18n.t('sch_periodWeek')}</span>]}
+                        label={I18n.t('sch_periodEvery')}
+                    />
+                    {schedule.period.weeks > 1 && [
+                        <Input
+                            key="input"
+                            value={this.state.schedule.period.weeks}
+                            className={this.props.classes.inputEvery}
+                            type="number"
+                            min={2}
+                            onChange={e => {
+                                const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                                _schedule.period.weeks = parseInt(e.target.value, 10);
+                                this.onChange(_schedule);
+                            }}
+                        />,
+                        <span key="text">{I18n.t('sch_periodWeek')}</span>,
+                    ]}
                 </div>
             </div>,
         ];
@@ -1235,13 +1302,13 @@ class Schedule extends React.Component {
             <div/>
             {dates.map(i =>
                 <FormControlLabel
-                    key={'date_' + i}
+                    key={`date_${i}`}
                     className={this.props.classes.inputDateDay}
                     style={!i ? {
                         opacity: 0,
                         cursor: 'default',
                         userSelect: 'none',
-                        pointerEvents: 'none'
+                        pointerEvents: 'none',
                     } : {}}
                     control={
                         <Checkbox
@@ -1266,8 +1333,10 @@ class Schedule extends React.Component {
                             }}
                         />
                     }
-                    label={i < 10 ? [<span key="0" style={{opacity: 0}}>0</span>,
-                        <span key="num">{i}</span>] : i}
+                    label={i < 10 ? [
+                        <span key="0" style={{opacity: 0}}>0</span>,
+                        <span key="num">{i}</span>
+                    ] : i}
                 />)}
         </FormGroup>;
     }
@@ -1280,55 +1349,69 @@ class Schedule extends React.Component {
         const parsedMonths = typeof schedule.period.months === 'string' ? JSON.parse(schedule.period.months) : [];
 
         return [
-            <div key="every"><FormControlLabel
-                control={<Radio
-                    className={this.props.classes.inputRadio}
-                    checked={typeof schedule.period.months === 'number' && schedule.period.months === 1}
-                    onClick={() => {
-                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                        _schedule.period.months = 1;
-                        this.onChange(schedule);
-                    }}/>}
-                label={I18n.t('sch_periodEveryMonth')}/></div>,
-            <div key="everyN"><FormControlLabel
-                control={<Radio
-                    className={this.props.classes.inputRadio}
-                    checked={typeof schedule.period.months === 'number' && schedule.period.months > 1}
-                    onClick={() => {
-                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                        _schedule.period.months = 2;
-                        this.onChange(_schedule);
-                    }}/>
-                }
-                label={I18n.t('sch_periodEvery')}/>
-                {typeof schedule.period.months === 'number' && schedule.period.months > 1 && [<Input
-                    value={schedule.period.months}
-                    className={this.props.classes.inputEvery}
-                    type="number"
-                    min="2"
-                    onChange={e => {
-                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                        _schedule.period.months = parseInt(e.target.value, 10);
-                        if (_schedule.period.months < 1) _schedule.period.months = 1;
-                        this.onChange(_schedule);
-                    }}/>, <span>{I18n.t('sch_periodMonth')}</span>]}
+            <div key="every">
+                <FormControlLabel
+                    control={<Radio
+                        className={this.props.classes.inputRadio}
+                        checked={typeof schedule.period.months === 'number' && schedule.period.months === 1}
+                        onClick={() => {
+                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                            _schedule.period.months = 1;
+                            this.onChange(schedule);
+                        }}
+                    />}
+                    label={I18n.t('sch_periodEveryMonth')}
+                />
             </div>,
-            <div key="specific" style={{verticalAlign: 'top'}}><FormControlLabel
-                style={{verticalAlign: 'top'}}
-                control={<Radio
-                    className={this.props.classes.inputRadio}
-                    checked={typeof schedule.period.months === 'string'}
-                    onClick={() => {
-                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                        _schedule.period.months = '[1,2,3,4,5,6,7,8,9,10,11,12]';
-                        this.onChange(_schedule);
-                    }}/>
-                }
-                label={I18n.t('sch_periodSpecificMonths')}/>
+            <div key="everyN">
+                <FormControlLabel
+                    control={<Radio
+                        className={this.props.classes.inputRadio}
+                        checked={typeof schedule.period.months === 'number' && schedule.period.months > 1}
+                        onClick={() => {
+                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                            _schedule.period.months = 2;
+                            this.onChange(_schedule);
+                        }}/>
+                    }
+                    label={I18n.t('sch_periodEvery')}
+                />
+                {typeof schedule.period.months === 'number' && schedule.period.months > 1 && [
+                    <Input
+                        key="input"
+                        value={schedule.period.months}
+                        className={this.props.classes.inputEvery}
+                        type="number"
+                        min={2}
+                        onChange={e => {
+                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                            _schedule.period.months = parseInt(e.target.value, 10);
+                            if (_schedule.period.months < 1) _schedule.period.months = 1;
+                            this.onChange(_schedule);
+                        }}
+                    />,
+                    <span key="text">{I18n.t('sch_periodMonth')}</span>,
+                ]}
+            </div>,
+            <div key="specific" style={{ verticalAlign: 'top' }}>
+                <FormControlLabel
+                    style={{ verticalAlign: 'top' }}
+                    control={<Radio
+                        className={this.props.classes.inputRadio}
+                        checked={typeof schedule.period.months === 'string'}
+                        onClick={() => {
+                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                            _schedule.period.months = '[1,2,3,4,5,6,7,8,9,10,11,12]';
+                            this.onChange(_schedule);
+                        }}
+                    />}
+                    label={I18n.t('sch_periodSpecificMonths')}
+                />
                 {typeof schedule.period.months === 'string' &&
                 <FormGroup
                     row
-                    className={this.props.classes.inputGroup}>
+                    className={this.props.classes.inputGroup}
+                >
                     <FormControlLabel
                         className={this.props.classes.inputDateDay}
                         control={
@@ -1363,29 +1446,29 @@ class Schedule extends React.Component {
                         label={I18n.t('sch_no_one')}
                     />
                     {parsedMonths.length !== 12 && !!parsedMonths.length &&
-                    <FormControlLabel
-                        className={this.props.classes.inputDateDay}
-                        control={
-                            <Checkbox
-                                className={this.props.classes.inputDateDayCheck}
-                                checked={false}
-                                onChange={e => {
-                                    const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                                    const result = [];
-                                    const parsedMonths = JSON.parse(_schedule.period.months);
-                                    for (let i = 1; i <= 12; i++) {
-                                        if (parsedMonths.indexOf(i) === -1) {
-                                            result.push(i);
+                        <FormControlLabel
+                            className={this.props.classes.inputDateDay}
+                            control={
+                                <Checkbox
+                                    className={this.props.classes.inputDateDayCheck}
+                                    checked={false}
+                                    onChange={e => {
+                                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                                        const result = [];
+                                        const parsedMonths = JSON.parse(_schedule.period.months);
+                                        for (let i = 1; i <= 12; i++) {
+                                            if (parsedMonths.indexOf(i) === -1) {
+                                                result.push(i);
+                                            }
                                         }
-                                    }
-                                    result.sort((a, b) => a - b);
-                                    _schedule.period.months = JSON.stringify(result);
-                                    this.onChange(_schedule);
-                                }}
-                            />
-                        }
-                        label={I18n.t('sch_invert')}
-                    />}
+                                        result.sort((a, b) => a - b);
+                                        _schedule.period.months = JSON.stringify(result);
+                                        this.onChange(_schedule);
+                                    }}
+                                />
+                            }
+                            label={I18n.t('sch_invert')}
+                        />}
                     <div/>
                     {MONTHS.map((month, i) =>
                         <FormControlLabel
@@ -1426,39 +1509,49 @@ class Schedule extends React.Component {
         }
         const schedule = this.state.schedule;
         return [
-            <div><FormControlLabel
-                control={<Radio
-                    className={this.props.classes.inputRadio}
-                    checked={schedule.period.years === 1}
-                    onClick={() => {
-                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                        _schedule.period.years = 1;
-                        this.onChange(_schedule);
-                    }}/>
-                }
-                label={I18n.t('sch_periodEveryYear')}/></div>,
-            <div><FormControlLabel
-                control={<Radio
-                    className={this.props.classes.inputRadio}
-                    checked={schedule.period.years > 1}
-                    onClick={() => {
-                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                        _schedule.period.years = 2;
-                        this.onChange(_schedule);
-                    }}/>
-                }
-                label={I18n.t('sch_periodEvery')}/>
-                {schedule.period.years > 1 &&
-                [<Input
-                    value={this.state.schedule.period.years}
-                    className={this.props.classes.inputEvery} type="number" min="2"
-                    onChange={e => {
-                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                        _schedule.period.years = parseInt(e.target.value, 10);
-                        if (_schedule.period.years < 1) _schedule.period.years = 1;
-                        this.onChange(_schedule);
-                    }}/>,
-                    <span>{I18n.t('sch_periodYear')}</span>]}
+            <div key="year">
+                <FormControlLabel
+                    control={<Radio
+                        className={this.props.classes.inputRadio}
+                        checked={schedule.period.years === 1}
+                        onClick={() => {
+                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                            _schedule.period.years = 1;
+                            this.onChange(_schedule);
+                        }}/>
+                    }
+                    label={I18n.t('sch_periodEveryYear')}
+                />
+            </div>,
+            <div key="every">
+                <FormControlLabel
+                    control={<Radio
+                        className={this.props.classes.inputRadio}
+                        checked={schedule.period.years > 1}
+                        onClick={() => {
+                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                            _schedule.period.years = 2;
+                            this.onChange(_schedule);
+                        }}/>
+                    }
+                    label={I18n.t('sch_periodEvery')}
+                />
+                {schedule.period.years > 1 && [
+                    <Input
+                        key="input"
+                        value={this.state.schedule.period.years}
+                        className={this.props.classes.inputEvery}
+                        type="number"
+                        min={2}
+                        onChange={e => {
+                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                            _schedule.period.years = parseInt(e.target.value, 10);
+                            if (_schedule.period.years < 1) _schedule.period.years = 1;
+                            this.onChange(_schedule);
+                        }}
+                    />,
+                    <span key="text">{I18n.t('sch_periodYear')}</span>,
+                ]}
             </div>,
         ];
     }
@@ -1491,7 +1584,7 @@ class Schedule extends React.Component {
         const schedule = this.state.schedule;
         // ----- from ---
         return <div className={this.props.classes.rowDiv}>
-            <div className={this.props.classes.modeDiv} style={{verticalAlign: 'middle'}}>
+            <div className={this.props.classes.modeDiv} style={{ verticalAlign: 'middle' }}>
                 <span style={{fontWeight: 'bold', paddingRight: 10}}>{I18n.t('sch_valid')}</span>
                 <span>{I18n.t('sch_validFrom')}</span>
             </div>
@@ -1499,7 +1592,7 @@ class Schedule extends React.Component {
                 <TextField
                     variant="standard"
                     className={this.props.classes.inputDate}
-                    style={{marginRight: 10}}
+                    style={{ marginRight: 10 }}
                     key="exactTimeFrom"
                     inputRef={this.refFrom}
                     defaultValue={string2USdate(schedule.valid.from)}
@@ -1521,7 +1614,7 @@ class Schedule extends React.Component {
                             }
                         }, 1500, e.target.value);
                     }}
-                    InputLabelProps={{shrink: true,}}
+                    InputLabelProps={{ shrink: true }}
                     margin="normal"
                 />
                 <FormControlLabel
@@ -1533,12 +1626,13 @@ class Schedule extends React.Component {
                             _schedule.valid.to = _schedule.valid.to ? '' : Schedule.now2string(true);
                             this.onChange(_schedule);
                         }}/>}
-                    label={I18n.t('sch_validTo')}/>
+                    label={I18n.t('sch_validTo')}
+                />
                 {!!schedule.valid.to && <TextField
                     variant="standard"
                     inputRef={this.refTo}
                     className={this.props.classes.inputDate}
-                    style={{marginRight: 10}}
+                    style={{ marginRight: 10 }}
                     key="exactTimeFrom"
                     type="date"
                     defaultValue={string2USdate(schedule.valid.to)}
@@ -1558,7 +1652,7 @@ class Schedule extends React.Component {
                             }
                         }, 1500, e.target.value);
                     }}
-                    InputLabelProps={{shrink: true,}}
+                    InputLabelProps={{ shrink: true }}
                     margin="normal"
                 />}
             </div>
@@ -1566,7 +1660,7 @@ class Schedule extends React.Component {
     }
 
     render() {
-        return <div style={{height: 'calc(100% - 48px)', width: '100%', overflow: 'hidden'}}>
+        return <div style={{ height: 'calc(100% - 48px)', width: '100%', overflow: 'hidden' }}>
             <div>{this.state.desc}</div>
             <div className={this.props.classes.scrollWindow}>
                 <h5>{I18n.t('sch_time')}</h5>

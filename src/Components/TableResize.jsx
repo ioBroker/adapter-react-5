@@ -1,5 +1,5 @@
 /**
- * Copyright 2022, bluefox <dogafox@gmail.com>
+ * Copyright 2022-2023, bluefox <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -44,8 +44,8 @@ const styles = theme => ({
             , '&.active': {
                 borderColor: '#517ea5',
                 borderRightStyle: 'solid',
-            }
-        }
+            },
+        },
     },
 });
 
@@ -160,9 +160,9 @@ class TableResize extends Component {
         if (this.resizerCurrentWidths.length) {
             for (let c = 0; c < this.resizerCurrentWidths.length; c++) {
                 if (this.resizerCurrentWidths[c]) {
-                    gridTemplateColumns.push(this.resizerCurrentWidths[c] !== 'auto' ? this.resizerCurrentWidths[c] + 'px' : 'auto');
+                    gridTemplateColumns.push(this.resizerCurrentWidths[c] !== 'auto' ? `${this.resizerCurrentWidths[c]}px` : 'auto');
                 } else if (this.props.initialWidths && this.props.initialWidths[c]) {
-                    gridTemplateColumns.push(this.props.initialWidths[c] !== 'auto' ? this.props.initialWidths[c] + 'px' : 'auto');
+                    gridTemplateColumns.push(this.props.initialWidths[c] !== 'auto' ? `${this.props.initialWidths[c]}px` : 'auto');
                 } else {
                     gridTemplateColumns.push('auto');
                 }
@@ -170,7 +170,7 @@ class TableResize extends Component {
         } else if (this.props.initialWidths) {
             for (let c = 0; c < this.props.initialWidths.length; c++) {
                 if (this.props.initialWidths[c]) {
-                    gridTemplateColumns.push(this.props.initialWidths[c] !== 'auto' ? this.props.initialWidths[c] + 'px' : 'auto');
+                    gridTemplateColumns.push(this.props.initialWidths[c] !== 'auto' ? `${this.props.initialWidths[c]}px` : 'auto');
                 } else {
                     gridTemplateColumns.push('auto');
                 }
@@ -208,7 +208,7 @@ class TableResize extends Component {
 
     resizerMouseDown = e => {
         if (this.resizerActiveIndex === null || this.resizerActiveIndex === undefined) {
-            console.log('Mouse down ' + e.target.dataset.index);
+            console.log(`Mouse down ${e.target.dataset.index}`);
             this.resizerActiveIndex = parseInt(e.target.dataset.index, 10);
             this.resizerActiveDiv = e.target;
             this.resizerMin = this.props.minWidths ? this.props.minWidths[this.resizerActiveIndex] : 0;
@@ -242,7 +242,7 @@ class TableResize extends Component {
         return <Table
             stickyHeader={this.props.stickyHeader}
             size={this.props.size || 'small'}
-            className={ this.props.classes.table + (this.props.className ? ' ' + this.props.className : '')}
+            className={ this.props.classes.table + (this.props.className ? ` ${this.props.className}` : '')}
             ref={ this.resizerRefTable }
             style={ Object.assign({}, this.props.style || {}, style) }
         >

@@ -1,19 +1,20 @@
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
 import withStyles from '@mui/styles/withStyles';
-import Fab from '@mui/material/Fab';
 import PropTypes from 'prop-types';
 
-import Toolbar from '@mui/material/Toolbar';
+import { Fab, Toolbar } from '@mui/material';
+
+import {
+    Save as IconSave,
+    Close as IconClose,
+} from '@mui/icons-material';
 
 import I18n from '../i18n';
 
-import IconSave from '@mui/icons-material/Save';
-import IconClose from '@mui/icons-material/Close';
-
-const styles = theme => ({
+const styles = () => ({
     buttonIcon: {
-        marginRight: 8
+        marginRight: 8,
     },
 });
 
@@ -73,7 +74,8 @@ class SaveCloseButtons extends React.Component {
                 onClick={() => this.props.onSave(false)}
                 style={buttonStyle}
             >
-                <IconSave className={!noTextOnButtons ? this.props.classes.buttonIcon : ''}/>{!noTextOnButtons && I18n.t('ra_Save')}
+                <IconSave className={!noTextOnButtons ? this.props.classes.buttonIcon : ''} />
+                {!noTextOnButtons && I18n.t('ra_Save')}
             </Fab>
             <Fab
                 variant="extended"
@@ -81,13 +83,13 @@ class SaveCloseButtons extends React.Component {
                 disabled={!this.props.changed || this.props.error}
                 onClick={() => this.props.onSave(true)}
                 style={Object.assign({}, buttonStyle, {marginLeft: 10})}>
-                <IconSave className={!noTextOnButtons ? this.props.classes.buttonIcon : ''}/>
+                <IconSave className={!noTextOnButtons ? this.props.classes.buttonIcon : ''} />
                 {!noTextOnButtons ? I18n.t('ra_Save and close') : '+'}
                 {noTextOnButtons && <IconClose/>}
             </Fab>
             <div style={{flexGrow: 1}}/>
             <Fab variant="extended" aria-label="Close" onClick={() => this.props.onClose()} style={buttonStyle}>
-                <IconClose className={!noTextOnButtons ? this.props.classes.buttonIcon : ''}/>{!noTextOnButtons && I18n.t('ra_Close')}
+                <IconClose className={!noTextOnButtons ? this.props.classes.buttonIcon : ''} />{!noTextOnButtons && I18n.t('ra_Close')}
             </Fab>
         </Toolbar>;
     }

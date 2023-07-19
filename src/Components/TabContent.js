@@ -5,16 +5,16 @@ import withStyles from '@mui/styles/withStyles';
 import PropTypes from 'prop-types';
 import Utils from './Utils';
 
-import Grid from '@mui/material/Grid';
+import { Grid } from '@mui/material';
 
 const styles = {
     root: {
         height: '100%',
-        overflow: 'hidden'
+        overflow: 'hidden',
     },
     overflowAuto: {
-        overflow: 'auto'
-    }
+        overflow: 'auto',
+    },
 };
 
 /**
@@ -30,9 +30,9 @@ class TabContent extends React.Component {
 
         return <Grid
             item
-            className={ Utils.clsx(classes.root, {[classes.overflowAuto]: this.props.overflow === 'auto'}) }
+            className={Utils.clsx(classes.root, {[classes.overflowAuto]: this.props.overflow === 'auto'})}
         >
-            { this.props.children }
+            {this.props.children}
         </Grid>;
     }
 }
