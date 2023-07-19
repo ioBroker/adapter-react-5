@@ -166,7 +166,7 @@ class App extend GenericApp {
 }
 ```
 
-6. The optional step to validate the data to be saved:
+6. The optional step is to validate the data to be saved:
 ```
 onPrepareSave(settings) {
      super.onPrepareSave(settings);
@@ -181,7 +181,7 @@ onPrepareSave(settings) {
 ## Components
 
 ### Connection.js
-This is a non-react class to provide the communication for socket connection with server. 
+This is a non-react class to provide the communication for socket connection with the server. 
 
 ### GenericApp.js
 
@@ -592,7 +592,7 @@ class MyComponent {
 }
 ```
 
-## List of adapters, that uses adapter-react
+## List of adapters that use adapter-react
 - Admin
 - iot
 - echarts
@@ -603,12 +603,12 @@ class MyComponent {
 - eventlist
 
 ## Usability
-In dialogs the OK button is first (on the left) and the cancel button is last (on the right)
+In dialogs, the OK button is first (on the left) and the cancel button is last (on the right)
 
 ## Used icons
 This project uses icons from [Flaticon](https://www.flaticon.com/).
 
-ioBroker GmbH has a valid license for all of used icons.
+ioBroker GmbH has a valid license for all the used icons.
 The icons may not be reused in other projects without the proper flaticon license or flaticon subscription.
 
 ## Migration from adapter-react to adapter-react-v5
@@ -823,7 +823,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 * (bluefox) Allowed to show select dialog with the expert mode enabled
 
 ### 3.1.19 (2022-07-08)
-* (bluefox) Allowed to extend translations for all languages together
+* (bluefox) Allowed extending translations for all languages together
 
 ### 3.1.18 (2022-07-06)
 * (bluefox) Added translation
@@ -835,7 +835,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 * (bluefox) Update object browser
 
 ### 3.1.15 (2022-06-27)
-* (bluefox) Allow to use spaces in name
+* (bluefox) Allow using spaces in name
 
 ### 3.1.14 (2022-06-23)
 * (bluefox) Added translations
@@ -865,7 +865,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 * (bluefox) Some german texts were corrected
 
 ### 3.0.17 (2022-06-03)
-* (bluefox) Allowed to call getAdapterInstances not for admin too
+* (bluefox) Allowed calling getAdapterInstances not for admin too
 
 ### 3.0.15 (2022-06-01)
 * (bluefox) Updated JsonConfigComponent: password, table
@@ -915,7 +915,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 * (bluefox) beta version
 
 ### 0.0.2 (2022-02-24)
-* (bluefox) try to publish first version
+* (bluefox) try to publish a first version
 
 ### 0.0.1 (2022-02-24)
 * initial commit
