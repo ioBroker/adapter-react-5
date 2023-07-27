@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from '@mui/styles';
 import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -62,15 +62,15 @@ class DialogSimpleCron extends React.Component {
             onClose={() => {}}
             maxWidth="md"
             fullWidth
-            classes={{paper: this.props.classes.dialogPaper}}
+            classes={{ paper: this.props.classes.dialogPaper }}
             open={!0}
             aria-labelledby="cron-dialog-title"
         >
             <DialogTitle id="cron-dialog-title">{this.props.title || I18n.t('ra_Define CRON...')}</DialogTitle>
-            <DialogContent style={{height: '100%', overflow: 'hidden'}}>
+            <DialogContent style={{ height: '100%', overflow: 'hidden' }}>
                 <SimpleCron
                     cronExpression={this.state.cron}
-                    onChange={cron => this.setState({cron})}
+                    onChange={cron => this.setState({ cron })}
                     language={I18n.getLanguage()}
                 />
             </DialogContent>
@@ -90,9 +90,6 @@ DialogSimpleCron.propTypes = {
     cron: PropTypes.string,
     cancel: PropTypes.string,
     ok: PropTypes.string,
-    simple: PropTypes.bool,
-    language: PropTypes.string
-
 };
 
 export default withStyles(styles)(DialogSimpleCron);

@@ -19,7 +19,6 @@ const vendorStyles = `
 
 /**
  * @typedef {object} LoaderVendorProps
- * @property {number} [size] The size in pixels of this loader.
  * @property {string} [themeType] The chosen theme type.
  * @property {string} [theme] The chosen theme.
  *
@@ -31,8 +30,6 @@ class LoaderVendor extends React.Component {
      */
     constructor(props) {
         super(props);
-        this.size = this.props.size || 200;
-
         if (!window.document.getElementById('vendor-iobroker-component')) {
             const style = window.document.createElement('style');
             style.setAttribute('id', 'vendor-iobroker-component');
@@ -43,23 +40,25 @@ class LoaderVendor extends React.Component {
 
     render() {
         const theme = this.props.themeType || this.props.theme || 'light';
-        return <div className={'vendor-logo-back logo-background-' + theme} style={{
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100%',
-            width: '10%',
-            margin: 'auto'
-        }}>
-            <div style={{flexGrow: 1}}/>
-            <CircularProgress color="secondary" size={200} thickness={5}/>
-            <div style={{flexGrow: 1}}/>
+        return <div
+            className={`vendor-logo-back logo-background-${theme}`}
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+                width: '10%',
+                margin: 'auto',
+            }}
+        >
+            <div style={{ flexGrow: 1 }} />
+            <CircularProgress color="secondary" size={200} thickness={5} />
+            <div style={{ flexGrow: 1 }} />
         </div>;
     }
 }
 
 LoaderVendor.propTypes = {
-    size: PropTypes.number,
-    themeType: PropTypes.string
+    themeType: PropTypes.string,
 };
 
 /** @type {typeof LoaderVendor} */

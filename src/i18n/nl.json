@@ -390,5 +390,8 @@
   "ra_Append or replace?": "Toevoegen of vervangen?",
   "ra_Append %s entries or replace existing?": "%s ingangen toevoegen of bestaande vervangen?",
   "ra_Replace": "Vervangen",
-  "ra_Append": "toevoegen"
+  "ra_Append": "toevoegen",
+  "ra_May not trigger \"updateLicenses\"": "Activeert mogelijk niet \"updateLicenses\"",
+  "ra_Unknown error": "Onbekende fout",
+  "ra_License must be converted": "Licentie moet worden omgezet naar nieuwere versie. U kunt dit doen in uw iobroker.net-profiel."
 }

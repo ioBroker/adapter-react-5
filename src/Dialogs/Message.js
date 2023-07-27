@@ -31,7 +31,7 @@ import I18n from '../i18n';
 class DialogMessage extends React.Component {
     handleOk() {
         this.props.onClose && this.props.onClose();
-    };
+    }
 
     render() {
         return <Dialog
@@ -45,7 +45,10 @@ class DialogMessage extends React.Component {
             <DialogTitle id="ar_dialog_message_title">{this.props.title || I18n.t('ra_Message')}</DialogTitle>
             <DialogContent>
                 <DialogContentText id="ar_dialog_message_description">
-                    <span style={{ marginRight: this.props.icon ? 8 : 0 }}>{this.props.icon || null}</span>{this.props.text}
+                    <span style={{ marginRight: this.props.icon ? 8 : 0 }}>
+                        {this.props.icon || null}
+                    </span>
+                    {this.props.text}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -61,7 +64,7 @@ DialogMessage.propTypes = {
     title: PropTypes.string,
     text: PropTypes.string,
     ok: PropTypes.string,
-    icon: PropTypes.object
+    icon: PropTypes.object,
 };
 
 export default DialogMessage;

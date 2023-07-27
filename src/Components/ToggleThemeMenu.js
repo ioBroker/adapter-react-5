@@ -9,7 +9,9 @@ import {
     Brightness7 as Brightness7Icon,
 } from '@mui/icons-material';
 
-export default function ToggleThemeMenu({ themeName, toggleTheme, t, className, style, size }) {
+export default function ToggleThemeMenu({
+    themeName, toggleTheme, t, className, style, size,
+}) {
     return <div className={className || undefined} style={style || undefined}>
         <Tooltip title={t('ra_Change color theme')}>
             <IconButton onClick={() => toggleTheme()} size={size || 'medium'}>

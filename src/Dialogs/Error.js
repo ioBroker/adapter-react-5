@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2022 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2023 bluefox <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -7,27 +7,19 @@
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@mui/styles/withStyles';
 
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+} from '@mui/material';
 
-import IconCheck from '@mui/icons-material/Check';
+import { Check as IconCheck } from '@mui/icons-material';
 
 import I18n from '../i18n';
-
-const styles = theme => ({
-    titleBackground: {
-
-    },
-    titleColor: {
-
-    }
-});
 
 /**
  * @typedef {object} DialogErrorProps
@@ -41,7 +33,7 @@ const styles = theme => ({
 class DialogError extends React.Component {
     handleOk() {
         this.props.onClose && this.props.onClose();
-    };
+    }
 
     render() {
         return <Dialog
@@ -54,7 +46,7 @@ class DialogError extends React.Component {
         >
             <DialogTitle
                 className={this.props.classes.titleBackground}
-                classes={{root: this.props.classes.titleColor}}
+                classes={{ root: this.props.classes.titleColor }}
                 id="ar_alert_dialog_title"
             >
                 {this.props.title || I18n.t('ra_Error')}
@@ -65,7 +57,16 @@ class DialogError extends React.Component {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button id="ar_dialog_error_ok" variant="contained" onClick={() => this.handleOk()} color="primary" autoFocus startIcon={<IconCheck />}>{I18n.t('ra_Ok')}</Button>
+                <Button
+                    id="ar_dialog_error_ok"
+                    variant="contained"
+                    onClick={() => this.handleOk()}
+                    color="primary"
+                    autoFocus
+                    startIcon={<IconCheck />}
+                >
+                    {I18n.t('ra_Ok')}
+                </Button>
             </DialogActions>
         </Dialog>;
     }
@@ -77,11 +78,10 @@ DialogError.propTypes = {
     title: PropTypes.string,
     text: PropTypes.oneOfType([
         PropTypes.string,
-        PropTypes.element
+        PropTypes.element,
     ]),
-    icon: PropTypes.object
 };
 
 /** @type {typeof DialogError} */
-const _export = withStyles(styles)(DialogError);
+const _export = DialogError;
 export default _export;

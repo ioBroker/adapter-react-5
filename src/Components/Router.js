@@ -69,8 +69,7 @@ class Router extends React.Component {
         }
         if (dialog && !tab) {
             tab = location.tab;
-        } else
-        if (tab === null) {
+        } else if (tab === null) {
             tab = location.tab;
         }
 

@@ -78,7 +78,7 @@ function getElevations(color, overlay) {
     return elevations;
 }
 
-const buttonsPalette = theme => ({
+const buttonsPalette = () => ({
     palette: {
         // mode: "dark",
         grey: {
@@ -93,13 +93,13 @@ const buttonsTheme = theme => ({
         MuiButton: {
             variants: [
                 {
-                    props: {variant: 'contained', color: 'grey'},
+                    props: { variant: 'contained', color: 'grey' },
                     style: {
                         color: theme.palette.getContrastText(theme.palette.grey[300]),
                     },
                 },
                 {
-                    props: {variant: 'outlined', color: 'grey'},
+                    props: { variant: 'outlined', color: 'grey' },
                     style: {
                         color: theme.palette.text.primary,
                         borderColor:
@@ -122,7 +122,7 @@ const buttonsTheme = theme => ({
                     },
                 },
                 {
-                    props: {color: 'grey', variant: 'text'},
+                    props: { color: 'grey', variant: 'text' },
                     style: {
                         color: 'black',
                         '&:hover': {
@@ -376,13 +376,13 @@ const Theme = type => {
             MuiButton: {
                 variants: [
                     {
-                        props: {variant: 'contained', color: 'grey'},
+                        props: { variant: 'contained', color: 'grey' },
                         style: {
                             color: theme.palette.getContrastText(theme.palette.grey[300]),
                         },
                     },
                     {
-                        props: {variant: 'outlined', color: 'grey'},
+                        props: { variant: 'outlined', color: 'grey' },
                         style: {
                             color: theme.palette.text.primary,
                             borderColor:
@@ -405,7 +405,7 @@ const Theme = type => {
                         },
                     },
                     {
-                        props: {variant: 'text', color: 'grey'},
+                        props: { variant: 'text', color: 'grey' },
                         style: {
                             color: theme.palette.text.primary,
                             '&:hover': {

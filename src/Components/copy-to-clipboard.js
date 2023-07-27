@@ -22,10 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 // https://github.com/sudodoki/toggle-selection/blob/gh-pages/index.js
-function deselectCurrent () {
+function deselectCurrent() {
     const selection = document.getSelection();
     if (!selection.rangeCount) {
-        return function () {};
+        return () => {};
     }
     let active = document.activeElement;
 
@@ -46,14 +46,12 @@ function deselectCurrent () {
     }
 
     selection.removeAllRanges();
-    return function () {
+    return () => {
         selection.type === 'Caret' &&
         selection.removeAllRanges();
 
         if (!selection.rangeCount) {
-            ranges.forEach(function (range) {
-                selection.addRange(range);
-            });
+            ranges.forEach(range => selection.addRange(range));
         }
 
         active && active.focus();
@@ -65,18 +63,17 @@ function deselectCurrent () {
 const clipboardToIE11Formatting = {
     'text/plain': 'Text',
     'text/html': 'Url',
-    'default': 'Text',
+    default: 'Text',
 };
 
 const defaultMessage = 'Copy to clipboard: #{key}, Enter';
 
 function format(message) {
-    const copyKey = (/mac os x/i.test(navigator.userAgent) ? '⌘' : 'Ctrl') + '+C';
+    const copyKey = `${/mac os x/i.test(navigator.userAgent) ? '⌘' : 'Ctrl'}+C`;
     return message.replace(/#{\s*key\s*}/g, copyKey);
 }
 
 function copy(text, options) {
-    let debug;
     let reselectPrevious;
     let range;
     let selection;
@@ -85,7 +82,7 @@ function copy(text, options) {
     if (!options) {
         options = {};
     }
-    debug = options.debug || false;
+    const debug = options.debug || false;
     try {
         reselectPrevious = deselectCurrent();
 
@@ -109,7 +106,7 @@ function copy(text, options) {
         mark.style.MozUserSelect = 'text';
         mark.style.msUserSelect = 'text';
         mark.style.userSelect = 'text';
-        mark.addEventListener('copy', function (e) {
+        mark.addEventListener('copy', e => {
             e.stopPropagation();
             if (options.format) {
                 e.preventDefault();
@@ -117,8 +114,8 @@ function copy(text, options) {
                     debug && console.warn('unable to use e.clipboardData');
                     debug && console.warn('trying IE specific stuff');
                     window.clipboardData.clearData();
-                    var format = clipboardToIE11Formatting[options.format] || clipboardToIE11Formatting['default']
-                    window.clipboardData.setData(format, text);
+                    const _format = clipboardToIE11Formatting[options.format] || clipboardToIE11Formatting.default;
+                    window.clipboardData.setData(_format, text);
                 } else { // all other browsers
                     e.clipboardData.clearData();
                     e.clipboardData.setData(options.format, text);
@@ -147,10 +144,10 @@ function copy(text, options) {
             window.clipboardData.setData(options.format || 'text', text);
             options.onCopy && options.onCopy(window.clipboardData);
             success = true;
-        } catch (err) {
-            debug && console.error('unable to copy using clipboardData: ', err);
+        } catch (error) {
+            debug && console.error('unable to copy using clipboardData: ', error);
             debug && console.error('falling back to prompt');
-            let message = format('message' in options ? options.message : defaultMessage);
+            const message = format('message' in options ? options.message : defaultMessage);
             window.prompt(message, text);
         }
     } finally {

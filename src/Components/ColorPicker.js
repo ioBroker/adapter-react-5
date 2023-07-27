@@ -16,9 +16,11 @@
 import React from 'react';
 import { ChromePicker } from 'react-color';
 import PropTypes from 'prop-types';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from '@mui/styles';
 
-import { TextField, Menu, IconButton, Button } from '@mui/material';
+import {
+    TextField, Menu, IconButton, Button,
+} from '@mui/material';
 import { Delete as IconDelete, Close as IconClose } from '@mui/icons-material';
 
 import Utils from './Utils';
@@ -218,11 +220,11 @@ class ColorPicker extends React.Component {
     render() {
         const color = ColorPicker.getColor(this.state.color);
 
-        const style = {...(this.props.style || {})};
+        const style = { ...(this.props.style || {}) };
         style.position = 'relative';
 
         return <div
-            style={ style }
+            style={style}
             className={this.props.className || ''}
         >
             <TextField

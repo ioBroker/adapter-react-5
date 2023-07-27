@@ -390,5 +390,8 @@
   "ra_Append or replace?": "Додати чи замінити?",
   "ra_Append %s entries or replace existing?": "Додати %s записів чи замінити наявні?",
   "ra_Replace": "Замінити",
-  "ra_Append": "Додайте"
+  "ra_Append": "Додайте",
+  "ra_May not trigger \"updateLicenses\"": "Може не запускати \"updateLicenses\"",
+  "ra_Unknown error": "Невідома помилка",
+  "ra_License must be converted": "Ліцензію необхідно конвертувати до новішої версії. Ви можете зробити це у своєму профілі на iobroker.net."
 }

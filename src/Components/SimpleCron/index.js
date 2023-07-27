@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from '@mui/styles';
 
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -57,9 +57,9 @@ const WEEKDAYS = [
 function padding(num) {
     if (num < 10) {
         return `0${num}`;
-    } else {
-        return `${num}`;
     }
+
+    return `${num}`;
 }
 const DEFAULT_STATE = {
     mode: PERIODIC.interval,

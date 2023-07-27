@@ -390,5 +390,8 @@
   "ra_Append or replace?": "追加还是替换？",
   "ra_Append %s entries or replace existing?": "追加 %s 条目还是替换现有条目？",
   "ra_Replace": "代替",
-  "ra_Append": "附加"
+  "ra_Append": "附加",
+  "ra_May not trigger \"updateLicenses\"": "可能不会触发“updateLicenses”",
+  "ra_Unknown error": "未知错误",
+  "ra_License must be converted": "许可证必须转换为更新版本。您可以在 iobroker.net 个人资料中执行此操作。"
 }

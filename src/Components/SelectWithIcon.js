@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from '@mui/styles';
 
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import {
+    FormControl, InputLabel, MenuItem, Select,
+} from '@mui/material';
 
 import Icon from './Icon';
 import Utils from './Utils';
@@ -53,7 +55,7 @@ class SelectWithIcon extends Component {
         }
 
         if (this.props.different && this.props.value === this.props.different) {
-            list.unshift({value: this.props.different, name: this.wordDifferent});
+            list.unshift({ value: this.props.different, name: this.wordDifferent });
         }
 
         if (this.props.allowNone) {
@@ -100,11 +102,16 @@ class SelectWithIcon extends Component {
             disabled={this.props.disabled}
             value={this.props.value}
             inputProps={this.props.inputProps}
-            renderValue={value => <span>{item?.icon ? <Icon src={item?.icon} className={this.props.classes.icon} /> : null}{item?.name}</span>}
-            classes={{root: Utils.clsx(
-                this.props.value === this.props.different ? this.props.classes.different : '',
-                this.props.dense ? this.props.className : '',
-            )}}
+            renderValue={(/* value */) => <span>
+                {item?.icon ? <Icon src={item?.icon} className={this.props.classes.icon} /> : null}
+                {item?.name}
+            </span>}
+            classes={{
+                root: Utils.clsx(
+                    this.props.value === this.props.different ? this.props.classes.different : '',
+                    this.props.dense ? this.props.className : '',
+                ),
+            }}
             style={style}
             onChange={el => {
                 if (this.props.different && el.target.value !== this.props.different) {
@@ -118,7 +125,8 @@ class SelectWithIcon extends Component {
                     if (pos !== null) {
                         const list = Utils.clone(this.state.list);
                         list.splice(pos, 1);
-                        return this.setState({list}, () => this.props.onChange(el.target.value));
+                        this.setState({ list }, () => this.props.onChange(el.target.value));
+                        return;
                     }
                 }
 
@@ -138,12 +146,12 @@ class SelectWithIcon extends Component {
 
         if (this.props.dense) {
             return select;
-        } else {
-            return <FormControl variant="standard" fullWidth={!!this.props.fullWidth} style={this.props.style} className={this.props.className}>
-                <InputLabel>{this.props.label}</InputLabel>
-                {select}
-            </FormControl>;
         }
+
+        return <FormControl variant="standard" fullWidth={!!this.props.fullWidth} style={this.props.style} className={this.props.className}>
+            <InputLabel>{this.props.label}</InputLabel>
+            {select}
+        </FormControl>;
     }
 }
 

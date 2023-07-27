@@ -1,16 +1,16 @@
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from '@mui/styles';
 import { Fab } from '@mui/material';
 import PropTypes from 'prop-types';
-
-import I18n from '../i18n';
 
 import {
     Help as IconHelp,
     VerticalAlignTop as IconUpload,
     VerticalAlignBottom as IconDownload,
 } from '@mui/icons-material';
+
+import I18n from '../i18n';
 
 const styles = () => ({
     buttons: {
@@ -66,8 +66,8 @@ class Logo extends React.Component {
                     } else {
                         this.props.onError && this.props.onError(I18n.t('ra_invalidConfig'));
                     }
-                } catch (e) {
-                    this.props.onError && this.props.onError(e.toString());
+                } catch (err) {
+                    this.props.onError && this.props.onError(err.toString());
                 }
             };
             r.readAsText(f);
@@ -80,7 +80,7 @@ class Logo extends React.Component {
         const result = {
             _id: `system.adapter.${this.props.common.name}.${this.props.instance}`,
             common: JSON.parse(JSON.stringify(this.props.common)),
-            native: this.props.native
+            native: this.props.native,
         };
         // remove unimportant information
         if (result.common.news) {
@@ -93,7 +93,7 @@ class Logo extends React.Component {
             delete result.common.desc;
         }
 
-        //window.open('data:application/iobroker; content-disposition=attachment; filename=' + result._id + '.json,' + JSON.stringify(result, null, 2));
+        // window.open('data:application/iobroker; content-disposition=attachment; filename=' + result._id + '.json,' + JSON.stringify(result, null, 2));
         Logo.generateFile(`${result._id}.json`, result);
     }
 
@@ -109,7 +109,7 @@ class Logo extends React.Component {
     render() {
         return <div className={this.props.className} style={this.props.style}>
             {this.props.common.icon ?
-                <img src={this.props.common.icon} className={this.props.classes.logo} alt="logo"/> : null}
+                <img src={this.props.common.icon} className={this.props.classes.logo} alt="logo" /> : null}
             {this.props.common.readme ?
                 <Fab
                     size="small"
@@ -120,11 +120,29 @@ class Logo extends React.Component {
                         const win = window.open(this.props.common.readme, '_blank');
                         win?.focus();
                     }}
-                ><IconHelp /></Fab> : null}
-            <Fab size="small" color="primary" aria-label="Load config" className={this.props.classes.buttons}
-                 title={I18n.t('ra_Load configuration from file')} onClick={() => this.upload()}><IconUpload /></Fab>
-            <Fab size="small" color="primary" aria-label="Save config" className={this.props.classes.buttons}
-                 title={I18n.t('ra_Save configuration to file')} onClick={() => this.download()}><IconDownload/></Fab>
+                >
+                    <IconHelp />
+                </Fab> : null}
+            <Fab
+                size="small"
+                color="primary"
+                aria-label="Load config"
+                className={this.props.classes.buttons}
+                title={I18n.t('ra_Load configuration from file')}
+                onClick={() => this.upload()}
+            >
+                <IconUpload />
+            </Fab>
+            <Fab
+                size="small"
+                color="primary"
+                aria-label="Save config"
+                className={this.props.classes.buttons}
+                title={I18n.t('ra_Save configuration to file')}
+                onClick={() => this.download()}
+            >
+                <IconDownload />
+            </Fab>
         </div>;
     }
 }

@@ -1,13 +1,13 @@
-/***
+/**
  * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * MIT License
  *
  ***/
 
- /**
-  * Translation string management.
-  */
+/**
+ * Translation string management.
+ */
 class I18n {
     /**
      * List of all languages with their translations.
@@ -15,11 +15,11 @@ class I18n {
      */
     static translations = {};
 
-     /**
-      * List of unknown translations during development.
-      * @type {string[]}
-      */
-     static unknownTranslations = [];
+    /**
+     * List of unknown translations during development.
+     * @type {string[]}
+     */
+    static unknownTranslations = [];
 
     /**
      * The currently displayed language.
@@ -39,77 +39,77 @@ class I18n {
         }
     }
 
-     /**
-      * Add translations
-      * User can provide two types of structures:
-      * - {"word1": "translated word1", "word2": "translated word2"}, but in this case the lang must be provided
-      * - {"word1": {"en": "translated en word1", "de": "translated de word1"}, "word2": {"en": "translated en word2", "de": "translated de word2"}}, but no lang must be provided
-      * @param {object} words additional words for specific language
-      * @param {ioBroker.Languages} lang
-      */
-     static extendTranslations(words, lang) {
-         // extend automatically all languages with prefix
-         if (words.prefix) {
-             if (typeof words.prefix === 'string') {
-                 const prefix = words.prefix;
-                 delete words.prefix;
-                 Object.keys(words).forEach(lang => {
-                     const _words = {};
-                     Object.keys(words[lang]).forEach(word => {
-                         if (!word) {
-                             return;
-                         }
-                         if (!word.startsWith(prefix)) {
-                             _words[`${prefix}${word}`] = words[lang][word];
-                         } else {
-                             _words[word] = words[lang][word];
-                         }
-                     });
-                     words[lang] = _words;
-                 });
-             } else {
-                 console.warn('Found prefix in translations, but it is not a string');
-             }
-         }
+    /**
+     * Add translations
+     * User can provide two types of structures:
+     * - {"word1": "translated word1", "word2": "translated word2"}, but in this case the lang must be provided
+     * - {"word1": {"en": "translated en word1", "de": "translated de word1"}, "word2": {"en": "translated en word2", "de": "translated de word2"}}, but no lang must be provided
+     * @param {object} words additional words for specific language
+     * @param {ioBroker.Languages} lang
+     */
+    static extendTranslations(words, lang) {
+        // extend automatically all languages with prefix
+        if (words.prefix) {
+            if (typeof words.prefix === 'string') {
+                const prefix = words.prefix;
+                delete words.prefix;
+                Object.keys(words).forEach(_lang => {
+                    const _words = {};
+                    Object.keys(words[_lang]).forEach(word => {
+                        if (!word) {
+                            return;
+                        }
+                        if (!word.startsWith(prefix)) {
+                            _words[`${prefix}${word}`] = words[_lang][word];
+                        } else {
+                            _words[word] = words[_lang][word];
+                        }
+                    });
+                    words[_lang] = _words;
+                });
+            } else {
+                console.warn('Found prefix in translations, but it is not a string');
+            }
+        }
 
-         try {
-             if (!lang) {
-                 if (words.en && words.de && words.ru) {
-                     Object.keys(words).forEach(lang => {
-                         I18n.translations[lang] = I18n.translations[lang] || {};
-                         Object.assign(I18n.translations[lang], words[lang]);
-                     });
-                 } else {
-                     Object.keys(words).forEach(word => {
-                         Object.keys(words[word]).forEach(lang => {
-                             if (!I18n.translations[lang]) {
-                                 console.warn(`Used unknown language: ${lang}`);
-                             }
-                             if (!I18n.translations[lang][word]) {
-                                 I18n.translations[lang][word] = words[word][lang];
-                             } else if (I18n.translations[lang][word] !== words[word][lang]) {
-                                 console.warn(`Translation for word "${word}" in "${lang}" was ignored: existing = "${I18n.translations[lang][word]}", new = ${words[word][lang]}`);
-                             }
-                         });
-                     });
-                 }
-             } else {
-                 if (!I18n.translations[lang]) {
-                     console.warn(`Used unknown language: ${lang}`);
-                 }
-                 I18n.translations[lang] = I18n.translations[lang] || {};
-                 Object.keys(words)
-                     .forEach(word => {
-                         if (!I18n.translations[lang][word]) {
-                             I18n.translations[lang][word] = words[word];
-                         } else if (I18n.translations[lang][word] !== words[word]) {
-                             console.warn(`Translation for word "${word}" in "${lang}" was ignored: existing = "${I18n.translations[lang][word]}", new = ${words[word]}`);
-                         }
-                     });
-             }
-         } catch (e) {
-             console.error(`Cannot apply translations: ${e}`);
-         }
+        try {
+            if (!lang) {
+                if (words.en && words.de && words.ru) {
+                    Object.keys(words).forEach(_lang => {
+                        I18n.translations[_lang] = I18n.translations[_lang] || {};
+                        Object.assign(I18n.translations[_lang], words[_lang]);
+                    });
+                } else {
+                    Object.keys(words).forEach(word => {
+                        Object.keys(words[word]).forEach(_lang => {
+                            if (!I18n.translations[_lang]) {
+                                console.warn(`Used unknown language: ${_lang}`);
+                            }
+                            if (!I18n.translations[_lang][word]) {
+                                I18n.translations[_lang][word] = words[word][_lang];
+                            } else if (I18n.translations[_lang][word] !== words[word][_lang]) {
+                                console.warn(`Translation for word "${word}" in "${_lang}" was ignored: existing = "${I18n.translations[_lang][word]}", new = ${words[word][_lang]}`);
+                            }
+                        });
+                    });
+                }
+            } else {
+                if (!I18n.translations[lang]) {
+                    console.warn(`Used unknown language: ${lang}`);
+                }
+                I18n.translations[lang] = I18n.translations[lang] || {};
+                Object.keys(words)
+                    .forEach(word => {
+                        if (!I18n.translations[lang][word]) {
+                            I18n.translations[lang][word] = words[word];
+                        } else if (I18n.translations[lang][word] !== words[word]) {
+                            console.warn(`Translation for word "${word}" in "${lang}" was ignored: existing = "${I18n.translations[lang][word]}", new = ${words[word]}`);
+                        }
+                    });
+            }
+        } catch (e) {
+            console.error(`Cannot apply translations: ${e}`);
+        }
     }
 
     /**
@@ -136,7 +136,7 @@ class I18n {
      * @param {string[]} args Optional arguments which will replace the first (second, third, ...) occurrences of %s
      */
     static t(word, ...args) {
-        let translation = I18n.translations[I18n.lang];
+        const translation = I18n.translations[I18n.lang];
         if (translation) {
             const w = translation[word];
             if (w) {
@@ -161,17 +161,17 @@ class I18n {
         return word;
     }
 
-     /**
-      * Show non-translated words
-      * Required during development
-      * @param {string | RegExp} filter filter words
-      */
-     static i18nShow(filter) {
-         /**
-          * List words with their translations.
-          * @type {Record<string, string>}
-          */
-         const result = {};
+    /**
+     * Show non-translated words
+     * Required during development
+     * @param {string | RegExp} filter filter words
+     */
+    static i18nShow(filter) {
+        /**
+         * List words with their translations.
+         * @type {Record<string, string>}
+         */
+        const result = {};
         if (!filter) {
             I18n.unknownTranslations.forEach(word => {
                 result[word] = word;
@@ -194,11 +194,11 @@ class I18n {
         }
     }
 
-     /**
-      * Disable warning about non-translated words
-      * Required during development
-      * @param {boolean} disable Do the warning should be disabled
-      */
+    /**
+     * Disable warning about non-translated words
+     * Required during development
+     * @param {boolean} disable Do the warning should be disabled
+     */
     static disableWarning(disable) {
         I18n._disableWarning = !!disable;
     }
@@ -208,13 +208,14 @@ class I18n {
 window.i18nShow = I18n.i18nShow;
 window.i18nDisableWarning = I18n.disableWarning;
 
-
-/*I18n.translations = {
+/*
+I18n.translations = {
     'en': require('./i18n/en'),
     'ru': require('./i18n/ru'),
     'de': require('./i18n/de'),
 };
 I18n.fallbacks = true;
-I18n.t = function () {};*/
+I18n.t = function () {};
+*/
 
 export default I18n;

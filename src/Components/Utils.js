@@ -41,13 +41,16 @@ const SIGNATURES = {
     '/9j/': 'jpg',
     PHN2Zw: 'svg',
     Qk1: 'bmp',
-    AAABAA: 'ico' // 00 00 01 00 according to https://en.wikipedia.org/wiki/List_of_file_signatures
+    AAABAA: 'ico', // 00 00 01 00 according to https://en.wikipedia.org/wiki/List_of_file_signatures
 };
 
 class Utils {
     static namespace = NAMESPACE;
+
     static INSTANCES = 'instances';
+
     static dateFormat = ['DD', 'MM'];
+
     static FORBIDDEN_CHARS = /[^._\-/ :!#$%&()+=@^{}|~\p{Ll}\p{Lu}\p{Nd}]+/gu;
 
     /**
@@ -58,7 +61,7 @@ class Utils {
     static CapitalWords(name) {
         return (name || '').split(/[\s_]/)
             .filter(item => item)
-            .map(word => word ? word[0].toUpperCase() + word.substring(1).toLowerCase() : '')
+            .map(word => (word ? word[0].toUpperCase() + word.substring(1).toLowerCase() : ''))
             .join(' ');
     }
 
@@ -98,12 +101,12 @@ class Utils {
      * @returns {string}
      */
     static getObjectName(objects, id, settings, options, isDesc) {
-        let item = objects[id];
+        const item = objects[id];
         let text = id;
         const attr = isDesc ? 'desc' : 'name';
 
         if (typeof settings === 'string' && !options) {
-            options = {language: settings};
+            options = { language: settings };
             settings = null;
         }
 
@@ -116,8 +119,7 @@ class Utils {
             if (typeof text === 'object') {
                 text = text[options.language] || text.en;
             }
-        } else
-        if (item && item.common && item.common[attr]) {
+        } else if (item && item.common && item.common[attr]) {
             text = item.common[attr];
             if (attr !== 'desc' && !text && item.common.desc) {
                 text = item.common.desc;
@@ -131,7 +133,7 @@ class Utils {
                 text = text[0] + text.substring(1).toLowerCase();
             }
         } else {
-            let pos = id.lastIndexOf('.');
+            const pos = id.lastIndexOf('.');
             text = id.substring(pos + 1).replace(/[_.]/g, ' ');
             text = Utils.CapitalWords(text);
         }
@@ -149,12 +151,12 @@ class Utils {
      * @returns {string}
      */
     static getObjectNameFromObj(obj, settings, options, isDesc, noTrim) {
-        let item = obj;
+        const item = obj;
         let text = (obj && obj._id) || '';
         const attr = isDesc ? 'desc' : 'name';
 
         if (typeof settings === 'string' && !options) {
-            options = {language: settings};
+            options = { language: settings };
             settings = null;
         }
 
@@ -165,8 +167,7 @@ class Utils {
             if (typeof text === 'object') {
                 text = text[options.language] || text.en;
             }
-        } else
-        if (item && item.common && item.common[attr]) {
+        } else if (item && item.common && item.common[attr]) {
             text = item.common[attr];
             if (attr !== 'desc' && !text && item.common.desc) {
                 text = item.common.desc;
@@ -202,10 +203,8 @@ class Utils {
                     if (settings[user].subOrder && settings[user].subOrder[forEnumId]) {
                         return JSON.parse(JSON.stringify(settings[user].subOrder[forEnumId]));
                     }
-                } else {
-                    if (settings[user].order) {
-                        return JSON.parse(JSON.stringify(settings[user].order));
-                    }
+                } else if (settings[user].order) {
+                    return JSON.parse(JSON.stringify(settings[user].order));
                 }
             }
         }
@@ -230,10 +229,8 @@ class Utils {
                     if (settings[user].subURLs && settings[user].subURLs[forEnumId]) {
                         return JSON.parse(JSON.stringify(settings[user].subURLs[forEnumId]));
                     }
-                } else {
-                    if (settings[user].URLs) {
-                        return JSON.parse(JSON.stringify(settings[user].URLs));
-                    }
+                } else if (settings[user].URLs) {
+                    return JSON.parse(JSON.stringify(settings[user].URLs));
                 }
             }
         }
@@ -251,7 +248,7 @@ class Utils {
         const [removed] = result.splice(source, 1);
         result.splice(dest, 0, removed);
         return result;
-    };
+    }
 
     /**
      * @param {any} obj
@@ -266,9 +263,9 @@ class Utils {
         }
         if (obj && obj.custom) {
             settings = obj.custom || {};
-            settings = settings[NAMESPACE] && settings[NAMESPACE][options.user || 'admin'] ? JSON.parse(JSON.stringify(settings[NAMESPACE][options.user || 'admin'])) : {enabled: true};
+            settings = settings[NAMESPACE] && settings[NAMESPACE][options.user || 'admin'] ? JSON.parse(JSON.stringify(settings[NAMESPACE][options.user || 'admin'])) : { enabled: true };
         } else {
-            settings = {enabled: defaultEnabling === undefined ? true : defaultEnabling, useCustom: false};
+            settings = { enabled: defaultEnabling === undefined ? true : defaultEnabling, useCustom: false };
         }
 
         if (!settings.hasOwnProperty('enabled')) {
@@ -276,9 +273,15 @@ class Utils {
         }
 
         if (false && settings.useCommon) {
-            if (obj.color) settings.color = obj.color;
-            if (obj.icon)  settings.icon  = obj.icon;
-            if (obj.name)  settings.name  = obj.name;
+            if (obj.color) {
+                settings.color = obj.color;
+            }
+            if (obj.icon) {
+                settings.icon  = obj.icon;
+            }
+            if (obj.name) {
+                settings.name  = obj.name;
+            }
         } else {
             if (options) {
                 if (!settings.name  && options.name)  settings.name  = options.name;
@@ -303,7 +306,7 @@ class Utils {
             }
         }
         if (!settings.name && id) {
-            let pos = id.lastIndexOf('.');
+            const pos = id.lastIndexOf('.');
             settings.name = id.substring(pos + 1).replace(/[_.]/g, ' ');
             settings.name = (settings.name || '').toString().replace(/_/g, ' ');
             settings.name = Utils.CapitalWords(settings.name);
@@ -337,7 +340,7 @@ class Utils {
                     if (typeof obj.common.name !== 'object') {
                         obj.common.name = {};
                         obj.common.name[options.language] = s.name;
-                    } else{
+                    } else {
                         obj.common.name[options.language] = s.name;
                     }
                     delete s.name;
@@ -345,9 +348,9 @@ class Utils {
             }
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -361,12 +364,12 @@ class Utils {
             // If UTF-8 icon
             if (settings.icon.length <= 2) {
                 return <span style={style || {}}>{settings.icon}</span>;
-            } else
+            }
             if (settings.icon.startsWith('data:image')) {
                 return <img alt={settings.name} src={settings.icon} style={style || {}} />;
-            } else { // maybe later some changes for a second type
-                return <img alt={settings.name} src={(settings.prefix || '') + settings.icon} style={style || {}} />;
             }
+            // maybe later some changes for a second type
+            return <img alt={settings.name} src={(settings.prefix || '') + settings.icon} style={style || {}} />;
         }
         return null;
     }
@@ -389,30 +392,29 @@ class Utils {
             // If UTF-8 icon
             if (typeof icon === 'string' && icon.length <= 2) {
                 return icon;
-            } else
+            }
             if (icon.startsWith('data:image')) {
                 return icon;
-            } else {
-                const parts = id.split('.');
-                if (parts[0] === 'system') {
-                    icon = `adapter/${parts[2]}${icon.startsWith('/') ? '' : '/'}${icon}`;
-                } else {
-                    icon = `adapter/${parts[0]}${icon.startsWith('/') ? '' : '/'}${icon}`;
-                }
-
-                if (window.location.pathname.match(/adapter\/[^/]+\/[^/]+\.html/)) {
-                    icon = `../../${icon}`;
-                } else if (window.location.pathname.match(/material\/[.\d]+/)) {
-                    icon = `../../${icon}`;
-                } else
-                if (window.location.pathname.match(/material\//)) {
-                    icon = `../${icon}`;
-                }
-                return icon;
             }
-        } else {
-            return null;
+
+            const parts = id.split('.');
+            if (parts[0] === 'system') {
+                icon = `adapter/${parts[2]}${icon.startsWith('/') ? '' : '/'}${icon}`;
+            } else {
+                icon = `adapter/${parts[0]}${icon.startsWith('/') ? '' : '/'}${icon}`;
+            }
+
+            if (window.location.pathname.match(/adapter\/[^/]+\/[^/]+\.html/)) {
+                icon = `../../${icon}`;
+            } else if (window.location.pathname.match(/material\/[.\d]+/)) {
+                icon = `../../${icon}`;
+            } else if (window.location.pathname.match(/material\//)) {
+                icon = `../${icon}`;
+            }
+            return icon;
         }
+
+        return null;
     }
 
     /**
@@ -424,7 +426,7 @@ class Utils {
         if (false && text !== text.toUpperCase()) {
             const words = text.split(/\s+/);
             for (let i = 0; i < words.length; i++) {
-                let word = words[i];
+                const word = words[i];
                 if (word.toLowerCase() !== word && word.toUpperCase() !== word) {
                     let z = 0;
                     const ww = [];
@@ -453,9 +455,9 @@ class Utils {
                 }
                 return '';
             }).join(' ');
-        } else {
-            return Utils.CapitalWords(text);
         }
+
+        return Utils.CapitalWords(text);
     }
 
     /**
@@ -490,8 +492,7 @@ class Utils {
             // remove alfa channel
             if (color.length === 8) {
                 color = color.substring(0, 6);
-            } else
-            if (color.length !== 6) {
+            } else if (color.length !== 6) {
                 return false;
             }
 
@@ -502,7 +503,7 @@ class Utils {
 
         // http://stackoverflow.com/a/3943023/112731
         return (r * 0.299 + g * 0.587 + b * 0.114) <= 186;
-    };
+    }
 
     /**
      * Get the time string in the format 00:00.
@@ -510,7 +511,7 @@ class Utils {
      */
     static getTimeString(seconds) {
         seconds = parseFloat(seconds);
-        if (isNaN(seconds)) {
+        if (Number.isNaN(seconds)) {
             return '--:--';
         }
         const hours = Math.floor(seconds / 3600);
@@ -524,12 +525,12 @@ class Utils {
                 secs = `0${secs}`;
             }
             return `${hours}:${minutes}:${secs}`;
-        } else {
-            if (secs < 10) {
-                secs = `0${secs}`;
-            }
-            return `${minutes}:${secs}`;
         }
+
+        if (secs < 10) {
+            secs = `0${secs}`;
+        }
+        return `${minutes}:${secs}`;
     }
 
     /**
@@ -539,58 +540,72 @@ class Utils {
      */
     static getWindDirection(angle) {
         if (angle >= 0 && angle < 11.25) {
-            return 'N'
-        } else if (angle >= 11.25 && angle < 33.75) {
-            return 'NNE'
-        } else if (angle >= 33.75 && angle < 56.25) {
-            return 'NE'
-        } else if (angle >= 56.25 && angle < 78.75) {
-            return 'ENE'
-        } else if (angle >= 78.75 && angle < 101.25) {
-            return 'E'
-        } else if (angle >= 101.25 && angle < 123.75) {
-            return 'ESE'
-        } else if (angle >= 123.75 && angle < 146.25) {
-            return 'SE'
-        } else if (angle >= 146.25 && angle < 168.75) {
-            return 'SSE'
-        } else if (angle >= 168.75 && angle < 191.25) {
-            return 'S'
-        } else if (angle >= 191.25 && angle < 213.75) {
-            return 'SSW'
-        } else if (angle >= 213.75 && angle < 236.25) {
-            return 'SW'
-        } else if (angle >= 236.25 && angle < 258.75) {
-            return 'WSW'
-        } else if (angle >= 258.75 && angle < 281.25) {
-            return 'W'
-        } else if (angle >= 281.25 && angle < 303.75) {
-            return 'WNW'
-        } else if (angle >= 303.75 && angle < 326.25) {
-            return 'NW'
-        } else if (angle >= 326.25 && angle < 348.75) {
-            return 'NNW'
-        } else if (angle >= 348.75) {
-            return 'N'
+            return 'N';
         }
+        if (angle >= 11.25 && angle < 33.75) {
+            return 'NNE';
+        }
+        if (angle >= 33.75 && angle < 56.25) {
+            return 'NE';
+        }
+        if (angle >= 56.25 && angle < 78.75) {
+            return 'ENE';
+        }
+        if (angle >= 78.75 && angle < 101.25) {
+            return 'E';
+        }
+        if (angle >= 101.25 && angle < 123.75) {
+            return 'ESE';
+        }
+        if (angle >= 123.75 && angle < 146.25) {
+            return 'SE';
+        }
+        if (angle >= 146.25 && angle < 168.75) {
+            return 'SSE';
+        }
+        if (angle >= 168.75 && angle < 191.25) {
+            return 'S';
+        }
+        if (angle >= 191.25 && angle < 213.75) {
+            return 'SSW';
+        }
+        if (angle >= 213.75 && angle < 236.25) {
+            return 'SW';
+        }
+        if (angle >= 236.25 && angle < 258.75) {
+            return 'WSW';
+        }
+        if (angle >= 258.75 && angle < 281.25) {
+            return 'W';
+        }
+        if (angle >= 281.25 && angle < 303.75) {
+            return 'WNW';
+        }
+        if (angle >= 303.75 && angle < 326.25) {
+            return 'NW';
+        }
+        if (angle >= 326.25 && angle < 348.75) {
+            return 'NNW';
+        }
+        // if (angle >= 348.75) {
+        return 'N';
     }
 
     /**
-     * Pad the given number with a zero if its not 2 digits long.
+     * Pad the given number with a zero if it's not 2 digits long.
      * @param {string | number} num
      */
     static padding(num) {
         if (typeof num === 'string') {
             if (num.length < 2) {
                 return `0${num}`;
-            } else {
-                return num;
             }
-        } else if (num < 10) {
-            return `0${num}`;
-        } else {
             return num;
         }
+        if (num < 10) {
+            return `0${num}`;
+        }
+        return num;
     }
 
     /**
@@ -618,12 +633,12 @@ class Utils {
                 // Day of the week
                 return now;
             }
-            let m = now.match(/(\d{1,4})[-./](\d{1,2})[-./](\d{1,4})/);
+            const m = now.match(/(\d{1,4})[-./](\d{1,2})[-./](\d{1,4})/);
             if (m) {
-                let a = [parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3], 10)];
-                let year = a.find(y => y > 31);
+                const a = [parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3], 10)];
+                const year = a.find(y => y > 31);
                 a.splice(a.indexOf(year), 1);
-                let day = a.find(m => m > 12);
+                const day = a.find(m => m > 12);
                 if (day) {
                     a.splice(a.indexOf(day), 1);
                     now = new Date(year, a[0] - 1, day);
@@ -634,9 +649,8 @@ class Utils {
                         if (Math.abs(now.getTime - Date.now()) > 3600000 * 24 * 10) {
                             now = new Date(year, a[1] - 1, a[0]);
                         }
-                    } else
-                    // DD MM
-                    if (Utils.dateFormat[0][0] === 'D' && Utils.dateFormat[1][0] === 'M') {
+                    } else if (Utils.dateFormat[0][0] === 'D' && Utils.dateFormat[1][0] === 'M') {
+                        // DD MM
                         now = new Date(year, a[1] - 1, a[0]);
                         if (Math.abs(now.getTime - Date.now()) > 3600000 * 24 * 10) {
                             now = new Date(year, a[0] - 1, a[1]);
@@ -679,9 +693,9 @@ class Utils {
                 } else if (m[0].startsWith('<br')) {
                     result.push(<br key={`a${key++}`} />);
                 } else {
-                    let href = m[0].match(/href="([^"]+)"/) || m[0].match(/href='([^']+)'/);
-                    let target = m[0].match(/target="([^"]+)"/) || m[0].match(/target='([^']+)'/);
-                    let rel = m[0].match(/rel="([^"]+)"/) || m[0].match(/rel='([^']+)'/);
+                    const href = m[0].match(/href="([^"]+)"/) || m[0].match(/href='([^']+)'/);
+                    const target = m[0].match(/target="([^"]+)"/) || m[0].match(/target='([^']+)'/);
+                    const rel = m[0].match(/rel="([^"]+)"/) || m[0].match(/rel='([^']+)'/);
                     const title = m[0].match(/>([^<]*)</);
 
                     // eslint-disable-next-line
@@ -703,9 +717,9 @@ class Utils {
             } while (m);
 
             return result;
-        } else {
-            return text;
         }
+
+        return text;
     }
 
     /**
@@ -720,34 +734,30 @@ class Utils {
             if (!noCommon) {
                 if (!states.common) {
                     return states.smartName;
-                } else {
-                    if (states && !states.common) {
-                        return states.smartName;
-                    } else {
-                        return states.common.smartName;
-                    }
                 }
-            } else {
                 if (states && !states.common) {
                     return states.smartName;
-                } else {
-                    return (states &&
-                        states.common &&
-                        states.common.custom &&
-                        states.common.custom[instanceId]) ?
-                        states.common.custom[instanceId].smartName : undefined;
                 }
+                return states.common.smartName;
             }
-        } else
+            if (states && !states.common) {
+                return states.smartName;
+            }
+            return (states &&
+                states.common &&
+                states.common.custom &&
+                states.common.custom[instanceId]) ?
+                states.common.custom[instanceId].smartName : undefined;
+        }
         if (!noCommon) {
             return states[id].common.smartName;
-        } else {
-            return (states[id] &&
-                states[id].common &&
-                states[id].common.custom &&
-                states[id].common.custom[instanceId]) ?
-                states[id].common.custom[instanceId].smartName || null : null;
         }
+
+        return (states[id] &&
+            states[id].common &&
+            states[id].common.custom &&
+            states[id].common.custom[instanceId]) ?
+            states[id].common.custom[instanceId].smartName || null : null;
     }
 
     /**
@@ -760,24 +770,21 @@ class Utils {
         if (!noCommon) {
             if (!obj.common) {
                 return obj.smartName;
-            } else {
-                if (obj && !obj.common) {
-                    return obj.smartName;
-                } else {
-                    return obj.common.smartName;
-                }
             }
-        } else {
             if (obj && !obj.common) {
                 return obj.smartName;
-            } else {
-                return (obj &&
-                    obj.common &&
-                    obj.common.custom &&
-                    obj.common.custom[instanceId]) ?
-                    obj.common.custom[instanceId].smartName : undefined;
             }
+            return obj.common.smartName;
         }
+        if (obj && !obj.common) {
+            return obj.smartName;
+        }
+
+        return (obj &&
+            obj.common &&
+            obj.common.custom &&
+            obj.common.custom[instanceId]) ?
+            obj.common.custom[instanceId].smartName : undefined;
     }
 
     /**
@@ -837,7 +844,7 @@ class Utils {
             let _smartName = obj.common.smartName;
 
             if (!_smartName || typeof _smartName !== 'object') {
-                _smartName = {en: _smartName};
+                _smartName = { en: _smartName };
                 _smartName[language] = _smartName.en;
             }
             obj.common.smartName = _smartName;
@@ -918,22 +925,20 @@ class Utils {
                             delete obj.common.custom[instanceId].uk;
                             delete obj.common.custom[instanceId]['zh-cn'];
                         }
+                    } else if (obj.common.smartName.byON !== undefined) {
+                        delete obj.common.smartName.en;
+                        delete obj.common.smartName.de;
+                        delete obj.common.smartName.ru;
+                        delete obj.common.smartName.nl;
+                        delete obj.common.smartName.pl;
+                        delete obj.common.smartName.it;
+                        delete obj.common.smartName.fr;
+                        delete obj.common.smartName.pt;
+                        delete obj.common.smartName.es;
+                        delete obj.common.smartName.uk;
+                        delete obj.common.smartName['zh-cn'];
                     } else {
-                        if (obj.common.smartName.byON !== undefined) {
-                            delete obj.common.smartName.en;
-                            delete obj.common.smartName.de;
-                            delete obj.common.smartName.ru;
-                            delete obj.common.smartName.nl;
-                            delete obj.common.smartName.pl;
-                            delete obj.common.smartName.it;
-                            delete obj.common.smartName.fr;
-                            delete obj.common.smartName.pt;
-                            delete obj.common.smartName.es;
-                            delete obj.common.smartName.uk;
-                            delete obj.common.smartName['zh-cn'];
-                        } else {
-                            obj.common.smartName = null;
-                        }
+                        obj.common.smartName = null;
                     }
                 }
             }
@@ -963,7 +968,7 @@ class Utils {
      */
     static copyToClipboard(text, e) {
         e && e.stopPropagation();
-        e && e.preventDefault()
+        e && e.preventDefault();
         return copy(text);
     }
 
@@ -976,9 +981,8 @@ class Utils {
         const pos = (fileName || '').lastIndexOf('.');
         if (pos !== -1) {
             return fileName.substring(pos + 1).toLowerCase();
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -992,8 +996,8 @@ class Utils {
             return `${bytes} B`;
         }
 
-        const units = ['KB','MB','GB'];
-        //const units = ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
+        const units = ['KB', 'MB', 'GB'];
+        // const units = ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
         let u = -1;
 
         do {
@@ -1014,17 +1018,16 @@ class Utils {
     static getInvertedColor(color, themeType, invert) {
         if (!color) {
             return undefined;
-        } else {
-            const invertedColor = Utils.invertColor(color, true);
-            if (invertedColor === '#FFFFFF' && (themeType === 'dark' || (invert && themeType === 'light'))) {
-                return '#DDD';
-            } else
-            if (invertedColor === '#000000' && (themeType === 'light' || (invert && themeType === 'dark'))) {
-                return '#222';
-            } else {
-                return undefined;
-            }
         }
+        const invertedColor = Utils.invertColor(color, true);
+        if (invertedColor === '#FFFFFF' && (themeType === 'dark' || (invert && themeType === 'light'))) {
+            return '#DDD';
+        }
+        if (invertedColor === '#000000' && (themeType === 'light' || (invert && themeType === 'dark'))) {
+            return '#222';
+        }
+
+        return undefined;
     }
 
     // Big thanks to: https://stackoverflow.com/questions/35969656/how-can-i-generate-the-opposite-color-according-to-current-color
@@ -1052,8 +1055,7 @@ class Utils {
                     parseInt(m[2], 10).toString(16).padStart(2, '0') +
                     parseInt(m[2], 10).toString(16).padStart(2, '0');
             }
-        } else
-        if (hex.startsWith('#')) {
+        } else if (hex.startsWith('#')) {
             hex = hex.slice(1);
         }
         // convert 3-digit hex to 6-digits.
@@ -1064,8 +1066,7 @@ class Utils {
         if (hex.length === 8) {
             alfa = hex.substring(6, 8);
             hex = hex.substring(0, 6);
-        } else
-        if (hex.length !== 6) {
+        } else if (hex.length !== 6) {
             console.warn(`Cannot invert color: ${hex}`);
             return hex;
         }
@@ -1110,8 +1111,7 @@ class Utils {
                     parseInt(m[2], 10).toString(16).padStart(2, '0') +
                     parseInt(m[2], 10).toString(16).padStart(2, '0');
             }
-        } else
-        if (hex.startsWith('#')) {
+        } else if (hex.startsWith('#')) {
             hex = hex.slice(1);
         }
         // convert 3-digit hex to 6-digits.
@@ -1228,16 +1228,18 @@ class Utils {
      * Convert any object to a string with its values.
      * @returns {string}
      */
-    static clsx () {
+    static clsx() {
         let i = 0;
         let tmp;
         let x;
         let str = '';
         while (i < arguments.length) {
-            if ((tmp = arguments[i++])) {
-                if ((x = Utils._toVal(tmp))) {
+            tmp = arguments[i++];
+            if (tmp) {
+                x = Utils._toVal(tmp);
+                if (x) {
                     str && (str += ' ');
-                    str += x
+                    str += x;
                 }
             }
         }
@@ -1365,9 +1367,9 @@ class Utils {
         if (p.length > 1) {
             p.pop();
             return p.join('.');
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     static formatDate(dateObj, dateFormat) {
@@ -1436,11 +1438,12 @@ class Utils {
             const s = seconds % 60;
             if (d) {
                 return `${d}.${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-            } else if (h) {
-                return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-            } else {
-                return `0:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
             }
+            if (h) {
+                return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            }
+
+            return `0:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
         } else {
             return '0:00:00';
         }
@@ -1467,7 +1470,7 @@ class Utils {
     }
 
     static MDgetTitle(text) {
-        let {body, header} = Utils.extractHeader(text);
+        let { body, header } = Utils.extractHeader(text);
         if (!header.title) {
             // remove {docsify-bla}
             body = body.replace(/{[^}]*}/g, '');
@@ -1479,9 +1482,9 @@ class Utils {
                 }
             }
             return '';
-        } else {
-            return header.title;
         }
+
+        return header.title;
     }
 
     static MDextractHeader(text) {
@@ -1514,7 +1517,7 @@ class Utils {
                 text = text.substring(pos + 7);
             }
         }
-        return {header: attrs, body: text};
+        return { header: attrs, body: text };
     }
 
     static MDremoveDocsify(text) {
@@ -1591,9 +1594,8 @@ class Utils {
                     console.error(`Cannot parse states: ${states}`);
                     states = null;
                 }
-            } else
-            // if old format val1:text1;val2:text2
-            if (typeof states === 'string') {
+            } else if (typeof states === 'string') {
+                // if old format val1:text1;val2:text2
                 const parts = states.split(';');
                 states = {};
                 for (let p = 0; p < parts.length; p++) {
@@ -1604,12 +1606,11 @@ class Utils {
                 const result = {};
                 if (obj.common.type === 'number') {
                     states.forEach((value, key) => result[key] = value);
-                } else
-                if (obj.common.type === 'string') {
+                } else if (obj.common.type === 'string') {
                     states.forEach(value => result[value] = value);
                 } else if (obj.common.type === 'boolean') {
-                    result['false'] = states[0];
-                    result['true'] = states[1];
+                    result.false = states[0];
+                    result.true = states[1];
                 }
 
                 return result;
@@ -1627,15 +1628,13 @@ class Utils {
     static getSvg(url) {
         return fetch(url)
             .then(response => response.blob())
-            .then(blob => {
-                return new Promise(resolve => {
-                    const reader = new FileReader();
-                    reader.onload = function() { // do not optimize this function. "this" is important.
-                        resolve(this.result);
-                    };
-                    reader.readAsDataURL(blob);
-                });
-            });
+            .then(blob => new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = function () { // do not optimize this function. "this" is important.
+                    resolve(this.result);
+                };
+                reader.readAsDataURL(blob);
+            }));
     }
 
     /**
@@ -1656,9 +1655,9 @@ class Utils {
      */
     static isStableRepository(activeRepo) {
         return !!((
-                typeof activeRepo === 'string' &&
-                activeRepo.toLowerCase().startsWith('stable')
-            )
+            typeof activeRepo === 'string' &&
+            activeRepo.toLowerCase().startsWith('stable')
+        )
             ||
             (
                 activeRepo &&

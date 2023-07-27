@@ -120,7 +120,7 @@ class App extends GenericApp {
 }
 ```
 
-4. Replace `index.js` with following code to support themes:
+4. Replace `index.js` with the following code to support themes:
 ```
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -661,6 +661,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added translations
+
 ### 4.3.0 (2023-07-19)
 * (bluefox) Updated packages
 * (bluefox) Added translations

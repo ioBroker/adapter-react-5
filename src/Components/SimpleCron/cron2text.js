@@ -5,12 +5,27 @@
  * @param {Object=} locale
  */
 function cronToText(cronspec, withSeconds, locale) {
-
     // Constant array to convert valid names to values
     const NAMES = {
-        JAN: 1, FEB: 2, MAR: 3, APR: 4, MAY: 5, JUN: 6, JUL: 7, AUG: 8,
-        SEP: 9, OCT: 10, NOV: 11, DEC: 12,
-        SUN: 1, MON: 2, TUE: 3, WED: 4, THU: 5, FRI: 6, SAT: 7
+        JAN: 1,
+        FEB: 2,
+        MAR: 3,
+        APR: 4,
+        MAY: 5,
+        JUN: 6,
+        JUL: 7,
+        AUG: 8,
+        SEP: 9,
+        OCT: 10,
+        NOV: 11,
+        DEC: 12,
+        SUN: 1,
+        MON: 2,
+        TUE: 3,
+        WED: 4,
+        THU: 5,
+        FRI: 6,
+        SAT: 7,
     };
 
     // Parsable replacements for common expressions
@@ -21,7 +36,7 @@ function cronToText(cronspec, withSeconds, locale) {
         '@MONTHLY': '0 0 1 * *',
         '@WEEKLY': '0 0 * * 0',
         '@DAILY': '0 0 * * *',
-        '@HOURLY': '0 * * * *'
+        '@HOURLY': '0 * * * *',
     };
 
     // Contains the index, min, and max for each of the constraints
@@ -32,7 +47,7 @@ function cronToText(cronspec, withSeconds, locale) {
         D: [3, 1, 31], // day of month
         M: [4, 1, 12], // month
         Y: [6, 1970, 2099], // year
-        d: [5, 1, 7, 1] // day of week
+        d: [5, 1, 7, 1], // day of week
     };
 
     /**
@@ -49,7 +64,7 @@ function cronToText(cronspec, withSeconds, locale) {
         const offset = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
         const max = arguments.length <= 2 || arguments[2] === undefined ? 9999 : arguments[2];
 
-        return isNaN(value) ? NAMES[value] || null : Math.min(+value + offset, max);
+        return Number.isNaN(value) ? NAMES[value] || null : Math.min(+value + offset, max);
     }
 
     /**
@@ -96,9 +111,7 @@ function cronToText(cronspec, withSeconds, locale) {
             i += inc || 1;
         }
 
-        sched[name].sort(function (a, b) {
-            return a - b;
-        });
+        sched[name].sort((a, b) => a - b);
     }
 
     /**
@@ -194,10 +207,10 @@ function cronToText(cronspec, withSeconds, locale) {
      * @param {Number} offset: The offset to apply to the cron value
      */
     function parse(item, s, name, min, max, offset) {
-        let value,
-            split,
-            schedules = s.schedules,
-            curSched = schedules[schedules.length - 1];
+        let value;
+        let split;
+        const schedules = s.schedules;
+        const curSched = schedules[schedules.length - 1];
 
         // L just means min - 1 (this also makes it work for any field)
         if (item === 'L') {
@@ -207,22 +220,18 @@ function cronToText(cronspec, withSeconds, locale) {
         // parse x
         if ((value = getValue(item, offset, max)) !== null) {
             add(curSched, name, value, value);
-        }
-        // parse xW
-        else if ((value = getValue(item.replace('W', ''), offset, max)) !== null) {
+        } else if ((value = getValue(item.replace('W', ''), offset, max)) !== null) {
+            // parse xW
             addWeekday(s, curSched, value);
-        }
-        // parse xL
-        else if ((value = getValue(item.replace('L', ''), offset, max)) !== null) {
+        } else if ((value = getValue(item.replace('L', ''), offset, max)) !== null) {
+            // parse xL
             addHash(schedules, curSched, value, min - 1);
-        }
-        // parse x#y
-        else if ((split = item.split('#')).length === 2) {
+        } else if ((split = item.split('#')).length === 2) {
+            // parse x#y
             value = getValue(split[0], offset, max);
             addHash(schedules, curSched, value, getValue(split[1]));
-        }
-        // parse x-y or x-y/z or */z or 0/z
-        else {
+        } else {
+            // parse x-y or x-y/z or */z or 0/z
             addRange(item, curSched, name, min, max, offset);
         }
     }
@@ -285,7 +294,7 @@ function cronToText(cronspec, withSeconds, locale) {
 
     function parseCron(expr, hasSeconds) {
         const e = prepareExpr(expr);
-        return parseExpr(hasSeconds ? e : '0 ' + e);
+        return parseExpr(hasSeconds ? e : `0 ${e}`);
     }
 
     const schedule = parseCron(cronspec, withSeconds);
@@ -293,9 +302,8 @@ function cronToText(cronspec, withSeconds, locale) {
     function absFloor(number) {
         if (number < 0) {
             return Math.ceil(number);
-        } else {
-            return Math.floor(number);
         }
+        return Math.floor(number);
     }
 
     function toInt(argumentForCoercion) {
@@ -310,11 +318,11 @@ function cronToText(cronspec, withSeconds, locale) {
     }
 
     function ordinal(number) {
-        const b = number % 10,
-            output = (toInt(number % 100 / 10) === 1) ? locale.ORDINALS.th :
-                (b === 1) ? locale.ORDINALS.st :
-                    (b === 2) ? locale.ORDINALS.nd :
-                        (b === 3) ? locale.ORDINALS.rd : locale.ORDINALS.th;
+        const b = number % 10;
+        const output = (toInt(number % 100 / 10) === 1) ? locale.ORDINALS.th :
+            (b === 1) ? locale.ORDINALS.st :
+                (b === 2) ? locale.ORDINALS.nd :
+                    (b === 3) ? locale.ORDINALS.rd : locale.ORDINALS.th;
         return number + output;
     }
 
@@ -331,7 +339,7 @@ function cronToText(cronspec, withSeconds, locale) {
         }
 
         const lastVal = numbers.pop();
-        return numbers.join(', ') + ' ' + locale['and'] + ' ' + ordinal(lastVal);
+        return `${numbers.join(', ')} ${locale.and} ${ordinal(lastVal)}`;
     }
 
     /**
@@ -344,9 +352,11 @@ function cronToText(cronspec, withSeconds, locale) {
     function numberToDateName(value, type) {
         if (type === 'dow') {
             return locale.DOW[value - 1];
-        } else if (type === 'mon') {
+        }
+        if (type === 'mon') {
             return locale.MONTH[value - 1];
         }
+        return value;
     }
 
     /**
@@ -370,7 +380,7 @@ function cronToText(cronspec, withSeconds, locale) {
             }
             outputText += numberToDateName(value, type);
         }
-        return outputText + ' ' + locale['and'] + ' ' + numberToDateName(lastVal, type);
+        return `${outputText} ${locale.and} ${numberToDateName(lastVal, type)}`;
     }
 
     /**
@@ -379,7 +389,7 @@ function cronToText(cronspec, withSeconds, locale) {
      * @returns {string}
      */
     function zeroPad(x) {
-        return (x < 10) ? '0' + x : x;
+        return x < 10 ? `0${x}` : x;
     }
 
     //----------------
@@ -391,116 +401,116 @@ function cronToText(cronspec, withSeconds, locale) {
      * @returns {string}
      */
     function scheduleToSentence(schedule, withSeconds) {
-        let outputText = locale.Every + ' ';
+        let outputText = `${locale.Every} `;
 
-        if (schedule['h'] && schedule['m'] && schedule['h'].length <= 2 && schedule['m'].length <= 2 && withSeconds && schedule['s'] && schedule['s'].length <= 2 ) {
+        if (schedule.h && schedule.m && schedule.h.length <= 2 && schedule.m.length <= 2 && withSeconds && schedule.s && schedule.s.length <= 2) {
             // If there are only one or two specified values for
             // hour or minute, print them in HH:MM:SS format
 
             const hm = [];
-            for (let i = 0; i < schedule['h'].length; i++) {
-                for (let j = 0; j < schedule['m'].length; j++) {
-                    for (let k = 0; k < schedule['s'].length; k++) {
-                        hm.push(zeroPad(schedule['h'][i]) + ':' + zeroPad(schedule['m'][j]) + ':' + zeroPad(schedule['s'][k]));
+            for (let i = 0; i < schedule.h.length; i++) {
+                for (let j = 0; j < schedule.m.length; j++) {
+                    for (let k = 0; k < schedule.s.length; k++) {
+                        hm.push(`${zeroPad(schedule.h[i])}:${zeroPad(schedule.m[j])}:${zeroPad(schedule.s[k])}`);
                     }
                 }
             }
             if (hm.length < 2) {
-                outputText = locale['At'] + ' ' + hm[0];
+                outputText = `${locale.At} ${hm[0]}`;
             } else {
                 const lastVal = hm.pop();
-                outputText = locale['At'] + ' ' + hm.join(', ') + ' ' + locale.and + ' ' + lastVal;
+                outputText = `${locale.At} ${hm.join(', ')} ${locale.and} ${lastVal}`;
             }
-            if (!schedule['d'] && !schedule['D']) {
-                outputText += ' ' + locale['every day'] + ' ';
+            if (!schedule.d && !schedule.D) {
+                outputText += ` ${locale['every day']} `;
             }
         } else
-        if (schedule['h'] && schedule['m'] && schedule['h'].length <= 2 && schedule['m'].length <= 2) {
+        if (schedule.h && schedule.m && schedule.h.length <= 2 && schedule.m.length <= 2) {
             // If there are only one or two specified values for
             // hour or minute, print them in HH:MM format
 
             const hm = [];
-            for (let i = 0; i < schedule['h'].length; i++) {
-                for (let j = 0; j < schedule['m'].length; j++) {
-                    hm.push(zeroPad(schedule['h'][i]) + ':' + zeroPad(schedule['m'][j]));
+            for (let i = 0; i < schedule.h.length; i++) {
+                for (let j = 0; j < schedule.m.length; j++) {
+                    hm.push(`${zeroPad(schedule.h[i])}:${zeroPad(schedule.m[j])}`);
                 }
             }
             if (hm.length < 2) {
-                outputText = locale['At'] + ' ' + hm[0];
+                outputText = `${locale.At} ${hm[0]}`;
             } else {
                 const lastVal = hm.pop();
-                outputText = locale['At'] + ' ' + hm.join(', ') + ' ' + locale.and + ' ' + lastVal;
+                outputText = `${locale.At} ${hm.join(', ')} ${locale.and} ${lastVal}`;
             }
 
-            if (!schedule['d'] && !schedule['D']) {
-                outputText += ' ' + locale['every day'] + ' ';
+            if (!schedule.d && !schedule.D) {
+                outputText += ` ${locale['every day']} `;
             }
         } else {
             // Otherwise, list out every specified hour/minute value.
 
-            if (schedule['h']) { // runs only at specific hours
-                if (schedule['m']) { // and only at specific minutes
+            if (schedule.h) { // runs only at specific hours
+                if (schedule.m) { // and only at specific minutes
                     if (withSeconds) {
-                        if (!schedule['s'] || schedule['s'].length === 60) {
-                            outputText += locale['second of every'] + ' ' + numberList(schedule['m']) + ' ' + locale['minute past the'] + ' ' + numberList(schedule['h']) + ' ' + locale['hour'];
+                        if (!schedule.s || schedule.s.length === 60) {
+                            outputText += `${locale['second of every']} ${numberList(schedule.m)} ${locale['minute past the']} ${numberList(schedule.h)} ${locale.hour}`;
                         } else {
-                            outputText += numberList(schedule['s']) + ' ' + locale['second of every'] + ' ' +numberList(schedule['m']) + ' ' + locale['minute past the'] + ' ' + numberList(schedule['h']) + ' ' + locale['hour'];
+                            outputText += `${numberList(schedule.s)} ${locale['second of every']} ${numberList(schedule.m)} ${locale['minute past the']} ${numberList(schedule.h)} ${locale.hour}`;
                         }
                     } else {
-                        outputText += numberList(schedule['m']) + ' ' + locale['minute past the'] + ' ' + numberList(schedule['h']) + ' ' + locale['hour'];
+                        outputText += `${numberList(schedule.m)} ${locale['minute past the']} ${numberList(schedule.h)} ${locale.hour}`;
                     }
                 } else { // specific hours, but every minute
                     if (withSeconds) {
-                        if (!schedule['s'] || schedule['s'].length === 60) {
-                            outputText += locale['second of every'] + ' ' + locale['minute of'] + ' ' + numberList(schedule['h']) + ' ' + locale['hour'];
+                        if (!schedule.s || schedule.s.length === 60) {
+                            outputText += `${locale['second of every']} ${locale['minute of']} ${numberList(schedule.h)} ${locale.hour}`;
                         } else {
-                            outputText += numberList(schedule['s']) + ' ' + locale['second of every'] + ' ' + locale['minute of'] + ' ' + numberList(schedule['h']) + ' ' + locale['hour'];
+                            outputText += `${numberList(schedule.s)} ${locale['second of every']} ${locale['minute of']} ${numberList(schedule.h)} ${locale.hour}`;
                         }
                     } else {
-                        outputText += locale['minute of'] + ' ' + numberList(schedule['h']) + ' ' + locale['hour'];
+                        outputText += `${locale['minute of']} ${numberList(schedule.h)} ${locale.hour}`;
                     }
                 }
-            } else if (schedule['m']) { // every hour, but specific minutes
+            } else if (schedule.m) { // every hour, but specific minutes
                 if (withSeconds) {
-                    if (!schedule['s'] || schedule['s'].length === 60) {
-                        outputText += locale['second of every'] + ' ' + numberList(schedule['m']) + ' ' + locale['minute every hour'];
+                    if (!schedule.s || schedule.s.length === 60) {
+                        outputText += `${locale['second of every']} ${numberList(schedule.m)} ${locale['minute every hour']}`;
                     } else {
-                        outputText += numberList(schedule['s']) + ' ' + locale['second of every'] + ' ' + numberList(schedule['m']) + ' ' + locale['minute every hour'];
+                        outputText += `${numberList(schedule.s)} ${locale['second of every']} ${numberList(schedule.m)} ${locale['minute every hour']}`;
                     }
                 } else {
-                    outputText += numberList(schedule['m']) + ' ' + locale['minute every hour'];
+                    outputText += `${numberList(schedule.m)} ${locale['minute every hour']}`;
                 }
             } else if (withSeconds) {
-                if (!schedule['s'] || schedule['s'].length === 60) {
-                    outputText += locale['second'];
+                if (!schedule.s || schedule.s.length === 60) {
+                    outputText += locale.second;
                 } else {
-                    outputText += numberList(schedule['s']) + ' ' + locale['second'];
+                    outputText += `${numberList(schedule.s)} ${locale.second}`;
                 }
             } else { // cronspec has "*" for both hour and minute
-                outputText += locale['minute'];
+                outputText += locale.minute;
             }
         }
 
-        if (schedule['D']) { // runs only on specific day(s) of month
-            outputText += (locale['on the'] ? ' ' + locale['on the'] + ' ' : ' ') + numberList(schedule['D']);
-            if (!schedule['M']) {
-                outputText += ' ' + locale['of every month'];
+        if (schedule.D) { // runs only on specific day(s) of month
+            outputText += (locale['on the'] ? ` ${locale['on the']} ` : ' ') + numberList(schedule.D);
+            if (!schedule.M) {
+                outputText += ` ${locale['of every month']}`;
             }
         }
 
-        if (schedule['d']) { // runs only on specific day(s) of week
-            if (schedule['D']) {
+        if (schedule.d) { // runs only on specific day(s) of week
+            if (schedule.D) {
                 // if both day fields are specified, cron uses both; superuser.com/a/348372
-                outputText += ' ' + locale['and every'] + ' ';
+                outputText += ` ${locale['and every']} `;
             } else {
-                outputText += ' ' + locale['on'] + ' ';
+                outputText += ` ${locale.on} `;
             }
-            outputText += dateList(schedule['d'], 'dow');
+            outputText += dateList(schedule.d, 'dow');
         }
 
-        if (schedule['M']) {
+        if (schedule.M) {
             // runs only in specific months; put this output last
-            outputText += ' ' + locale['in'] + ' ' + dateList(schedule['M'], 'mon');
+            outputText += ` ${locale.in} ${dateList(schedule.M, 'mon')}`;
         }
 
         return outputText;

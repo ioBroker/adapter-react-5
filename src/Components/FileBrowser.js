@@ -31,12 +31,7 @@ import {
     Breadcrumbs,
 } from '@mui/material';
 
-import ErrorDialog from '../Dialogs/Error';
-import Utils from './Utils';
-import TextInputDialog from '../Dialogs/TextInput';
-import FileViewer, { EXTENSIONS } from './FileViewer';
-
-// Icons
+// MUI Icons
 import {
     Refresh as RefreshIcon,
     Close as CloseIcon,
@@ -63,6 +58,12 @@ import {
     KeyboardReturn as EnterIcon,
 } from '@mui/icons-material';
 
+import ErrorDialog from '../Dialogs/Error';
+import Utils from './Utils';
+import TextInputDialog from '../Dialogs/TextInput';
+import FileViewer, { EXTENSIONS } from './FileViewer';
+
+// Custom Icons
 import ExpertIcon from '../icons/IconExpert';
 import IconClosed from '../icons/IconClosed';
 import IconOpen from '../icons/IconOpen';

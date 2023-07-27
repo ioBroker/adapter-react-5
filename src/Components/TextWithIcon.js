@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from '@mui/styles';
 
 import Icon from './Icon';
 import Utils from './Utils';
@@ -30,7 +30,7 @@ const styles = () => ({
 
 const TextWithIcon = props => {
     let item = props.value;
-    let prefix = props.removePrefix || '';
+    const prefix = props.removePrefix || '';
 
     if (typeof item === 'string') {
         const list = props.list || props.options;
@@ -99,11 +99,15 @@ const TextWithIcon = props => {
         backgroundColor: item?.color,
     } : {};
 
-    return <div style={Object.assign({}, props.style, style)} className={Utils.clsx(props.className, props.classes.div, props.moreClasses?.root)} title={props.title || item.value}>
+    return <div
+        style={{ ...props.style, ...style }}
+        className={Utils.clsx(props.className, props.classes.div, props.moreClasses?.root)}
+        title={props.title || item.value}
+    >
         {item?.icon ? <Icon src={item?.icon} className={Utils.clsx(props.classes.icon, props.moreClasses?.icon)} /> : null}
         <div className={Utils.clsx(props.classes.text, props.moreClasses?.text)}>{item?.name}</div>
     </div>;
-}
+};
 
 TextWithIcon.propTypes = {
     lang: PropTypes.string.isRequired,

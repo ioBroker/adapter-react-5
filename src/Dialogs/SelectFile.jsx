@@ -7,7 +7,7 @@
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from '@mui/styles';
 
 import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';

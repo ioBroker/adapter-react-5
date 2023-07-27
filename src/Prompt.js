@@ -1,4 +1,3 @@
-
 /**
  * Print the ioBroker welcome screen to the developer console.
  */

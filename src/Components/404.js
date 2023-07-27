@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
-import withStyles from '@mui/styles/withStyles';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { withStyles } from '@mui/styles';
 
 /*
 Copyright 2019 Robin Selmer
@@ -10,7 +9,15 @@ https://codepen.io/robinselmer/pen/vJjbOZ
 import I18n from '../i18n';
 
 const styles = theme => ({
-    content: Object.assign({background: 'black', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}, theme.content),
+    content: {
+        background: 'black',
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        ...theme.content,
+    },
     root: {
         boxSizing: 'border-box',
         height: '100%',
@@ -22,7 +29,7 @@ const styles = theme => ({
         color: 'rgba(128, 175, 255, 0.8)',
         textShadow:
             `0 0 1ex rgba(51, 70, 255, 1),
-        0 0 2px rgba(255, 255, 255, 0.8)`
+        0 0 2px rgba(255, 255, 255, 0.8)`,
     },
     overlay: {
         pointerEvents: 'none',
@@ -56,7 +63,7 @@ const styles = theme => ({
                 transparent 100%)`,
             backgroundRepeat: 'no-repeat',
             animation: 'scan 7.5s linear 0s infinite',
-        }
+        },
     },
 
     terminal: {
@@ -74,12 +81,12 @@ const styles = theme => ({
         0 0 1px rgba(51, 70, 255, 0.4),
             0 0 2px rgba(255, 255, 255, 0.8)`,
         '&::before': {
-            content: '"> "'
-        }
+            content: '"> "',
+        },
     },
     errorCode: {
-        color: 'white'
-    }
+        color: 'white',
+    },
 });
 
 class Page404 extends Component {
@@ -88,10 +95,16 @@ class Page404 extends Component {
             <div className={this.props.classes.root}>
                 <div className={this.props.classes.overlay}>
                     <div className={this.props.classes.terminal}>
-                        <h1>{I18n.t('ra_Error')}<span className={this.props.classes.errorCode}>404</span></h1>
+                        <h1>
+                            {I18n.t('ra_Error')}
+                            <span className={this.props.classes.errorCode}>404</span>
+                        </h1>
                         <p className={this.props.classes.output}>
-                            {I18n.t('ra_The page you are looking for was not found')}</p>
-                        <p className={this.props.classes.output}>{I18n.t('ra_Good luck')}</p>
+                            {I18n.t('ra_The page you are looking for was not found')}
+                        </p>
+                        <p className={this.props.classes.output}>
+                            {I18n.t('ra_Good luck')}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -100,10 +113,6 @@ class Page404 extends Component {
 }
 
 Page404.propTypes = {
-    language: PropTypes.string,
-    onNavigate: PropTypes.func,
-    theme: PropTypes.string,
-    mobile: PropTypes.bool
 };
 
 export default withStyles(styles)(Page404);

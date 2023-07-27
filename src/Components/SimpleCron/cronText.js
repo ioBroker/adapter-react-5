@@ -1,7 +1,7 @@
 import cronToText from './cron2text';
 import JQUERY_CRON_LOCALE from './jquery.cron.locale';
 
-function correctCasus(text, seconds) {
+function correctCasus(text /* , seconds */) {
     text = text.replace('Каждую(ый) минуту',    'Каждую минуту');
     text = text.replace('Каждую(ый) минут(у)',  'Каждую минуту');
     text = text.replace('Каждую(ый) час',       'Каждый час');
@@ -47,7 +47,7 @@ function correctCasus(text, seconds) {
 
 function convertCronToText(cron, lang) {
     const withSeconds = cron.split(' ').length === 6;
-    let text = cronToText(cron, withSeconds, JQUERY_CRON_LOCALE[lang] || JQUERY_CRON_LOCALE.en);
+    const text = cronToText(cron, withSeconds, JQUERY_CRON_LOCALE[lang] || JQUERY_CRON_LOCALE.en);
     return correctCasus(text, withSeconds);
 }
 

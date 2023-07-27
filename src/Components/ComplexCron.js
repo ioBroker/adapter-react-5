@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from '@mui/styles';
 
 import {
     Checkbox,
@@ -23,7 +23,7 @@ const styles = () => ({
         height: '100%',
     },
     periodSelect: {
-        //margin: '0 10px 60px 10px',
+        // margin: '0 10px 60px 10px',
         display: 'block',
         width: 200,
     },
@@ -95,12 +95,12 @@ function convertMinusIntoArray(value, max) {
     const parts = (value || '').toString().split(',');
 
     for (let p = 0; p < parts.length; p++) {
-        if (! parts[p].trim().length) {
+        if (!parts[p].trim().length) {
             continue;
         }
         const items = parts[p].trim().split('-');
         if (items.length > 1) {
-            let iMax = parseInt(items[1], 10);
+            const iMax = parseInt(items[1], 10);
             for (let i = parseInt(items[0], 10); i <= iMax; i++) {
                 result.push(i);
             }
@@ -112,14 +112,12 @@ function convertMinusIntoArray(value, max) {
 
     result.sort();
 
-
     // remove double entries
     for (let p = result.length - 1; p >= 0; p--) {
         if (result[p] === result[p + 1]) {
             result.splice(p + 1, 1);
         }
     }
-
 
     return result;
 }
@@ -145,7 +143,7 @@ function convertArrayIntoMinus(value, max) {
     for (let p = 1; p < value.length; p++) {
         if (value[p] - 1 !== parseInt(value[p - 1], 10)) {
             if (start === end) {
-                newParts.push(start)
+                newParts.push(start);
             } else if (end - 1 === start) {
                 newParts.push(`${start},${end}`);
             } else {
@@ -159,7 +157,7 @@ function convertArrayIntoMinus(value, max) {
     }
 
     if (start === end) {
-        newParts.push(start)
+        newParts.push(start);
     } else if (end - 1 === start) {
         newParts.push(`${start},${end}`);
     } else {
@@ -219,6 +217,7 @@ class ComplexCron extends React.Component {
         }
         return options;
     }
+
     static state2cron(state) {
         let text = `${state.minutes} ${state.hours} ${state.dates} ${state.months} ${state.dows}`;
         if (state.seconds !== false) {
@@ -228,7 +227,7 @@ class ComplexCron extends React.Component {
     }
 
     recalcCron() {
-        let cron = ComplexCron.state2cron(this.state);
+        const cron = ComplexCron.state2cron(this.state);
         if (cron !== this.state.cron) {
             this.setState({ cron }, () =>
                 this.props.onChange && this.props.onChange(this.state.cron));
@@ -252,7 +251,7 @@ class ComplexCron extends React.Component {
                 this.setState({ [type]: '1' }, () => this.recalcCron());
             }
         } else {
-            let nums = convertMinusIntoArray(this.state[type], max);
+            const nums = convertMinusIntoArray(this.state[type], max);
             const pos = nums.indexOf(i);
             if (pos !== -1) {
                 nums.splice(pos, 1);
@@ -267,7 +266,7 @@ class ComplexCron extends React.Component {
     getDigitsSelector(type, max) {
         let values = [];
         if (max === 7) {
-            values = [1,2,3,4,5,6,0];
+            values = [1, 2, 3, 4, 5, 6, 0];
         } else if (max === 60 || max === 24) {
             for (let i = 0; i < max; i++) {
                 values.push(i);
@@ -283,20 +282,24 @@ class ComplexCron extends React.Component {
         return [
             <Button
                 key="removeall"
-                variant={'outlined'}
+                variant="outlined"
                 className={this.props.classes.numberButton}
-                //style={{paddingBottom: 20}}
+                // style={{paddingBottom: 20}}
                 color="primary"
                 onClick={() => this.onToggle(false, type, max)}
-            >{I18n.t('ra_Deselect all')}</Button>,
+            >
+                {I18n.t('ra_Deselect all')}
+            </Button>,
             <Button
                 key="addall"
                 variant="contained"
-                //style={{paddingBottom: 20}}
+                // style={{paddingBottom: 20}}
                 className={this.props.classes.numberButton}
                 color="secondary"
                 onClick={() => this.onToggle(true, type, max)}
-            >{I18n.t('ra_Select all')}</Button>,
+            >
+                {I18n.t('ra_Select all')}
+            </Button>,
             <div key="all">
                 {values.map(i =>
                     [((max === 7 && i === 4) ||
@@ -304,16 +307,18 @@ class ComplexCron extends React.Component {
                     (max === 31 && !((i - 1) % 10)) ||
                     (max === 60 && i && !(i % 10)) ||
                     (max === 24 && i && !(i % 6))) ?
-                    <div key={`allInner${i}`} style={{ width: '100%' }} /> : null,
-                        <Button
-                            key={`_${i}`}
-                            variant={parts.indexOf(i) !== -1 ? 'contained' : 'outlined'}
-                            className={this.props.classes.numberButton}
-                            color={parts.indexOf(i) !== -1 ? 'secondary' : 'primary'}
-                            onClick={() => this.onToggle(i, type, max)}
-                        >{max === 7 ? I18n.t(WEEKDAYS[i]) : (max === 12 ? MONTHS[i - 1] : i)}</Button>
+                        <div key={`allInner${i}`} style={{ width: '100%' }} /> : null,
+                    <Button
+                        key={`_${i}`}
+                        variant={parts.indexOf(i) !== -1 ? 'contained' : 'outlined'}
+                        className={this.props.classes.numberButton}
+                        color={parts.indexOf(i) !== -1 ? 'secondary' : 'primary'}
+                        onClick={() => this.onToggle(i, type, max)}
+                    >
+                        {max === 7 ? I18n.t(WEEKDAYS[i]) : (max === 12 ? MONTHS[i - 1] : i)}
+                    </Button>,
                     ])}
-            </div>
+            </div>,
         ];
     }
 
@@ -327,11 +332,11 @@ class ComplexCron extends React.Component {
             const modes = JSON.parse(JSON.stringify(this.state.modes));
             modes[type] = select;
             return setTimeout(() => this.setState({ modes }, () => this.recalcCron()), 100);
-        } else {
-            every = this.state.modes[type] === 'every';
-            everyN = this.state.modes[type] === 'everyN';
-            select = this.state.modes[type];
         }
+
+        every = this.state.modes[type] === 'every';
+        everyN = this.state.modes[type] === 'everyN';
+        select = this.state.modes[type];
 
         if (everyN) {
             value = parseInt(value.replace('*/', ''), 10) || 1;
@@ -341,7 +346,7 @@ class ComplexCron extends React.Component {
             <Select
                 variant="standard"
                 className={this.props.classes.periodSelect}
-                style={{ verticalAlign: 'bottom '}}
+                style={{ verticalAlign: 'bottom' }}
                 value={select}
                 onChange={e => {
                     const modes = JSON.parse(JSON.stringify(this.state.modes));
@@ -357,12 +362,13 @@ class ComplexCron extends React.Component {
                         if (!num && (type === 'months' || type === 'dates')) {
                             num = 1;
                         }
-                        this.setState({[type]: convertArrayIntoMinus(num, max), modes}, () => this.recalcCron());
+                        this.setState({ [type]: convertArrayIntoMinus(num, max), modes }, () => this.recalcCron());
                     }
-                }}>
-                <MenuItem key='every' value='every'>{I18n.t(`sc_every_${type}`)}</MenuItem>
-                <MenuItem key='everyN' value='everyN'>{I18n.t(`sc_everyN_${type}`)}</MenuItem>
-                <MenuItem key='specific' value='specific'>{I18n.t(`sc_specific_${type}`)}</MenuItem>
+                }}
+            >
+                <MenuItem key="every" value="every">{I18n.t(`sc_every_${type}`)}</MenuItem>
+                <MenuItem key="everyN" value="everyN">{I18n.t(`sc_everyN_${type}`)}</MenuItem>
+                <MenuItem key="specific" value="specific">{I18n.t(`sc_specific_${type}`)}</MenuItem>
             </Select>
             {everyN && false && <span>{value}</span>}
             {everyN && <TextField
@@ -373,9 +379,9 @@ class ComplexCron extends React.Component {
                 min={1}
                 max={max}
                 onChange={e => {
-                    this.setState({[type]: `*/${e.target.value}`}, () => this.recalcCron());
+                    this.setState({ [type]: `*/${e.target.value}` }, () => this.recalcCron());
                 }}
-                InputLabelProps={{shrink: true,}}
+                InputLabelProps={{ shrink: true }}
                 type="number"
                 margin="normal"
             />}
@@ -383,30 +389,34 @@ class ComplexCron extends React.Component {
         </div>;
     }
 
-    convertCronToText(cron, lang) {
+    static convertCronToText(cron, lang) {
         if (cron.split(' ').includes('-')) {
             return I18n.t('ra_Invalid CRON');
-        } else {
-            return convertCronToText(cron, lang);
         }
+        return convertCronToText(cron, lang);
     }
 
     render() {
         const tab = this.state.seconds !== false ? this.state.tab : this.state.tab + 1;
         return <div className={this.props.classes.mainDiv}>
-            <div style={{ paddingLeft: 8, width: '100%' }}><TextField variant="standard" style={{ width: '100%' }} value={this.state.cron} disabled/></div>
-            <div style={{ paddingLeft: 8, width: '100%', height: 60 }}>{this.convertCronToText(this.state.cron, this.props.language || 'en')}</div>
+            <div style={{ paddingLeft: 8, width: '100%' }}><TextField variant="standard" style={{ width: '100%' }} value={this.state.cron} disabled /></div>
+            <div style={{ paddingLeft: 8, width: '100%', height: 60 }}>{ComplexCron.convertCronToText(this.state.cron, this.props.language || 'en')}</div>
             <FormControlLabel
                 control={<Checkbox
                     checked={this.state.seconds}
-                    onChange={e => this.setState({seconds: e.target.checked ? '*' : false}, () => this.recalcCron())}
+                    onChange={e => this.setState({ seconds: e.target.checked ? '*' : false }, () => this.recalcCron())}
                 />}
                 label={I18n.t('ra_use seconds')}
             />
-            <AppBar position="static" classes={{root: this.props.classes.appBar}} color="secondary">
-                <Tabs value={this.state.tab} className={this.props.classes.appBar} color="secondary" onChange={(active, tab) =>
-                    this.setState({tab})}>
-                    {this.state.seconds !== false && <Tab id="sc_seconds" label={I18n.t('sc_seconds')}/>}
+            <AppBar position="static" classes={{ root: this.props.classes.appBar }} color="secondary">
+                <Tabs
+                    value={this.state.tab}
+                    className={this.props.classes.appBar}
+                    color="secondary"
+                    onChange={(active, _tab) =>
+                        this.setState({ tab: _tab })}
+                >
+                    {this.state.seconds !== false && <Tab id="sc_seconds" label={I18n.t('sc_seconds')} />}
                     <Tab id="minutes" label={I18n.t('sc_minutes')} />
                     <Tab id="hours" label={I18n.t('sc_hours')} />
                     <Tab id="dates" label={I18n.t('sc_dates')} />
@@ -431,4 +441,3 @@ ComplexCron.propTypes = {
 };
 
 export default withStyles(styles)(ComplexCron);
-

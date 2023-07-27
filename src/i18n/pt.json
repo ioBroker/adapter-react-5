@@ -390,5 +390,8 @@
   "ra_Append or replace?": "Acrescentar ou substituir?",
   "ra_Append %s entries or replace existing?": "Acrescentar %s entradas ou substituir as existentes?",
   "ra_Replace": "Substituir",
-  "ra_Append": "Acrescentar"
+  "ra_Append": "Acrescentar",
+  "ra_May not trigger \"updateLicenses\"": "Pode não acionar \"updateLicenses\"",
+  "ra_Unknown error": "Erro desconhecido",
+  "ra_License must be converted": "A licença deve ser convertida para uma versão mais recente. Você pode fazê-lo em seu perfil iobroker.net."
 }

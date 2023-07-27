@@ -7,7 +7,7 @@
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from '@mui/styles';
 
 import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -96,7 +96,7 @@ class DialogSelectID extends React.Component {
         }
 
         if (props.filters) {
-            this.filters = {...this.filters, ...props.filters};
+            this.filters = { ...this.filters, ...props.filters };
         }
 
         let selected = this.props.selected || [];
@@ -108,7 +108,6 @@ class DialogSelectID extends React.Component {
         this.state =  {
             selected,
             name: '',
-            isMobile: window.innerWidth < 800,
         };
     }
 
@@ -212,15 +211,12 @@ DialogSelectID.propTypes = {
     title: PropTypes.string,
     lang: PropTypes.string,
     foldersFirst: PropTypes.bool,
-    isFloatComma: PropTypes.bool,
-    dateFormat: PropTypes.string,
     selected: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.array,
     ]),
     filters: PropTypes.object, // predefined filter fields, like {"id":"","name":"","room":"","func":"","role":"level","type":"","custom":""}
     customFilter: PropTypes.object, // optional {common: {custom: true}} or {common: {custom: 'sql.0'}}
-    statesOnly: PropTypes.bool,
     socket: PropTypes.object.isRequired,
     cancel: PropTypes.string,
     imagePrefix: PropTypes.string,

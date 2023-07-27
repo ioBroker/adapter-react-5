@@ -390,5 +390,8 @@
   "ra_Append or replace?": "Anhängen oder ersetzen?",
   "ra_Append %s entries or replace existing?": "%s Einträge anhängen oder vorhandene ersetzen?",
   "ra_Replace": "Ersetzen",
-  "ra_Append": "Anhängen"
+  "ra_Append": "Anhängen",
+  "ra_May not trigger \"updateLicenses\"": "Löst möglicherweise nicht „updateLicenses“ aus",
+  "ra_Unknown error": "Unbekannter Fehler",
+  "ra_License must be converted": "Die Lizenz muss auf eine neuere Version konvertiert werden. Sie können dies in Ihrem iobroker.net-Profil tun."
 }

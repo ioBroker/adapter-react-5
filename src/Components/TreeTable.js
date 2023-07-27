@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from '@mui/styles';
 import { HexColorPicker as ColorPicker } from 'react-colorful';
 
 import {
@@ -47,13 +47,12 @@ function getAttr(obj, attr, lookup) {
     if (attr.length === 1) {
         if (lookup && lookup[obj[attr[0]]]) {
             return lookup[obj[attr[0]]];
-        } else {
-            return obj[attr[0]];
         }
-    } else {
-        const name = attr.shift();
-        return getAttr(obj[name], attr);
+        return obj[attr[0]];
     }
+
+    const name = attr.shift();
+    return getAttr(obj[name], attr);
 }
 
 function setAttr(obj, attr, value) {
@@ -63,13 +62,12 @@ function setAttr(obj, attr, value) {
 
     if (attr.length === 1) {
         return obj[attr[0]] = value;
-    } else {
-        const name = attr.shift();
-        if (obj[name] === null || obj[name] === undefined) {
-            obj[name] = {};
-        }
-        return setAttr(obj[name], attr, value);
     }
+    const name = attr.shift();
+    if (obj[name] === null || obj[name] === undefined) {
+        obj[name] = {};
+    }
+    return setAttr(obj[name], attr, value);
 }
 
 const styles = theme => ({
@@ -145,11 +143,11 @@ const styles = theme => ({
         width: 1,
     },
     fieldEditWithButton: {
-        width: `calc(100% - 33px)`,
+        width: 'calc(100% - 33px)',
         display: 'inline-block',
     },
     fieldEdit: {
-        width: `100%`,
+        width: '100%',
         display: 'inline-block',
         lineHeight: '50px',
         verticalAlign: 'middle',
@@ -177,12 +175,11 @@ function descendingComparator(a, b, orderBy, lookup) {
 
     if (_b < _a) {
         return -1;
-    } else
+    }
     if (_b > _a) {
         return 1;
-    } else {
-        return 0;
     }
+    return 0;
 }
 
 function getComparator(order, orderBy, lookup) {
@@ -198,9 +195,8 @@ function stableSort(array, comparator) {
         const order = comparator(a[0], b[0]);
         if (order) {
             return order;
-        } else {
-            return a[1] - b[1];
         }
+        return a[1] - b[1];
     });
 
     return stabilizedThis.map(el => el[0]);
@@ -228,9 +224,7 @@ class TreeTable extends React.Component {
             order: 'asc',
             update: null,
             orderBy: this.props.columns[0].field,
-            useTable: false,
             showSelectColor: false,
-            glowOnChange: props.glowOnChange,
         };
     }
 
@@ -254,12 +248,11 @@ class TreeTable extends React.Component {
 
             if (update.length && update.length !== count) {
                 return { data: props.data, update };
-            } else {
-                return { data: props.data };
             }
-        } else {
             return { data: props.data };
         }
+
+        return { data: props.data };
     }
 
     renderCellEdit(item, col) {
@@ -272,20 +265,22 @@ class TreeTable extends React.Component {
             return this.renderCellEditSelect(item, col, val);
         } if (col.editComponent) {
             return this.renderCellEditCustom(item, col, val);
-        } else {
-            if (col.type === 'boolean' || (!col.type && typeof val === 'boolean')) {
-                return this.renderCellEditBoolean(item, col, val);
-            } else if (col.type === 'color') {
-                return this.renderCellEditColor(item, col, val);
-            } else if (col.type === 'oid') {
-                return this.renderCellEditObjectID(item, col, val);
-			} else if (col.type === 'numeric') {
-                return this.renderCellEditNumber(item, col, val);
-			} else {
-				return this.renderCellEditString(item, col, val);
-			}
-		}
-	}
+        }
+        if (col.type === 'boolean' || (!col.type && typeof val === 'boolean')) {
+            return this.renderCellEditBoolean(item, col, val);
+        }
+        if (col.type === 'color') {
+            return this.renderCellEditColor(item, col, val);
+        }
+        if (col.type === 'oid') {
+            return this.renderCellEditObjectID(item, col, val);
+        }
+        if (col.type === 'numeric') {
+            return this.renderCellEditNumber(item, col, val);
+        }
+
+        return this.renderCellEditString(item, col, val);
+    }
 
     renderCellEditSelect(item, col, val) {
         return <Select
@@ -297,8 +292,8 @@ class TreeTable extends React.Component {
                 } else {
                     editData[col.field] = e.target.value;
                 }
-                this.setState({editData});
-		    }}
+                this.setState({ editData });
+            }}
             value={(this.state.editData && this.state.editData[col.field]) || val}
         >
             {Object.keys(col.lookup)
@@ -324,9 +319,8 @@ class TreeTable extends React.Component {
         />;
     }
 
-
-	renderCellEditNumber(item, col, val) {
-		return <TextField
+    renderCellEditNumber(item, col, val) {
+        return <TextField
             variant="standard"
             className={this.props.classes.fieldEdit}
             type="number"
@@ -342,7 +336,7 @@ class TreeTable extends React.Component {
                 this.setState({ editData });
             }}
         />;
-	}
+    }
 
     renderCellEditCustom(item, col, val) {
         const EditComponent = col.editComponent;
@@ -379,7 +373,7 @@ class TreeTable extends React.Component {
                 } else {
                     editData[col.field] = e.target.checked;
                 }
-                this.setState({editData});
+                this.setState({ editData });
             }}
             inputProps={{ 'aria-label': 'checkbox' }}
         />;
@@ -387,12 +381,13 @@ class TreeTable extends React.Component {
 
     renderSelectColorDialog() {
         return <Dialog
-            classes={{root: this.props.classes.colorDialog, paper: this.props.classes.colorDialog}}
+            classes={{ root: this.props.classes.colorDialog, paper: this.props.classes.colorDialog }}
             onClose={() => {
                 this.selectCallback = null;
                 this.setState({ showSelectColor: false });
             }}
-            open={this.state.showSelectColor}>
+            open={this.state.showSelectColor}
+        >
             <ColorPicker
                 color={this.state.selectIdValue}
                 onChange={color =>
@@ -410,7 +405,7 @@ class TreeTable extends React.Component {
                 fullWidth
                 className={this.props.classes.fieldEditWithButton}
                 value={_val}
-                inputProps={{ style: { backgroundColor: _val, color: Utils.isUseBright(_val, null) ? '#FFF' : '#000'} }}
+                inputProps={{ style: { backgroundColor: _val, color: Utils.isUseBright(_val, null) ? '#FFF' : '#000' } }}
                 onChange={e => {
                     const editData = this.state.editData ? { ...this.state.editData } : {};
                     if (e.target.value === val) {
@@ -418,7 +413,7 @@ class TreeTable extends React.Component {
                     } else {
                         editData[col.field] = e.target.value;
                     }
-                    this.setState({editData});
+                    this.setState({ editData });
                 }}
             />
 
@@ -432,14 +427,14 @@ class TreeTable extends React.Component {
                         } else {
                             editData[col.field] = newColor;
                         }
-                        this.setState({editData});
+                        this.setState({ editData });
                     };
 
                     this.setState({ showSelectColor: true, selectIdValue: val });
                 }}
                 size="large"
             >
-                <IconColor/>
+                <IconColor />
             </IconButton>
         </div>;
     }
@@ -455,15 +450,15 @@ class TreeTable extends React.Component {
                 statesOnly
                 selected={this.state.selectIdValue}
                 onClose={() => this.setState({ showSelectId: false })}
-                onOk={(selected, name) => {
+                onOk={(selected /* , name*/) => {
                     this.setState({ showSelectId: false, selectIdValue: null });
                     this.selectCallback && this.selectCallback(selected);
                     this.selectCallback = null;
                 }}
             />;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     renderCellEditObjectID(item, col, val) {
@@ -494,14 +489,14 @@ class TreeTable extends React.Component {
                         } else {
                             editData[col.field] = selected;
                         }
-                        this.setState({editData});
+                        this.setState({ editData });
                     };
 
                     this.setState({ showSelectId: true, selectIdValue: val });
                 }}
                 size="large"
             >
-                <IconList/>
+                <IconList />
             </IconButton>
         </div>;
     }
@@ -517,10 +512,10 @@ class TreeTable extends React.Component {
                 checked={!!val}
                 disabled
                 inputProps={{ 'aria-label': 'checkbox' }}
-            />
-        } else {
-            return val;
+            />;
         }
+
+        return val;
     }
 
     renderCell(item, col, level, i) {
@@ -533,16 +528,15 @@ class TreeTable extends React.Component {
             >
                 {this.renderCellEdit(item, col)}
             </TableCell>;
-        } else {
-            return <TableCell
-                key={col.field}
-                className={Utils.clsx(this.props.classes.cell, level && this.props.classes.cellSecondary)}
-                style={col.cellStyle}
-                component="th"
-            >
-                    {this.renderCellNonEdit(item, col)}
-                </TableCell>;
         }
+        return <TableCell
+            key={col.field}
+            className={Utils.clsx(this.props.classes.cell, level && this.props.classes.cellSecondary)}
+            style={col.cellStyle}
+            component="th"
+        >
+            {this.renderCellNonEdit(item, col)}
+        </TableCell>;
     }
 
     renderCellWithSubField(item, col) {
@@ -564,130 +558,130 @@ class TreeTable extends React.Component {
         }
         if (!level && item.parentId) {
             return null;
-        } else if (level && !item.parentId) {
+        }
+        if (level && !item.parentId) {
             return null; // should never happen
-        } else {
-            // try to find children
-            const opened = this.state.opened.includes(item.id);
-            const children = this.props.data.filter(it => it.parentId === item.id);
+        }
+        // try to find children
+        const opened = this.state.opened.includes(item.id);
+        const children = this.props.data.filter(it => it.parentId === item.id);
 
-            return [
-                <TableRow
-                    key={item.id}
-                    className={Utils.clsx(
-                        `table-row-${(item.id || '').toString().replace(/[.$]/g, '_')}`,
-                        this.state.update && this.state.update.includes(item.id) && this.props.classes.glow,
-                        this.props.classes.row,
-                        level  && this.props.classes.rowSecondary,
-                        !level && children.length && this.props.classes.rowMainWithChildren,
-                        !level && !children.length && this.props.classes.rowMainWithoutChildren,
-                        this.state.editMode !== false && this.state.editMode !== i && this.props.classes.rowNoEdit,
-                        this.state.deleteMode !== false && this.state.deleteMode !== i && this.props.classes.rowNoEdit,
-                    )}
-                >
-                    <TableCell className={Utils.clsx(this.props.classes.cell, this.props.classes.cellExpand, level && this.props.classes.cellSecondary)}>
-                        {children.length ? <IconButton
-                            onClick={() => {
-                                const opened = [...this.state.opened];
-                                const pos = opened.indexOf(item.id);
-                                if (pos === -1) {
-                                    opened.push(item.id);
-                                    opened.sort();
-                                } else {
-                                    opened.splice(pos, 1);
-                                }
+        return [
+            <TableRow
+                key={item.id}
+                className={Utils.clsx(
+                    `table-row-${(item.id || '').toString().replace(/[.$]/g, '_')}`,
+                    this.state.update && this.state.update.includes(item.id) && this.props.classes.glow,
+                    this.props.classes.row,
+                    level  && this.props.classes.rowSecondary,
+                    !level && children.length && this.props.classes.rowMainWithChildren,
+                    !level && !children.length && this.props.classes.rowMainWithoutChildren,
+                    this.state.editMode !== false && this.state.editMode !== i && this.props.classes.rowNoEdit,
+                    this.state.deleteMode !== false && this.state.deleteMode !== i && this.props.classes.rowNoEdit,
+                )}
+            >
+                <TableCell className={Utils.clsx(this.props.classes.cell, this.props.classes.cellExpand, level && this.props.classes.cellSecondary)}>
+                    {children.length ? <IconButton
+                        onClick={() => {
+                            const _opened = [...this.state.opened];
+                            const pos = _opened.indexOf(item.id);
+                            if (pos === -1) {
+                                _opened.push(item.id);
+                                _opened.sort();
+                            } else {
+                                _opened.splice(pos, 1);
+                            }
 
-                                (window._localStorage || window.localStorage).setItem(this.props.name || 'iob-table', JSON.stringify(opened));
+                            (window._localStorage || window.localStorage).setItem(this.props.name || 'iob-table', JSON.stringify(_opened));
 
-                                this.setState({opened});
-                            }}
-                            size="small">
-                            {opened ? <IconCollapse /> : <IconExpand />}
-                        </IconButton>  : null}
-                    </TableCell>
-                    <TableCell
-                        scope="row"
-                        className={Utils.clsx(this.props.classes.cell, level && this.props.classes.cellSecondary)}
-                        style={Object.assign({}, this.props.columns[0].cellStyle, {paddingLeft: levelShift * level})}
+                            this.setState({ opened: _opened });
+                        }}
+                        size="small"
                     >
-                        {this.props.columns[0].subField ?
-                            this.renderCellWithSubField(item, this.props.columns[0])
-                            :
-                            getAttr(item, this.props.columns[0].field, this.props.columns[0].lookup)
-                        }
-                    </TableCell>
+                        {opened ? <IconCollapse /> : <IconExpand />}
+                    </IconButton>  : null}
+                </TableCell>
+                <TableCell
+                    scope="row"
+                    className={Utils.clsx(this.props.classes.cell, level && this.props.classes.cellSecondary)}
+                    style={{ ...this.props.columns[0].cellStyle, ...{ paddingLeft: levelShift * level } }}
+                >
+                    {this.props.columns[0].subField ?
+                        this.renderCellWithSubField(item, this.props.columns[0])
+                        :
+                        getAttr(item, this.props.columns[0].field, this.props.columns[0].lookup)}
+                </TableCell>
 
-                    {this.props.columns.map((col, ii) =>
-                        !ii && !col.hidden ? null : this.renderCell(item, col, level, i))}
+                {this.props.columns.map((col, ii) =>
+                    (!ii && !col.hidden ? null : this.renderCell(item, col, level, i)))}
 
-                    {this.props.onUpdate ? <TableCell className={Utils.clsx(this.props.classes.cell, this.props.classes.cellButton)}>
-                        {this.state.editMode === i || this.state.deleteMode === i ?
+                {this.props.onUpdate ? <TableCell className={Utils.clsx(this.props.classes.cell, this.props.classes.cellButton)}>
+                    {this.state.editMode === i || this.state.deleteMode === i ?
+                        <IconButton
+                            disabled={this.state.editMode !== false && (!this.state.editData || !Object.keys(this.state.editData).length)}
+                            onClick={() => {
+                                if (this.state.editMode !== false) {
+                                    const newData = JSON.parse(JSON.stringify(item));
+                                    Object.keys(this.state.editData).forEach(attr => setAttr(newData, attr, this.state.editData[attr]));
+                                    this.setState({ editMode: false }, () => this.props.onUpdate(newData, item));
+                                } else {
+                                    this.setState({ deleteMode: false }, () => this.props.onDelete(item));
+                                }
+                            }}
+                            size="large"
+                        >
+                            <IconCheck />
+                        </IconButton>
+                        :
+                        <IconButton
+                            disabled={this.state.editMode !== false}
+                            onClick={() => this.setState({ editMode: i, editData: null })}
+                            size="large"
+                        >
+                            <IconEdit />
+                        </IconButton>}
+                </TableCell> : null}
+
+                {this.props.onDelete && !this.props.onUpdate ?
+                    <TableCell className={Utils.clsx(this.props.classes.cell, this.props.classes.cellButton)}>
+                        {this.state.deleteMode === i ?
                             <IconButton
                                 disabled={this.state.editMode !== false && (!this.state.editData || !Object.keys(this.state.editData).length)}
-                                onClick={() => {
-                                    if (this.state.editMode !== false) {
-                                        const newData = JSON.parse(JSON.stringify(item));
-                                        Object.keys(this.state.editData).forEach(attr => setAttr(newData, attr, this.state.editData[attr]));
-                                        this.setState({editMode: false}, () => this.props.onUpdate(newData, item))
-                                    } else {
-                                        this.setState({deleteMode: false}, () => this.props.onDelete(item))
-                                    }
-                                }}
+                                onClick={() => this.setState({ deleteMode: false }, () => this.props.onDelete(item))}
                                 size="large"
                             >
                                 <IconCheck />
                             </IconButton>
                             :
-                            <IconButton
-                                disabled={this.state.editMode !== false}
-                                onClick={() => this.setState({editMode: i, editData: null})}
-                                size="large">
-                                <IconEdit />
-                            </IconButton>}
+                            null}
                     </TableCell> : null}
 
-                    {this.props.onDelete && !this.props.onUpdate ?
-                        <TableCell className={Utils.clsx(this.props.classes.cell, this.props.classes.cellButton)}>
-                            {this.state.deleteMode === i ?
-                                <IconButton
-                                    disabled={this.state.editMode !== false && (!this.state.editData || !Object.keys(this.state.editData).length)}
-                                    onClick={() => this.setState({deleteMode: false}, () => this.props.onDelete(item))}
-                                    size='large'
-                                >
-                                    <IconCheck />
-                                </IconButton>
-                                :
-                                null}
-                        </TableCell> : null}
-
-                    {this.props.onUpdate || this.props.onDelete ? <TableCell className={Utils.clsx(this.props.classes.cell, this.props.classes.cellButton)}>
-                        {this.state.editMode === i || this.state.deleteMode === i ?
-                            <IconButton
-                                onClick={() => this.setState({editMode: false, deleteMode: false})}
-                                size="large"
-                            >
-                                <IconClose />
-                            </IconButton>
-                            :
-                            (this.props.onDelete ? <IconButton
-                                disabled={this.state.deleteMode !== false}
-                                onClick={() => this.setState({deleteMode: i})}
-                                size="large"
-                            >
-                                <IconDelete />
-                            </IconButton> : null)
-                        }
-                    </TableCell> : null}
-                </TableRow>,
-                !level && opened ? children.map(item =>
-                    this.renderLine(item, level + 1)) : null,
-            ];
-        }
+                {this.props.onUpdate || this.props.onDelete ? <TableCell className={Utils.clsx(this.props.classes.cell, this.props.classes.cellButton)}>
+                    {this.state.editMode === i || this.state.deleteMode === i ?
+                        <IconButton
+                            onClick={() => this.setState({ editMode: false, deleteMode: false })}
+                            size="large"
+                        >
+                            <IconClose />
+                        </IconButton>
+                        :
+                        (this.props.onDelete ? <IconButton
+                            disabled={this.state.deleteMode !== false}
+                            onClick={() => this.setState({ deleteMode: i })}
+                            size="large"
+                        >
+                            <IconDelete />
+                        </IconButton> : null)}
+                </TableCell> : null}
+            </TableRow>,
+            !level && opened ? children.map(it =>
+                this.renderLine(it, level + 1)) : null,
+        ];
     }
 
     handleRequestSort(property) {
         const isAsc = this.state.orderBy === property && this.state.order === 'asc';
-        this.setState({order: isAsc ? 'desc' : 'asc', orderBy: property});
+        this.setState({ order: isAsc ? 'desc' : 'asc', orderBy: property });
     }
 
     renderHead() {
@@ -699,7 +693,7 @@ class TreeTable extends React.Component {
                 />
                 <TableCell
                     component="th"
-                    className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes['width_' + this.props.columns[0].field.replace(/\./g, '_')])}
+                    className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes[`width_${this.props.columns[0].field.replace(/\./g, '_')}`])}
                     style={this.props.columns[0].headerStyle || this.props.columns[0].cellStyle}
                     sortDirection={this.props.noSort ? false : (this.state.orderBy === this.props.columns[0].field ? this.state.order : false)}
                 >
@@ -716,7 +710,7 @@ class TreeTable extends React.Component {
                     </TableSortLabel>}
                 </TableCell>
                 {this.props.columns.map((col, i) =>
-                    !i && !col.hidden ? null : <TableCell
+                    (!i && !col.hidden ? null : <TableCell
                         key={col.field}
                         className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes[`width_${col.field.replace(/\./g, '_')}`])}
                         style={col.headerStyle || col.cellStyle}
@@ -733,15 +727,16 @@ class TreeTable extends React.Component {
                                     {this.state.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                 </span> : null}
                         </TableSortLabel> }
-                    </TableCell>)}
+                    </TableCell>))}
                 {this.props.onUpdate ? <TableCell component="th" className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes.cellButton)}>
                     {!this.props.noAdd ? <Fab
                         color="primary"
                         size="small"
                         disabled={this.state.editMode !== false}
-                        onClick={() => this.props.onUpdate(true)}>
+                        onClick={() => this.props.onUpdate(true)}
+                    >
                         <IconAdd />
-                    </Fab>: null }
+                    </Fab> : null }
                 </TableCell> : null}
                 {this.props.onDelete || this.props.onUpdate ?
                     <TableCell component="th" className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes.cellButton)} /> : null}
@@ -757,7 +752,7 @@ class TreeTable extends React.Component {
             this.updateTimeout && clearTimeout(this.updateTimeout);
             this.updateTimeout = setTimeout(() => {
                 this.updateTimeout = null;
-                this.setState({update: null});
+                this.setState({ update: null });
             }, 500);
         }
 
@@ -765,7 +760,7 @@ class TreeTable extends React.Component {
             <Table className={this.props.classes.table} aria-label="simple table" size="small" stickyHeader>
                 {this.renderHead()}
                 <TableBody>
-                    {table.map(item => this.renderLine(item))}
+                    {table.map(it => this.renderLine(it))}
                 </TableBody>
             </Table>
             {this.renderSelectIdDialog()}
@@ -851,7 +846,6 @@ renderTable() {
 TreeTable.propTypes = {
     data: PropTypes.array.isRequired,
     className: PropTypes.string,
-    loading: PropTypes.bool,
     name: PropTypes.string, // name of table to save settings in localStorage
     columns: PropTypes.arrayOf(
         PropTypes.shape({
@@ -871,7 +865,7 @@ TreeTable.propTypes = {
                 'oid',
                 'color',
             ]),
-        })
+        }),
     ).isRequired,
     noSort: PropTypes.bool,
     onUpdate: PropTypes.func,

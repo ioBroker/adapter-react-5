@@ -21,6 +21,6 @@ IconAdapter.propTypes = {
     onClick: PropTypes.func,
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    className: PropTypes.string
+    className: PropTypes.string,
 };
 export default IconAdapter;

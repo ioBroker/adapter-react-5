@@ -1,11 +1,10 @@
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
-import withStyles from '@mui/styles/withStyles';
-
+import { withStyles } from '@mui/styles';
 import PropTypes from 'prop-types';
-import Utils from './Utils';
-
 import { Grid } from '@mui/material';
+
+import Utils from './Utils';
 
 const styles = {
     root: {
@@ -30,7 +29,7 @@ class TabContent extends React.Component {
 
         return <Grid
             item
-            className={Utils.clsx(classes.root, {[classes.overflowAuto]: this.props.overflow === 'auto'})}
+            className={Utils.clsx(classes.root, { [classes.overflowAuto]: this.props.overflow === 'auto' })}
         >
             {this.props.children}
         </Grid>;
@@ -38,7 +37,7 @@ class TabContent extends React.Component {
 }
 
 TabContent.propTypes = {
-    overflow: PropTypes.string
+    overflow: PropTypes.string,
 };
 
 /** @type {typeof TabContent} */

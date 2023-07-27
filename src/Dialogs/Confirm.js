@@ -8,7 +8,7 @@
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from '@mui/styles';
 
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -76,11 +76,11 @@ class DialogConfirm extends React.Component {
             (window._localStorage || window.localStorage).setItem(this.props.dialogName, Date.now() + this.props.suppressQuestionMinutes * 60000);
         }
         this.props.onClose && this.props.onClose(true);
-    };
+    }
 
     handleCancel() {
         this.props.onClose && this.props.onClose(false);
-    };
+    }
 
     render() {
         if (typeof this.state.suppress === 'number') {
@@ -105,19 +105,34 @@ class DialogConfirm extends React.Component {
                 <DialogContentText id="ar_confirmation_dialog_description">
                     {this.props.icon || null}
                     {this.props.text}
-                    {this.props.suppressQuestionMinutes ? <br/> : null}
-                    {this.props.suppressQuestionMinutes ?
-                        <FormControlLabel
-                            classes={{label: this.props.classes.suppress, root: this.props.classes.suppressRoot}}
-                            control={<Checkbox id={`ar_dialog_confirm_suppress_${this.props.dialogName || ''}`} checked={!!this.state.suppress} onChange={() => this.setState({suppress: !this.state.suppress})} />}
-                            label={this.props.suppressText || I18n.t('ra_Suppress question for next %s minutes', this.props.suppressQuestionMinutes)}
-                        /> :
-                        null}
+                    {this.props.suppressQuestionMinutes ? <br /> : null}
+                    {this.props.suppressQuestionMinutes ? <FormControlLabel
+                        classes={{ label: this.props.classes.suppress, root: this.props.classes.suppressRoot }}
+                        control={<Checkbox id={`ar_dialog_confirm_suppress_${this.props.dialogName || ''}`} checked={!!this.state.suppress} onChange={() => this.setState({ suppress: !this.state.suppress })} />}
+                        label={this.props.suppressText || I18n.t('ra_Suppress question for next %s minutes', this.props.suppressQuestionMinutes)}
+                    /> : null}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button id={`ar_dialog_confirm_ok_${this.props.dialogName || ''}`} variant="contained" onClick={() => this.handleOk()} color="primary" autoFocus startIcon={<IconCheck />}>{this.props.ok || I18n.t('ra_Ok')}</Button>
-                <Button id={`ar_dialog_confirm_cancel_${this.props.dialogName || ''}`} variant="contained" onClick={() => this.handleCancel()} color="grey" startIcon={<IconClose />}>{this.props.cancel || I18n.t('ra_Cancel')}</Button>
+                <Button
+                    id={`ar_dialog_confirm_ok_${this.props.dialogName || ''}`}
+                    variant="contained"
+                    onClick={() => this.handleOk()}
+                    color="primary"
+                    autoFocus
+                    startIcon={<IconCheck />}
+                >
+                    {this.props.ok || I18n.t('ra_Ok')}
+                </Button>
+                <Button
+                    id={`ar_dialog_confirm_cancel_${this.props.dialogName || ''}`}
+                    variant="contained"
+                    onClick={() => this.handleCancel()}
+                    color="grey"
+                    startIcon={<IconClose />}
+                >
+                    {this.props.cancel || I18n.t('ra_Cancel')}
+                </Button>
             </DialogActions>
         </Dialog>;
     }

@@ -15,10 +15,6 @@ import {
     IconButton,
 } from '@mui/material';
 
-import IconNoIcon from '../icons/IconNoIcon';
-import withWidth from './withWidth';
-import Utils from './Utils';
-
 // Icons
 import { FaCopy as CopyIcon } from 'react-icons/fa';
 import {
@@ -26,6 +22,10 @@ import {
     Save as SaveIcon,
     Brightness6 as Brightness5Icon,
 } from '@mui/icons-material';
+
+import IconNoIcon from '../icons/IconNoIcon';
+import withWidth from './withWidth';
+import Utils from './Utils';
 
 const styles = () => ({
     dialog: {
@@ -62,8 +62,8 @@ export const EXTENSIONS = {
 
 function bufferToBase64(buffer, isFull) {
     let binary = '';
-    let bytes = new Uint8Array(buffer);
-    let len = bytes.byteLength;
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
     for (let i = 0; i < len && (isFull || i < 50); i++) {
         binary += String.fromCharCode(bytes[i]);
     }
@@ -200,7 +200,7 @@ class FileViewer extends Component {
             .then(_ => this.props.onClose())
             .catch(e => window.alert(`Cannot write file: ${e}`));
         */
-    }
+    };
 
     static getEditFile(ext) {
         switch (ext) {
@@ -223,23 +223,23 @@ class FileViewer extends Component {
         if (EXTENSIONS.images.includes(this.state.ext)) {
             if (this.state.imgError) {
                 return <IconNoIcon className={Utils.clsx(this.props.classes.img, this.props.getClassBackgroundImage())} />;
-            } else {
-                return <img
-                    onError={e => {
-                        e.target.onerror = null;
-                        this.setState({ imgError: true });
-                    }}
-                    className={Utils.clsx(this.props.classes.img, this.props.getClassBackgroundImage())}
-                    src={`${this.props.href}?ts=${this.state.forceUpdate}`}
-                    alt={this.props.href}
-                />;
             }
-        } else if (this.state.code !== null || this.state.text !== null || this.state.editing) {
+            return <img
+                onError={e => {
+                    e.target.onerror = null;
+                    this.setState({ imgError: true });
+                }}
+                className={Utils.clsx(this.props.classes.img, this.props.getClassBackgroundImage())}
+                src={`${this.props.href}?ts=${this.state.forceUpdate}`}
+                alt={this.props.href}
+            />;
+        }
+        if (this.state.code !== null || this.state.text !== null || this.state.editing) {
             return <TextField
                 variant="standard"
-                className={ this.props.classes.textarea }
+                className={this.props.classes.textarea}
                 multiline
-                value={ this.state.editingValue || this.state.code || this.state.text }
+                value={this.state.editingValue || this.state.code || this.state.text}
                 onChange={newValue => this.setState({ editingValue: newValue, changed: true })}
                 InputProps={{ readOnly: !this.state.editing }}
             />;
@@ -259,14 +259,14 @@ class FileViewer extends Component {
             <div className={this.props.classes.dialogTitle}>
                 <DialogTitle id="ar_dialog_file_view_title">{`${this.props.t(this.state.editing ? 'Edit' : 'View')}: ${this.props.href}`}</DialogTitle>
                 {EXTENSIONS.images.includes(this.state.ext) && <div>
-                    <IconButton size="large"
-                        color={'inherit'}
+                    <IconButton
+                        size="large"
+                        color="inherit"
                         onClick={this.props.setStateBackgroundImage}
                     >
                         <Brightness5Icon />
                     </IconButton>
-                </div>
-                }
+                </div>}
             </div>
             <DialogContent className={this.props.classes.content}>
                 {this.getContent()}
@@ -305,8 +305,6 @@ class FileViewer extends Component {
 
 FileViewer.propTypes = {
     t: PropTypes.func,
-    lang: PropTypes.string,
-    expertMode: PropTypes.bool,
     onClose: PropTypes.func,
     href: PropTypes.string.isRequired,
     supportSubscribes: PropTypes.bool,

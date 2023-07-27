@@ -1,18 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import {
+    Button,
+    TextField,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+} from '@mui/material';
+
+import { Clos as IconClose, Check as IconCheck } from '@mui/icons-material';
 
 import I18n from '../i18n';
-
-import IconClose from '@mui/icons-material/Close';
-import IconCheck from '@mui/icons-material/Check';
 
 import withWidth from '../Components/withWidth';
 
@@ -40,9 +41,10 @@ class TextInput extends React.Component {
 
         this.state = {
             text: this.props.input || this.props.value || '', // input is deprecated
-            error: ''
-        }
+            error: '',
+        };
     }
+
     render() {
         return <Dialog
             open={!0}
@@ -112,7 +114,6 @@ TextInput.propTypes = {
     cancelText: PropTypes.string,
     applyText: PropTypes.string,
     verify: PropTypes.func,
-    replace: PropTypes.func,
     type: PropTypes.string, // text, number, password, email
     value: PropTypes.string,
 };

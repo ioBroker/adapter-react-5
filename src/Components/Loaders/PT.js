@@ -1,5 +1,5 @@
 /**
- * Copyright 2021-2022 ioBroker GmbH
+ * Copyright 2021-2023 ioBroker GmbH
  *
  * MIT License
  *
@@ -138,12 +138,12 @@ class LoaderPT extends React.Component {
 
     render() {
         const theme = this.props.themeType || this.props.theme || 'light';
-        return <div className={'pt-logo-back logo-background-' + theme}>
-            <div className="pt-logo-div" style={{width: this.size, height: this.size}}>
-                <div style={{width: 200, height: 200}}>
-                    <div className="pt-loader-blue pt-loader-block"/>
-                    <div className="pt-loader-green pt-loader-block"/>
-                    <div className="pt-loader-red pt-loader-block"/>
+        return <div className={`pt-logo-back logo-background-${theme}`}>
+            <div className="pt-logo-div" style={{ width: this.size, height: this.size }}>
+                <div style={{ width: 200, height: 200 }}>
+                    <div className="pt-loader-blue pt-loader-block" />
+                    <div className="pt-loader-green pt-loader-block" />
+                    <div className="pt-loader-red pt-loader-block" />
                 </div>
             </div>
         </div>;
@@ -152,7 +152,7 @@ class LoaderPT extends React.Component {
 
 LoaderPT.propTypes = {
     size: PropTypes.number,
-    themeType: PropTypes.string
+    themeType: PropTypes.string,
 };
 
 /** @type {typeof LoaderPT} */

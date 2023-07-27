@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from '@mui/styles';
 
 import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -96,8 +96,6 @@ DialogComplexCron.propTypes = {
     cron: PropTypes.string,
     cancel: PropTypes.string,
     ok: PropTypes.string,
-    simple: PropTypes.bool,
-    language: PropTypes.string,
     clearButton: PropTypes.bool,
 };
 

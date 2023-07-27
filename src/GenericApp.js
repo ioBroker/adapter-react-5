@@ -10,11 +10,9 @@ import PropTypes from 'prop-types';
 import * as Sentry from '@sentry/browser';
 import * as SentryIntegrations from '@sentry/integrations';
 
-import DialogError from './Dialogs/Error';
-import Snackbar from '@mui/material/Snackbar';
-import IconButton from '@mui/material/IconButton';
+import { Snackbar, IconButton } from '@mui/material';
 
-import IconClose from '@mui/icons-material/Close';
+import { Close as IconClose } from '@mui/icons-material';
 
 import printPrompt from './Prompt';
 import theme from './Theme';
@@ -24,6 +22,7 @@ import Utils from './Components/Utils';
 import SaveCloseButtons from './Components/SaveCloseButtons';
 import ConfirmDialog from './Dialogs/Confirm';
 import I18n from './i18n';
+import DialogError from './Dialogs/Error';
 
 // import './index.css';
 const cssStyle = `
@@ -118,8 +117,8 @@ class GenericApp extends Router {
 
         printPrompt();
 
-        let query = (window.location.search || '').replace(/^\?/, '').replace(/#.*$/, '');
-        let args = {};
+        const query = (window.location.search || '').replace(/^\?/, '').replace(/#.*$/, '');
+        const args = {};
         query.trim().split('&').filter(t => t.trim()).forEach(b => {
             const parts = b.split('=');
             args[parts[0]] = parts.length === 2 ? parts[1] : true;
@@ -157,7 +156,7 @@ class GenericApp extends Router {
             theme:          themeInstance,
             themeName:      this.getThemeName(themeInstance),
             themeType:      this.getThemeType(themeInstance),
-            bottomButtons:  (settings && settings.bottomButtons) === false ? false : ((props && props.bottomButtons) === false ? false : true),
+            bottomButtons:  (settings && settings.bottomButtons) === false ? false : (props?.bottomButtons !== false),
             width:          GenericApp.getWidth(),
             confirmClose:   false,
             _alert:         false,
@@ -167,16 +166,16 @@ class GenericApp extends Router {
 
         // init translations
         const translations = {
-            'en': require('./i18n/en.json'),
-            'de': require('./i18n/de.json'),
-            'ru': require('./i18n/ru.json'),
-            'pt': require('./i18n/pt.json'),
-            'nl': require('./i18n/nl.json'),
-            'fr': require('./i18n/fr.json'),
-            'it': require('./i18n/it.json'),
-            'es': require('./i18n/es.json'),
-            'pl': require('./i18n/pl.json'),
-            'uk': require('./i18n/uk.json'),
+            en: require('./i18n/en.json'),
+            de: require('./i18n/de.json'),
+            ru: require('./i18n/ru.json'),
+            pt: require('./i18n/pt.json'),
+            nl: require('./i18n/nl.json'),
+            fr: require('./i18n/fr.json'),
+            it: require('./i18n/it.json'),
+            es: require('./i18n/es.json'),
+            pl: require('./i18n/pl.json'),
+            uk: require('./i18n/uk.json'),
             'zh-cn': require('./i18n/zh-cn.json'),
         };
 
@@ -264,8 +263,8 @@ class GenericApp extends Router {
                                 dsn: this.sentryDSN,
                                 release: `iobroker.${instanceObj.common.name}@${instanceObj.common.version}`,
                                 integrations: [
-                                    new SentryIntegrations.Dedupe()
-                                ]
+                                    new SentryIntegrations.Dedupe(),
+                                ],
                             });
                         }
 
@@ -278,7 +277,7 @@ class GenericApp extends Router {
                                 .then(uuidObj => {
                                     if (uuidObj && uuidObj.native && uuidObj.native.uuid) {
                                         Sentry.configureScope(scope =>
-                                            scope.setUser({id: uuidObj.native.uuid}));
+                                            scope.setUser({ id: uuidObj.native.uuid }));
                                     }
                                 });
                         }
@@ -295,8 +294,14 @@ class GenericApp extends Router {
                                         this.onConnectionReady && this.onConnectionReady());
                                 } else {
                                     console.warn('Cannot load instance settings');
-                                    this.setState({ native: {}, loaded: true, expertMode: this.getExpertMode()},
-                                        () => this.onConnectionReady && this.onConnectionReady());
+                                    this.setState(
+                                        {
+                                            native: {},
+                                            loaded: true,
+                                            expertMode: this.getExpertMode(),
+                                        },
+                                    () => this.onConnectionReady && this.onConnectionReady(),
+                                    );
                                 }
                             });
                     })
@@ -305,7 +310,7 @@ class GenericApp extends Router {
             onError: err => {
                 console.error(err);
                 this.showError(err);
-            }
+            },
         });
     }
 
@@ -332,7 +337,7 @@ class GenericApp extends Router {
             autoHideDuration={6000}
             onClose={reason => reason !== 'clickaway' && this.setState({ _alert: false })}
             message={this.state.alertMessage}
-        />
+        />;
     }
 
     onSystemConfigChanged = (id, obj) => {
@@ -349,7 +354,7 @@ class GenericApp extends Router {
                 this._systemConfig = obj?.common || {};
             }
         }
-    }
+    };
 
     /**
      * Called immediately after a component is mounted. Setting state here will trigger re-rendering.
@@ -372,7 +377,7 @@ class GenericApp extends Router {
     onReceiveMessage = message => {
         if (message?.data) {
             if (message.data === 'updateTheme') {
-                const newThemeName = Utils.getThemeName()
+                const newThemeName = Utils.getThemeName();
                 Utils.setThemeName(Utils.getThemeName());
 
                 const theme = this.createTheme(newThemeName);
@@ -380,7 +385,7 @@ class GenericApp extends Router {
                 this.setState({
                     theme,
                     themeName: this.getThemeName(theme),
-                    themeType: this.getThemeType(theme)
+                    themeType: this.getThemeType(theme),
                 }, () => {
                     this.props.onThemeChange && this.props.onThemeChange(newThemeName);
                     this.onThemeChanged && this.onThemeChanged(newThemeName);
@@ -420,7 +425,7 @@ class GenericApp extends Router {
             sm: 600,
             md: 960,
             lg: 1280,
-            xl: 1920
+            xl: 1920,
         };
         const width = window.innerWidth;
         const keys = Object.keys(SIZES).reverse();
@@ -550,8 +555,8 @@ class GenericApp extends Router {
      * @param {number} [index]
      */
     selectTab(tab, index) {
-        (window._localStorage || window.localStorage).setItem(this.adapterName + '-adapter', tab);
-        this.setState({ selectedTab: tab, selectedTabNum: index })
+        (window._localStorage || window.localStorage).setItem(`${this.adapterName}-adapter`, tab);
+        this.setState({ selectedTab: tab, selectedTabNum: index });
     }
 
     /**
@@ -604,8 +609,7 @@ class GenericApp extends Router {
                 } else {
                     resolve(doc.rows
                         .filter(item => item.value.common.webExtendable)
-                        .map(item => item.value)
-                    );
+                        .map(item => item.value));
                 }
             });
         });
@@ -616,7 +620,7 @@ class GenericApp extends Router {
      * @param {string} host
      */
     getIpAddresses(host) {
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             this.socket._socket.emit('getHostByIp', host || this.common.host, (ip, _host) => {
                 const IPs4 = [{ name: `[IPv4] 0.0.0.0 - ${I18n.t('ra_Listen on all IPs')}`, address: '0.0.0.0', family: 'ipv4' }];
                 const IPs6 = [{ name: '[IPv6] ::', address: '::', family: 'ipv6' }];
@@ -658,8 +662,7 @@ class GenericApp extends Router {
                     if (this.state.native.hasOwnProperty(a)) {
                         if (this.state.native[a] === null) {
                             oldObj.native[a] = null;
-                        } else
-                        if (this.state.native[a] !== undefined) {
+                        } else if (this.state.native[a] !== undefined) {
                             oldObj.native[a] = JSON.parse(JSON.stringify(this.state.native[a]));
                         } else {
                             delete oldObj.native[a];
@@ -671,8 +674,7 @@ class GenericApp extends Router {
                     for (const b in this.state.common) {
                         if (this.state.common[b] === null) {
                             oldObj.common[b] = null;
-                        } else
-                        if (this.state.common[b] !== undefined) {
+                        } else if (this.state.common[b] !== undefined) {
                             oldObj.common[b] = JSON.parse(JSON.stringify(this.state.common[b]));
                         } else {
                             delete oldObj.common[b];
@@ -682,9 +684,9 @@ class GenericApp extends Router {
 
                 if (this.onPrepareSave(oldObj.native) !== false) {
                     return this.socket.setObject(this.instanceId, oldObj);
-                } else {
-                    return Promise.reject('Invalid configuration');
                 }
+
+                return Promise.reject(new Error('Invalid configuration'));
             })
             .then(() => {
                 this.savedNative = oldObj.native;
@@ -698,9 +700,7 @@ class GenericApp extends Router {
                 this.setState({ changed: false });
                 isClose && GenericApp.onClose();
             })
-            .catch(e => {
-                console.error(`Cannot save configuration: ${e}`);
-            });
+            .catch(e => console.error(`Cannot save configuration: ${e}`));
     }
 
     /**
@@ -729,7 +729,8 @@ class GenericApp extends Router {
                     color="inherit"
                     className={this.props.classes.close}
                     onClick={() => this.setState({ toast: '' })}
-                    size="large">
+                    size="large"
+                >
                     <IconClose />
                 </IconButton>,
             ]}
@@ -761,9 +762,9 @@ class GenericApp extends Router {
     renderError() {
         if (!this.state.errorText) {
             return null;
-        } else {
-            return <DialogError text={this.state.errorText} onClose={() => this.setState({ errorText: '' })}/>;
         }
+
+        return <DialogError text={this.state.errorText} onClose={() => this.setState({ errorText: '' })} />;
     }
 
     /**
@@ -785,7 +786,7 @@ class GenericApp extends Router {
      */
     onLoadConfig(newNative) {
         if (JSON.stringify(newNative) !== JSON.stringify(this.state.native)) {
-            this.setState({ native: newNative, changed: this.getIsChanged(newNative) })
+            this.setState({ native: newNative, changed: this.getIsChanged(newNative) });
         }
     }
 
@@ -853,20 +854,21 @@ class GenericApp extends Router {
                     obj[attr] = value;
                     return true;
                 }
-            } else if (obj[attr] !== value) {
-                obj[attr] = value;
-                return true;
-            } else {
                 return false;
             }
-
-        } else {
-            obj[attr] = obj[attr] || {};
-            if (typeof obj[attr] !== 'object') {
-                throw new Error(`attribute ${attr} is no object, but ${typeof obj[attr]}`);
+            if (obj[attr] !== value) {
+                obj[attr] = value;
+                return true;
             }
-            return this._updateNativeValue(obj[attr], attrs, value);
+
+            return false;
         }
+
+        obj[attr] = obj[attr] || {};
+        if (typeof obj[attr] !== 'object') {
+            throw new Error(`attribute ${attr} is no object, but ${typeof obj[attr]}`);
+        }
+        return this._updateNativeValue(obj[attr], attrs, value);
     }
 
     /**
@@ -927,7 +929,7 @@ class GenericApp extends Router {
      */
     render() {
         if (!this.state.loaded) {
-            return <Loader theme={this.state.themeType}/>;
+            return <Loader theme={this.state.themeType} />;
         }
 
         return <div className="App">

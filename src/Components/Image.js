@@ -23,8 +23,7 @@ function serializeAttrs(map) {
         const key = map[i].name;
         if (key === 'class') {
             prop = 'className';
-        }
-        else if (!key.startsWith('data-')) {
+        } else if (!key.startsWith('data-')) {
             prop = key.replace(/[-|:]([a-z])/g, g => g[1].toUpperCase());
         } else {
             prop = key;
@@ -101,12 +100,12 @@ class Image extends React.Component {
 
             return <svg
                 className={this.props.className}
-                style={this.state.color ? {color: this.state.color} : {}}
+                style={this.state.color ? { color: this.state.color } : {}}
                 {...svgProps}
                 dangerouslySetInnerHTML={{ __html: inner }}
             />;
         } catch (e) {
-
+            // ignore
         }
         return null;
     }
@@ -116,25 +115,25 @@ class Image extends React.Component {
             if (!this.state.created) {
                 setTimeout(() => {
                     this.svg = this.getSvgFromData(this.state.src);
-                    this.setState({created: true});
+                    this.setState({ created: true });
                 }, 50);
             }
 
             return this.svg;
-        } else if (this.state.src) {
+        }
+        if (this.state.src) {
             if (this.state.imgError || !this.state.src) {
                 return <IconNoIcon className={this.props.className} />;
-            } else {
-                return <img
-                    className={this.props.className}
-                    src={(this.props.imagePrefix || '') + this.state.src}
-                    alt=""
-                    onError={() => this.props.showError ? this.setState({imgError: true}) : this.setState({src: ''})}
-                />;
             }
-        } else {
-            return null;
+            return <img
+                className={this.props.className}
+                src={(this.props.imagePrefix || '') + this.state.src}
+                alt=""
+                onError={() => (this.props.showError ? this.setState({ imgError: true }) : this.setState({ src: '' }))}
+            />;
         }
+
+        return null;
     }
 }
 
