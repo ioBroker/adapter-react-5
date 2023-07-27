@@ -44,11 +44,7 @@ class DialogError extends React.Component {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle
-                className={this.props.classes.titleBackground}
-                classes={{ root: this.props.classes.titleColor }}
-                id="ar_alert_dialog_title"
-            >
+            <DialogTitle id="ar_alert_dialog_title">
                 {this.props.title || I18n.t('ra_Error')}
             </DialogTitle>
             <DialogContent>
