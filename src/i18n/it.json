@@ -393,5 +393,11 @@
   "ra_Append": "Aggiungere",
   "ra_May not trigger \"updateLicenses\"": "Potrebbe non attivare \"updateLicenses\"",
   "ra_Unknown error": "Errore sconosciuto",
-  "ra_License must be converted": "La licenza deve essere convertita in una versione più recente. Puoi farlo nel tuo profilo iobroker.net."
+  "ra_License must be converted": "La licenza deve essere convertita in una versione più recente. Puoi farlo nel tuo profilo iobroker.net.",
+  "ra_No one license found in license manager": "Nessuna licenza trovata nel gestore delle licenze",
+  "ra_Please create license": "Si prega di creare la licenza",
+  "ra_Product": "Prodotto",
+  "ra_Version": "Versione",
+  "ra_ValidTill": "Valido fino a",
+  "ra_Commercial": "Commerciale"
 }

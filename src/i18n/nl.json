@@ -393,5 +393,11 @@
   "ra_Append": "toevoegen",
   "ra_May not trigger \"updateLicenses\"": "Activeert mogelijk niet \"updateLicenses\"",
   "ra_Unknown error": "Onbekende fout",
-  "ra_License must be converted": "Licentie moet worden omgezet naar nieuwere versie. U kunt dit doen in uw iobroker.net-profiel."
+  "ra_License must be converted": "Licentie moet worden omgezet naar nieuwere versie. U kunt dit doen in uw iobroker.net-profiel.",
+  "ra_No one license found in license manager": "Geen enkele licentie gevonden in licentiebeheer",
+  "ra_Please create license": "Maak een licentie aan",
+  "ra_Product": "Product",
+  "ra_Version": "Versie",
+  "ra_ValidTill": "Geldig tot",
+  "ra_Commercial": "Reclame"
 }

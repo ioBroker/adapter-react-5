@@ -393,5 +393,11 @@
   "ra_Append": "Adjuntar",
   "ra_May not trigger \"updateLicenses\"": "No puede activar \"updateLicenses\"",
   "ra_Unknown error": "Error desconocido",
-  "ra_License must be converted": "La licencia debe convertirse a una versión más reciente. Puedes hacerlo en tu perfil de iobroker.net."
+  "ra_License must be converted": "La licencia debe convertirse a una versión más reciente. Puedes hacerlo en tu perfil de iobroker.net.",
+  "ra_No one license found in license manager": "No se encontró ninguna licencia en el administrador de licencias",
+  "ra_Please create license": "Por favor cree una licencia",
+  "ra_Product": "Producto",
+  "ra_Version": "Versión",
+  "ra_ValidTill": "Válida hasta",
+  "ra_Commercial": "Comercial"
 }

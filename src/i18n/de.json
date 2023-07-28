@@ -393,5 +393,11 @@
   "ra_Append": "Anhängen",
   "ra_May not trigger \"updateLicenses\"": "Löst möglicherweise nicht „updateLicenses“ aus",
   "ra_Unknown error": "Unbekannter Fehler",
-  "ra_License must be converted": "Die Lizenz muss auf eine neuere Version konvertiert werden. Sie können dies in Ihrem iobroker.net-Profil tun."
+  "ra_License must be converted": "Die Lizenz muss auf eine neuere Version konvertiert werden. Sie können dies in Ihrem iobroker.net-Profil tun.",
+  "ra_No one license found in license manager": "Im Lizenzmanager wurde keine Lizenz gefunden",
+  "ra_Please create license": "Bitte erstellen Sie eine Lizenz",
+  "ra_Product": "Produkt",
+  "ra_Version": "Ausführung",
+  "ra_ValidTill": "Gültig bis",
+  "ra_Commercial": "Kommerziell"
 }

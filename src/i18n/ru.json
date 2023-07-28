@@ -393,5 +393,11 @@
   "ra_Append": "Добавить",
   "ra_May not trigger \"updateLicenses\"": "Не может запускать «updateLicenses»",
   "ra_Unknown error": "Неизвестная ошибка",
-  "ra_License must be converted": "Лицензия должна быть преобразована в более новую версию. Вы можете сделать это в своем профиле на iobroker.net."
+  "ra_License must be converted": "Лицензия должна быть преобразована в более новую версию. Вы можете сделать это в своем профиле на iobroker.net.",
+  "ra_No one license found in license manager": "В менеджере лицензий не найдена ни одна лицензия",
+  "ra_Please create license": "Пожалуйста, создайте лицензию",
+  "ra_Product": "Продукт",
+  "ra_Version": "Версия",
+  "ra_ValidTill": "Годен до",
+  "ra_Commercial": "Коммерческая"
 }

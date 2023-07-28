@@ -393,5 +393,11 @@
   "ra_Append": "附加",
   "ra_May not trigger \"updateLicenses\"": "可能不会触发“updateLicenses”",
   "ra_Unknown error": "未知错误",
-  "ra_License must be converted": "许可证必须转换为更新版本。您可以在 iobroker.net 个人资料中执行此操作。"
+  "ra_License must be converted": "许可证必须转换为更新版本。您可以在 iobroker.net 个人资料中执行此操作。",
+  "ra_No one license found in license manager": "许可证管理器中未找到任何许可证",
+  "ra_Please create license": "请创建许可证",
+  "ra_Product": "产品",
+  "ra_Version": "版本",
+  "ra_ValidTill": "有效期至",
+  "ra_Commercial": "商业的"
 }
