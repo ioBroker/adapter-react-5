@@ -2,25 +2,28 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
-import FormHelperText from '@mui/material/FormHelperText';
 import {
+    FormHelperText,
     Accordion, AccordionSummary, AccordionDetails,
     IconButton, Paper,
     Toolbar, Tooltip,
     Typography,
 } from '@mui/material';
 
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
-import UpIcon from '@mui/icons-material/ArrowUpward';
-import DownIcon from '@mui/icons-material/ArrowDownward';
-import CopyContentIcon from '@mui/icons-material/ContentCopy';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import {
+    Add as AddIcon,
+    Delete as DeleteIcon,
+    ArrowUpward as UpIcon,
+    ArrowDownward as DownIcon,
+    ContentCopy as CopyContentIcon,
+    ExpandMore as ExpandMoreIcon,
+} from '@mui/icons-material';
 
 import I18n from './wrapper/i18n';
 import Utils from './wrapper/Components/Utils';
 
 import ConfigGeneric from './ConfigGeneric';
+// eslint-disable-next-line import/no-cycle
 import ConfigPanel from './ConfigPanel';
 
 const styles = theme => ({
@@ -41,7 +44,7 @@ const styles = theme => ({
 
 class ConfigAccordion extends ConfigGeneric {
     constructor(props) {
-        super(props)
+        super(props);
         this.props.schema.items = this.props.schema.items || [];
     }
 
@@ -64,7 +67,7 @@ class ConfigAccordion extends ConfigGeneric {
     }
 
     componentWillUnmount() {
-        this.typingTimer && clearTimeout(this.typingTimer)
+        this.typingTimer && clearTimeout(this.typingTimer);
         this.typingTimer = null;
         super.componentWillUnmount();
     }
@@ -78,7 +81,7 @@ class ConfigAccordion extends ConfigGeneric {
                 accumulator[currentValue.attr] = currentValue;
                 return accumulator;
             }, {}),
-            style: { marginLeft: -8, marginTop: 10, marginBottom: 10 }
+            style: { marginLeft: -8, marginTop: 10, marginBottom: 10 },
         };
 
         return <ConfigPanel
@@ -102,11 +105,12 @@ class ConfigAccordion extends ConfigGeneric {
                 const newObj = JSON.parse(JSON.stringify(value));
                 newObj[idx][attr] = valueChange;
                 this.setState({ value: newObj }, () =>
-                    this.onChangeWrapper(newObj,true));
+                    this.onChangeWrapper(newObj, true));
             }}
             onError={(error, attr) => this.onError(error, attr)}
         />;
     }
+
     onDelete = index => () => {
         const newValue = JSON.parse(JSON.stringify(this.state.value));
         newValue.splice(index, 1);
@@ -137,17 +141,17 @@ class ConfigAccordion extends ConfigGeneric {
         newValue.splice(index, 0, cloned);
 
         this.setState({ value: newValue, activeIndex: -1, iteration: this.state.iteration + 10000 }, () => this.onChangeWrapper(newValue));
-    }
+    };
 
-    onChangeWrapper = (newValue) => {
+    onChangeWrapper = newValue => {
         this.typingTimer && clearTimeout(this.typingTimer);
 
-        this.typingTimer = setTimeout((value) => {
+        this.typingTimer = setTimeout(value => {
             this.typingTimer = null;
 
             this.onChange(this.props.attr, value);
         }, 300, newValue);
-    }
+    };
 
     onAdd = () => {
         const { schema } = this.props;
@@ -170,8 +174,8 @@ class ConfigAccordion extends ConfigGeneric {
 
         newValue.push(newItem);
 
-        this.setState({ value: newValue, activeIndex: newValue.length -1 }, () => this.onChangeWrapper(newValue));
-    }
+        this.setState({ value: newValue, activeIndex: newValue.length - 1 }, () => this.onChangeWrapper(newValue));
+    };
 
     onMoveUp(idx) {
         const newValue = JSON.parse(JSON.stringify(this.state.value));
@@ -193,9 +197,9 @@ class ConfigAccordion extends ConfigGeneric {
         this.setState({ value: newValue, activeIndex: newIndex, iteration: this.state.iteration + 10000 }, () => this.onChangeWrapper(newValue));
     }
 
-    renderItem(error, disabled, defaultValue) {
+    renderItem(/* error, disabled, defaultValue */) {
         const { classes, schema } = this.props;
-        let { value } = this.state;
+        const { value } = this.state;
 
         if (!value) {
             return null;
@@ -211,25 +215,26 @@ class ConfigAccordion extends ConfigGeneric {
                 </IconButton> : null}
             </Toolbar> : null}
             {value.map((idx, i) =>
-                <Accordion key={`${idx}_${i}`} expanded={this.state.activeIndex === i} onChange={(e, expanded) => { this.setState({ activeIndex: expanded ? i : -1 }) }}>
+                <Accordion key={`${idx}_${i}`} expanded={this.state.activeIndex === i} onChange={(e, expanded) => { this.setState({ activeIndex: expanded ? i : -1 }); }}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
-                        className={Utils.clsx(classes.fullWidth, classes.accordionSummary)}>
-                        <Typography className={classes.accordionTitle} >{idx[schema.titleAttr]}</Typography>
+                        className={Utils.clsx(classes.fullWidth, classes.accordionSummary)}
+                    >
+                        <Typography className={classes.accordionTitle}>{idx[schema.titleAttr]}</Typography>
                     </AccordionSummary>
-                    <AccordionDetails style={Object.assign({}, schema.style, this.props.themeType ? schema.darkStyle : {})}>
+                    <AccordionDetails style={({ ...schema.style, ...(this.props.themeType ? schema.darkStyle : {}) })}>
                         {this.itemAccordion(value[i], i)}
                         <Toolbar className={classes.toolbar}>
                             {i ? <Tooltip title={I18n.t('ra_Move up')}>
                                 <IconButton size="small" onClick={() => this.onMoveUp(i)}>
                                     <UpIcon />
                                 </IconButton>
-                            </Tooltip> : <div className={classes.buttonEmpty}/>}
+                            </Tooltip> : <div className={classes.buttonEmpty} />}
                             {i < value.length - 1 ? <Tooltip title={I18n.t('ra_Move down')}>
                                 <IconButton size="small" onClick={() => this.onMoveDown(i)}>
                                     <DownIcon />
                                 </IconButton>
-                            </Tooltip> : <div className={classes.buttonEmpty}/>}
+                            </Tooltip> : <div className={classes.buttonEmpty} />}
                             <Tooltip title={I18n.t('ra_Delete current row')}>
                                 <IconButton size="small" onClick={this.onDelete(i)}>
                                     <DeleteIcon />
@@ -242,8 +247,7 @@ class ConfigAccordion extends ConfigGeneric {
                             </Tooltip> : null}
                         </Toolbar>
                     </AccordionDetails>
-                </Accordion>
-            )}
+                </Accordion>)}
             {!schema.noDelete ? <Toolbar variant="dense" className={classes.rootTool}>
                 <IconButton size="small" color="primary" onClick={this.onAdd}>
                     <AddIcon />

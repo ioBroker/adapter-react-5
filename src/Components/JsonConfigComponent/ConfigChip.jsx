@@ -2,13 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
-import FormHelperText from '@mui/material/FormHelperText';
-import FormControl from '@mui/material/FormControl';
+import {
+    FormHelperText,
+    FormControl,
+} from '@mui/material';
 
 import ConfigGeneric from './ConfigGeneric';
 import ChipInput from './ChipInput';
 
-const styles = theme => ({
+const styles = () => ({
     fullWidth: {
         width: '100%',
     },
@@ -27,8 +29,8 @@ class ConfigLanguage extends ConfigGeneric {
         }
     }
 
-    renderItem(error, disabled, defaultValue) {
-        const { attr,schema } = this.props;
+    renderItem(error, disabled /* , defaultValue */) {
+        const { attr, schema } = this.props;
         const { value } = this.state;
         return <FormControl className={this.props.classes.fullWidth} variant="standard">
             <ChipInput
@@ -37,22 +39,22 @@ class ConfigLanguage extends ConfigGeneric {
                 label={this.getText(schema.label)}
                 error={!!error}
                 onAdd={chip => {
-                        const newValue = JSON.parse(JSON.stringify(value));
-                        newValue.push(chip);
-                        this.setState({ value: newValue, prevValue: '' }, () => {
-                            if (this.props.schema.delimiter) {
-                                this.onChange(attr, newValue.join(this.props.schema.delimiter + ' '));
-                            } else {
-                                this.onChange(attr, newValue);
-                            }
-                        });
+                    const newValue = JSON.parse(JSON.stringify(value));
+                    newValue.push(chip);
+                    this.setState({ value: newValue, prevValue: '' }, () => {
+                        if (this.props.schema.delimiter) {
+                            this.onChange(attr, newValue.join(`${this.props.schema.delimiter} `));
+                        } else {
+                            this.onChange(attr, newValue);
+                        }
+                    });
                 }}
                 onDelete={(chip, index) => {
                     const newValue = JSON.parse(JSON.stringify(value));
                     newValue.splice(index, 1);
                     this.setState({ value: newValue, prevValue: '' }, () => {
                         if (this.props.schema.delimiter) {
-                            this.onChange(attr, newValue.join(this.props.schema.delimiter + ' '));
+                            this.onChange(attr, newValue.join(`${this.props.schema.delimiter} `));
                         } else {
                             this.onChange(attr, newValue);
                         }
