@@ -2971,16 +2971,17 @@ class Connection {
                 } else if (result && result.error) {
                     reject(result.error);
                 } else {
+                    if (!targetInstance.startsWith('system.adapter.')) {
+                        targetInstance = `system.adapter.${targetInstance}`;
+                    }
                     // save callback
                     this._instanceSubscriptions[targetInstance] = this._instanceSubscriptions[targetInstance] || [];
                     if (!this._instanceSubscriptions[targetInstance].find(sub =>
                             sub.messageType === messageType &&
-                            sub.targetInstance === targetInstance &&
                             sub.callback === callback)
                     ) {
                         this._instanceSubscriptions[targetInstance].push({
                             messageType,
-                            targetInstance,
                             callback,
                         });
                     }
@@ -2998,12 +2999,18 @@ class Connection {
      * @returns {Promise<boolean>}
      */
     unsubscribeFromInstance(targetInstance, messageType, callback) {
+        if (!targetInstance.startsWith('system.adapter.')) {
+            targetInstance = `system.adapter.${targetInstance}`;
+        }
+
         const index = this._instanceSubscriptions[targetInstance]?.findIndex(sub =>
                 sub.messageType === messageType && sub.callback === callback);
 
         if (index !== undefined && index !== null && index !== -1) {
+            // remember messageType
             const _messageType =
                 this._instanceSubscriptions[targetInstance][index].messageType;
+
             this._instanceSubscriptions[targetInstance].splice(index, 1);
             if (!this._instanceSubscriptions[targetInstance].length) {
                 delete this._instanceSubscriptions[targetInstance];
@@ -3012,6 +3019,7 @@ class Connection {
             // try to find another subscription for this instance and messageType
             const found = this._instanceSubscriptions[targetInstance] &&
                 this._instanceSubscriptions[targetInstance].find(sub => sub.messageType === _messageType);
+
             if (!found) {
                 return new Promise((resolve, reject) =>
                     this._socket.emit('clientUnsubscribe', targetInstance, messageType, (err, wasSubscribed) => {
