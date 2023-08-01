@@ -2986,9 +2986,13 @@ class Connection {
             const _messageType =
                 this._instanceSubscriptions[targetInstance][index].messageType;
             this._instanceSubscriptions[targetInstance].splice(index, 1);
+            if (!this._instanceSubscriptions[targetInstance].length) {
+                delete this._instanceSubscriptions[targetInstance];
+            }
 
             // try to find another subscription for this instance and messageType
-            const found = this._instanceSubscriptions[targetInstance].find(sub => sub.messageType === _messageType);
+            const found = this._instanceSubscriptions[targetInstance] &&
+                this._instanceSubscriptions[targetInstance].find(sub => sub.messageType === _messageType);
             if (!found) {
                 return new Promise((resolve, reject) =>
                     this._socket.emit('clientUnsubscribe', targetInstance, messageType, (err, wasSubscribed) => {
