@@ -2977,8 +2977,8 @@ class Connection {
                     // save callback
                     this._instanceSubscriptions[targetInstance] = this._instanceSubscriptions[targetInstance] || [];
                     if (!this._instanceSubscriptions[targetInstance].find(sub =>
-                            sub.messageType === messageType &&
-                            sub.callback === callback)
+                        sub.messageType === messageType &&
+                        sub.callback === callback)
                     ) {
                         this._instanceSubscriptions[targetInstance].push({
                             messageType,
@@ -2995,43 +2995,54 @@ class Connection {
      * Unsubscribe from instance message
      * @param {string} [targetInstance] instance, like 'cameras.0'
      * @param {string} [messageType] message type like 'startCamera/cam3'
-     * @param {function} [callback] message handler
+     * @param {function} [callback] message handler. Could be null if all callbacks for this messageType should be unsubscribed
      * @returns {Promise<boolean>}
      */
     unsubscribeFromInstance(targetInstance, messageType, callback) {
         if (!targetInstance.startsWith('system.adapter.')) {
             targetInstance = `system.adapter.${targetInstance}`;
         }
+        let deleted;
+        const promiseResults = [];
+        do {
+            deleted = false;
+            const index = this._instanceSubscriptions[targetInstance]?.findIndex(sub =>
+                (!messageType || sub.messageType === messageType) && (!callback || sub.callback === callback));
 
-        const index = this._instanceSubscriptions[targetInstance]?.findIndex(sub =>
-                sub.messageType === messageType && sub.callback === callback);
+            if (index !== undefined && index !== null && index !== -1) {
+                deleted = true;
+                // remember messageType
+                const _messageType =
+                    this._instanceSubscriptions[targetInstance][index].messageType;
 
-        if (index !== undefined && index !== null && index !== -1) {
-            // remember messageType
-            const _messageType =
-                this._instanceSubscriptions[targetInstance][index].messageType;
+                this._instanceSubscriptions[targetInstance].splice(index, 1);
+                if (!this._instanceSubscriptions[targetInstance].length) {
+                    delete this._instanceSubscriptions[targetInstance];
+                }
 
-            this._instanceSubscriptions[targetInstance].splice(index, 1);
-            if (!this._instanceSubscriptions[targetInstance].length) {
-                delete this._instanceSubscriptions[targetInstance];
+                // try to find another subscription for this instance and messageType
+                const found = this._instanceSubscriptions[targetInstance] &&
+                    this._instanceSubscriptions[targetInstance].find(sub => sub.messageType === _messageType);
+
+                if (!found) {
+                    promiseResults.push(new Promise((resolve, reject) =>
+                        this._socket.emit('clientUnsubscribe', targetInstance, messageType, (err, wasSubscribed) => {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                resolve(wasSubscribed);
+                            }
+                        })
+                    ));
+                }
             }
+        } while (deleted && (!callback || !messageType));
 
-            // try to find another subscription for this instance and messageType
-            const found = this._instanceSubscriptions[targetInstance] &&
-                this._instanceSubscriptions[targetInstance].find(sub => sub.messageType === _messageType);
-
-            if (!found) {
-                return new Promise((resolve, reject) =>
-                    this._socket.emit('clientUnsubscribe', targetInstance, messageType, (err, wasSubscribed) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(wasSubscribed);
-                        }
-                    })
-                );
-            }
+        if (promiseResults.length) {
+            return Promise.all(promiseResults)
+                .then(results => results.find(result => result) || false);
         }
+
         return Promise.resolve(false);
     }
 

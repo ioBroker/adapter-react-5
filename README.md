@@ -601,6 +601,12 @@ class MyComponent {
 - javascript
 - devices
 - eventlist
+- cameras
+- web
+- vis-2
+- vis-2-widgets-xxx
+- fullcalendar
+- openweathermap
 
 ## Usability
 In dialogs, the OK button is first (on the left) and the cancel button is last (on the right)
@@ -661,7 +667,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### 4.4.4 (2023-08-01)
+### **WORK IN PROGRESS**
 * (bluefox) Updated packages
 
 ### 4.3.3 (2023-07-28)
