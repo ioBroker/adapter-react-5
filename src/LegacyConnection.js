@@ -98,6 +98,7 @@ class Connection {
         this.props.port       = this.props.port     || (window.location.port === '3000' ? (Connection.isWeb() ? 8082 : 8081) : window.location.port);
         this.props.ioTimeout  = Math.max(this.props.ioTimeout  || 20000, 20000);
         this.props.cmdTimeout = Math.max(this.props.cmdTimeout || 5000, 5000);
+        this._instanceSubscriptions = {};
 
         // breaking change. Do not load all objects by default is true
         this.doNotLoadAllObjects = this.props.doNotLoadAllObjects === undefined ? true : this.props.doNotLoadAllObjects;
@@ -2930,6 +2931,77 @@ class Connection {
             .then(obj => obj?.native?.uuid);
 
         return this._promises.uuid;
+    }
+
+    /**
+     * Subscribe on instance message
+     * @param {string} [targetInstance] instance, like 'cameras.0'
+     * @param {string} [messageType] message type like 'startCamera/cam3'
+     * @param {object} [data] optional data object
+     * @param {function} [callback] message handler
+     * @returns {Promise<null>}
+     */
+    subscribeOnInstance(targetInstance, messageType, data, callback) {
+        if (!this.connected) {
+            return Promise.reject(NOT_CONNECTED);
+        }
+        return new Promise((resolve, reject) =>
+            this._socket.emit('clientSubscribe', targetInstance, messageType, data, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else if (result && result.error) {
+                    reject(result.error);
+                } else {
+                    // save callback
+                    this._instanceSubscriptions[targetInstance] = this._instanceSubscriptions[targetInstance] || [];
+                    if (!this._instanceSubscriptions[targetInstance].find(sub =>
+                            sub.messageType === messageType &&
+                            sub.targetInstance === targetInstance &&
+                            sub.callback === callback)
+                    ) {
+                        this._instanceSubscriptions[targetInstance].push({
+                            messageType,
+                            targetInstance,
+                            callback,
+                        });
+                    }
+                    resolve(result);
+                }
+            })
+        );
+    }
+
+    /**
+     * Unsubscribe from instance message
+     * @param {string} [targetInstance] instance, like 'cameras.0'
+     * @param {string} [messageType] message type like 'startCamera/cam3'
+     * @param {function} [callback] message handler
+     * @returns {Promise<boolean>}
+     */
+    unsubscribeFromInstance(targetInstance, messageType, callback) {
+        const index = this._instanceSubscriptions[targetInstance]?.findIndex(sub =>
+                sub.messageType === messageType && sub.callback === callback);
+
+        if (index !== undefined && index !== null && index !== -1) {
+            const _messageType =
+                this._instanceSubscriptions[targetInstance][index].messageType;
+            this._instanceSubscriptions[targetInstance].splice(index, 1);
+
+            // try to find another subscription for this instance and messageType
+            const found = this._instanceSubscriptions[targetInstance].find(sub => sub.messageType === _messageType);
+            if (!found) {
+                return new Promise((resolve, reject) =>
+                    this._socket.emit('clientUnsubscribe', targetInstance, messageType, (err, wasSubscribed) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(wasSubscribed);
+                        }
+                    })
+                );
+            }
+        }
+        return Promise.resolve(false);
     }
 
     /**
