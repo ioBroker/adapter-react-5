@@ -330,6 +330,9 @@ class Connection {
         this._socket.on('stateChange', (id, state) =>
             setTimeout(() => this.stateChange(id, state), 0));
 
+        this._socket.on("im", (messageType, from, data) =>
+            setTimeout(() => this.instanceMessage(messageType, from, data), 0));
+
         this._socket.on('fileChange', (id, fileName, size) =>
             setTimeout(() => this.fileChange(id, fileName, size), 0));
 
@@ -779,6 +782,22 @@ class Connection {
                     }
                 });
             }
+        }
+    }
+
+    /**
+     * Called internally.
+     * @param {string} messageType
+     * @param {string} sourceInstance
+     * @param {object} data
+     */
+    instanceMessage(messageType, sourceInstance, data) {
+        if (this._instanceSubscriptions[sourceInstance]) {
+            this._instanceSubscriptions[sourceInstance].forEach(sub => {
+                if (sub.messageType === messageType) {
+                    sub.callback(data, sourceInstance, messageType);
+                }
+            });
         }
     }
 
