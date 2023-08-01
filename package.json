@@ -46,7 +46,7 @@
     "react-cropper": "^2.3.3",
     "@sentry/browser": "^7.61.0",
     "@sentry/integrations": "^7.61.0",
-    "@types/iobroker": "^4.0.5",
+    "@types/iobroker": "^5.0.6",
     "react-color": "^2.19.3",
     "react-colorful": "^5.6.1",
     "react-dropzone": "^14.2.3",
