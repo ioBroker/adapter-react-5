@@ -667,9 +667,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.4.7 (2023-08-10)
 * (bluefox) Added `subscribeStateAsync` method to wait for answer
-* (bluefox) Added support for arrays for un/subscriptions 
+* (bluefox) Added support for arrays for un/subscriptions
 
 ### 4.4.5 (2023-08-01)
 * (bluefox) Updated packages
