@@ -521,28 +521,42 @@ class Connection {
             binary = false;
         }
 
-        if (!this.statesSubscribes[id]) {
-            let reg = id
-                .replace(/\./g, '\\.')
-                .replace(/\*/g, '.*')
-                .replace(/\(/g, '\\(')
-                .replace(/\)/g, '\\)')
-                .replace(/\+/g, '\\+')
-                .replace(/\[/g, '\\[');
-
-            if (!reg.includes('*')) {
-                reg += '$';
-            }
-            this.statesSubscribes[id] = { reg: new RegExp(reg), cbs: [] };
-            this.statesSubscribes[id].cbs.push(cb);
-            if (this.connected) {
-                if (this.connected && id !== this.ignoreState) {
-                    this._socket.emit('subscribe', id);
-                }
-            }
+        let ids;
+        if (!Array.isArray(id)) {
+            ids = [id];
         } else {
-            !this.statesSubscribes[id].cbs.includes(cb) && this.statesSubscribes[id].cbs.push(cb);
+            ids = id;
         }
+        let toSubscribe = [];
+        for (let i = 0; i < ids.length; i++) {
+            const _id = ids[i];
+            if (!this.statesSubscribes[_id]) {
+                let reg = _id
+                    .replace(/\./g, '\\.')
+                    .replace(/\*/g, '.*')
+                    .replace(/\(/g, '\\(')
+                    .replace(/\)/g, '\\)')
+                    .replace(/\+/g, '\\+')
+                    .replace(/\[/g, '\\[');
+
+                if (!reg.includes('*')) {
+                    reg += '$';
+                }
+                this.statesSubscribes[_id] = { reg: new RegExp(reg), cbs: [] };
+                this.statesSubscribes[_id].cbs.push(cb);
+                if (_id !== this.ignoreState) {
+                    toSubscribe.push(_id);
+                }
+            } else {
+                !this.statesSubscribes[_id].cbs.includes(cb) && this.statesSubscribes[_id].cbs.push(cb);
+            }
+        }
+
+        if (toSubscribe.length && this.connected) {
+            // no answer from server required
+            this._socket.emit('subscribe', toSubscribe);
+        }
+
         if (typeof cb === 'function' && this.connected) {
             if (binary) {
                 this.getBinaryState(id)
@@ -559,32 +573,45 @@ class Connection {
 
     /**
      * Subscribe to changes of the given state.
-     * @param {string} id The ioBroker state ID.
+     * @param {string | string[]} id The ioBroker state ID or array of states
      * @param {ioBroker.StateChangeHandler} cb The callback.
      */
     subscribeStateAsync(id, cb) {
-        if (!this.statesSubscribes[id]) {
-            let reg = id
-                .replace(/\./g, '\\.')
-                .replace(/\*/g, '.*')
-                .replace(/\(/g, '\\(')
-                .replace(/\)/g, '\\)')
-                .replace(/\+/g, '\\+')
-                .replace(/\[/g, '\\[');
-
-            if (!reg.includes('*')) {
-                reg += '$';
-            }
-            this.statesSubscribes[id] = { reg: new RegExp(reg), cbs: [] };
-            this.statesSubscribes[id].cbs.push(cb);
-            if (this.connected) {
-                if (this.connected && id !== this.ignoreState) {
-                    // no answer from server required
-                    this._socket.emit('subscribe', id);
-                }
-            }
+        let ids;
+        if (!Array.isArray(id)) {
+            ids = [id];
         } else {
-            !this.statesSubscribes[id].cbs.includes(cb) && this.statesSubscribes[id].cbs.push(cb);
+            ids = id;
+        }
+        let toSubscribe = [];
+        for (let i = 0; i < ids.length; i++) {
+            const _id = ids[i];
+            if (!this.statesSubscribes[_id]) {
+                let reg = _id
+                    .replace(/\./g, '\\.')
+                    .replace(/\*/g, '.*')
+                    .replace(/\(/g, '\\(')
+                    .replace(/\)/g, '\\)')
+                    .replace(/\+/g, '\\+')
+                    .replace(/\[/g, '\\[');
+
+                if (!reg.includes('*')) {
+                    reg += '$';
+                }
+                this.statesSubscribes[_id] = {reg: new RegExp(reg), cbs: []};
+                this.statesSubscribes[_id].cbs.push(cb);
+                if (_id !== this.ignoreState) {
+                    // no answer from server required
+                    toSubscribe.push(_id);
+                }
+            } else {
+                !this.statesSubscribes[_id].cbs.includes(cb) && this.statesSubscribes[_id].cbs.push(cb);
+            }
+        }
+
+        if (toSubscribe.length && this.connected) {
+            // no answer from server required
+            this._socket.emit('subscribe', toSubscribe);
         }
 
         return new Promise((resolve, reject) => {
@@ -602,28 +629,44 @@ class Connection {
 
     /**
      * Unsubscribes all callbacks from changes of the given state.
-     * @param {string} id The ioBroker state ID.
+     * @param {string | string[]} id The ioBroker state ID or array of states
      */
     /**
      * Unsubscribes the given callback from changes of the given state.
-     * @param {string} id The ioBroker state ID.
+     * @param {string | string[]} id The ioBroker state ID or array of states
      * @param {ioBroker.StateChangeHandler} cb The callback.
      */
     unsubscribeState(id, cb) {
-        if (this.statesSubscribes[id]) {
-            if (cb) {
-                const pos = this.statesSubscribes[id].cbs.indexOf(cb);
-                pos !== -1 && this.statesSubscribes[id].cbs.splice(pos, 1);
-            } else {
-                this.statesSubscribes[id].cbs = [];
-            }
+        let ids;
+        if (!Array.isArray(id)) {
+            ids = [id];
+        } else {
+            ids = id;
+        }
+        let toUnsubscribe = [];
+        for (let i = 0; i < ids.length; i++) {
+            const _id = ids[i];
 
-            if (!this.statesSubscribes[id].cbs || !this.statesSubscribes[id].cbs.length) {
-                delete this.statesSubscribes[id];
-                if (this.connected && id !== this.ignoreState) {
-                    this._socket.emit('unsubscribe', id);
+            if (this.statesSubscribes[_id]) {
+                if (cb) {
+                    const pos = this.statesSubscribes[_id].cbs.indexOf(cb);
+                    pos !== -1 && this.statesSubscribes[_id].cbs.splice(pos, 1);
+                } else {
+                    this.statesSubscribes[_id].cbs = [];
+                }
+
+                if (!this.statesSubscribes[_id].cbs || !this.statesSubscribes[_id].cbs.length) {
+                    delete this.statesSubscribes[_id];
+                    if (_id !== this.ignoreState) {
+                        toUnsubscribe.push(_id);
+                    }
                 }
             }
+        }
+
+        if (toUnsubscribe.length && this.connected) {
+            // no answer from server required
+            this._socket.emit('unsubscribe', toUnsubscribe);
         }
     }
 
@@ -634,17 +677,31 @@ class Connection {
      * @returns {Promise<void>}
      */
     subscribeObject(id, cb) {
-        if (!this.objectsSubscribes[id]) {
-            let reg = id.replace(/\./g, '\\.').replace(/\*/g, '.*');
-            if (!reg.includes('*')) {
-                reg += '$';
-            }
-            this.objectsSubscribes[id] = { reg: new RegExp(reg), cbs: [] };
-            this.objectsSubscribes[id].cbs.push(cb);
-            this.connected && this._socket.emit('subscribeObjects', id);
+        let ids;
+        if (!Array.isArray(id)) {
+            ids = [id];
         } else {
-            !this.objectsSubscribes[id].cbs.includes(cb) && this.objectsSubscribes[id].cbs.push(cb);
+            ids = id;
         }
+        const toSubscribe = [];
+        for (let i = 0; i < ids.length; i++) {
+            const _id = ids[i];
+            if (!this.objectsSubscribes[_id]) {
+                let reg = _id.replace(/\./g, '\\.').replace(/\*/g, '.*');
+                if (!reg.includes('*')) {
+                    reg += '$';
+                }
+                this.objectsSubscribes[_id] = { reg: new RegExp(reg), cbs: [] };
+                this.objectsSubscribes[_id].cbs.push(cb);
+                ids.push(_id);
+            } else {
+                !this.objectsSubscribes[_id].cbs.includes(cb) && this.objectsSubscribes[_id].cbs.push(cb);
+            }
+        }
+        if (this.connected && toSubscribe.length) {
+            this._socket.emit('subscribeObjects', toSubscribe);
+        }
+
         return Promise.resolve();
     }
 
@@ -660,19 +717,34 @@ class Connection {
      * @returns {Promise<void>}
      */
     unsubscribeObject(id, cb) {
-        if (this.objectsSubscribes[id]) {
-            if (cb) {
-                const pos = this.objectsSubscribes[id].cbs.indexOf(cb);
-                pos !== -1 && this.objectsSubscribes[id].cbs.splice(pos, 1);
-            } else {
-                this.objectsSubscribes[id].cbs = [];
-            }
+        let ids;
+        if (!Array.isArray(id)) {
+            ids = [id];
+        } else {
+            ids = id;
+        }
+        const toUnsubscribe = [];
+        for (let i = 0; i < ids.length; i++) {
+            const _id = ids[i];
+            if (this.objectsSubscribes[_id]) {
+                if (cb) {
+                    const pos = this.objectsSubscribes[_id].cbs.indexOf(cb);
+                    pos !== -1 && this.objectsSubscribes[_id].cbs.splice(pos, 1);
+                } else {
+                    this.objectsSubscribes[_id].cbs = [];
+                }
 
-            if (this.connected && (!this.objectsSubscribes[id].cbs || !this.objectsSubscribes[id].cbs.length)) {
-                delete this.objectsSubscribes[id];
-                this.connected && this._socket.emit('unsubscribeObjects', id);
+                if (this.connected && (!this.objectsSubscribes[_id].cbs || !this.objectsSubscribes[_id].cbs.length)) {
+                    delete this.objectsSubscribes[_id];
+                    toUnsubscribe.push(_id);
+                }
             }
         }
+
+        if (this.connected && toUnsubscribe.length) {
+            this._socket.emit('unsubscribeObjects', toUnsubscribe);
+        }
+
         return Promise.resolve();
     }
 
@@ -700,7 +772,7 @@ class Connection {
 
     /**
      * Subscribe to changes of the files.
-     * @param {string} id The ioBroker state ID for meat object. Could be a pattern
+     * @param {string} id The ioBroker state ID for meta-object. Could be a pattern
      * @param {string} filePattern Pattern or file name, like 'main/*' or 'main/visViews.json`
      * @param {function} cb The callback.
      */
@@ -708,18 +780,32 @@ class Connection {
         if (typeof cb !== 'function') {
             throw new Error('The state change handler must be a function!');
         }
-        const key = `${id}$%$${filePattern}`;
-
-        if (!this.filesSubscribes[key]) {
-            this.filesSubscribes[key] = {
-                regId: new RegExp(pattern2RegEx(id)),
-                regFilePattern: new RegExp(pattern2RegEx(filePattern)),
-                cbs: [cb],
-            };
-            this.connected && this._socket.emit('subscribeFiles', id, filePattern);
+        let filePatterns
+        if (Array.isArray(filePattern)) {
+            filePatterns = filePattern;
         } else {
-            !this.filesSubscribes[key].cbs.includes(cb) &&
-            this.filesSubscribes[key].cbs.push(cb);
+            filePatterns = [filePattern];
+        }
+        const toSubscribe = [];
+        for (let f = 0; f < filePatterns.length; f++) {
+            const pattern = filePatterns[f];
+            const key = `${id}$%$${pattern}`;
+
+            if (!this.filesSubscribes[key]) {
+                this.filesSubscribes[key] = {
+                    regId: new RegExp(pattern2RegEx(id)),
+                    regFilePattern: new RegExp(pattern2RegEx(pattern)),
+                    cbs: [cb],
+                };
+
+                toSubscribe.push(pattern);
+            } else {
+                !this.filesSubscribes[key].cbs.includes(cb) &&
+                this.filesSubscribes[key].cbs.push(cb);
+            }
+        }
+        if (this.connected && toSubscribe.length) {
+            this._socket.emit('subscribeFiles', id, toSubscribe);
         }
     }
 
@@ -730,21 +816,35 @@ class Connection {
      * @param {function} cb The callback.
      */
     unsubscribeFiles(id, filePattern, cb) {
-        const key = `${id}$%$${filePattern}`;
-        if (this.filesSubscribes[key]) {
-            const sub = this.filesSubscribes[key];
-            if (cb) {
-                const pos = sub.cbs.indexOf(cb);
-                pos !== -1 && sub.cbs.splice(pos, 1);
-            } else {
-                sub.cbs = [];
-            }
+        let filePatterns
+        if (Array.isArray(filePattern)) {
+            filePatterns = filePattern;
+        } else {
+            filePatterns = [filePattern];
+        }
+        const toUnsubscribe = [];
+        for (let f = 0; f < filePatterns.length; f++) {
+            const pattern = filePatterns[f];
+            const key = `${id}$%$${pattern}`;
+            if (this.filesSubscribes[key]) {
+                const sub = this.filesSubscribes[key];
+                if (cb) {
+                    const pos = sub.cbs.indexOf(cb);
+                    pos !== -1 && sub.cbs.splice(pos, 1);
+                } else {
+                    sub.cbs = [];
+                }
 
-            if (!sub.cbs || !sub.cbs.length) {
-                delete this.filesSubscribes[key];
-                this.connected &&
-                this._socket.emit('unsubscribeFiles', id, filePattern);
+                if (!sub.cbs || !sub.cbs.length) {
+                    delete this.filesSubscribes[key];
+                    this.connected &&
+                    toUnsubscribe.push(pattern);
+                }
             }
+        }
+
+        if (this.connected && toUnsubscribe.length) {
+            this._socket.emit('unsubscribeFiles', id, toUnsubscribe);
         }
     }
 
