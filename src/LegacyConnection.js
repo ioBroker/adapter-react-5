@@ -549,19 +549,55 @@ class Connection {
                     .then(base64 => cb(id, base64))
                     .catch(e => console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(e)}`));
             } else {
-                if (Connection.isWeb()) {
-                    this._socket.emit('getStates', id, (err, states) => {
-                        err && console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`);
-                        states && Object.keys(states).forEach(id => cb(id, states[id]));
-                    });
-                } else {
-                    this._socket.emit('getForeignStates', id, (err, states) => {
-                        err && console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`);
-                        states && Object.keys(states).forEach(id => cb(id, states[id]));
-                    });
-                }
+                this._socket.emit(Connection.isWeb() ? 'getStates' : 'getForeignStates', id, (err, states) => {
+                    err && console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`);
+                    states && Object.keys(states).forEach(id => cb(id, states[id]));
+                });
             }
         }
+    }
+
+    /**
+     * Subscribe to changes of the given state.
+     * @param {string} id The ioBroker state ID.
+     * @param {ioBroker.StateChangeHandler} cb The callback.
+     */
+    subscribeStateAsync(id, cb) {
+        if (!this.statesSubscribes[id]) {
+            let reg = id
+                .replace(/\./g, '\\.')
+                .replace(/\*/g, '.*')
+                .replace(/\(/g, '\\(')
+                .replace(/\)/g, '\\)')
+                .replace(/\+/g, '\\+')
+                .replace(/\[/g, '\\[');
+
+            if (!reg.includes('*')) {
+                reg += '$';
+            }
+            this.statesSubscribes[id] = { reg: new RegExp(reg), cbs: [] };
+            this.statesSubscribes[id].cbs.push(cb);
+            if (this.connected) {
+                if (this.connected && id !== this.ignoreState) {
+                    // no answer from server required
+                    this._socket.emit('subscribe', id);
+                }
+            }
+        } else {
+            !this.statesSubscribes[id].cbs.includes(cb) && this.statesSubscribes[id].cbs.push(cb);
+        }
+
+        return new Promise((resolve, reject) => {
+            if (typeof cb === 'function' && this.connected) {
+                this._socket.emit(Connection.isWeb() ? 'getStates' : 'getForeignStates', id, (err, states) => {
+                    err && console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`);
+                    states && Object.keys(states).forEach(id => cb(id, states[id]));
+                    states ? resolve(null) : reject(new Error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`));
+                });
+            } else {
+                this.connected ? reject(new Error('callback is not a function')) : reject(new Error('not connected'));
+            }
+        });
     }
 
     /**
