@@ -287,7 +287,6 @@
   "ra_System language": "Lenguaje del sistema",
   "ra_Too small": "Demasiado pequeña",
   "ra_Too big": "Demasiado grande",
-  "Not a number": "No un número",
   "ra_Passwords are not equal!": "¡Las contraseñas no son iguales!",
   "ra_repeat": "repetir",
   "ra_You can filter entries by entering here some text": "Puede filtrar las entradas ingresando aquí algún texto",
@@ -399,5 +398,12 @@
   "ra_Product": "Producto",
   "ra_Version": "Versión",
   "ra_ValidTill": "Válida hasta",
-  "ra_Commercial": "Comercial"
+  "ra_Commercial": "Comercial",
+  "ra_Not a number": "No un número",
+  "ra_Edit value": "Editar valor",
+  "ra_Edit ACL": "Editar LCA",
+  "ra_Edit role": "Editar rol",
+  "ra_Edit function": "Editar función",
+  "ra_Edit room": "Cuarto de edición",
+  "ra_Edit alias": "Editar alias"
 }

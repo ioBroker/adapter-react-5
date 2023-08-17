@@ -287,7 +287,6 @@
   "ra_System language": "Systeemtaal",
   "ra_Too small": "Te klein",
   "ra_Too big": "Te groot",
-  "Not a number": "Geen nummer",
   "ra_Passwords are not equal!": "Wachtwoorden zijn niet gelijk!",
   "ra_repeat": "herhalen",
   "ra_You can filter entries by entering here some text": "U kunt items filteren door hier wat tekst in te voeren",
@@ -399,5 +398,12 @@
   "ra_Product": "Product",
   "ra_Version": "Versie",
   "ra_ValidTill": "Geldig tot",
-  "ra_Commercial": "Reclame"
+  "ra_Commercial": "Reclame",
+  "ra_Not a number": "Geen nummer",
+  "ra_Edit value": "Waarde bewerken",
+  "ra_Edit ACL": "ACL bewerken",
+  "ra_Edit role": "Rol bewerken",
+  "ra_Edit function": "Functie bewerken",
+  "ra_Edit room": "Kamer bewerken",
+  "ra_Edit alias": "Alias bewerken"
 }

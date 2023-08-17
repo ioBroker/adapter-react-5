@@ -300,7 +300,6 @@
   "ra_System language": "Язык системы",
   "ra_Too small": "Слишком маленькое",
   "ra_Too big": "Слишком большое",
-  "Not a number": "Не число",
   "ra_Passwords are not equal!": "Пароли не равны!",
   "ra_repeat": "повтор",
   "ra_You can filter entries by entering here some text": "Вы можете отфильтровать записи, введя здесь текст",
@@ -399,5 +398,12 @@
   "ra_Product": "Продукт",
   "ra_Version": "Версия",
   "ra_ValidTill": "Годен до",
-  "ra_Commercial": "Коммерческая"
+  "ra_Commercial": "Коммерческая",
+  "ra_Not a number": "Не число",
+  "ra_Edit value": "Изменить значение",
+  "ra_Edit ACL": "Изменить ACL-список",
+  "ra_Edit role": "Изменить роль",
+  "ra_Edit function": "Функция редактирования",
+  "ra_Edit room": "Изменить комнату",
+  "ra_Edit alias": "Изменить псевдоним"
 }

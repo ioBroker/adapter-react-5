@@ -1,5 +1,4 @@
 {
-  "Not a number": "Не номер",
   "ra_%s object(s) processed": "Оброблено %s об’єктів",
   "ra_%s was imported": "%s було імпортовано",
   "ra_Add new child object to selected parent": "Додати новий дочірній об’єкт до вибраного батьківського",
@@ -399,5 +398,12 @@
   "ra_Product": "Продукт",
   "ra_Version": "Версія",
   "ra_ValidTill": "Дійсний до",
-  "ra_Commercial": "Комерційний"
+  "ra_Commercial": "Комерційний",
+  "ra_Not a number": "Не номер",
+  "ra_Edit value": "Редагувати значення",
+  "ra_Edit ACL": "Редагувати ACL",
+  "ra_Edit role": "Редагувати роль",
+  "ra_Edit function": "Функція редагування",
+  "ra_Edit room": "Редагувати кімнату",
+  "ra_Edit alias": "Редагувати псевдонім"
 }

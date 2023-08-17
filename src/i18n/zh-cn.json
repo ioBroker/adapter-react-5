@@ -287,7 +287,6 @@
   "ra_System language": "系统语言",
   "ra_Too small": "太小",
   "ra_Too big": "太大",
-  "Not a number": "不是数字",
   "ra_Passwords are not equal!": "密码不相等！",
   "ra_repeat": "重复",
   "ra_You can filter entries by entering here some text": "您可以通过在此处输入一些文本来过滤条目",
@@ -399,5 +398,12 @@
   "ra_Product": "产品",
   "ra_Version": "版本",
   "ra_ValidTill": "有效期至",
-  "ra_Commercial": "商业的"
+  "ra_Commercial": "商业的",
+  "ra_Not a number": "不是数字",
+  "ra_Edit value": "编辑值",
+  "ra_Edit ACL": "编辑访问控制列表",
+  "ra_Edit role": "编辑角色",
+  "ra_Edit function": "编辑功能",
+  "ra_Edit room": "编辑房间",
+  "ra_Edit alias": "编辑别名"
 }

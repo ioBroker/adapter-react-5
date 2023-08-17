@@ -300,7 +300,6 @@
   "ra_System language": "System language",
   "ra_Too small": "Too small",
   "ra_Too big": "Too big",
-  "Not a number": "Not a number",
   "ra_Passwords are not equal!": "Passwords are not equal!",
   "ra_repeat": "repeat",
   "ra_You can filter entries by entering here some text": "You can filter entries by entering here some text",
@@ -399,5 +398,12 @@
   "ra_Product": "Product",
   "ra_Version": "Version",
   "ra_ValidTill": "Valid till",
-  "ra_Commercial": "Commercial"
+  "ra_Commercial": "Commercial",
+  "ra_Not a number": "Not a number",
+  "ra_Edit value": "Edit value",
+  "ra_Edit ACL": "Edit ACL",
+  "ra_Edit role": "Edit role",
+  "ra_Edit function": "Edit function",
+  "ra_Edit room": "Edit room",
+  "ra_Edit alias": "Edit alias"
 }
