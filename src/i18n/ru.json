@@ -403,7 +403,7 @@
   "ra_Edit value": "Изменить значение",
   "ra_Edit ACL": "Изменить ACL-список",
   "ra_Edit role": "Изменить роль",
-  "ra_Edit function": "Функция редактирования",
-  "ra_Edit room": "Изменить комнату",
+  "ra_Edit function": "Изменить функцию",
+  "ra_Edit room": "Редактировать комнату",
   "ra_Edit alias": "Изменить псевдоним"
 }
