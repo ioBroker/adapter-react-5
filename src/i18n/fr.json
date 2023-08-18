@@ -405,5 +405,7 @@
   "ra_Edit role": "Modifier le rôle",
   "ra_Edit function": "Fonction d'édition",
   "ra_Edit room": "Modifier la salle",
-  "ra_Edit alias": "Modifier l'alias"
+  "ra_Edit alias": "Modifier l'alias",
+  "ra_View file": "Voir la fiche",
+  "ra_Del": "Delete"
 }

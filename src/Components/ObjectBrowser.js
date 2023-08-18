@@ -1,5 +1,5 @@
 /**
- * Copyright 2020-2023, bluefox <dogafox@gmail.com>
+ * Copyright 2020-2023, Denis Haev <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -36,12 +36,16 @@ import {
     Fab,
     TextField,
     FormControlLabel,
-    Switch,
+    Switch, Menu,
 } from '@mui/material';
 
 // Icons
 import {
     Edit as IconEdit,
+    FindInPage,
+    Construction,
+    Link as IconLink,
+    FormatItalic as IconValueEdit,
     Delete as IconDelete,
     Settings as IconConfig,
     SettingsApplications as IconSystem,
@@ -68,6 +72,8 @@ import {
     Error as IconError,
     WifiOff as IconDisconnected,
     TextFields as TextFieldsIcon,
+    BorderColor,
+    BedroomParent,
 } from '@mui/icons-material';
 
 import IconExpert from '../icons/IconExpert';
@@ -758,6 +764,38 @@ const styles = theme => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#9a9a9a' : '#565656',
         borderRadius: '0 2px 2px 0',
     },
+    contextMenuEdit: {
+        color: theme.palette.mode === 'dark' ? '#ffee48' : '#cbb801',
+    },
+    contextMenuEditValue: {
+        color: theme.palette.mode === 'dark' ? '#5dff45' : '#1cd301',
+    },
+    contextMenuView: {
+        color: theme.palette.mode === 'dark' ? '#FFF' : '#000',
+    },
+    contextMenuCustom: {
+        color: theme.palette.mode === 'dark' ? '#42eaff' : '#01bbc2',
+    },
+    contextMenuACL: {
+        color: theme.palette.mode === 'dark' ? '#e079ff' : '#500070',
+    },
+    contextMenuRoom: {
+        color: theme.palette.mode === 'dark' ? '#ff9a33' : '#642a00',
+    },
+    contextMenuRole: {
+        color: theme.palette.mode === 'dark' ? '#ffdb43' : '#562d00',
+    },
+    contextMenuAlias: {
+        color: theme.palette.mode === 'dark' ? '#5cabfb' : '#011ed0',
+    },
+    contextMenuDelete: {
+        color: theme.palette.mode === 'dark' ? '#ff4f4f' : '#cf0000',
+    },
+    contextMenuKeys: {
+        marginLeft: theme.spacing(1),
+        opacity: 0.7,
+        fontSize: 'smaller',
+    },
 });
 
 function generateFile(filename, obj) {
@@ -797,6 +835,24 @@ function binarySearch(list, find, _start, _end) {
     }
     return false;
 }
+
+/**
+ * Check if browser is running on iOS
+ *
+ * @return {boolean}
+ */
+// function isIOS() {
+//     return [
+//         'iPad Simulator',
+//         'iPhone Simulator',
+//         'iPod Simulator',
+//         'iPad',
+//         'iPhone',
+//         'iPod',
+//     ].includes(navigator.platform)
+//     // iPad on iOS 13 detection
+//     || (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+// }
 
 function getName(name, lang) {
     if (name && typeof name === 'object') {
@@ -1908,7 +1964,9 @@ class ObjectBrowser extends Component {
             scrollBarWidth: 16,
             customDialog,
             editObjectDialog: '',
+            editObjectAlias: false, // open the edit object dialog on alias tab
             viewFileDialog: '',
+            showAliasEditor: '',
             enumDialog: null,
             roleDialog: null,
             statesView,
@@ -1927,6 +1985,7 @@ class ObjectBrowser extends Component {
                 (window._localStorage || window.localStorage).getItem(`${props.dialogName || 'App'}.lines`) === 'true',
             showDescription:
                 (window._localStorage || window.localStorage).getItem(`${props.dialogName || 'App'}.desc`) !== 'false',
+            showContextMenu: null,
         };
 
         this.edit = {};
@@ -2231,6 +2290,8 @@ class ObjectBrowser extends Component {
         }
 
         objectsAlreadyLoaded = true;
+
+        window.addEventListener('contextmenu', this.onContextMenu, true);
     }
 
     /**
@@ -2239,6 +2300,7 @@ class ObjectBrowser extends Component {
     componentWillUnmount() {
         this.filterTimer && clearTimeout(this.filterTimer);
         this.filterTimer = null;
+        window.removeEventListener('contextmenu', this.onContextMenu, true);
 
         if (this.props.objectsWorker) {
             this.props.objectsWorker.unregisterHandler(this.onObjectChange, true);
@@ -2255,6 +2317,18 @@ class ObjectBrowser extends Component {
         this.subscribes = [];
         this.objects = {};
     }
+
+    /**
+     * Context menu handler.
+     */
+    onContextMenu = e => {
+        // console.log(`CONTEXT MENU: ${this.contextMenu ? Date.now() - this.contextMenu.ts : 'false'}`);
+        if (this.contextMenu && Date.now() - this.contextMenu.ts < 2000) {
+            e.preventDefault();
+            this.setState({ showContextMenu: this.contextMenu.item });
+        }
+        this.contextMenu = null;
+    };
 
     /**
      * Called when component is mounted.
@@ -2325,7 +2399,7 @@ class ObjectBrowser extends Component {
      * @param {string} toggleItem
      * @param {boolean} [isDouble]
      */
-    onSelect(toggleItem, isDouble) {
+    onSelect(toggleItem, isDouble, cb) {
         if (!this.props.multiSelect) {
             if (
                 this.objects[toggleItem] &&
@@ -2335,8 +2409,10 @@ class ObjectBrowser extends Component {
                     `${this.props.dialogName || 'App'}.selectedNonObject`,
                 );
                 if (this.state.selected[0] !== toggleItem) {
-                    this.setState({ selected: [toggleItem], selectedNonObject: '' }, () =>
-                        this.onAfterSelect(isDouble));
+                    this.setState({ selected: [toggleItem], selectedNonObject: '' }, () => {
+                        this.onAfterSelect(isDouble);
+                        cb && cb();
+                    });
                 } else if (isDouble && this.props.onSelect) {
                     this.onAfterSelect(isDouble);
                 }
@@ -2345,7 +2421,10 @@ class ObjectBrowser extends Component {
                     `${this.props.dialogName || 'App'}.selectedNonObject`,
                     toggleItem,
                 );
-                this.setState({ selected: [], selectedNonObject: toggleItem }, () => this.onAfterSelect());
+                this.setState({ selected: [], selectedNonObject: toggleItem }, () => {
+                    this.onAfterSelect();
+                    cb && cb();
+                });
             }
         } else if (
             this.objects[toggleItem] &&
@@ -2364,8 +2443,10 @@ class ObjectBrowser extends Component {
                 selected.splice(pos, 1);
             }
 
-            this.setState({ selected, selectedNonObject: '' }, () =>
-                this.onAfterSelect(isDouble));
+            this.setState({ selected, selectedNonObject: '' }, () => {
+                this.onAfterSelect(isDouble);
+                cb && cb();
+            });
         }
     }
 
@@ -3999,11 +4080,11 @@ class ObjectBrowser extends Component {
         if (acl.state) {
             funcRenderStateObject('state');
         }
-        return arrayTooltipText.length ? (
+
+        return arrayTooltipText.length ?
             <span className={this.props.classes.tooltipAccessControl}>{arrayTooltipText.map(el => el)}</span>
-        ) : (
-            ''
-        );
+            :
+            '';
     };
 
     /**
@@ -4050,7 +4131,7 @@ class ObjectBrowser extends Component {
 
                                 this.props.onObjectDelete(
                                     id,
-                                    !!(item.children && item.children.length),
+                                    !!item.children?.length,
                                     false,
                                     count + 1,
                                 );
@@ -4102,7 +4183,7 @@ class ObjectBrowser extends Component {
                         `${this.props.dialogName || 'App'}.objectSelected`,
                         id,
                     );
-                    this.setState({ editObjectDialog: id });
+                    this.setState({ editObjectDialog: id, editObjectAlias: false });
                 }}
             >
                 <IconEdit className={classes.cellButtonsButtonIcon} />
@@ -4299,17 +4380,15 @@ class ObjectBrowser extends Component {
                 this.objects[id].common.custom &&
                 this.objects[id].common.custom[this.defaultHistory]
             ) {
-                info.valFull.push(
-                    <svg
-                        key="sparkline"
-                        className="sparkline"
-                        data-id={id}
-                        style={{ fill: '#3d85de' }}
-                        width="200"
-                        height="30"
-                        strokeWidth="3"
-                    />,
-                );
+                info.valFull.push(<svg
+                    key="sparkline"
+                    className="sparkline"
+                    data-id={id}
+                    style={{ fill: '#3d85de' }}
+                    width="200"
+                    height="30"
+                    strokeWidth="3"
+                />);
             }
 
             const copyText = info.valText.v || '';
@@ -5158,7 +5237,25 @@ class ObjectBrowser extends Component {
             )}
             key={id}
             id={id}
-            onClick={() => this.onSelect(id)}
+            onMouseDown={e => {
+                e.preventDefault();
+                this.onSelect(id);
+                let isRightMB;
+                if ('which' in e) {
+                    // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+                    isRightMB = e.which === 3;
+                } else if ('button' in e) { // IE, Opera
+                    isRightMB = e.button === 2;
+                }
+                if (isRightMB) {
+                    this.contextMenu = {
+                        item,
+                        ts: Date.now(),
+                    };
+                } else {
+                    this.contextMenu = null;
+                }
+            }}
             onDoubleClick={() => {
                 if (!item.children) {
                     this.onSelect(id, true);
@@ -6062,12 +6159,13 @@ class ObjectBrowser extends Component {
             themeName={this.props.themeName}
             socket={this.props.socket}
             dialogName={this.props.dialogName}
+            aliasTab={this.state.editObjectAlias}
             t={this.props.t}
             expertMode={this.state.filter.expertMode}
             onNewObject={obj =>
                 this.props.socket
                     .setObject(obj._id, obj)
-                    .then(() => this.setState({ editObjectDialog: obj._id }, () => this.onSelect(obj._id)))
+                    .then(() => this.setState({ editObjectDialog: obj._id, editObjectAlias: false }, () => this.onSelect(obj._id)))
                     .catch(e => this.showError(`Cannot write object: ${e}`))}
             onClose={obj => {
                 if (obj) {
@@ -6091,7 +6189,7 @@ class ObjectBrowser extends Component {
                         })
                         .catch(e => this.showError(`Cannot write object: ${e}`));
                 }
-                this.setState({ editObjectDialog: '' });
+                this.setState({ editObjectDialog: '', editObjectAlias: false });
             }}
         />;
     }
@@ -6116,6 +6214,290 @@ class ObjectBrowser extends Component {
             expertMode={this.state.filter.expertMode}
             onClose={() => this.setState({ viewFileDialog: '' })}
         />;
+    }
+
+    /**
+     * @private
+     * @returns {JSX.Element | null}
+     */
+    renderAliasEditorDialog() {
+        if (!this.props.objectBrowserAliasEditor || !this.state.showAliasEditor) {
+            return null;
+        }
+        const ObjectBrowserAliasEditor = this.props.objectBrowserAliasEditor;
+
+        return <ObjectBrowserAliasEditor
+            key="editAlias"
+            obj={this.objects[this.state.showAliasEditor]}
+            objects={this.objects}
+            themeType={this.props.themeType}
+            socket={this.props.socket}
+            dialogName={this.props.dialogName}
+            t={this.props.t}
+            expertMode={this.state.filter.expertMode}
+            onClose={() => this.setState({ showAliasEditor: '' })}
+            onRedirect={id => this.setState({ editObjectDialog: id, showAliasEditor: false, editObjectAlias: true })}
+        />;
+    }
+
+    /**
+     * @private
+     * @returns {JSX.Element | null}
+     */
+    renderContextMenu() {
+        if (!this.state.showContextMenu) {
+            return null;
+        }
+        const item = this.state.showContextMenu;
+        const id = item.data.id;
+        const items = [];
+        // const ctrl = isIOS() ? '⌘' : (this.props.lang === 'de' ? 'Strg+' : 'Ctrl+');
+
+        const obj = item.data.obj;
+
+        let showACL = '';
+        if (this.props.objectEditOfAccessControl && this.state.filter.expertMode) {
+            if (!obj) {
+                showACL = '---';
+            } else {
+                const acl = obj.acl
+                    ? obj.type === 'state'
+                        ? obj.acl.state
+                        : obj.acl.object
+                    : 0;
+                const aclSystemConfig =
+                    obj.acl &&
+                    (obj.type === 'state'
+                        ? this.systemConfig.common.defaultNewAcl.state
+                        : this.systemConfig.common.defaultNewAcl.object);
+                showACL = Number.isNaN(Number(acl)) ? Number(aclSystemConfig).toString(16) : Number(acl).toString(16);
+            }
+        }
+
+        const enumEditable = !this.props.notEditable && obj &&
+            (this.state.filter.expertMode || obj.type === 'state' || obj.type === 'channel' || obj.type === 'device');
+
+        const ITEMS = {
+            EDIT: {
+                key: '0',
+                visibility: this.props.objectBrowserEditObject && obj,
+                icon: <IconEdit fontSize="small" className={this.props.classes.contextMenuEdit} />,
+                label: this.texts.editObject,
+                onClick: () => this.setState({ editObjectDialog: item.data.id, showContextMenu: null, editObjectAlias: false }),
+            },
+            EDIT_VALUE: {
+                key: '1',
+                visibility: this.states &&
+                    !this.props.notEditable &&
+                    obj &&
+                    obj.type === 'state' &&
+                    obj.common?.type !== 'file' &&
+                    (this.state.filter.expertMode || obj.common.write !== false),
+                icon: <IconValueEdit fontSize="small" className={this.props.classes.contextMenuEditValue} />,
+                label: this.props.t('ra_Edit value'),
+                onClick: () => {
+                    this.edit = {
+                        val: this.states[id] ? this.states[id].val : '',
+                        q: this.states[id] ? this.states[id].q || 0 : 0,
+                        ack: false,
+                        id,
+                    };
+                    this.setState({ updateOpened: true, showContextMenu: null });
+                },
+            },
+            VIEW: {
+                visibility: this.props.objectBrowserViewFile && obj && obj.type === 'state' && obj.common?.type === 'file',
+                icon: <FindInPage fontSize="small" className={this.props.classes.contextMenuView} />,
+                className: '',
+                label: this.props.t('ra_View file'),
+                onClick: () => this.setState({ viewFileDialog: obj._id, showContextMenu: null }),
+            },
+            CUSTOM: {
+                key: '2',
+                visibility: this.props.objectCustomDialog &&
+                    this.info.hasSomeCustoms &&
+                    obj &&
+                    obj.type === 'state' &&
+                    obj.common?.type !== 'file',
+                icon: <IconConfig
+                    fontSize="small"
+                    className={item.data.hasCustoms
+                        ? this.props.classes.cellButtonsButtonWithCustoms
+                        : this.props.classes.cellButtonsButtonWithoutCustoms}
+                />,
+                className: this.props.classes.contextMenuCustom,
+                label: this.texts.customConfig,
+                onClick: () => {
+                    this.pauseSubscribe(true);
+                    this.props.router && this.props.router.doNavigate(null, 'customs', id);
+                    this.setState({ customDialog: [id], showContextMenu: null });
+                },
+            },
+            ACL: {
+                key: '3',
+                visibility: !!showACL,
+                icon: showACL,
+                iconStyle: { fontSize: 'smaller' },
+                listItemIconClass: this.props.classes.contextMenuACL,
+                className: this.props.classes.contextMenuACL,
+                label: this.props.t('ra_Edit ACL'),
+                onClick: () => this.setState({
+                    showContextMenu: null,
+                    modalEditOfAccess: true,
+                    modalEditOfAccessObjData: item.data,
+                }),
+            },
+            ROLE: {
+                key: '4',
+                visibility: this.state.filter.expertMode && enumEditable && this.props.objectBrowserEditRole,
+                icon: <BorderColor fontSize="small" className={this.props.classes.contextMenuRole} />,
+                className: '',
+                label: this.props.t('ra_Edit role'),
+                onClick: () => this.setState({ roleDialog: item.data.id, showContextMenu: null }),
+            },
+            FUNCTION: {
+                key: '5',
+                visibility: enumEditable,
+                icon: <BedroomParent fontSize="small" className={this.props.classes.contextMenuRole} />,
+                className: '',
+                label: this.props.t('ra_Edit function'),
+                onClick: () => {
+                    const enums = findEnumsForObjectAsIds(
+                        this.info,
+                        item.data.id,
+                        'funcEnums',
+                    );
+                    this.setState({
+                        enumDialogEnums: enums,
+                        enumDialog: {
+                            item,
+                            type: 'func',
+                            enumsOriginal: JSON.parse(JSON.stringify(enums)),
+                        },
+                        showContextMenu: null,
+                    });
+                },
+            },
+            ROOM: {
+                key: '6',
+                visibility: enumEditable,
+                icon: <Construction fontSize="small" className={this.props.classes.contextMenuRoom} />,
+                className: '',
+                label: this.props.t('ra_Edit room'),
+                onClick: () => {
+                    const enums = findEnumsForObjectAsIds(
+                        this.info,
+                        item.data.id,
+                        'roomEnums',
+                    );
+                    this.setState({
+                        enumDialogEnums: enums,
+                        enumDialog: {
+                            item,
+                            type: 'room',
+                            enumsOriginal: JSON.parse(JSON.stringify(enums)),
+                        },
+                        showContextMenu: null,
+                    });
+                },
+            },
+            ALIAS: {
+                key: '7',
+                visibility: !this.props.notEditable &&
+                    this.props.objectBrowserAliasEditor &&
+                    this.props.objectBrowserEditObject &&
+                    this.state.filter.expertMode &&
+                    obj &&
+                    obj.type === 'state' &&
+                    obj.common?.type !== 'file',
+                icon: <IconLink className={obj?.common?.alias
+                    ? this.props.classes.cellButtonsButtonWithCustoms
+                    : this.props.classes.cellButtonsButtonWithoutCustoms}
+                />,
+                className: '',
+                label: this.props.t('ra_Edit alias'),
+                onClick: () => {
+                    if (obj.common?.alias) {
+                        this.setState({ editObjectDialog: item.data.id, showContextMenu: null, editObjectAlias: true });
+                    } else {
+                        this.setState({ showContextMenu: null, showAliasEditor: item.data.id });
+                    }
+                },
+            },
+            DELETE: {
+                key: 'Delete',
+                visibility: this.props.onObjectDelete && (item.children?.length || (obj && !obj.common?.dontDelete)),
+                icon: <IconDelete fontSize="small" className={this.props.classes.contextMenuDelete} />,
+                className: this.props.classes.contextMenuDelete,
+                label: this.texts.deleteObject,
+                onClick: () => {
+                    this.setState({ showContextMenu: null }, () => {
+                        // calculate number of children
+                        const keys = Object.keys(this.objects);
+                        keys.sort();
+                        let count = 0;
+                        const start = `${id}.`;
+                        for (let i = 0; i < keys.length; i++) {
+                            if (keys[i].startsWith(start)) {
+                                count++;
+                            } else if (keys[i] > start) {
+                                break;
+                            }
+                        }
+
+                        this.props.onObjectDelete(
+                            id,
+                            !!item.children?.length,
+                            !obj.common?.dontDelete,
+                            count + 1,
+                        );
+                    });
+                },
+            },
+        };
+
+        Object.keys(ITEMS).forEach(key => {
+            if (ITEMS[key].visibility) {
+                items.push(<MenuItem key={key} onClick={ITEMS[key].onClick} className={ITEMS[key].className}>
+                    <ListItemIcon style={ITEMS[key].iconStyle} className={ITEMS[key].listItemIconClass}>
+                        {ITEMS[key].icon}
+                    </ListItemIcon>
+                    <ListItemText>{ITEMS[key].label}</ListItemText>
+                    {ITEMS[key].key ? <div className={this.props.classes.contextMenuKeys}>
+                        {`Alt+${ITEMS[key].key === 'Delete' ? this.props.t('ra_Del') : ITEMS[key].key}`}
+                    </div> : null}
+                </MenuItem>);
+            }
+        });
+
+        if (!items.length) {
+            setTimeout(() => this.setState({ showContextMenu: null }), 100);
+            return null;
+        }
+
+        const el = document.getElementById(id);
+
+        return <Menu
+            key="contextMenu"
+            open={!0}
+            onKeyUp={e => {
+                e.preventDefault();
+                if (e.altKey) {
+                    Object.keys(ITEMS).forEach(key => {
+                        if (e.key === ITEMS[key].key) {
+                            ITEMS[key].onClick();
+                        }
+                    });
+                }
+            }}
+            anchorEl={el}
+            onClose={() => {
+                this.setState({ showContextMenu: null });
+                this.contextMenu = null;
+            }}
+        >
+            {items}
+        </Menu>;
     }
 
     /**
@@ -6161,14 +6543,6 @@ class ObjectBrowser extends Component {
             }}
         />;
     }
-
-    // extendObject = (id, data) =>
-    //     this.props.socket.extendObject(id, data)
-    //         .catch(error => window.alert(error));
-
-    // setObject = (id, data) =>
-    //     this.props.socket.setObject(id, data)
-    //         .catch(error => window.alert(error));
 
     /**
      * The rendering method of this component.
@@ -6223,6 +6597,7 @@ class ObjectBrowser extends Component {
                     {items}
                 </div>
             </TabContent>
+            {this.renderContextMenu()}
             {this.renderToast()}
             {this.renderColumnsEditCustomDialog()}
             {this.renderColumnsSelectorDialog()}
@@ -6230,6 +6605,7 @@ class ObjectBrowser extends Component {
             {this.renderEditValueDialog()}
             {this.renderEditObjectDialog()}
             {this.renderViewObjectFileDialog()}
+            {this.renderAliasEditorDialog()}
             {this.renderEditRoleDialog()}
             {this.renderEnumDialog()}
             {this.renderErrorDialog()}
@@ -6293,18 +6669,19 @@ ObjectBrowser.propTypes = {
     modalEditOfAccessControl: PropTypes.func, // modal Edit Of Access Control
     onObjectDelete: PropTypes.func,     // optional function (id, hasChildren, objectExists, childrenCount+1) {  }
     customFilter: PropTypes.object,     // optional
-                                        // `{common: {custom: true}}` - show only objects with some custom settings
-                                        // `{common: {custom: 'sql.0'}}` - show only objects with sql.0 custom settings (only of the specific instance)
-                                        // `{common: {custom: '_dataSources'}}` - show only objects of adapters `influxdb' or 'sql' or 'history'
-                                        // `{common: {custom: 'adapterName.'}}` - show only objects of custom settings of specific adapter (all instances)
-                                        // `{type: 'channel'}` - show only channels
-                                        // `{type: ['channel', 'device']}` - show only channels and devices
-                                        // `{common: {type: 'number'}` - show only states of type 'number
-                                        // `{common: {type: ['number', 'string']}` - show only states of type 'number and string
-                                        // `{common: {role: 'switch']}` - show only states with roles starting from switch
-                                        // `{common: {role: ['switch', 'button]}` - show only states with roles starting from `switch` and `button`
+    //                                    `{common: {custom: true}}` - show only objects with some custom settings
+    //                                    `{common: {custom: 'sql.0'}}` - show only objects with sql.0 custom settings (only of the specific instance)
+    //                                    `{common: {custom: '_dataSources'}}` - show only objects of adapters `influxdb' or 'sql' or 'history'
+    //                                    `{common: {custom: 'adapterName.'}}` - show only objects of custom settings of specific adapter (all instances)
+    //                                    `{type: 'channel'}` - show only channels
+    //                                    `{type: ['channel', 'device']}` - show only channels and devices
+    //                                    `{common: {type: 'number'}` - show only states of type 'number
+    //                                    `{common: {type: ['number', 'string']}` - show only states of type 'number and string
+    //                                    `{common: {role: 'switch']}` - show only states with roles starting from switch
+    //                                    `{common: {role: ['switch', 'button]}` - show only states with roles starting from `switch` and `button`
     objectBrowserValue: PropTypes.object,
     objectBrowserEditObject: PropTypes.object,
+    objectBrowserAliasEditor: PropTypes.func, // on edit alias
     objectBrowserEditRole: PropTypes.object, // on Edit role
     objectBrowserViewFile: PropTypes.func, // on view file state
     router: PropTypes.oneOfType([
@@ -6318,7 +6695,7 @@ ObjectBrowser.propTypes = {
 
     objectsWorker: PropTypes.object,    // optional cache of objects
     filterFunc: PropTypes.func,         // function to filter out all unnecessary objects. It cannot be used together with "types"
-                                        // Example for function: `obj => obj.common && obj.common.type === 'boolean'` to show only boolean states
+    //                                     Example for function: `obj => obj.common && obj.common.type === 'boolean'` to show only boolean states
 
     DragWrapper: PropTypes.func,
     dragEnabled: PropTypes.bool,

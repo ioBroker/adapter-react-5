@@ -405,5 +405,7 @@
   "ra_Edit role": "Rolle bearbeiten",
   "ra_Edit function": "Funktion bearbeiten",
   "ra_Edit room": "Raum bearbeiten",
-  "ra_Edit alias": "Alias bearbeiten"
+  "ra_Edit alias": "Alias bearbeiten",
+  "ra_View file": "Datei ansehen",
+  "ra_Del": "Entf"
 }

@@ -15,10 +15,10 @@ export default function ToggleThemeMenu({
     return <div className={className || undefined} style={style || undefined}>
         <Tooltip title={t('ra_Change color theme')}>
             <IconButton onClick={() => toggleTheme()} size={size || 'medium'}>
-                {themeName === 'dark' ? <Brightness4Icon className={className} /> : null}
-                {themeName === 'blue' ? <Brightness5Icon className={className} /> : null}
-                {themeName === 'colored' ? <Brightness6Icon className={className} /> : null}
-                {themeName !== 'dark' && themeName !== 'blue' && themeName !== 'colored' ? <Brightness7Icon className={className} /> : null}
+                {themeName === 'dark' && <Brightness4Icon className={className} />}
+                {themeName === 'blue' && <Brightness5Icon className={className} />}
+                {themeName === 'colored' && <Brightness6Icon className={className} />}
+                {themeName !== 'dark' && themeName !== 'blue' && themeName !== 'colored' && <Brightness7Icon className={className} />}
             </IconButton>
         </Tooltip>
     </div>;

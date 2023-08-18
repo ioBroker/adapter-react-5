@@ -2,11 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
-import Button from '@mui/material/Button';
+import { Button } from '@mui/material';
 
-import IconWarning from '@mui/icons-material/Warning';
-import IconError from '@mui/icons-material/Error';
-import IconInfo from '@mui/icons-material/Info';
+import {
+    Warning as IconWarning,
+    Error as IconError,
+    Info as IconInfo,
+} from '@mui/icons-material';
 
 import ConfigGeneric from './ConfigGeneric';
 import I18n from './wrapper/i18n';
@@ -37,8 +39,10 @@ class ConfigSetState extends ConfigGeneric {
             }
         }
 
+        const id = (this.props.schema.id || '').replace(/%INSTANCE%/g, this.props.instance);
+
         try {
-            await this.props.socket.setState(this.props.schema.id, { val, ack: !!this.props.schema.ack });
+            await this.props.socket.setState(id, { val, ack: !!this.props.schema.ack });
             this.props.schema.okText && window.alert(this.getText(this.props.schema.okText));
         } catch (e) {
             if (this.props.schema.error && this.props.schema.error[e.toString()]) {

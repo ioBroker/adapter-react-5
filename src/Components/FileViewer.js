@@ -1,9 +1,17 @@
+// File viewer in adapter-react does not support write
+// import { Buffer } from 'buffer';
 import React, { Component } from 'react';
 import { withStyles } from '@mui/styles';
 import PropTypes from 'prop-types';
 
-// File viewer in adapter-react does not support write
-// import { Buffer } from 'buffer';
+// File viewer in adapter-react does not use ace editor
+// import AceEditor from 'react-ace';
+// import 'ace-builds/src-min-noconflict/mode-json';
+// import 'ace-builds/src-min-noconflict/mode-json5';
+// import 'ace-builds/src-min-noconflict/worker-json';
+// import 'ace-builds/src-min-noconflict/theme-clouds_midnight';
+// import 'ace-builds/src-min-noconflict/theme-chrome';
+// import 'ace-builds/src-min-noconflict/ext-language_tools';
 
 import {
     TextField,
@@ -72,6 +80,7 @@ function bufferToBase64(buffer, isFull) {
 
 /**
  * @typedef {object} FileViewerProps
+ * @property {string} [key] The key to identify this component.
  * @property {import('../types').Translator} t Translation function
  * @property {ioBroker.Languages} [lang] The selected language.
  * @property {boolean} [expertMode] Is expert mode enabled? (default: false)
@@ -197,7 +206,7 @@ class FileViewer extends Component {
         const adapter = parts[0];
         const name = parts.splice(1).join('/');
         this.props.socket.writeFile64(adapter, name, Buffer.from(data).toString('base64'))
-            .then(_ => this.props.onClose())
+            .then(() => this.props.onClose())
             .catch(e => window.alert(`Cannot write file: ${e}`));
         */
     };
@@ -235,15 +244,35 @@ class FileViewer extends Component {
             />;
         }
         if (this.state.code !== null || this.state.text !== null || this.state.editing) {
+            // File viewer does use ace in adapter-react
+            // return <AceEditor
+            //     mode={FileViewer.getEditFile(this.props.formatEditFile)}
+            //     width="100%"
+            //     height="100%"
+            //     theme={this.props.themeName === 'dark' ? 'clouds_midnight' : 'chrome'}
+            //     value={this.state.editingValue || this.state.code || this.state.text}
+            //     onChange={newValue => this.setState({ editingValue: newValue, changed: true })}
+            //     name="UNIQUE_ID_OF_DIV"
+            //     readOnly={!this.state.editing}
+            //     fontSize={14}
+            //     setOptions={{
+            //         enableBasicAutocompletion: true,
+            //         enableLiveAutocompletion: true,
+            //         enableSnippets: true,
+            //     }}
+            //     editorProps={{ $blockScrolling: true }}
+            // />;
             return <TextField
                 variant="standard"
                 className={this.props.classes.textarea}
                 multiline
+                inputProps={{ readOnly: !this.state.editing }}
                 value={this.state.editingValue || this.state.code || this.state.text}
-                onChange={newValue => this.setState({ editingValue: newValue, changed: true })}
+                // onChange={newValue => this.setState({ editingValue: newValue, changed: true })}
                 InputProps={{ readOnly: !this.state.editing }}
             />;
         }
+        return null;
     }
 
     render() {

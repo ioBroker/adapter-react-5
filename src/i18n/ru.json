@@ -405,5 +405,7 @@
   "ra_Edit role": "Изменить роль",
   "ra_Edit function": "Изменить функцию",
   "ra_Edit room": "Редактировать комнату",
-  "ra_Edit alias": "Изменить псевдоним"
+  "ra_Edit alias": "Изменить псевдоним",
+  "ra_View file": "Посмотреть файл",
+  "ra_Del": "Delete"
 }

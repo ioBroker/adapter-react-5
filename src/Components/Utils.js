@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2023 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2023 Denis Haev <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -66,7 +66,7 @@ class Utils {
     }
 
     static formatSeconds(seconds) {
-        const days = Math.floor(seconds / (3600 * 24));
+        const days_ = Math.floor(seconds / (3600 * 24));
         seconds %= 3600 * 24;
         let hours = Math.floor(seconds / 3600);
         if (hours < 10) {
@@ -83,8 +83,8 @@ class Utils {
             seconds = `0${seconds}`;
         }
         let text = '';
-        if (days) {
-            text += `${days} ${I18n.t('ra_daysShortText')} `;
+        if (days_) {
+            text += `${days_} ${I18n.t('ra_daysShortText')} `;
         }
         text += `${hours}:${minutes}:${seconds}`;
 
@@ -102,7 +102,7 @@ class Utils {
      */
     static getObjectName(objects, id, settings, options, isDesc) {
         const item = objects[id];
-        let text = id;
+        let text;
         const attr = isDesc ? 'desc' : 'name';
 
         if (typeof settings === 'string' && !options) {
@@ -191,7 +191,7 @@ class Utils {
      * @returns {string | null}
      */
     static getSettingsOrder(obj, forEnumId, options) {
-        if (obj && obj.hasOwnProperty('common')) {
+        if (obj && Object.prototype.hasOwnProperty.call(obj, 'common')) {
             obj = obj.common;
         }
         let settings;
@@ -217,7 +217,7 @@ class Utils {
      * @param {{ user: string; }} options
      */
     static getSettingsCustomURLs(obj, forEnumId, options) {
-        if (obj && obj.hasOwnProperty('common')) {
+        if (obj && Object.prototype.hasOwnProperty.call(obj, 'common')) {
             obj = obj.common;
         }
         let settings;
@@ -258,43 +258,37 @@ class Utils {
     static getSettings(obj, options, defaultEnabling) {
         let settings;
         const id = (obj && obj._id) || (options && options.id);
-        if (obj && obj.hasOwnProperty('common')) {
+        if (obj && Object.prototype.hasOwnProperty.call(obj, 'common')) {
             obj = obj.common;
         }
-        if (obj && obj.custom) {
-            settings = obj.custom || {};
+        if (obj?.custom) {
+            settings = obj.custom;
             settings = settings[NAMESPACE] && settings[NAMESPACE][options.user || 'admin'] ? JSON.parse(JSON.stringify(settings[NAMESPACE][options.user || 'admin'])) : { enabled: true };
         } else {
             settings = { enabled: defaultEnabling === undefined ? true : defaultEnabling, useCustom: false };
         }
 
-        if (!settings.hasOwnProperty('enabled')) {
+        if (!Object.prototype.hasOwnProperty.call(settings, 'enabled')) {
             settings.enabled = defaultEnabling === undefined ? true : defaultEnabling;
         }
 
-        if (false && settings.useCommon) {
-            if (obj.color) {
-                settings.color = obj.color;
-            }
-            if (obj.icon) {
-                settings.icon  = obj.icon;
-            }
-            if (obj.name) {
-                settings.name  = obj.name;
-            }
-        } else {
-            if (options) {
-                if (!settings.name  && options.name)  settings.name  = options.name;
-                if (!settings.icon  && options.icon)  settings.icon  = options.icon;
-                if (!settings.color && options.color) settings.color = options.color;
-            }
-
-            if (obj) {
-                if (!settings.color && obj.color) settings.color = obj.color;
-                if (!settings.icon  && obj.icon)  settings.icon  = obj.icon;
-                if (!settings.name  && obj.name)  settings.name  = obj.name;
-            }
+        // if (false && settings.useCommon) {
+        //     if (obj.color) settings.color = obj.color;
+        //     if (obj.icon)  settings.icon  = obj.icon;
+        //     if (obj.name)  settings.name  = obj.name;
+        // } else {
+        if (options) {
+            if (!settings.name  && options.name)  settings.name  = options.name;
+            if (!settings.icon  && options.icon)  settings.icon  = options.icon;
+            if (!settings.color && options.color) settings.color = options.color;
         }
+
+        if (obj) {
+            if (!settings.color && obj.color) settings.color = obj.color;
+            if (!settings.icon  && obj.icon)  settings.icon  = obj.icon;
+            if (!settings.name  && obj.name)  settings.name  = obj.name;
+        }
+        // }
 
         if (typeof settings.name === 'object') {
             settings.name = settings.name[options.language] || settings.name.en;
@@ -423,40 +417,39 @@ class Utils {
      * @returns {string}
      */
     static splitCamelCase(text) {
-        if (false && text !== text.toUpperCase()) {
-            const words = text.split(/\s+/);
-            for (let i = 0; i < words.length; i++) {
-                const word = words[i];
-                if (word.toLowerCase() !== word && word.toUpperCase() !== word) {
-                    let z = 0;
-                    const ww = [];
-                    let start = 0;
-                    while (z < word.length) {
-                        if (word[z].match(/[A-ZÜÄÖА-Я]/)) {
-                            ww.push(word.substring(start, z));
-                            start = z;
-                        }
-                        z++;
-                    }
-                    if (start !== z) {
-                        ww.push(word.substring(start, z));
-                    }
-                    for (let k = 0; k < ww.length; k++) {
-                        words.splice(i + k, 0, ww[k]);
-                    }
-                    i += ww.length;
-                }
-            }
-
-            return words.map(w => {
-                w = w.trim();
-                if (w) {
-                    return w[0].toUpperCase() + w.substring(1).toLowerCase();
-                }
-                return '';
-            }).join(' ');
-        }
-
+        // if (false && text !== text.toUpperCase()) {
+        //     const words = text.split(/\s+/);
+        //     for (let i = 0; i < words.length; i++) {
+        //         const word = words[i];
+        //         if (word.toLowerCase() !== word && word.toUpperCase() !== word) {
+        //             let z = 0;
+        //             const ww = [];
+        //             let start = 0;
+        //             while (z < word.length) {
+        //                 if (word[z].match(/[A-ZÜÄÖА-Я]/)) {
+        //                     ww.push(word.substring(start, z));
+        //                     start = z;
+        //                 }
+        //                 z++;
+        //             }
+        //             if (start !== z) {
+        //                 ww.push(word.substring(start, z));
+        //             }
+        //             for (let k = 0; k < ww.length; k++) {
+        //                 words.splice(i + k, 0, ww[k]);
+        //             }
+        //             i += ww.length;
+        //         }
+        //     }
+        //
+        //     return words.map(w => {
+        //         w = w.trim();
+        //         if (w) {
+        //             return w[0].toUpperCase() + w.substring(1).toLowerCase();
+        //         }
+        //         return '';
+        //     }).join(' ');
+        // }
         return Utils.CapitalWords(text);
     }
 
@@ -638,26 +631,24 @@ class Utils {
                 const a = [parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3], 10)];
                 const year = a.find(y => y > 31);
                 a.splice(a.indexOf(year), 1);
-                const day = a.find(m => m > 12);
+                const day = a.find(mm => mm > 12);
                 if (day) {
                     a.splice(a.indexOf(day), 1);
                     now = new Date(year, a[0] - 1, day);
-                } else {
+                } else if (Utils.dateFormat[0][0] === 'M' && Utils.dateFormat[1][0] === 'D') {
                     // MM DD
-                    if (Utils.dateFormat[0][0] === 'M' && Utils.dateFormat[1][0] === 'D') {
-                        now = new Date(year, a[0] - 1, a[1]);
-                        if (Math.abs(now.getTime - Date.now()) > 3600000 * 24 * 10) {
-                            now = new Date(year, a[1] - 1, a[0]);
-                        }
-                    } else if (Utils.dateFormat[0][0] === 'D' && Utils.dateFormat[1][0] === 'M') {
-                        // DD MM
+                    now = new Date(year, a[0] - 1, a[1]);
+                    if (Math.abs(now.getTime - Date.now()) > 3600000 * 24 * 10) {
                         now = new Date(year, a[1] - 1, a[0]);
-                        if (Math.abs(now.getTime - Date.now()) > 3600000 * 24 * 10) {
-                            now = new Date(year, a[0] - 1, a[1]);
-                        }
-                    } else {
-                        now = new Date(now);
                     }
+                } else if (Utils.dateFormat[0][0] === 'D' && Utils.dateFormat[1][0] === 'M') {
+                    // DD MM
+                    now = new Date(year, a[1] - 1, a[0]);
+                    if (Math.abs(now.getTime - Date.now()) > 3600000 * 24 * 10) {
+                        now = new Date(year, a[0] - 1, a[1]);
+                    }
+                } else {
+                    now = new Date(now);
                 }
             } else {
                 now = new Date(now);
@@ -743,10 +734,7 @@ class Utils {
             if (states && !states.common) {
                 return states.smartName;
             }
-            return (states &&
-                states.common &&
-                states.common.custom &&
-                states.common.custom[instanceId]) ?
+            return states?.common?.custom && states.common.custom[instanceId] ?
                 states.common.custom[instanceId].smartName : undefined;
         }
         if (!noCommon) {
@@ -754,8 +742,7 @@ class Utils {
         }
 
         return (states[id] &&
-            states[id].common &&
-            states[id].common.custom &&
+            states[id].common?.custom &&
             states[id].common.custom[instanceId]) ?
             states[id].common.custom[instanceId].smartName || null : null;
     }
@@ -780,10 +767,7 @@ class Utils {
             return obj.smartName;
         }
 
-        return (obj &&
-            obj.common &&
-            obj.common.custom &&
-            obj.common.custom[instanceId]) ?
+        return obj?.common?.custom && obj.common.custom[instanceId] ?
             obj.common.custom[instanceId].smartName : undefined;
     }
 
@@ -902,7 +886,7 @@ class Utils {
                 let empty = true;
                 // Check if the structure has any definitions
                 for (const key in smartName) {
-                    if (smartName.hasOwnProperty(key)) {
+                    if (Object.prototype.hasOwnProperty.call(smartName, key)) {
                         empty = false;
                         break;
                     }
@@ -1077,15 +1061,15 @@ class Utils {
         if (bw) {
             // http://stackoverflow.com/a/3943023/112731
             return (r * 0.299 + g * 0.587 + b * 0.114) > 186
-                ? `#000000${alfa ? alfa : ''}`
-                : `#FFFFFF${alfa ? alfa : ''}`;
+                ? `#000000${alfa || ''}`
+                : `#FFFFFF${alfa || ''}`;
         }
         // invert color components
         r = (255 - r).toString(16);
         g = (255 - g).toString(16);
         b = (255 - b).toString(16);
         // pad each with zeros and return
-        return `#${r.padStart(2, '0')}${g.padStart(2, '0')}${b.padStart(2, '0')}${alfa ? alfa : ''}`;
+        return `#${r.padStart(2, '0')}${g.padStart(2, '0')}${b.padStart(2, '0')}${alfa || ''}`;
     }
 
     /**
@@ -1104,7 +1088,7 @@ class Utils {
                     parseInt(m[2], 10).toString(16).padStart(2, '0') +
                     parseInt(m[2], 10).toString(16).padStart(2, '0');
             }
-        } else if (hex.startsWith('rgba')) {
+        } else if (hex.startsWith('rgb')) {
             const m = hex.match(/rgb?\((\d+),\s*(\d+),\s*(\d+)\)/);
             if (m) {
                 hex = parseInt(m[1], 10).toString(16).padStart(2, '0') +
@@ -1136,22 +1120,22 @@ class Utils {
      * @param {Array<number>} rgb color in format [r,g,b]
      * @returns {Array<number>} lab color in format [l,a,b]
      */
-    static rgb2lab(rgb){
+    static rgb2lab(rgb) {
         let r = rgb[0] / 255;
         let g = rgb[1] / 255;
         let b = rgb[2] / 255;
 
-        r = (r > 0.04045) ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92;
-        g = (g > 0.04045) ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92;
-        b = (b > 0.04045) ? Math.pow((b + 0.055) / 1.055, 2.4) : b / 12.92;
+        r = (r > 0.04045) ? ((r + 0.055) / 1.055) ** 2.4 : r / 12.92;
+        g = (g > 0.04045) ? ((g + 0.055) / 1.055) ** 2.4 : g / 12.92;
+        b = (b > 0.04045) ? ((b + 0.055) / 1.055) ** 2.4 : b / 12.92;
 
         let x = (r * 0.4124 + g * 0.3576 + b * 0.1805) / 0.95047;
         let y = (r * 0.2126 + g * 0.7152 + b * 0.0722); /*  / 1.00000; */
         let z = (r * 0.0193 + g * 0.1192 + b * 0.9505) / 1.08883;
 
-        x = (x > 0.008856) ? Math.pow(x, 0.33333333) : (7.787 * x) + 0.137931; // 16 / 116;
-        y = (y > 0.008856) ? Math.pow(y, 0.33333333) : (7.787 * y) + 0.137931; // 16 / 116;
-        z = (z > 0.008856) ? Math.pow(z, 0.33333333) : (7.787 * z) + 0.137931; // 16 / 116;
+        x = (x > 0.008856) ? x ** 0.33333333 : (7.787 * x) + 0.137931; // 16 / 116;
+        y = (y > 0.008856) ? y ** 0.33333333 : (7.787 * y) + 0.137931; // 16 / 116;
+        z = (z > 0.008856) ? z ** 0.33333333 : (7.787 * z) + 0.137931; // 16 / 116;
 
         return [(116 * y) - 16, 500 * (x - y), 200 * (y - z)];
     }
@@ -1234,6 +1218,7 @@ class Utils {
         let x;
         let str = '';
         while (i < arguments.length) {
+            // eslint-disable-next-line prefer-rest-params
             tmp = arguments[i++];
             if (tmp) {
                 x = Utils._toVal(tmp);
@@ -1256,8 +1241,8 @@ class Utils {
             return window.vendorPrefix;
         }
 
-        return themeName ? themeName : (window._localStorage || window.localStorage).getItem('App.themeName') ?
-            (window._localStorage || window.localStorage).getItem('App.themeName') : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'colored';
+        return themeName || ((window._localStorage || window.localStorage).getItem('App.themeName') ?
+            (window._localStorage || window.localStorage).getItem('App.themeName') : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'colored');
     }
 
     /**
@@ -1444,9 +1429,8 @@ class Utils {
             }
 
             return `0:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-        } else {
-            return '0:00:00';
         }
+        return '0:00:00';
     }
 
     static MDtext2link(text) {
@@ -1470,7 +1454,9 @@ class Utils {
     }
 
     static MDgetTitle(text) {
-        let { body, header } = Utils.extractHeader(text);
+        const result = Utils.extractHeader(text);
+        const header = result.header;
+        let body = result.body;
         if (!header.title) {
             // remove {docsify-bla}
             body = body.replace(/{[^}]*}/g, '');
@@ -1498,10 +1484,10 @@ class Utils {
                     if (!line.trim()) {
                         return;
                     }
-                    const pos = line.indexOf(':');
-                    if (pos !== -1) {
-                        const attr = line.substring(0, pos).trim();
-                        attrs[attr] = line.substring(pos + 1).trim();
+                    const pos_ = line.indexOf(':');
+                    if (pos_ !== -1) {
+                        const attr = line.substring(0, pos_).trim();
+                        attrs[attr] = line.substring(pos_ + 1).trim();
                         attrs[attr] = attrs[attr].replace(/^['"]|['"]$/g, '');
                         if (attrs[attr] === 'true') {
                             attrs[attr] = true;
@@ -1531,6 +1517,7 @@ class Utils {
     /**
      * Generate the json file on the file for download.
      * @param {string} filename file name
+     * @param {string} json file data
      * @returns {object} json structure (not stringified)
      */
     static generateFile(filename, json) {
@@ -1552,19 +1539,25 @@ class Utils {
      * @returns {array<string>} lines that decode quality
      */
     static quality2text(quality) {
+        // eslint-disable-next-line no-bitwise
         const custom = quality & 0xFFFF0000;
         const text = QUALITY_BITS[quality];
         let result;
         if (text) {
             result = [text];
+            // eslint-disable-next-line no-bitwise
         } else if (quality & 0x01) {
+            // eslint-disable-next-line no-bitwise
             result = [QUALITY_BITS[0x01], `0x${(quality & (0xFFFF & ~1)).toString(16)}`];
+            // eslint-disable-next-line no-bitwise
         } else if (quality & 0x02) {
+            // eslint-disable-next-line no-bitwise
             result = [QUALITY_BITS[0x02], `0x${(quality & (0xFFFF & ~2)).toString(16)}`];
         } else {
             result = [`0x${quality.toString(16)}`];
         }
         if (custom) {
+            // eslint-disable-next-line no-bitwise
             result.push(`0x${(custom >> 16).toString(16).toUpperCase()}`);
         }
         return result;
@@ -1630,6 +1623,7 @@ class Utils {
             .then(response => response.blob())
             .then(blob => new Promise(resolve => {
                 const reader = new FileReader();
+                // eslint-disable-next-line func-names
                 reader.onload = function () { // do not optimize this function. "this" is important.
                     resolve(this.result);
                 };

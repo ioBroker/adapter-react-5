@@ -1,17 +1,17 @@
 /**
- * Copyright 2022-2023, bluefox <dogafox@gmail.com>
+ * Copyright 2022-2023, Denis Haev <dogafox@gmail.com>
  *
  * MIT License
  *
  **/
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles} from '@mui/styles';
+import { withStyles } from '@mui/styles';
 
 import Table from '@mui/material/Table';
 import Skeleton from '@mui/material/Skeleton';
 
-const styles = theme => ({
+const styles = () => ({
     table: {
         display: 'grid',
         '& tr': {
@@ -40,8 +40,8 @@ const styles = theme => ({
             '&:hover': {
                 borderColor: '#ccc',
                 borderRightStyle: 'solid',
-            }
-            , '&.active': {
+            },
+            '&.active': {
                 borderColor: '#517ea5',
                 borderRightStyle: 'solid',
             },
@@ -90,7 +90,8 @@ class TableResize extends Component {
                     const tableWidth = this.resizerRefTable.current.offsetWidth;
                     let storedWidth = 0;
                     for (let w = 0; w < this.resizerCurrentWidths.length; w++) {
-                        if (isFinite(this.resizerCurrentWidths[w])) {
+                        // eslint-disable-next-line no-restricted-properties
+                        if (window.isFinite(this.resizerCurrentWidths[w])) {
                             storedWidth += this.resizerCurrentWidths[w];
                         } else {
                             storedWidth = null;
@@ -124,7 +125,7 @@ class TableResize extends Component {
         } else {
             this.installTimeout = setTimeout(() => {
                 this.installTimeout = null;
-                this.resizerInstall()
+                this.resizerInstall();
             }, 100);
         }
     }
@@ -136,7 +137,7 @@ class TableResize extends Component {
 
         (window._localStorage || window.localStorage).setItem(`App.${this.props.name || 'history'}.table`, JSON.stringify(this.resizerCurrentWidths));
         this.resizerApplyWidths();
-    }
+    };
 
     resizerUninstall() {
         this.installTimeout && clearTimeout(this.installTimeout);
@@ -195,7 +196,7 @@ class TableResize extends Component {
                 this.resizerApplyWidths();
             }
         }
-    }
+    };
 
     resizerMouseUp = () => {
         (window._localStorage || window.localStorage).setItem(`App.${this.props.name || 'history'}.table`, JSON.stringify(this.resizerCurrentWidths));
@@ -204,7 +205,7 @@ class TableResize extends Component {
         this.resizerActiveDiv = null;
         window.removeEventListener('mousemove', this.resizerMouseMove);
         window.removeEventListener('mouseup', this.resizerMouseUp);
-    }
+    };
 
     resizerMouseDown = e => {
         if (this.resizerActiveIndex === null || this.resizerActiveIndex === undefined) {
@@ -242,9 +243,9 @@ class TableResize extends Component {
         return <Table
             stickyHeader={this.props.stickyHeader}
             size={this.props.size || 'small'}
-            className={ this.props.classes.table + (this.props.className ? ` ${this.props.className}` : '')}
-            ref={ this.resizerRefTable }
-            style={ Object.assign({}, this.props.style || {}, style) }
+            className={this.props.classes.table + (this.props.className ? ` ${this.props.className}` : '')}
+            ref={this.resizerRefTable}
+            style={({ ...this.props.style || {}, ...style })}
         >
             { this.props.children }
         </Table>;

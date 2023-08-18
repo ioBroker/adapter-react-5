@@ -405,5 +405,7 @@
   "ra_Edit role": "Rol bewerken",
   "ra_Edit function": "Bewerkingsfunctie",
   "ra_Edit room": "Kamer bewerken",
-  "ra_Edit alias": "Alias bewerken"
+  "ra_Edit alias": "Alias bewerken",
+  "ra_View file": "Bestand bekijken",
+  "ra_Del": "Delete"
 }

@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
+import { Tabs, Tab } from '@mui/material';
 
 import ConfigGeneric from './ConfigGeneric';
 import ConfigPanel from './ConfigPanel';
@@ -64,6 +63,7 @@ class ConfigTabs extends ConfigGeneric {
             </Tabs>
             <ConfigPanel
                 isParentTab
+                changed={this.props.changed}
                 key={this.state.tab}
                 index={1001}
                 arrayIndex={this.props.arrayIndex}
@@ -112,6 +112,7 @@ ConfigTabs.propTypes = {
     schema: PropTypes.object,
     onError: PropTypes.func,
     onChange: PropTypes.func,
+    changed: PropTypes.bool,
     customs: PropTypes.object,
     adapterName: PropTypes.string,
     instance: PropTypes.number,

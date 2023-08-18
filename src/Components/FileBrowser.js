@@ -1,5 +1,5 @@
 /**
- * Copyright 2020-2023, bluefox <dogafox@gmail.com>
+ * Copyright 2020-2023, Denis Haev <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -61,7 +61,6 @@ import {
 import ErrorDialog from '../Dialogs/Error';
 import Utils from './Utils';
 import TextInputDialog from '../Dialogs/TextInput';
-import FileViewer, { EXTENSIONS } from './FileViewer';
 
 // Custom Icons
 import ExpertIcon from '../icons/IconExpert';
@@ -70,6 +69,8 @@ import IconOpen from '../icons/IconOpen';
 import IconNoIcon from '../icons/IconNoIcon';
 
 import withWidth from './withWidth';
+
+import FileViewer, { EXTENSIONS } from './FileViewer';
 
 const ROW_HEIGHT   = 32;
 const BUTTON_WIDTH = 32;
@@ -1073,6 +1074,8 @@ class FileBrowser extends Component {
             case 'js':
             case 'html':
             case 'txt':
+            case 'css':
+            case 'log':
                 return true;
             default:
                 return false;

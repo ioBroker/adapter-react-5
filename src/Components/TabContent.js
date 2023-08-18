@@ -37,6 +37,13 @@ class TabContent extends React.Component {
 }
 
 TabContent.propTypes = {
+    /**
+     * The content of the component.
+     */
+    children: PropTypes.node,
+    /**
+     * Overflow behavior
+     */
     overflow: PropTypes.string,
 };
 

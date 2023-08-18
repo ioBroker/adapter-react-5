@@ -4,13 +4,15 @@ import { withStyles } from '@mui/styles';
 
 import { Button, CircularProgress } from '@mui/material';
 
-import IconWarning from '@mui/icons-material/Warning';
-import IconError from '@mui/icons-material/Error';
-import IconInfo from '@mui/icons-material/Info';
-import IconAuth from '@mui/icons-material/Key';
-import IconSend from '@mui/icons-material/Send';
-import IconWeb from '@mui/icons-material/Public';
-import IconSearch from '@mui/icons-material/Search';
+import {
+    Warning as IconWarning,
+    Error as IconError,
+    Info as IconInfo,
+    Key as IconAuth,
+    Send as IconSend,
+    Public as IconWeb,
+    Search as IconSearch,
+} from '@mui/icons-material';
 
 import I18n from './wrapper/i18n';
 import Icon from './wrapper/Components/Icon';
@@ -223,16 +225,19 @@ class ConfigSendto extends ConfigGeneric {
                         this.setState({ _error: response.error ? I18n.t(response.error) : I18n.t('ra_Error') });
                     }
                 } else {
-                    if (response?.openUrl && this.props.schema.openUrl) {
+                    if (response?.reloadBrowser && this.props.schema.reloadBrowser) {
+                        window.location.reload();
+                    } else if (response?.openUrl && this.props.schema.openUrl) {
                         window.open(response.openUrl, response.window || this.props.schema.window || '_blank');
-                    } else
-                        if (response?.result && this.props.schema.result && this.props.schema.result[response.result]) {
-                            let text = this.getText(this.props.schema.result[response.result]);
-                            if (response.args) {
-                                response.args.forEach(arg => text = text.replace('%s', arg));
-                            }
-                            window.alert(text);
-                        } if (response?.native && this.props.schema.useNative) {
+                    } else if (response?.result && this.props.schema.result && this.props.schema.result[response.result]) {
+                        let text = this.getText(this.props.schema.result[response.result]);
+                        if (response.args) {
+                            response.args.forEach(arg => text = text.replace('%s', arg));
+                        }
+                        window.alert(text);
+                    }
+
+                    if (response?.native && this.props.schema.useNative) {
                         const attrs = Object.keys(response.native);
                         attrs.forEach(attr =>
                             this.onChange(attr, response.native[attr]));

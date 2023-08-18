@@ -23,7 +23,7 @@ const styles = theme => ({
     },
     overflowHidden: {
         display: 'flex',
-        overflow: 'hidden'
+        overflow: 'hidden',
     },
     titleIcon: {
         marginRight: 5,
@@ -34,14 +34,17 @@ const styles = theme => ({
     languageButton: {
         position: 'absolute',
         right: theme.spacing(1),
-        top: theme.spacing(1)
+        top: theme.spacing(1),
     },
     languageButtonActive: {
-        color: theme.palette.primary.main
+        color: theme.palette.primary.main,
     },
 });
 
-const CustomModal = ({ toggleTranslation, noTranslation, title, fullWidth, help, maxWidth, progress, icon, applyDisabled, applyButton, classes, open, onClose, children, titleButtonApply, titleButtonClose, onApply, textInput, defaultValue, overflowHidden }) => {
+const CustomModal = ({
+    open,
+    toggleTranslation, noTranslation, title, fullWidth, help, maxWidth, progress, icon, applyDisabled, applyButton, classes, onClose, children, titleButtonApply, titleButtonClose, onApply, textInput, defaultValue, overflowHidden,
+}) => {
     const [value, setValue] = useState(defaultValue);
     useEffect(() => {
         setValue(defaultValue);
@@ -59,10 +62,10 @@ const CustomModal = ({ toggleTranslation, noTranslation, title, fullWidth, help,
         fullWidth={!!fullWidth}
         disableEscapeKeyDown={false}
         onClose={onClose}
-        classes={{ paper: classes.modalDialog, /*paper: classes.background*/ }}
+        classes={{ paper: classes.modalDialog /* paper: classes.background */ }}
     >
         {title && <DialogTitle>
-            {icon ? <Icon className={classes.titleIcon}/> : null}
+            {icon ? <Icon className={classes.titleIcon} /> : null}
             {title}
             {I18n.getLanguage() !== 'en' && toggleTranslation ? <IconButton
                 size="large"
@@ -84,7 +87,7 @@ const CustomModal = ({ toggleTranslation, noTranslation, title, fullWidth, help,
                 // rows={10}
                 multiline
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
+                onChange={e => setValue(e.target.value)}
                 // customValue
             />}
             {children}
@@ -92,7 +95,7 @@ const CustomModal = ({ toggleTranslation, noTranslation, title, fullWidth, help,
         </DialogContent>
         <DialogActions>
             {applyButton && <Button
-                startIcon={<CheckIcon/>}
+                startIcon={<CheckIcon />}
                 disabled={progress || (applyDisabled && defaultValue === value)}
                 onClick={() => onApply(textInput ? value : '')}
                 variant="contained"
@@ -105,13 +108,13 @@ const CustomModal = ({ toggleTranslation, noTranslation, title, fullWidth, help,
                 onClick={onClose}
                 disabled={progress}
                 variant="contained"
-                startIcon={<CloseIcon/>}
+                startIcon={<CloseIcon />}
             >
                 {I18n.t(titleButtonClose)}
             </Button>
         </DialogActions>
     </Dialog>;
-}
+};
 
 CustomModal.defaultProps = {
     open: false,
@@ -122,7 +125,7 @@ CustomModal.defaultProps = {
     titleButtonClose: 'Cancel',
     titleButtonApply: 'Ok',
     overflowHidden: false,
-    help: ''
+    help: '',
 };
 
 CustomModal.propTypes = {
@@ -135,6 +138,9 @@ CustomModal.propTypes = {
     onApply: PropTypes.func,
     fullWidth: PropTypes.bool,
     maxWidth: PropTypes.string,
+    applyButton: PropTypes.bool,
+    applyDisabled: PropTypes.bool,
+    overflowHidden: PropTypes.bool,
     help: PropTypes.string,
     noTranslation: PropTypes.bool,
     toggleTranslation: PropTypes.func,

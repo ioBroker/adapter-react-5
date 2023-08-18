@@ -405,5 +405,7 @@
   "ra_Edit role": "Editar papel",
   "ra_Edit function": "Função de edição",
   "ra_Edit room": "Sala de edição",
-  "ra_Edit alias": "Editar alias"
+  "ra_Edit alias": "Editar alias",
+  "ra_View file": "Visualizar arquivo",
+  "ra_Del": "Delete"
 }
