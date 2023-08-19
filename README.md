@@ -667,6 +667,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### 4.5.1 (2023-08-19)
+* (foxriver76) fix dialog TextInput
+
 ### 4.5.0 (2023-08-18)
 * (bluefox) Synchronize components with admin
 
