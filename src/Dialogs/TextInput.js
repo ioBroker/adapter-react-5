@@ -11,7 +11,7 @@ import {
     DialogTitle,
 } from '@mui/material';
 
-import { Clos as IconClose, Check as IconCheck } from '@mui/icons-material';
+import { Close as IconClose, Check as IconCheck } from '@mui/icons-material';
 
 import I18n from '../i18n';
 
