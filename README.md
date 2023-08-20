@@ -667,7 +667,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.5.2 (2023-08-20)
 * (foxriver76) added missing export of TableResize
 
 ### 4.5.1 (2023-08-19)
