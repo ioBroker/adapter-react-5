@@ -667,6 +667,10 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+
+### **WORK IN PROGRESS**
+* (foxriver76) fixed css classes of TableResize, see https://github.com/ioBroker/ioBroker.admin/issues/1860
+
 ### 4.5.2 (2023-08-20)
 * (foxriver76) added missing export of TableResize
 

@@ -243,7 +243,7 @@ class TableResize extends Component {
         return <Table
             stickyHeader={this.props.stickyHeader}
             size={this.props.size || 'small'}
-            className={this.props.classes.table + (this.props.className ? ` ${this.props.className}` : '')}
+            className={this.props.className.table + (this.props.className ? ` ${this.props.className}` : '')}
             ref={this.resizerRefTable}
             style={({ ...this.props.style || {}, ...style })}
         >
