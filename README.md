@@ -667,6 +667,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (foxriver76) added missing export of TableResize
+
 ### 4.5.1 (2023-08-19)
 * (foxriver76) fix dialog TextInput
 

@@ -73,6 +73,9 @@ export * from './Components/TabContent';
 export { default as TabHeader } from './Components/TabHeader';
 export * from './Components/TabHeader';
 
+export { default as TableResize } from './Components/TableResize';
+export * from './Components/TableResize';
+
 export { default as TextWithIcon } from './Components/TextWithIcon';
 export * from './Components/TextWithIcon';
 
