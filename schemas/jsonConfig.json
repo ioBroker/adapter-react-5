@@ -1227,6 +1227,13 @@
                     "description": "If delete or add disabled, If noDelete is false, add, delete and move up/down should work",
                     "type": "boolean"
                   },
+                  "uniqueColumns": {
+                    "description": "Specify the 'attr' name of columns which need to be unique",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
                   "items": {
                     "description": "Items of the table",
                     "type": "array",

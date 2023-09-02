@@ -314,6 +314,7 @@
           "sm": 12,
           "noDelete": false,
           "type": "table",
+          "uniqueColumns": ["ip"],
           "items": [
             {
               "type": "text",
