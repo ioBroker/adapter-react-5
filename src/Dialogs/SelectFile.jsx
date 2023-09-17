@@ -183,7 +183,6 @@ class DialogSelectFile extends React.Component {
                     selected={this.props.selected}
                     restrictToFolder={this.props.restrictToFolder}
                     allowNonRestricted={this.props.allowNonRestricted}
-
                     onSelect={(selected, isDoubleClick, isFolder) => {
                         this.setState({ selected }, () =>
                             isDoubleClick && (!this.props.selectOnlyFolders || isFolder) && this.handleOk());
