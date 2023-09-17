@@ -667,6 +667,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added the restricting to folder property for select file dialog
+
 ### 4.5.3 (2023-08-20)
 * (foxriver76) fixed css classes of TableResize, see https://github.com/ioBroker/ioBroker.admin/issues/1860
 

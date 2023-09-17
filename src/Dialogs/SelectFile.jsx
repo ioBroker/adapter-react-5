@@ -9,14 +9,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
-import Button from '@mui/material/Button';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Dialog from '@mui/material/Dialog';
+import {
+    Button,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Dialog,
+} from '@mui/material';
 
-import IconCancel from '@mui/icons-material/Cancel';
-import IconOk from '@mui/icons-material/Check';
+import {
+    Cancel as IconCancel,
+    Check as IconOk,
+} from '@mui/icons-material';
 
 import Utils from '../Components/Utils';
 import I18n from '../i18n';
@@ -177,6 +181,9 @@ class DialogSelectFile extends React.Component {
                     filterFiles={this.props.filterFiles}
                     filterByType={this.props.filterByType}
                     selected={this.props.selected}
+                    restrictToFolder={this.props.restrictToFolder}
+                    allowNonRestricted={this.props.allowNonRestricted}
+
                     onSelect={(selected, isDoubleClick, isFolder) => {
                         this.setState({ selected }, () =>
                             isDoubleClick && (!this.props.selectOnlyFolders || isFolder) && this.handleOk());
@@ -224,6 +231,8 @@ DialogSelectFile.propTypes = {
     selectOnlyFolders: PropTypes.bool,
     showViewTypeButton: PropTypes.bool, // Allow switch views Table<=>Rows
     showTypeSelector: PropTypes.bool, // If type selector should be shown
+    restrictToFolder: PropTypes.string, // If defined, allow selecting only files from this folder
+    allowNonRestricted: PropTypes.bool, // If restrictToFolder defined, allow selecting files outside of this folder
 
     title: PropTypes.string,
     lang: PropTypes.string,
