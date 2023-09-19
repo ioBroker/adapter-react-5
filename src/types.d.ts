@@ -1,4 +1,6 @@
-import {Theme as MuiTheme} from "@mui/material/styles";
+import { Theme as MuiTheme } from "@mui/material/styles";
+import LegacyConnection from "./LegacyConnection";
+import { AdminConnection, Connection } from "@iobroker/socket-client";
 
 export type Translator = (key: string, arg1?: any, arg2?: any, arg3?: any) => string;
 
@@ -53,6 +55,8 @@ export interface GenericAppProps {
     encryptedFields?: string[];
     /** Socket.io configuration. */
     socket?: ConnectionProps;
+    /** Desired connection object */
+    Connection?: LegacyConnection | Connection | AdminConnection;
 }
 
 export interface GenericAppSettings extends GenericAppProps {
