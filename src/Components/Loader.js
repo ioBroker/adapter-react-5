@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2023 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2023 Denis Haev (bluefox) <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 // import './loader.css'
 const loaderStyles = `
 /**
- * Copyright 2018-2022 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2023 Denis Haev (bluefox) <dogafox@gmail.com>
  *
  * MIT License
  *

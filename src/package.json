@@ -3,7 +3,7 @@
   "version": "-.-.-",
   "description": "React classes to develop admin interfaces for ioBroker with react.",
   "author": {
-    "name": "bluefox",
+    "name": "Denis Haev (bluefox)",
     "email": "dogafox@gmail.com"
   },
   "publishConfig": {

@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2022 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2023 Denis Haev (bluefox) <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -76,6 +76,7 @@ body {
 }
 `;
 
+// legacy and could be deleted
 if (!window.localStorage) {
     window.localStorage = {
         getItem: () => null,
@@ -87,6 +88,12 @@ if (!window.localStorage) {
  * @extends {Router<import('./types').GenericAppProps, import('./types').GenericAppState>}
  */
 class GenericApp extends Router {
+
+    /**
+     * @var {LegacyConnection | AdminConnection}
+     */
+    socket;
+
     /**
      * @param {import('./types').GenericAppProps} props
      * @param {import('./types').GenericAppSettings | undefined} settings
@@ -945,7 +952,7 @@ GenericApp.propTypes = {
     adapterName: PropTypes.string, // (optional) name of adapter
     onThemeChange: PropTypes.func, // (optional) called by theme change
     socket: PropTypes.object, // (optional) socket information (host, port)
-    encryptedFields: PropTypes.array, // (optional) list of native attributes, that must be encrypted
+    encryptedFields: PropTypes.array, // (optional) list of native attributes that must be encrypted
     bottomButtons: PropTypes.bool, // If the bottom buttons (Save/Close) must be shown
     Connection: PropTypes.object, // If the bottom buttons (Save/Close) must be shown
 };
