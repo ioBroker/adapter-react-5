@@ -407,5 +407,7 @@
   "ra_Edit room": "Kamer bewerken",
   "ra_Edit alias": "Alias bewerken",
   "ra_View file": "Bestand bekijken",
-  "ra_Del": "Delete"
+  "ra_Del": "Delete",
+  "ra_Show all folders": "Toon alle mappen",
+  "ra_Restrict to folder": "Beperken tot map"
 }

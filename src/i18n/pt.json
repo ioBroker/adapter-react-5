@@ -407,5 +407,7 @@
   "ra_Edit room": "Sala de edição",
   "ra_Edit alias": "Editar alias",
   "ra_View file": "Visualizar arquivo",
-  "ra_Del": "Delete"
+  "ra_Del": "Delete",
+  "ra_Show all folders": "Mostrar todas as pastas",
+  "ra_Restrict to folder": "Restringir à pasta"
 }

@@ -407,5 +407,7 @@
   "ra_Edit room": "Edit room",
   "ra_Edit alias": "Edit alias",
   "ra_View file": "View file",
-  "ra_Del": "Delete"
+  "ra_Del": "Delete",
+  "ra_Show all folders": "Show all folders",
+  "ra_Restrict to folder": "Restrict to folder"
 }

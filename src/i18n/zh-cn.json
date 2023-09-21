@@ -407,5 +407,7 @@
   "ra_Edit room": "编辑室",
   "ra_Edit alias": "编辑别名",
   "ra_View file": "查看文件",
-  "ra_Del": "Delete"
+  "ra_Del": "Delete",
+  "ra_Show all folders": "显示所有文件夹",
+  "ra_Restrict to folder": "限制到文件夹"
 }

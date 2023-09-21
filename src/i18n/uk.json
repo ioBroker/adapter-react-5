@@ -407,5 +407,7 @@
   "ra_Edit room": "Редагувати кімнату",
   "ra_Edit alias": "Редагувати псевдонім",
   "ra_View file": "Переглянути файл",
-  "ra_Del": "Delete"
+  "ra_Del": "Delete",
+  "ra_Show all folders": "Показати всі папки",
+  "ra_Restrict to folder": "Обмежити папкою"
 }

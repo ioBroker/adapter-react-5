@@ -407,5 +407,7 @@
   "ra_Edit room": "Raum bearbeiten",
   "ra_Edit alias": "Alias bearbeiten",
   "ra_View file": "Datei ansehen",
-  "ra_Del": "Entf"
+  "ra_Del": "Entf",
+  "ra_Show all folders": "Alle Ordner anzeigen",
+  "ra_Restrict to folder": "Auf Ordner beschränken"
 }
