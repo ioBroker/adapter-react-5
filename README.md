@@ -667,7 +667,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.5.5 (2023-09-27)
 * (bluefox) Added export for IconNoIcon
 
 ### 4.5.4 (2023-09-17)
