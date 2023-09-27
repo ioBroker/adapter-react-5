@@ -667,6 +667,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added export for IconNoIcon
+
 ### 4.5.4 (2023-09-17)
 * (bluefox) Added the restricting to folder property for select file dialog
 

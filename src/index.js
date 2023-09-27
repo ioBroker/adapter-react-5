@@ -145,6 +145,9 @@ export * from './icons/IconOpen';
 export { default as IconState } from './icons/IconState';
 export * from './icons/IconState';
 
+export { default as IconNoIcon } from './icons/IconNoIcon';
+export * from './icons/IconNoIcon';
+
 export { default as ComplexCronDialog } from './Dialogs/ComplexCron';
 export * from './Dialogs/ComplexCron';
 
