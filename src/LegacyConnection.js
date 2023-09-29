@@ -251,7 +251,7 @@ class Connection {
         );
 
         this._socket.on('connect', noTimeout => {
-            // If the user is not admin it takes some time to install the handlers, because all rights must be checked
+            // If the user is not admin, it takes some time to install the handlers, because all rights must be checked
             if (noTimeout !== true) {
                 setTimeout(() =>
                     this.getVersion()
@@ -260,7 +260,7 @@ class Connection {
                             const v = parseInt(major, 10) * 10000 + parseInt(minor, 10) * 100 + parseInt(patch, 10);
                             if (v < 40102) {
                                 this._authTimer = null;
-                                // possible this is old version of admin
+                                // possible this is an old version of admin
                                 this.onPreConnect(false, false);
                             } else {
                                 this._socket.emit('authenticate', (isOk, isSecure) => this.onPreConnect(isOk, isSecure));
@@ -1114,12 +1114,17 @@ class Connection {
         if (isEnable && !this.subscribed) {
             this.subscribed = true;
             this.autoSubscribes.forEach(id => this._socket.emit('subscribeObjects', id));
-            // re subscribe objects
+            // re-subscribe objects
             Object.keys(this.objectsSubscribes).forEach(id => this._socket.emit('subscribeObjects', id));
             // re-subscribe logs
             this.autoSubscribeLog && this._socket.emit('requireLog', true);
-            // re subscribe states
+            // re-subscribe states
             Object.keys(this.statesSubscribes).forEach(id => this._socket.emit('subscribe', id));
+            this._socket.emit(Connection.isWeb() ? 'getStates' : 'getForeignStates', this.statesSubscribes, (err, states) => {
+                err && console.error(`Cannot getForeignStates: ${JSON.stringify(err)}`);
+                // inform about states
+                states && Object.keys(states).forEach(id => this.stateChange(id, states[id]));
+            });
         } else if (!isEnable && this.subscribed) {
             this.subscribed = false;
             // un-subscribe objects

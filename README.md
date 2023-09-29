@@ -667,6 +667,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Experimental feature added: update states on re-subscribe
+
 ### 4.5.5 (2023-09-27)
 * (bluefox) Added export for IconNoIcon
 
