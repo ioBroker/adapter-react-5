@@ -1119,8 +1119,9 @@ class Connection {
             // re-subscribe logs
             this.autoSubscribeLog && this._socket.emit('requireLog', true);
             // re-subscribe states
-            Object.keys(this.statesSubscribes).forEach(id => this._socket.emit('subscribe', id));
-            this._socket.emit(Connection.isWeb() ? 'getStates' : 'getForeignStates', this.statesSubscribes, (err, states) => {
+            const ids = Object.keys(this.statesSubscribes);
+            ids.forEach(id => this._socket.emit('subscribe', id));
+            this._socket.emit(Connection.isWeb() ? 'getStates' : 'getForeignStates', ids, (err, states) => {
                 err && console.error(`Cannot getForeignStates: ${JSON.stringify(err)}`);
                 // inform about states
                 states && Object.keys(states).forEach(id => this.stateChange(id, states[id]));
