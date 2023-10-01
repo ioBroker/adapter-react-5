@@ -42,7 +42,7 @@
     "@mui/icons-material": "^5.14.11",
     "@mui/material": "^5.14.11",
     "@mui/styles": "^5.14.11",
-    "@mui/x-date-pickers": "6.15.0",
+    "@mui/x-date-pickers": "6.16.0",
     "@sentry/browser": "^7.72.0",
     "@sentry/integrations": "^7.72.0",
     "@types/iobroker": "^4.0.5",
