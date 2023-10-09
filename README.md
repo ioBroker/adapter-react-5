@@ -661,12 +661,18 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 ```
 - Replace all `socket.log.error('text')` to `socket.log('text', 'error')`
 - Add to App.js `import { AdminConnection } from '@iobroker/adapter-react-v5';` and `super(props, { Connection: AdminConnection });` if run in admin
+
+## Warning
+`react-inlinesvg@4.0.5` cannot be used. Use `react-inlinesvg@4.0.3` instead.  
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Just updated the packages
+
 ### 4.6.2 (2023-09-29)
 * (bluefox) Experimental feature added: update states on re-subscribe
 
