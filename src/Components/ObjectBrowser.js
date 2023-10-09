@@ -1327,7 +1327,7 @@ function buildTree(objects, options) {
                 const _croot = {
                     data: {
                         name:       parts[parts.length - 1],
-                        title:      getName(obj && obj.common && obj.common.name, options.lang),
+                        title:      getName(obj?.common?.name, options.lang),
                         obj,
                         parent:     croot,
                         icon:       getSelectIdIcon(objects, id, imagePrefix) || getSystemIcon(objects, id, 0, imagePrefix),
@@ -1439,11 +1439,16 @@ function findRoomsForObject(data, id, lang, withParentInfo, rooms) {
         return { rooms: [], per: false };
     }
     rooms = rooms || [];
-    for (let i = 0; i < data.roomEnums.length; i++) {
-        const common = data.objects[data.roomEnums[i]]?.common;
+    for (const room of data.roomEnums) {
+        const common = data.objects[room]?.common;
+
+        if (!common) {
+            continue;
+        }
+
         const name = getName(common.name, lang);
 
-        if (common?.members?.includes(id) && !rooms.includes(name)) {
+        if (common.members?.includes(id) && !rooms.includes(name)) {
             if (!withParentInfo) {
                 rooms.push(name);
             } else {
@@ -1489,8 +1494,13 @@ function findFunctionsForObject(data, id, lang, withParentInfo, funcs) {
     funcs = funcs || [];
     for (let i = 0; i < data.funcEnums.length; i++) {
         const common = data.objects[data.funcEnums[i]]?.common;
+
+        if (!common) {
+            continue;
+        }
+
         const name = getName(common.name, lang);
-        if (common?.members?.includes(id) && !funcs.includes(name)) {
+        if (common.members?.includes(id) && !funcs.includes(name)) {
             if (!withParentInfo) {
                 funcs.push(name);
             } else {
@@ -1558,23 +1568,32 @@ function formatValue(options) {
 
     if (isCommon?.role && typeof isCommon.role === 'string' && isCommon.role.match(/^value\.time|^date/)) {
         if (v && typeof v === 'string') {
-            if (v.length === 13) {
-                // (length of "1647597254924") warning, this solution only works till Nov 20 2286 18:46:39CET
+            if (Utils.isStringInteger(v)) {
+                // we assume a unix ts
                 v = new Date(parseInt(v, 10)).toString();
             } else {
-                // we don't know what is that, so leave it as it is
+                // check if parsable by new date
+                try {
+                    const parsedDate = new Date(v);
+
+                    if (Utils.isValidDate(parsedDate)) {
+                        v = parsedDate.toString();
+                    }
+                } catch {
+                    // ignore
+                }
             }
         } else {
             if (v > 946681200 && v < 946681200000) {
                 // '2000-01-01T00:00:00' => 946681200000
-                v *= 1000; // may be the time is in seconds (UNIX time)
+                v *= 1_000; // maybe the time is in seconds (UNIX time)
             }
             // null and undefined could not be here. See `let v = (isCommon && isCommon.type === 'file') ....` above
             v = v ? new Date(v).toString() : v;
         }
     } else {
         if (type === 'number') {
-            v = Math.round(v * 100000000) / 100000000; // remove 4.00000000000000001
+            v = Math.round(v * 100_000_000) / 100_000_000; // remove 4.00000000000000001
             if (isFloatComma) {
                 v = v.toString().replace('.', ',');
             }
@@ -1824,6 +1843,12 @@ let objectsAlreadyLoaded = false;
  */
 class ObjectBrowser extends Component {
     /**
+     * Namespaces which are allowed to be edited by non-expert users
+     * @type {string[]}
+     */
+    #NON_EXPERT_NAMESPACES = ['0_userdata.0.', 'alias.0.'];
+
+    /**
      * @param {import('./types').ObjectBrowserProps} props
      */
     constructor(props) {
@@ -1986,6 +2011,7 @@ class ObjectBrowser extends Component {
             showDescription:
                 (window._localStorage || window.localStorage).getItem(`${props.dialogName || 'App'}.desc`) !== 'false',
             showContextMenu: null,
+            noStatesByExportImport: false,
         };
 
         this.edit = {};
@@ -2203,6 +2229,16 @@ class ObjectBrowser extends Component {
     }
 
     /**
+     * Check if it is a non-expert id
+     *
+     * @param id id to test
+     * @return {boolean}
+     */
+    isNonExpertId(id) {
+        return !!this.#NON_EXPERT_NAMESPACES.find(saveNamespace => id.startsWith(saveNamespace));
+    }
+
+    /**
      * @private
      * @param {ioBroker.EmptyCallback?} cb
      */
@@ -2316,6 +2352,37 @@ class ObjectBrowser extends Component {
 
         this.subscribes = [];
         this.objects = {};
+    }
+
+    /** @typedef {{ id: string, obj: ioBroker.Object, item: any }} ShowDeleteDialogOptions */
+
+    /**
+     * Show the delete dialog for a given object
+     *
+     * @param {ShowDeleteDialogOptions} options
+     */
+    showDeleteDialog(options) {
+        const { id, obj, item } = options;
+
+        // calculate the number of children
+        const keys = Object.keys(this.objects);
+        keys.sort();
+        let count = 0;
+        const start = `${id}.`;
+        for (let i = 0; i < keys.length; i++) {
+            if (keys[i].startsWith(start)) {
+                count++;
+            } else if (keys[i] > start) {
+                break;
+            }
+        }
+
+        this.props.onObjectDelete(
+            id,
+            !!item.children?.length,
+            !obj.common?.dontDelete,
+            count + 1,
+        );
     }
 
     /**
@@ -3186,7 +3253,7 @@ class ObjectBrowser extends Component {
     getFilterSelectFunction() {
         const func = this.info.funcEnums.map(id => ({
             name: getName(
-                (this.objects[id] && this.objects[id].common && this.objects[id].common.name) || id.split('.').pop(),
+                this.objects[id]?.common?.name || id.split('.').pop(),
             ),
             value: id,
             icon: <Icon src={this.objects[id]?.common?.icon || ''} className={this.props.classes.selectIcon} />,
@@ -3427,31 +3494,60 @@ class ObjectBrowser extends Component {
                 }
                 const obj = objs[id];
                 let enums = null;
+                let val;
+                let ack;
                 if (obj && obj.common && obj.common.enums) {
                     enums = obj.common.enums;
                     delete obj.common.enums;
                 } else {
                     enums = null;
                 }
+
+                if (obj.val) {
+                    val = obj.val;
+                    try {
+                        val = JSON.parse(val);
+                    } catch (e) {
+                        console.log(`Cannot parse value: ${e}`);
+                        val = null;
+                    }
+                    delete obj.val;
+                }
+                if (obj.ack !== undefined) {
+                    ack = obj.ack;
+                    delete obj.ack;
+                }
                 try {
                     await this.props.socket.setObject(id, obj);
                     enums && (await this._createAllEnums(enums, obj._id));
                     if (obj.type === 'state') {
-                        try {
-                            const state = await this.props.socket.getState(obj._id);
-                            if (!state || state.val === null) {
-                                try {
-                                    await this.props.socket.setState(
-                                        obj._id,
-                                        !obj.common || obj.common.def === undefined ? null : obj.common.def,
-                                        true,
-                                    );
-                                } catch (e) {
-                                    window.alert(`Cannot set state "${obj._id}": ${e}`);
-                                }
+                        if (val !== undefined && val !== null) {
+                            try {
+                                await this.props.socket.setState(
+                                    obj._id,
+                                    val,
+                                    ack !== undefined ? ack : true,
+                                );
+                            } catch (e) {
+                                window.alert(`Cannot set state "${obj._id} with ${val}": ${e}`);
                             }
-                        } catch (e) {
-                            window.alert(`Cannot read state "${obj._id}": ${e}`);
+                        } else {
+                            try {
+                                const state = await this.props.socket.getState(obj._id);
+                                if (!state || state.val === null) {
+                                    try {
+                                        await this.props.socket.setState(
+                                            obj._id,
+                                            !obj.common || obj.common.def === undefined ? null : obj.common.def,
+                                            true,
+                                        );
+                                    } catch (e) {
+                                        window.alert(`Cannot set state "${obj._id}": ${e}`);
+                                    }
+                                }
+                            } catch (e) {
+                                window.alert(`Cannot read state "${obj._id}": ${e}`);
+                            }
                         }
                     }
                 } catch (error) {
@@ -3484,15 +3580,26 @@ class ObjectBrowser extends Component {
         return [];
     }
 
-    _exportObjects(isAll) {
+    async _exportObjects(isAll, noStatesByExportImport) {
         if (isAll) {
             generateFile('allObjects.json', this.objects);
         } else if (this.state.selected.length || this.state.selectedNonObject) {
             const result = {};
             const id = this.state.selected[0] || this.state.selectedNonObject;
+            const ids = this._getSelectedIdsForExport();
 
-            this._getSelectedIdsForExport().forEach(key => {
+            for (let i = 0; i < ids.length; i++) {
+                const key = ids[i];
                 result[key] = JSON.parse(JSON.stringify(this.objects[key]));
+
+                // read states values
+                if (result[key]?.type === 'state' && !noStatesByExportImport) {
+                    const state = await this.props.socket.getState(key);
+                    if (state) {
+                        result[key].val = state.val;
+                        result[key].ack = state.ack;
+                   }
+                }
                 // add enum information
                 if (result[key].common) {
                     const enums = this.getEnumsForId(key);
@@ -3500,9 +3607,9 @@ class ObjectBrowser extends Component {
                         result[key].common.enums = enums;
                     }
                 }
-            });
+            }
 
-            generateFile(`${id}.json`, result);
+            generateFile(`${id}.json`, result, noStatesByExportImport);
         } else {
             window.alert(this.props.t('ra_Save of objects-tree is not possible'));
         }
@@ -3519,13 +3626,21 @@ class ObjectBrowser extends Component {
                     {this.props.t('You can export all objects or just the selected branch.')}
                     <br />
                     {this.props.t('Selected %s object(s)', this.state.showExportDialog)}
+                    <br />
+                    <FormControlLabel
+                        control={<Checkbox
+                            checked={this.state.noStatesByExportImport}
+                            onChange={e => this.setState({ noStatesByExportImport: e.target.checked })}
+                        />}
+                        label={this.props.t('ra_Do not export values of states')}
+                    />
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
                 <Button
                     color="grey"
                     variant="outlined"
-                    onClick={() => this.setState({ showExportDialog: false }, () => this._exportObjects(true))}
+                    onClick={() => this.setState({ showExportDialog: false }, () => this._exportObjects(true, this.state.noStatesByExportImport))}
                 >
                     {this.props.t('ra_All objects')}
                     {' '}
@@ -3537,7 +3652,7 @@ class ObjectBrowser extends Component {
                     color="primary"
                     variant="contained"
                     autoFocus
-                    onClick={() => this.setState({ showExportDialog: false }, () => this._exportObjects(false))}
+                    onClick={() => this.setState({ showExportDialog: false }, () => this._exportObjects(false, this.state.noStatesByExportImport))}
                 >
                     {this.props.t('ra_Only selected')}
                     {' '}
@@ -3580,25 +3695,48 @@ class ObjectBrowser extends Component {
                         //    "_id": "xxx",
                         //   "common": "yyy",
                         //   "native": "zzz"
+                        //   "val": JSON.stringify(value)
+                        //   "ack": true
                         // }
                         if (!id) {
                             return window.alert(this.props.t('ra_Invalid structure'));
                         }
                         try {
                             let enums;
+                            let val;
+                            let ack;
                             if (json.common.enums) {
                                 enums = json.common.enums;
                                 delete json.common.enums;
                             }
+                            if (json.val) {
+                                val = json.val;
+                                try {
+                                    val = JSON.parse(val);
+                                } catch (e) {
+                                    console.log(`Cannot parse value: ${e}`);
+                                    val = null;
+                                }
+                                delete json.val;
+                            }
+                            if (json.ack !== undefined) {
+                                ack = json.ack;
+                                delete json.ack;
+                            }
                             await this.props.socket.setObject(json._id, json);
+
                             if (json.type === 'state') {
-                                const state = await this.props.socket.getState(json._id);
-                                if (!state || state.val === null || state.val === undefined) {
-                                    await this.props.socket.getState(
-                                        json._id,
-                                        json.common.def === undefined ? null : json.common.def,
-                                        true,
-                                    );
+                                if (val !== undefined && val !== null) {
+                                    await this.props.socket.setState(json._id, val, ack === undefined ? true : ack);
+                                } else {
+                                    const state = await this.props.socket.getState(json._id);
+                                    if (!state || state.val === null || state.val === undefined) {
+                                        await this.props.socket.setState(
+                                            json._id,
+                                            json.common.def === undefined ? null : json.common.def,
+                                            true,
+                                        );
+                                    }
                                 }
                             }
                             if (enums) {
@@ -4155,6 +4293,8 @@ class ObjectBrowser extends Component {
                 ? this.systemConfig.common.defaultNewAcl.state
                 : this.systemConfig.common.defaultNewAcl.object);
 
+        const showEdit = this.state.filter.expertMode || this.isNonExpertId(item.data.id);
+
         return [
             this.state.filter.expertMode && this.props.objectEditOfAccessControl ?
                 <Tooltip key="acl" title={item.data.aclTooltip} classes={{ popper: this.props.classes.tooltip }}>
@@ -4172,7 +4312,7 @@ class ObjectBrowser extends Component {
                 </Tooltip>
                 :
                 <div key="aclEmpty" className={classes.cellButtonMinWidth} />,
-            <IconButton
+            showEdit ? <IconButton
                 key="edit"
                 className={classes.cellButtonsButton}
                 size="small"
@@ -4187,7 +4327,7 @@ class ObjectBrowser extends Component {
                 }}
             >
                 <IconEdit className={classes.cellButtonsButtonIcon} />
-            </IconButton>,
+            </IconButton> : <div key="editDisabled" className={classes.cellButtonsButton} />,
             this.props.onObjectDelete && (item.children?.length || !item.data.obj.common?.dontDelete) ?
                 <IconButton
                     key="delete"
@@ -4524,7 +4664,7 @@ class ObjectBrowser extends Component {
             const enums = (type === 'room' ? this.info.roomEnums : this.info.funcEnums)
                 .map(id => ({
                     name: getName(
-                        (this.objects[id] && this.objects[id].common && this.objects[id].common.name) ||
+                        this.objects[id]?.common?.name ||
                             id.split('.').pop(),
                         this.props.lang,
                     ),
@@ -5238,7 +5378,6 @@ class ObjectBrowser extends Component {
             key={id}
             id={id}
             onMouseDown={e => {
-                e.preventDefault();
                 this.onSelect(id);
                 let isRightMB;
                 if ('which' in e) {
@@ -5877,6 +6016,35 @@ class ObjectBrowser extends Component {
         if (event.code === 'ArrowRight' || event.code === 'ArrowLeft') {
             this.toggleExpanded(selectedId);
         }
+
+        if (event.code === 'Delete') {
+            const item = this.getItemFromRoot(this.root, selectedId);
+            const { obj } = item.data;
+
+            if (obj && !obj.common?.dontDelete) {
+                this.showDeleteDialog({ id: selectedId, obj, item });
+            }
+        }
+    }
+
+    /**
+     * Find the id from the root
+     *
+     * @param {Record<string, any>} root The current root
+     * @param {string} id the object id
+     *
+     * @returns {any}
+     */
+    getItemFromRoot(root, id) {
+        const idArr = id.split('.');
+        let currId = '';
+
+        for (const idEntry of idArr) {
+            currId = currId ? `${currId}.${idEntry}` : idEntry;
+            root = root.children.find(item => item.data.id === currId);
+        }
+
+        return root;
     }
 
     resizerReset = () => {
@@ -5886,6 +6054,20 @@ class ObjectBrowser extends Component {
         (window._localStorage || window.localStorage).removeItem(`${this.props.dialogName || 'App'}.table`);
         this.forceUpdate();
     };
+
+    /**
+     * Render a right handle for resizing
+     *
+     * @return {JSX.Element}
+     */
+    renderHandleRight() {
+        return <div
+            className={`${this.props.classes.resizeHandle} ${this.props.classes.resizeHandleRight}`}
+            onMouseDown={this.resizerMouseDown}
+            onDoubleClick={this.resizerReset}
+            title={this.props.t('ra_Double click to reset table layout')}
+        />;
+    }
 
     /**
      * @private
@@ -5915,87 +6097,92 @@ class ObjectBrowser extends Component {
                 data-name="id"
             >
                 {this.getFilterInput('id')}
-                <div
-                    className={`${this.props.classes.resizeHandle} ${this.props.classes.resizeHandleRight}`}
-                    onMouseDown={this.resizerMouseDown}
-                    onDoubleClick={this.resizerReset}
-                    title={this.props.t('ra_Double click to reset table layout')}
-                />
+                {this.renderHandleRight()}
             </div>
             {this.columnsVisibility.name ? <div
                 className={classes.headerCell}
-                style={{ width: this.columnsVisibility.nameHeader }}
+                style={{ width: this.columnsVisibility.nameHeader, position: 'relative' }}
                 data-min={100}
                 data-name="nameHeader"
             >
                 {this.getFilterInput('name')}
+                {this.renderHandleRight()}
+
             </div> : null}
             {!this.state.statesView && <>
                 {this.columnsVisibility.type ? <div
                     className={classes.headerCell}
-                    style={{ width: this.columnsVisibility.type }}
+                    style={{ width: this.columnsVisibility.type, position: 'relative' }}
                     data-min={100}
                     data-name="type"
                 >
                     {this.getFilterSelectType()}
+                    {this.renderHandleRight()}
                 </div> : null}
                 {this.columnsVisibility.role ? <div
                     className={classes.headerCell}
-                    style={{ width: this.columnsVisibility.role }}
+                    style={{ width: this.columnsVisibility.role, position: 'relative' }}
                     data-min={100}
                     data-name="role"
                 >
                     {this.getFilterSelectRole()}
+                    {this.renderHandleRight()}
                 </div> : null}
                 {this.columnsVisibility.room ? <div
                     className={classes.headerCell}
-                    style={{ width: this.columnsVisibility.room }}
+                    style={{ width: this.columnsVisibility.room, position: 'relative' }}
                     data-min={100}
                     data-name="room"
                 >
                     {this.getFilterSelectRoom()}
+                    {this.renderHandleRight()}
                 </div> : null}
                 {this.columnsVisibility.func ? <div
                     className={classes.headerCell}
-                    style={{ width: this.columnsVisibility.func }}
+                    style={{ width: this.columnsVisibility.func, position: 'relative' }}
                     data-min={100}
                     data-name="func"
                 >
                     {this.getFilterSelectFunction()}
+                    {this.renderHandleRight()}
                 </div> : null}
             </>}
             {this.state.statesView && <>
                 <div
                     className={Utils.clsx(classes.headerCell, classes.headerCellValue)}
-                    style={{ width: this.columnsVisibility.changedFrom }}
+                    style={{ width: this.columnsVisibility.changedFrom, position: 'relative' }}
                     data-min={100}
                     data-name="changedFrom"
                 >
                     {this.props.t('ra_Changed from')}
+                    {this.renderHandleRight()}
                 </div>
                 <div
                     className={Utils.clsx(classes.headerCell, classes.headerCellValue)}
-                    style={{ width: this.columnsVisibility.qualityCode }}
+                    style={{ width: this.columnsVisibility.qualityCode, position: 'relative' }}
                     data-min={100}
                     data-name="qualityCode"
                 >
                     {this.props.t('ra_Quality code')}
+                    {this.renderHandleRight()}
                 </div>
                 <div
                     className={Utils.clsx(classes.headerCell, classes.headerCellValue)}
-                    style={{ width: this.columnsVisibility.timestamp }}
+                    style={{ width: this.columnsVisibility.timestamp, position: 'relative' }}
                     data-min={100}
                     data-name="timestamp"
                 >
                     {this.props.t('ra_Timestamp')}
+                    {this.renderHandleRight()}
                 </div>
                 <div
                     className={Utils.clsx(classes.headerCell, classes.headerCellValue)}
-                    style={{ width: this.columnsVisibility.lastChange }}
+                    style={{ width: this.columnsVisibility.lastChange, position: 'relative' }}
                     data-min={100}
                     data-name="lastChange"
                 >
                     {this.props.t('ra_Last change')}
+                    {this.renderHandleRight()}
                 </div>
             </>}
             {this.adapterColumns.map(item => <div
@@ -6156,7 +6343,7 @@ class ObjectBrowser extends Component {
             objects={this.objects}
             dateFormat={this.props.dateFormat}
             isFloatComma={this.props.isFloatComma}
-            themeName={this.props.themeName}
+            themeType={this.props.themeType}
             socket={this.props.socket}
             dialogName={this.props.dialogName}
             aliasTab={this.state.editObjectAlias}
@@ -6236,11 +6423,19 @@ class ObjectBrowser extends Component {
             t={this.props.t}
             expertMode={this.state.filter.expertMode}
             onClose={() => this.setState({ showAliasEditor: '' })}
-            onRedirect={id => this.setState({ editObjectDialog: id, showAliasEditor: false, editObjectAlias: true })}
+            onRedirect={(id, timeout) =>
+                setTimeout(() =>
+                    this.onSelect(id, false, () =>
+                        this.expandAllSelected(() => {
+                            this.scrollToItem(id);
+                            setTimeout(() => this.setState({ editObjectDialog: id, showAliasEditor: false, editObjectAlias: true }), 300);
+                        })), timeout || 0)}
         />;
     }
 
     /**
+     * Renders the right mouse button context menu
+     *
      * @private
      * @returns {JSX.Element | null}
      */
@@ -6280,7 +6475,7 @@ class ObjectBrowser extends Component {
         const ITEMS = {
             EDIT: {
                 key: '0',
-                visibility: this.props.objectBrowserEditObject && obj,
+                visibility: this.props.objectBrowserEditObject && obj && (this.state.filter.expertMode || this.isNonExpertId(id)),
                 icon: <IconEdit fontSize="small" className={this.props.classes.contextMenuEdit} />,
                 label: this.texts.editObject,
                 onClick: () => this.setState({ editObjectDialog: item.data.id, showContextMenu: null, editObjectAlias: false }),
@@ -6430,29 +6625,8 @@ class ObjectBrowser extends Component {
                 icon: <IconDelete fontSize="small" className={this.props.classes.contextMenuDelete} />,
                 className: this.props.classes.contextMenuDelete,
                 label: this.texts.deleteObject,
-                onClick: () => {
-                    this.setState({ showContextMenu: null }, () => {
-                        // calculate number of children
-                        const keys = Object.keys(this.objects);
-                        keys.sort();
-                        let count = 0;
-                        const start = `${id}.`;
-                        for (let i = 0; i < keys.length; i++) {
-                            if (keys[i].startsWith(start)) {
-                                count++;
-                            } else if (keys[i] > start) {
-                                break;
-                            }
-                        }
-
-                        this.props.onObjectDelete(
-                            id,
-                            !!item.children?.length,
-                            !obj.common?.dontDelete,
-                            count + 1,
-                        );
-                    });
-                },
+                onClick: () => this.setState({ showContextMenu: null }, () =>
+                    this.showDeleteDialog({ id, obj: obj || {}, item })),
             },
         };
 
@@ -6523,12 +6697,15 @@ class ObjectBrowser extends Component {
             ? this.objects[this.edit.id].common.type
             : typeof this.edit.val;
 
+        const role = this.objects[this.edit.id].common.role;
+
         const ObjectBrowserValue = this.props.objectBrowserValue;
 
         return <ObjectBrowserValue
             t={this.props.t}
             lang={this.props.lang}
             type={type}
+            role={role}
             states={Utils.getStates(this.objects[this.edit.id])}
             themeType={this.props.themeType}
             expertMode={this.state.filter.expertMode}
@@ -6589,11 +6766,14 @@ class ObjectBrowser extends Component {
         const classes = this.props.classes;
         const items = this.renderItem(this.root, undefined, classes);
 
-        return <TabContainer key={this.props.dialogName} classes={{}} onKeyDown={event => this.navigateKeyPress(event)} tabIndex={0}>
-            <TabHeader>{this.getToolbar()}</TabHeader>
-            <TabContent classes={{}}>
+        return <TabContainer key={this.props.dialogName}>
+            <TabHeader>
+                {this.getToolbar()}
+            </TabHeader>
+            <TabContent>
                 {this.renderHeader()}
-                <div className={this.props.classes.tableDiv} ref={this.tableRef}>
+                {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
+                <div className={this.props.classes.tableDiv} ref={this.tableRef} onKeyDown={event => this.navigateKeyPress(event)} tabIndex={0}>
                     {items}
                 </div>
             </TabContent>
@@ -6624,8 +6804,8 @@ ObjectBrowser.defaultProps = {
     objectStatesView: false,
     objectImportExport: false,
     objectEditOfAccessControl: false,
-    modalNewObject: () => {},
-    modalEditOfAccessControl: () => {},
+    modalNewObject: () => undefined,
+    modalEditOfAccessControl: () => undefined,
 };
 
 ObjectBrowser.propTypes = {
@@ -6691,7 +6871,7 @@ ObjectBrowser.propTypes = {
     types: PropTypes.array,             // optional ['state', 'instance', 'channel']
     columns: PropTypes.array,           // optional ['name', 'type', 'role', 'room', 'func', 'val', 'buttons']
     // eslint-disable-next-line react/no-unused-prop-types
-    root: PropTypes.string,             // optional, shows only elements of this root
+    root: PropTypes.string,             // optional. Shows only elements of this root
 
     objectsWorker: PropTypes.object,    // optional cache of objects
     filterFunc: PropTypes.func,         // function to filter out all unnecessary objects. It cannot be used together with "types"

@@ -409,5 +409,9 @@
   "ra_View file": "Посмотреть файл",
   "ra_Del": "Delete",
   "ra_Show all folders": "Показать все папки",
-  "ra_Restrict to folder": "Ограничить папкой"
+  "ra_Restrict to folder": "Ограничить папкой",
+  "ra_Select type of export": "Выберите тип экспорта",
+  "ra_You can export all objects or just the selected branch.": "Вы можете экспортировать все объекты или только выбранную ветвь.",
+  "ra_Do not export values of states": "Не экспортировать значения состояний",
+  "ra_Selected %s object(s)": "Объектов: %s"
 }

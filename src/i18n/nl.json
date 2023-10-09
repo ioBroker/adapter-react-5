@@ -409,5 +409,9 @@
   "ra_View file": "Bestand bekijken",
   "ra_Del": "Delete",
   "ra_Show all folders": "Toon alle mappen",
-  "ra_Restrict to folder": "Beperken tot map"
+  "ra_Restrict to folder": "Beperken tot map",
+  "ra_Select type of export": "Selecteer het type export",
+  "ra_You can export all objects or just the selected branch.": "U kunt alle objecten of alleen de geselecteerde tak exporteren.",
+  "ra_Do not export values of states": "Exporteer geen waarden van staten",
+  "ra_Selected %s object(s)": "Geselecteerde %s object(en)"
 }

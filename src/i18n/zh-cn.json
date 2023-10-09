@@ -409,5 +409,9 @@
   "ra_View file": "查看文件",
   "ra_Del": "Delete",
   "ra_Show all folders": "显示所有文件夹",
-  "ra_Restrict to folder": "限制到文件夹"
+  "ra_Restrict to folder": "限制到文件夹",
+  "ra_Select type of export": "选择导出类型",
+  "ra_You can export all objects or just the selected branch.": "您可以导出所有对象或仅导出选定的分支。",
+  "ra_Do not export values of states": "不导出状态值",
+  "ra_Selected %s object(s)": "选定的 %s 个对象"
 }

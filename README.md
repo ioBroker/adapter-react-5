@@ -672,6 +672,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 ## Changelog
 ### **WORK IN PROGRESS**
 * (bluefox) Just updated the packages
+* (bluefox) Synced with admin
 
 ### 4.6.2 (2023-09-29)
 * (bluefox) Experimental feature added: update states on re-subscribe

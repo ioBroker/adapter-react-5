@@ -409,5 +409,9 @@
   "ra_View file": "Datei ansehen",
   "ra_Del": "Entf",
   "ra_Show all folders": "Alle Ordner anzeigen",
-  "ra_Restrict to folder": "Auf Ordner beschränken"
+  "ra_Restrict to folder": "Auf Ordner beschränken",
+  "ra_Select type of export": "Die Art des Exports auswählen ",
+  "ra_You can export all objects or just the selected branch.": "Sie können alle Objekte oder nur den ausgewählten Zweig exportieren.",
+  "ra_Do not export values of states": "Keine Zustandswerte exportieren",
+  "ra_Selected %s object(s)": "Ausgewählt %s Objekt(en)"
 }

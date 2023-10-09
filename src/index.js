@@ -148,6 +148,12 @@ export * from './icons/IconState';
 export { default as IconNoIcon } from './icons/IconNoIcon';
 export * from './icons/IconNoIcon';
 
+export { default as IconDocumentReadOnly } from './icons/IconDocumentReadOnly';
+export * from './icons/IconDocumentReadOnly';
+
+export { default as IconClearFilter } from './icons/IconClearFilter';
+export * from './icons/IconClearFilter';
+
 export { default as ComplexCronDialog } from './Dialogs/ComplexCron';
 export * from './Dialogs/ComplexCron';
 

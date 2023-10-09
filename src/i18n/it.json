@@ -409,5 +409,9 @@
   "ra_View file": "Vedi il file",
   "ra_Del": "Delete",
   "ra_Show all folders": "Mostra tutte le cartelle",
-  "ra_Restrict to folder": "Limita alla cartella"
+  "ra_Restrict to folder": "Limita alla cartella",
+  "ra_Select type of export": "Seleziona il tipo di esportazione",
+  "ra_You can export all objects or just the selected branch.": "Puoi esportare tutti gli oggetti o solo il ramo selezionato.",
+  "ra_Do not export values of states": "Non esportare i valori degli stati",
+  "ra_Selected %s object(s)": "%s oggetto/i selezionato/i"
 }
