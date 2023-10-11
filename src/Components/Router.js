@@ -54,8 +54,8 @@ class Router extends React.Component {
     /**
      * Navigate to a new location. Any parameters that are not set will be taken from the current location.
      * @param {string | undefined | null} [tab]
-     * @param {string | undefined} [dialog]
-     * @param {string | undefined} [id]
+     * @param {string | undefined | null} [dialog]
+     * @param {string | undefined | null} [id]
      * @param {string | undefined} [arg]
      */
     static doNavigate(tab, dialog, id, arg) {
