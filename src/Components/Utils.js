@@ -1659,6 +1659,26 @@ class Utils {
                 activeRepo.find(r => r.toLowerCase().startsWith('stable'))
             ));
     }
+
+    /**
+     * Check if given string is an integer
+     *
+     * @param {string} str string to check
+     * @return {boolean}
+     */
+    static isStringInteger(str) {
+        return parseInt(str).toString() === str;
+    }
+
+    /**
+     * Check if the date is valid
+     *
+     * @param {Date} date
+     * @return {boolean}
+     */
+    static isValidDate(date) {
+        return date instanceof Date && !isNaN(date);
+    }
 }
 
 export default Utils;
