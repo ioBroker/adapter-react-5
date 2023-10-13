@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Fixed the legacy connection
+
 ### 4.6.5 (2023-10-12)
 * (foxriver76) fixed object browser with date
 

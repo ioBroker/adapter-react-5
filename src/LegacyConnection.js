@@ -204,16 +204,12 @@ class Connection {
         } else {
             // if web adapter, socket io could be on another port or even host
             if (window.socketUrl) {
-                let parts = window.socketUrl.split(':');
-                host = parts[0] || host;
-                port = parts[1] || port;
-                if (host.includes('://')) {
-                    parts = host.split('://');
-                    protocol = parts[0];
-                    host = parts[1];
-                }
+                const parsed = new URL(window.socketUrl);
+                host = parsed.hostname;
+                port = parsed.port;
+                protocol = parsed.protocol.replace(":", "");
             }
-            // get current path
+            // get a current path
             const pos = path.lastIndexOf('/');
             if (pos !== -1) {
                 path = path.substring(0, pos + 1);
@@ -224,7 +220,7 @@ class Connection {
                 const parts = path.split('/');
                 if (parts.length > 2) {
                     parts.pop();
-                    // if it is version, like in material, so remove it too
+                    // if it is a version, like in material, so remove it too
                     if (parts[parts.length - 1].match(/\d+\.\d+\.\d+/)) {
                         parts.pop();
                     }
