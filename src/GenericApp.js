@@ -88,7 +88,6 @@ if (!window.localStorage) {
  * @extends {Router<import('./types').GenericAppProps, import('./types').GenericAppState>}
  */
 class GenericApp extends Router {
-
     /**
      * @var {LegacyConnection | AdminConnection}
      */
@@ -307,7 +306,7 @@ class GenericApp extends Router {
                                             loaded: true,
                                             expertMode: this.getExpertMode(),
                                         },
-                                    () => this.onConnectionReady && this.onConnectionReady(),
+                                        () => this.onConnectionReady && this.onConnectionReady(),
                                     );
                                 }
                             });
@@ -387,12 +386,12 @@ class GenericApp extends Router {
                 const newThemeName = Utils.getThemeName();
                 Utils.setThemeName(Utils.getThemeName());
 
-                const theme = this.createTheme(newThemeName);
+                const newTheme = this.createTheme(newThemeName);
 
                 this.setState({
-                    theme,
-                    themeName: this.getThemeName(theme),
-                    themeType: this.getThemeType(theme),
+                    theme: newTheme,
+                    themeName: this.getThemeName(newTheme),
+                    themeType: this.getThemeType(newTheme),
                 }, () => {
                     this.props.onThemeChange && this.props.onThemeChange(newThemeName);
                     this.onThemeChanged && this.onThemeChanged(newThemeName);
@@ -452,20 +451,20 @@ class GenericApp extends Router {
 
     /**
      * Get the theme name
-     * @param {import('./types').Theme} theme Theme
+     * @param {import('./types').Theme} currentTheme Theme
      * @returns {string} Theme name
      */
-    getThemeName(theme) {
-        return theme.name;
+    getThemeName(currentTheme) {
+        return currentTheme.name;
     }
 
     /**
      * Get the theme type
-     * @param {import('./types').Theme} theme Theme
+     * @param {import('./types').Theme} currentTheme Theme
      * @returns {string} Theme type
      */
-    getThemeType(theme) {
-        return theme.palette.mode;
+    getThemeType(currentTheme) {
+        return currentTheme.palette.mode;
     }
 
     /**
@@ -483,12 +482,12 @@ class GenericApp extends Router {
         if (newThemeName !== themeName) {
             Utils.setThemeName(newThemeName);
 
-            const theme = this.createTheme(newThemeName);
+            const newTheme = this.createTheme(newThemeName);
 
             this.setState({
-                theme,
-                themeName: this.getThemeName(theme),
-                themeType: this.getThemeType(theme),
+                theme: newTheme,
+                themeName: this.getThemeName(newTheme),
+                themeType: this.getThemeType(newTheme),
             }, () => {
                 this.props.onThemeChange && this.props.onThemeChange(newThemeName);
                 this.onThemeChanged && this.onThemeChanged(newThemeName);
@@ -643,7 +642,7 @@ class GenericApp extends Router {
                                 }
                             }));
                     }
-                    IPs6.forEach(ip => IPs4.push(ip));
+                    IPs6.forEach(_ip => IPs4.push(_ip));
                 }
                 resolve(IPs4);
             });
@@ -666,7 +665,7 @@ class GenericApp extends Router {
                 oldObj = _oldObj || {};
 
                 for (const a in this.state.native) {
-                    if (this.state.native.hasOwnProperty(a)) {
+                    if (Object.prototype.hasOwnProperty.call(this.state.native, a)) {
                         if (this.state.native[a] === null) {
                             oldObj.native[a] = null;
                         } else if (this.state.native[a] !== undefined) {

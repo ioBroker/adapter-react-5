@@ -207,7 +207,7 @@ class Connection {
                 const parsed = new URL(window.socketUrl);
                 host = parsed.hostname;
                 port = parsed.port;
-                protocol = parsed.protocol.replace(":", "");
+                protocol = parsed.protocol.replace(':', '');
             }
             // get a current path
             const pos = path.lastIndexOf('/');
@@ -326,7 +326,7 @@ class Connection {
         this._socket.on('stateChange', (id, state) =>
             setTimeout(() => this.stateChange(id, state), 0));
 
-        this._socket.on("im", (messageType, from, data) =>
+        this._socket.on('im', (messageType, from, data) =>
             setTimeout(() => this.instanceMessage(messageType, from, data), 0));
 
         this._socket.on('fileChange', (id, fileName, size) =>
@@ -409,10 +409,10 @@ class Connection {
      */
     _getUserPermissions(cb) {
         if (this.doNotLoadACL) {
-            return cb && cb();
+            cb && cb();
+        } else {
+            this._socket.emit('getUserPermissions', cb);
         }
-
-        this._socket.emit('getUserPermissions', cb);
     }
 
     /**
@@ -523,7 +523,7 @@ class Connection {
         } else {
             ids = id;
         }
-        let toSubscribe = [];
+        const toSubscribe = [];
         for (let i = 0; i < ids.length; i++) {
             const _id = ids[i];
             if (!this.statesSubscribes[_id]) {
@@ -561,7 +561,7 @@ class Connection {
             } else {
                 this._socket.emit(Connection.isWeb() ? 'getStates' : 'getForeignStates', id, (err, states) => {
                     err && console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`);
-                    states && Object.keys(states).forEach(id => cb(id, states[id]));
+                    states && Object.keys(states).forEach(_id => cb(_id, states[_id]));
                 });
             }
         }
@@ -579,7 +579,7 @@ class Connection {
         } else {
             ids = id;
         }
-        let toSubscribe = [];
+        const toSubscribe = [];
         for (let i = 0; i < ids.length; i++) {
             const _id = ids[i];
             if (!this.statesSubscribes[_id]) {
@@ -594,7 +594,7 @@ class Connection {
                 if (!reg.includes('*')) {
                     reg += '$';
                 }
-                this.statesSubscribes[_id] = {reg: new RegExp(reg), cbs: []};
+                this.statesSubscribes[_id] = { reg: new RegExp(reg), cbs: [] };
                 this.statesSubscribes[_id].cbs.push(cb);
                 if (_id !== this.ignoreState) {
                     // no answer from server required
@@ -614,7 +614,7 @@ class Connection {
             if (typeof cb === 'function' && this.connected) {
                 this._socket.emit(Connection.isWeb() ? 'getStates' : 'getForeignStates', id, (err, states) => {
                     err && console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`);
-                    states && Object.keys(states).forEach(id => cb(id, states[id]));
+                    states && Object.keys(states).forEach(_id => cb(_id, states[_id]));
                     states ? resolve(null) : reject(new Error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`));
                 });
             } else {
@@ -639,7 +639,7 @@ class Connection {
         } else {
             ids = id;
         }
-        let toUnsubscribe = [];
+        const toUnsubscribe = [];
         for (let i = 0; i < ids.length; i++) {
             const _id = ids[i];
 
@@ -776,7 +776,7 @@ class Connection {
         if (typeof cb !== 'function') {
             throw new Error('The state change handler must be a function!');
         }
-        let filePatterns
+        let filePatterns;
         if (Array.isArray(filePattern)) {
             filePatterns = filePattern;
         } else {
@@ -812,7 +812,7 @@ class Connection {
      * @param {function} cb The callback.
      */
     unsubscribeFiles(id, filePattern, cb) {
-        let filePatterns
+        let filePatterns;
         if (Array.isArray(filePattern)) {
             filePatterns = filePattern;
         } else {
@@ -905,7 +905,7 @@ class Connection {
      */
     stateChange(id, state) {
         for (const task in this.statesSubscribes) {
-            if (this.statesSubscribes.hasOwnProperty(task) && this.statesSubscribes[task].reg.test(id)) {
+            if (Object.prototype.hasOwnProperty.call(this.statesSubscribes, task) && this.statesSubscribes[task].reg.test(id)) {
                 this.statesSubscribes[task].cbs.forEach(cb => {
                     try {
                         cb(id, state);
@@ -1196,13 +1196,13 @@ class Connection {
 
         obj = JSON.parse(JSON.stringify(obj));
 
-        if (obj.hasOwnProperty('from')) {
+        if (Object.prototype.hasOwnProperty.call(obj, 'from')) {
             delete obj.from;
         }
-        if (obj.hasOwnProperty('user')) {
+        if (Object.prototype.hasOwnProperty.call(obj, 'user')) {
             delete obj.user;
         }
-        if (obj.hasOwnProperty('ts')) {
+        if (Object.prototype.hasOwnProperty.call(obj, 'ts')) {
             delete obj.ts;
         }
 
@@ -1278,7 +1278,7 @@ class Connection {
                 if (timeout) {
                     clearTimeout(timeout);
                     timeout = null;
-                    return err ? reject(err) : resolve(instances);
+                    err ? reject(err) : resolve(instances);
                 }
             });
         });
@@ -2565,8 +2565,8 @@ class Connection {
             return Promise.reject('Allowed only in admin');
         }
         return new Promise((resolve, reject) =>
-            this._socket.emit('encrypt', text, (err, text) =>
-                err ? reject(err) : resolve(text)));
+            this._socket.emit('encrypt', text, (err, _text) =>
+                err ? reject(err) : resolve(_text)));
     }
 
     /**
@@ -3012,7 +3012,7 @@ class Connection {
         }
 
         if (!host.startsWith('system.host.')) {
-            host += 'system.host.' + host;
+            host += `system.host.${host}`;
         }
 
         this._promises.repoCompact = new Promise((resolve, reject) => {
@@ -3084,7 +3084,7 @@ class Connection {
         }
 
         this._promises.uuid = this.getObject('system.meta.uuid')
-            //@ts-ignore
+            // @ts-ignore
             .then(obj => obj?.native?.uuid);
 
         return this._promises.uuid;
@@ -3125,8 +3125,7 @@ class Connection {
                     }
                     resolve(result);
                 }
-            })
-        );
+            }));
     }
 
     /**
@@ -3170,8 +3169,7 @@ class Connection {
                             } else {
                                 resolve(wasSubscribed);
                             }
-                        })
-                    ));
+                        })));
                 }
             }
         } while (deleted && (!callback || !messageType));
@@ -3207,6 +3205,7 @@ class Connection {
             this._socket.emit('logout', err =>
                 err ? reject(err) : resolve(null)));
     }
+
     /**
      * This is special method for vis.
      * It is used to not send to server the changes about "nothing_selected" state

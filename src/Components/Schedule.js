@@ -159,7 +159,7 @@ function padding(num) {
     if (num < 10) {
         return `0${num}`;
     }
-    return '' + num;
+    return `${num}`;
 }
 
 function TextTime(props) {
@@ -349,8 +349,8 @@ class Schedule extends React.Component {
             }
         }
 
-        let desc = [];
-        let validFrom = Schedule.string2date(schedule.valid.from);
+        const desc = [];
+        const validFrom = Schedule.string2date(schedule.valid.from);
         if (schedule.period.once) {
             // once
             const once = Schedule.string2date(schedule.period.once);
@@ -583,7 +583,7 @@ class Schedule extends React.Component {
                                 <TextField
                                     variant="standard"
                                     className={this.props.classes.inputTime}
-                                    style={{marginRight: 10}}
+                                    style={{ marginRight: 10 }}
                                     key="exactTimeFrom"
                                     type="time"
                                     value={this.state.schedule.time.start}
@@ -1089,13 +1089,13 @@ class Schedule extends React.Component {
                             control={
                                 <Checkbox
                                     className={this.props.classes.inputSmallCheck}
-                                    checked={schedule.period.dows.includes('' + i)}
+                                    checked={schedule.period.dows.includes(i.toString())}
                                     onChange={e => {
                                         const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                                         let dows;
                                         try {
                                             dows = JSON.parse(_schedule.period.dows);
-                                        } catch (e) {
+                                        } catch (err) {
                                             dows = [];
                                         }
                                         if (e.target.checked && !dows.includes(i)) {
@@ -1121,7 +1121,7 @@ class Schedule extends React.Component {
 
     getPeriodSettingsDaily() {
         if (!this.state.schedule.period.days) {
-            return;
+            return null;
         }
         const schedule = this.state.schedule;
         return [
@@ -1176,7 +1176,7 @@ class Schedule extends React.Component {
 
     getPeriodSettingsWeekly() {
         if (!this.state.schedule.period.weeks) {
-            return;
+            return null;
         }
         const schedule = this.state.schedule;
         return [
@@ -1190,7 +1190,8 @@ class Schedule extends React.Component {
                                 const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                                 _schedule.period.weeks = 1;
                                 this.onChange(_schedule);
-                            }} />}
+                            }}
+                        />}
                         label={I18n.t('sch_periodEveryWeek')}
                     />
                 </div>
@@ -1229,7 +1230,7 @@ class Schedule extends React.Component {
 
     getPeriodSettingsDates() {
         if (!this.state.schedule.period.dates) {
-            return;
+            return null;
         }
         const schedule = this.state.schedule;
 
@@ -1253,11 +1254,11 @@ class Schedule extends React.Component {
                         checked={parsedDates.length === 31}
                         onChange={() => {
                             const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                            const dates = [];
+                            const _dates = [];
                             for (let i = 1; i <= 31; i++) {
-                                dates.push(i);
+                                _dates.push(i);
                             }
-                            _schedule.period.dates = JSON.stringify(dates);
+                            _schedule.period.dates = JSON.stringify(_dates);
                             this.onChange(_schedule);
                         }}
                     />
@@ -1289,9 +1290,9 @@ class Schedule extends React.Component {
                         onChange={() => {
                             const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                             const result = [];
-                            const parsedDates = JSON.parse(_schedule.period.dates);
+                            const _parsedDates = JSON.parse(_schedule.period.dates);
                             for (let i = 1; i <= 31; i++) {
-                                if (parsedDates.indexOf(i) === -1) {
+                                if (!_parsedDates.includes(i)) {
                                     result.push(i);
                                 }
                             }
@@ -1320,19 +1321,19 @@ class Schedule extends React.Component {
                             checked={JSON.parse(schedule.period.dates).includes(i)}
                             onChange={e => {
                                 const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                                let dates;
+                                let _dates;
                                 try {
-                                    dates = JSON.parse(_schedule.period.dates);
-                                } catch (e) {
-                                    dates = [];
+                                    _dates = JSON.parse(_schedule.period.dates);
+                                } catch (err) {
+                                    _dates = [];
                                 }
-                                if (e.target.checked && dates.indexOf(i) === -1) {
-                                    dates.push(i);
-                                } else if (!e.target.checked && dates.indexOf(i) !== -1) {
-                                    dates.splice(dates.indexOf(i), 1);
+                                if (e.target.checked && !_dates.includes(i)) {
+                                    _dates.push(i);
+                                } else if (!e.target.checked && _dates.includes(i)) {
+                                    _dates.splice(_dates.indexOf(i), 1);
                                 }
-                                dates.sort((a, b) => a - b);
-                                _schedule.period.dates = JSON.stringify(dates);
+                                _dates.sort((a, b) => a - b);
+                                _schedule.period.dates = JSON.stringify(_dates);
                                 this.onChange(_schedule);
                             }}
                         />
@@ -1347,7 +1348,7 @@ class Schedule extends React.Component {
 
     getPeriodSettingsMonthly() {
         if (!this.state.schedule.period.months) {
-            return;
+            return null;
         }
         const schedule = this.state.schedule;
         const parsedMonths = typeof schedule.period.months === 'string' ? JSON.parse(schedule.period.months) : [];
@@ -1422,7 +1423,7 @@ class Schedule extends React.Component {
                             <Checkbox
                                 className={this.props.classes.inputDateDayCheck}
                                 checked={parsedMonths.length === 12}
-                                onChange={e => {
+                                onChange={() => {
                                     const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                                     const months = [];
                                     for (let i = 1; i <= 12; i++) {
@@ -1460,9 +1461,9 @@ class Schedule extends React.Component {
                                     onChange={() => {
                                         const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                                         const result = [];
-                                        const parsedMonths = JSON.parse(_schedule.period.months);
+                                        const _parsedMonths = JSON.parse(_schedule.period.months);
                                         for (let i = 1; i <= 12; i++) {
-                                            if (parsedMonths.indexOf(i) === -1) {
+                                            if (!_parsedMonths.includes(i)) {
                                                 result.push(i);
                                             }
                                         }
@@ -1487,7 +1488,7 @@ class Schedule extends React.Component {
                                         let months;
                                         try {
                                             months = JSON.parse(_schedule.period.months);
-                                        } catch (e) {
+                                        } catch (err) {
                                             months = [];
                                         }
                                         if (e.target.checked && !months.includes(i + 1)) {
@@ -1510,7 +1511,7 @@ class Schedule extends React.Component {
 
     getPeriodSettingsYearly() {
         if (!this.state.schedule.period.years) {
-            return;
+            return null;
         }
         const schedule = this.state.schedule;
         return [

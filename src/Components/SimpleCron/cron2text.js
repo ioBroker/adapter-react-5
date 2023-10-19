@@ -142,8 +142,8 @@ function cronToText(cronspec, withSeconds, locale) {
      * @param {Number} value
      */
     function addWeekday(s, curSched, value) {
-        const except1 = {},
-            except2 = {};
+        const except1 = {};
+        const except2 = {};
         if (value === 1) {
             // cron doesn't pass month boundaries, so if 1st is a
             // weekend then we need to use 2nd or 3rd instead
@@ -180,16 +180,16 @@ function cronToText(cronspec, withSeconds, locale) {
      */
     function addRange(item, curSched, name, min, max, offset) {
         // parse range/x
-        const incSplit = item.split('/'),
-            inc = +incSplit[1],
-            range = incSplit[0];
+        const incSplit = item.split('/');
+        const inc = +incSplit[1];
+        const range = incSplit[0];
 
         // parse x-y or * or 0
         if (range !== '*' && range !== '0') {
             const rangeSplit = range.split('-');
             min = getValue(rangeSplit[0], offset, max);
 
-            // fix for issue #13, range may be single digit
+            // fix for issue #13, range may be a single digit
             max = getValue(rangeSplit[1], offset, max) || max;
         }
 
@@ -368,10 +368,10 @@ function cronToText(cronspec, withSeconds, locale) {
      */
     function dateList(numbers, type) {
         if (numbers.length < 2) {
-            return numberToDateName('' + numbers[0], type);
+            return numberToDateName(`${numbers[0]}`, type);
         }
 
-        const lastVal = '' + numbers.pop();
+        const lastVal = `${numbers.pop()}`;
         let outputText = '';
 
         for (let i = 0, value; (value = numbers[i]); i++) {
@@ -396,22 +396,22 @@ function cronToText(cronspec, withSeconds, locale) {
 
     /**
      * Given a schedule, generate a friendly sentence description.
-     * @param {Object} schedule
-     * @param {boolean} withSeconds
+     * @param {Object} _schedule
+     * @param {boolean} _withSeconds
      * @returns {string}
      */
-    function scheduleToSentence(schedule, withSeconds) {
+    function scheduleToSentence(_schedule, _withSeconds) {
         let outputText = `${locale.Every} `;
 
-        if (schedule.h && schedule.m && schedule.h.length <= 2 && schedule.m.length <= 2 && withSeconds && schedule.s && schedule.s.length <= 2) {
+        if (_schedule.h && _schedule.m && _schedule.h.length <= 2 && _schedule.m.length <= 2 && _withSeconds && _schedule.s && _schedule.s.length <= 2) {
             // If there are only one or two specified values for
             // hour or minute, print them in HH:MM:SS format
 
             const hm = [];
-            for (let i = 0; i < schedule.h.length; i++) {
-                for (let j = 0; j < schedule.m.length; j++) {
-                    for (let k = 0; k < schedule.s.length; k++) {
-                        hm.push(`${zeroPad(schedule.h[i])}:${zeroPad(schedule.m[j])}:${zeroPad(schedule.s[k])}`);
+            for (let i = 0; i < _schedule.h.length; i++) {
+                for (let j = 0; j < _schedule.m.length; j++) {
+                    for (let k = 0; k < _schedule.s.length; k++) {
+                        hm.push(`${zeroPad(_schedule.h[i])}:${zeroPad(_schedule.m[j])}:${zeroPad(_schedule.s[k])}`);
                     }
                 }
             }
@@ -421,18 +421,17 @@ function cronToText(cronspec, withSeconds, locale) {
                 const lastVal = hm.pop();
                 outputText = `${locale.At} ${hm.join(', ')} ${locale.and} ${lastVal}`;
             }
-            if (!schedule.d && !schedule.D) {
+            if (!_schedule.d && !_schedule.D) {
                 outputText += ` ${locale['every day']} `;
             }
-        } else
-        if (schedule.h && schedule.m && schedule.h.length <= 2 && schedule.m.length <= 2) {
+        } else if (_schedule.h && _schedule.m && _schedule.h.length <= 2 && _schedule.m.length <= 2) {
             // If there are only one or two specified values for
             // hour or minute, print them in HH:MM format
 
             const hm = [];
-            for (let i = 0; i < schedule.h.length; i++) {
-                for (let j = 0; j < schedule.m.length; j++) {
-                    hm.push(`${zeroPad(schedule.h[i])}:${zeroPad(schedule.m[j])}`);
+            for (let i = 0; i < _schedule.h.length; i++) {
+                for (let j = 0; j < _schedule.m.length; j++) {
+                    hm.push(`${zeroPad(_schedule.h[i])}:${zeroPad(_schedule.m[j])}`);
                 }
             }
             if (hm.length < 2) {
@@ -442,75 +441,75 @@ function cronToText(cronspec, withSeconds, locale) {
                 outputText = `${locale.At} ${hm.join(', ')} ${locale.and} ${lastVal}`;
             }
 
-            if (!schedule.d && !schedule.D) {
+            if (!_schedule.d && !_schedule.D) {
                 outputText += ` ${locale['every day']} `;
             }
         } else {
             // Otherwise, list out every specified hour/minute value.
 
-            if (schedule.h) { // runs only at specific hours
-                if (schedule.m) { // and only at specific minutes
-                    if (withSeconds) {
-                        if (!schedule.s || schedule.s.length === 60) {
-                            outputText += `${locale['second of every']} ${numberList(schedule.m)} ${locale['minute past the']} ${numberList(schedule.h)} ${locale.hour}`;
+            if (_schedule.h) { // runs only at specific hours
+                if (_schedule.m) { // and only at specific minutes
+                    if (_withSeconds) {
+                        if (!_schedule.s || _schedule.s.length === 60) {
+                            outputText += `${locale['second of every']} ${numberList(_schedule.m)} ${locale['minute past the']} ${numberList(_schedule.h)} ${locale.hour}`;
                         } else {
-                            outputText += `${numberList(schedule.s)} ${locale['second of every']} ${numberList(schedule.m)} ${locale['minute past the']} ${numberList(schedule.h)} ${locale.hour}`;
+                            outputText += `${numberList(_schedule.s)} ${locale['second of every']} ${numberList(_schedule.m)} ${locale['minute past the']} ${numberList(_schedule.h)} ${locale.hour}`;
                         }
                     } else {
-                        outputText += `${numberList(schedule.m)} ${locale['minute past the']} ${numberList(schedule.h)} ${locale.hour}`;
+                        outputText += `${numberList(_schedule.m)} ${locale['minute past the']} ${numberList(_schedule.h)} ${locale.hour}`;
                     }
                 } else { // specific hours, but every minute
-                    if (withSeconds) {
-                        if (!schedule.s || schedule.s.length === 60) {
-                            outputText += `${locale['second of every']} ${locale['minute of']} ${numberList(schedule.h)} ${locale.hour}`;
+                    if (_withSeconds) {
+                        if (!_schedule.s || _schedule.s.length === 60) {
+                            outputText += `${locale['second of every']} ${locale['minute of']} ${numberList(_schedule.h)} ${locale.hour}`;
                         } else {
-                            outputText += `${numberList(schedule.s)} ${locale['second of every']} ${locale['minute of']} ${numberList(schedule.h)} ${locale.hour}`;
+                            outputText += `${numberList(_schedule.s)} ${locale['second of every']} ${locale['minute of']} ${numberList(_schedule.h)} ${locale.hour}`;
                         }
                     } else {
-                        outputText += `${locale['minute of']} ${numberList(schedule.h)} ${locale.hour}`;
+                        outputText += `${locale['minute of']} ${numberList(_schedule.h)} ${locale.hour}`;
                     }
                 }
-            } else if (schedule.m) { // every hour, but specific minutes
-                if (withSeconds) {
-                    if (!schedule.s || schedule.s.length === 60) {
-                        outputText += `${locale['second of every']} ${numberList(schedule.m)} ${locale['minute every hour']}`;
+            } else if (_schedule.m) { // every hour, but specific minutes
+                if (_withSeconds) {
+                    if (!_schedule.s || _schedule.s.length === 60) {
+                        outputText += `${locale['second of every']} ${numberList(_schedule.m)} ${locale['minute every hour']}`;
                     } else {
-                        outputText += `${numberList(schedule.s)} ${locale['second of every']} ${numberList(schedule.m)} ${locale['minute every hour']}`;
+                        outputText += `${numberList(_schedule.s)} ${locale['second of every']} ${numberList(_schedule.m)} ${locale['minute every hour']}`;
                     }
                 } else {
-                    outputText += `${numberList(schedule.m)} ${locale['minute every hour']}`;
+                    outputText += `${numberList(_schedule.m)} ${locale['minute every hour']}`;
                 }
-            } else if (withSeconds) {
-                if (!schedule.s || schedule.s.length === 60) {
+            } else if (_withSeconds) {
+                if (!_schedule.s || _schedule.s.length === 60) {
                     outputText += locale.second;
                 } else {
-                    outputText += `${numberList(schedule.s)} ${locale.second}`;
+                    outputText += `${numberList(_schedule.s)} ${locale.second}`;
                 }
             } else { // cronspec has "*" for both hour and minute
                 outputText += locale.minute;
             }
         }
 
-        if (schedule.D) { // runs only on specific day(s) of month
-            outputText += (locale['on the'] ? ` ${locale['on the']} ` : ' ') + numberList(schedule.D);
-            if (!schedule.M) {
+        if (_schedule.D) { // runs only on specific day(s) of month
+            outputText += (locale['on the'] ? ` ${locale['on the']} ` : ' ') + numberList(_schedule.D);
+            if (!_schedule.M) {
                 outputText += ` ${locale['of every month']}`;
             }
         }
 
-        if (schedule.d) { // runs only on specific day(s) of week
-            if (schedule.D) {
+        if (_schedule.d) { // runs only on specific day(s) of week
+            if (_schedule.D) {
                 // if both day fields are specified, cron uses both; superuser.com/a/348372
                 outputText += ` ${locale['and every']} `;
             } else {
                 outputText += ` ${locale.on} `;
             }
-            outputText += dateList(schedule.d, 'dow');
+            outputText += dateList(_schedule.d, 'dow');
         }
 
-        if (schedule.M) {
+        if (_schedule.M) {
             // runs only in specific months; put this output last
-            outputText += ` ${locale.in} ${dateList(schedule.M, 'mon')}`;
+            outputText += ` ${locale.in} ${dateList(_schedule.M, 'mon')}`;
         }
 
         return outputText;

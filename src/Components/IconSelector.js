@@ -51,7 +51,7 @@ const devices = [
             pl: 'Systemy Alarmowe',
             pt: 'Sistemas De Alarme',
             es: 'Sistemas De Alarma',
-            'zh-cn': '报警系统'
+            'zh-cn': '报警系统',
         },
         icon: 'Alarm Systems.svg',
     },
@@ -67,7 +67,7 @@ const devices = [
             pl: 'Stan Baterii',
             pt: 'Estado Da Bateria',
             es: 'Estado De La Batería',
-            'zh-cn': '电池状态'
+            'zh-cn': '电池状态',
         },
         icon: 'Battery Status.svg',
     },
@@ -83,7 +83,7 @@ const devices = [
             pl: 'Oprawy Oświetleniowe',
             pt: 'Iluminações',
             es: 'Iluminaciones',
-            'zh-cn': '照明'
+            'zh-cn': '照明',
         },
         icon: 'Lightings.svg',
     },
@@ -99,7 +99,7 @@ const devices = [
             pl: 'Zacienienie',
             pt: 'Shading',
             es: 'Sombreado',
-            'zh-cn': '底纹'
+            'zh-cn': '底纹',
         },
         icon: 'Shading.svg',
     },
@@ -115,7 +115,7 @@ const devices = [
             pl: 'Nawadnianie',
             pt: 'Irrigação',
             es: 'Irrigación',
-            'zh-cn': '灌溉'
+            'zh-cn': '灌溉',
         },
         icon: 'Irrigation.svg',
     },
@@ -131,7 +131,7 @@ const devices = [
             pl: 'Żelazo',
             pt: 'Ferro',
             es: 'Hierro',
-            'zh-cn': '铁'
+            'zh-cn': '铁',
         },
         icon: 'Iron.svg',
     },
@@ -147,7 +147,7 @@ const devices = [
             pl: 'Komputer',
             pt: 'Computador',
             es: 'Ordenador',
-            'zh-cn': '电脑'
+            'zh-cn': '电脑',
         },
         icon: 'Computer.svg',
     },
@@ -163,7 +163,7 @@ const devices = [
             pl: 'Reflektory Sufitowe',
             pt: 'Tecto Foco',
             es: 'Focos De Techo',
-            'zh-cn': '天花射灯'
+            'zh-cn': '天花射灯',
         },
         icon: 'Ceiling Spotlights.svg',
     },
@@ -179,7 +179,7 @@ const devices = [
             it: 'Stampante',
             es: 'Impresora',
             pl: 'Drukarka',
-            'zh-cn': '打印机'
+            'zh-cn': '打印机',
         },
         icon: 'Printer.svg',
     },
@@ -195,7 +195,7 @@ const devices = [
             pl: 'Pobór Energii',
             pt: 'Consumo De Energia',
             es: 'El Consumo De Energía',
-            'zh-cn': '能量消耗'
+            'zh-cn': '能量消耗',
         },
         icon: 'Power Consumption.svg',
     },
@@ -211,7 +211,7 @@ const devices = [
             pl: 'Okno',
             pt: 'Janela',
             es: 'Ventana',
-            'zh-cn': '窗户'
+            'zh-cn': '窗户',
         },
         icon: 'Window.svg',
     },
@@ -227,7 +227,7 @@ const devices = [
             pl: 'Bramy Garażowe',
             pt: 'Portas De Garagem',
             es: 'Las Puertas De Garaje',
-            'zh-cn': '车库门'
+            'zh-cn': '车库门',
         },
         icon: 'Garage Doors.svg',
     },
@@ -243,7 +243,7 @@ const devices = [
             pl: 'Suszarka Do Włosów',
             pt: 'Secador De Cabelo',
             es: 'Secador De Pelo',
-            'zh-cn': '电吹风'
+            'zh-cn': '电吹风',
         },
         icon: 'Hairdryer.svg',
     },
@@ -259,7 +259,7 @@ const devices = [
             pl: 'Lampy Wiszące',
             pt: 'Lâmpadas De Suspensão',
             es: 'Lámparas Colgantes',
-            'zh-cn': '挂灯'
+            'zh-cn': '挂灯',
         },
         icon: 'Hanging Lamps.svg',
     },
@@ -275,7 +275,7 @@ const devices = [
             pl: 'Próg',
             pt: 'Porta',
             es: 'Peldaño',
-            'zh-cn': '门阶'
+            'zh-cn': '门阶',
         },
         icon: 'Doorstep.svg',
     },
@@ -291,7 +291,7 @@ const devices = [
             pl: 'Gorąca Woda',
             pt: 'Água Quente',
             es: 'Agua Caliente',
-            'zh-cn': '热水'
+            'zh-cn': '热水',
         },
         icon: 'Hot Water.svg',
     },
@@ -307,7 +307,7 @@ const devices = [
             pl: 'Podgrzewacz',
             pt: 'Aquecedor',
             es: 'Calentador',
-            'zh-cn': '加热器'
+            'zh-cn': '加热器',
         },
         icon: 'Heater.svg',
     },
@@ -323,7 +323,7 @@ const devices = [
             pl: 'Kuchenka',
             pt: 'Forno',
             es: 'Cocina',
-            'zh-cn': '火炉'
+            'zh-cn': '火炉',
         },
         icon: 'Stove.svg',
     },
@@ -339,7 +339,7 @@ const devices = [
             pl: 'Żaluzja',
             pt: 'Trapeira',
             es: 'Lumbrera',
-            'zh-cn': '卢浮宫'
+            'zh-cn': '卢浮宫',
         },
         icon: 'Louvre.svg',
     },
@@ -355,7 +355,7 @@ const devices = [
             pl: 'Ekspresy Do Kawy',
             pt: 'Cafeteira',
             es: 'Cafetera',
-            'zh-cn': '咖啡壶'
+            'zh-cn': '咖啡壶',
         },
         icon: 'Coffee Makers.svg',
     },
@@ -371,7 +371,7 @@ const devices = [
             pl: 'Zimna Woda',
             pt: 'Água Fria',
             es: 'Agua Fría',
-            'zh-cn': '冷水'
+            'zh-cn': '冷水',
         },
         icon: 'Cold Water.svg',
     },
@@ -387,7 +387,7 @@ const devices = [
             pl: 'Klimat',
             pt: 'Clima',
             es: 'Clima',
-            'zh-cn': '气候'
+            'zh-cn': '气候',
         },
         icon: 'Climate.svg',
     },
@@ -403,7 +403,7 @@ const devices = [
             pl: 'Głośnik',
             pt: 'Palestrante',
             es: 'Altavoz',
-            'zh-cn': '扬声器'
+            'zh-cn': '扬声器',
         },
         icon: 'Speaker.svg',
     },
@@ -419,7 +419,7 @@ const devices = [
             pl: 'Pasek Ledowy',
             pt: 'Led Faixa',
             es: 'Tira Llevada',
-            'zh-cn': '灯带'
+            'zh-cn': '灯带',
         },
         icon: 'Led Strip.svg',
     },
@@ -435,7 +435,7 @@ const devices = [
             pl: 'Lekki',
             pt: 'Luz',
             es: 'Luz',
-            'zh-cn': '光'
+            'zh-cn': '光',
         },
         icon: 'Light.svg',
     },
@@ -451,7 +451,7 @@ const devices = [
             pl: 'Wentylator',
             pt: 'Ventilador',
             es: 'Ventilador',
-            'zh-cn': '扇子'
+            'zh-cn': '扇子',
         },
         icon: 'Fan.svg',
     },
@@ -467,7 +467,7 @@ const devices = [
             pl: 'Wilgotność',
             pt: 'Umidade',
             es: 'Humedad',
-            'zh-cn': '湿度'
+            'zh-cn': '湿度',
         },
         icon: 'Humidity.svg',
     },
@@ -483,7 +483,7 @@ const devices = [
             pl: 'Wentylacja',
             pt: 'Ventilação',
             es: 'Ventilación',
-            'zh-cn': '通风'
+            'zh-cn': '通风',
         },
         icon: 'Ventilation.svg',
     },
@@ -499,7 +499,7 @@ const devices = [
             pl: 'Żyrandol',
             pt: 'Lustre',
             es: 'Candelabro',
-            'zh-cn': '枝形吊灯'
+            'zh-cn': '枝形吊灯',
         },
         icon: 'Chandelier.svg',
     },
@@ -515,7 +515,7 @@ const devices = [
             pl: 'Okrycia',
             pt: 'Toldos',
             es: 'Toldos',
-            'zh-cn': '遮阳篷'
+            'zh-cn': '遮阳篷',
         },
         icon: 'Awnings.svg',
     },
@@ -531,7 +531,7 @@ const devices = [
             pl: 'Muzyka',
             pt: 'Música',
             es: 'Música',
-            'zh-cn': '音乐'
+            'zh-cn': '音乐',
         },
         icon: 'Music.svg',
     },
@@ -547,7 +547,7 @@ const devices = [
             pl: 'Ludzie',
             pt: 'Pessoas',
             es: 'Personas',
-            'zh-cn': '人们'
+            'zh-cn': '人们',
         },
         icon: 'People.svg',
     },
@@ -563,7 +563,7 @@ const devices = [
             pl: 'Basen',
             pt: 'Piscina',
             es: 'Piscina',
-            'zh-cn': '水池'
+            'zh-cn': '水池',
         },
         icon: 'Pool.svg',
     },
@@ -579,7 +579,7 @@ const devices = [
             pl: 'Pompa',
             pt: 'Bombear',
             es: 'Bomba',
-            'zh-cn': '泵'
+            'zh-cn': '泵',
         },
         icon: 'Pump.svg',
     },
@@ -595,7 +595,7 @@ const devices = [
             pl: 'Rolety Zewnętrzne',
             pt: 'Estores Exteriores',
             es: 'Persianas Exteriores',
-            'zh-cn': '室外百叶窗'
+            'zh-cn': '室外百叶窗',
         },
         icon: 'Outdoor Blinds.svg',
     },
@@ -611,7 +611,7 @@ const devices = [
             pl: 'Kosiarka',
             pt: 'Roçada Máquina',
             es: 'Segadora',
-            'zh-cn': '割草机'
+            'zh-cn': '割草机',
         },
         icon: 'Mowing Machine.svg',
     },
@@ -627,7 +627,7 @@ const devices = [
             pl: 'Odbiorca',
             pt: 'Recebedor',
             es: 'Receptor',
-            'zh-cn': '接收者'
+            'zh-cn': '接收者',
         },
         icon: 'Receiver.svg',
     },
@@ -643,7 +643,7 @@ const devices = [
             pl: 'Żaluzje',
             pt: 'Persianas',
             es: 'Persianas',
-            'zh-cn': '百叶窗'
+            'zh-cn': '百叶窗',
         },
         icon: 'Shutters.svg',
     },
@@ -659,7 +659,7 @@ const devices = [
             it: 'Rilevatore di fumo',
             es: 'Detector de humo',
             pl: 'Wykrywacz dymu',
-            'zh-cn': '烟雾探测器'
+            'zh-cn': '烟雾探测器',
         },
         icon: 'SmokeDetector.svg',
     },
@@ -675,7 +675,7 @@ const devices = [
             pl: 'Zamek',
             pt: 'Trancar',
             es: 'Cerrar Con Llave',
-            'zh-cn': '锁'
+            'zh-cn': '锁',
         },
         icon: 'Lock.svg',
     },
@@ -691,7 +691,7 @@ const devices = [
             pl: 'Bezpieczeństwo',
             pt: 'Segurança',
             es: 'Seguridad',
-            'zh-cn': '安全'
+            'zh-cn': '安全',
         },
         icon: 'Security.svg',
     },
@@ -707,7 +707,7 @@ const devices = [
             pl: 'Zmywarki',
             pt: 'Máquinas De Lavar Louça',
             es: 'Lavaplatos',
-            'zh-cn': '洗碗机'
+            'zh-cn': '洗碗机',
         },
         icon: 'Dishwashers.svg',
     },
@@ -723,7 +723,7 @@ const devices = [
             pl: 'Odkurzacz',
             pt: 'Aspirador De Pó',
             es: 'Aspiradora',
-            'zh-cn': '吸尘器'
+            'zh-cn': '吸尘器',
         },
         icon: 'Vacuum Cleaner.svg',
     },
@@ -739,7 +739,7 @@ const devices = [
             pl: 'Gniazdka',
             pt: 'Tomada',
             es: 'Zócalo',
-            'zh-cn': '套接字'
+            'zh-cn': '套接字',
         },
         icon: 'Sockets.svg',
     },
@@ -755,7 +755,7 @@ const devices = [
             pl: 'Lampy Podłogowe',
             pt: 'Lâmpadas Chão',
             es: 'Lámparas De Pie',
-            'zh-cn': '落地灯'
+            'zh-cn': '落地灯',
         },
         icon: 'Floor Lamps.svg',
     },
@@ -771,7 +771,7 @@ const devices = [
             pl: 'Pobór Energii',
             pt: 'Consumo De Energia',
             es: 'El Consumo De Energía',
-            'zh-cn': '能量消耗'
+            'zh-cn': '能量消耗',
         },
         icon: 'Power Consumption.svg',
     },
@@ -787,7 +787,7 @@ const devices = [
             pl: 'Czujniki Temperatury',
             pt: 'Sensores De Temperatura',
             es: 'Sensores De Temperatura',
-            'zh-cn': '温度传感器'
+            'zh-cn': '温度传感器',
         },
         icon: 'Temperature Sensors.svg',
     },
@@ -803,7 +803,7 @@ const devices = [
             pl: 'Lampy Stołowe',
             pt: 'Lâmpadas De Mesa',
             es: 'Lámparas De Mesa',
-            'zh-cn': '台灯'
+            'zh-cn': '台灯',
         },
         icon: 'Table Lamps.svg',
     },
@@ -819,7 +819,7 @@ const devices = [
             pl: 'Bramy',
             pt: 'Portões',
             es: 'Puertas',
-            'zh-cn': '盖茨'
+            'zh-cn': '盖茨',
         },
         icon: 'Gates.svg',
     },
@@ -835,7 +835,7 @@ const devices = [
             pl: 'Suszarka',
             pt: 'Secador',
             es: 'Secadora',
-            'zh-cn': '烘干机'
+            'zh-cn': '烘干机',
         },
         icon: 'Dryer.svg',
     },
@@ -851,7 +851,7 @@ const devices = [
             pl: 'Drzwi',
             pt: 'Portas',
             es: 'Puertas',
-            'zh-cn': '门'
+            'zh-cn': '门',
         },
         icon: 'Doors.svg',
     },
@@ -867,7 +867,7 @@ const devices = [
             pl: 'Telewizja',
             pt: 'Televisão',
             es: 'Televisor',
-            'zh-cn': '电视'
+            'zh-cn': '电视',
         },
         icon: 'Tv.svg',
     },
@@ -883,7 +883,7 @@ const devices = [
             pl: 'Konsumpcja',
             pt: 'Consumo',
             es: 'Consumo',
-            'zh-cn': '消费'
+            'zh-cn': '消费',
         },
         icon: 'Consumption.svg',
     },
@@ -899,7 +899,7 @@ const devices = [
             pl: 'Wzmacniacz',
             pt: 'Amplificador',
             es: 'Amplificador',
-            'zh-cn': '放大器'
+            'zh-cn': '放大器',
         },
         icon: 'Amplifier.svg',
     },
@@ -915,7 +915,7 @@ const devices = [
             pl: 'Zasłony',
             pt: 'Cortinas',
             es: 'Cortinas',
-            'zh-cn': '窗帘'
+            'zh-cn': '窗帘',
         },
         icon: 'Curtains.svg',
     },
@@ -931,7 +931,7 @@ const devices = [
             pl: 'Kinkiety',
             pt: 'Arandelas',
             es: 'Los Apliques',
-            'zh-cn': '壁灯'
+            'zh-cn': '壁灯',
         },
         icon: 'Sconces.svg',
     },
@@ -947,7 +947,7 @@ const devices = [
             pl: 'Pralki',
             pt: 'Máquinas De Lavar Roupas',
             es: 'Lavadoras',
-            'zh-cn': '洗衣机'
+            'zh-cn': '洗衣机',
         },
         icon: 'Washing Machines.svg',
     },
@@ -963,7 +963,7 @@ const devices = [
             pl: 'Woda',
             pt: 'Água',
             es: 'Agua',
-            'zh-cn': '水'
+            'zh-cn': '水',
         },
         icon: 'Water.svg',
     },
@@ -979,7 +979,7 @@ const devices = [
             pl: 'Podgrzewacz Wody',
             pt: 'Aquecedor De Água',
             es: 'Calentador De Agua',
-            'zh-cn': '热水器'
+            'zh-cn': '热水器',
         },
         icon: 'Water Heater.svg',
     },
@@ -995,7 +995,7 @@ const devices = [
             pl: 'Konsumpcja Wody',
             pt: 'Consumo De Água',
             es: 'Consumo De Agua',
-            'zh-cn': '耗水量'
+            'zh-cn': '耗水量',
         },
         icon: 'Water Consumption.svg',
     },
@@ -1011,10 +1011,10 @@ const devices = [
             pl: 'Pogoda',
             pt: 'Clima',
             es: 'Tiempo',
-            'zh-cn': '天气'
+            'zh-cn': '天气',
         },
         icon: 'Weather.svg',
-    }
+    },
 ];
 
 // import rooms from '../assets/rooms/list.json';
@@ -1031,7 +1031,7 @@ const rooms = [
             pl: 'Magazyn',
             pt: 'Despensa',
             es: 'Trastero',
-            'zh-cn': '库房'
+            'zh-cn': '库房',
         },
         icon: 'Storeroom.svg',
     },
@@ -1047,7 +1047,7 @@ const rooms = [
             it: 'Primo piano',
             es: 'Primer piso',
             pl: 'Pierwsze piętro',
-            'zh-cn': '第一层'
+            'zh-cn': '第一层',
         },
         icon: 'Second Floor.svg',
     },
@@ -1063,7 +1063,7 @@ const rooms = [
             pl: 'Przebieralnia',
             pt: 'Provador',
             es: 'Vestidor',
-            'zh-cn': '更衣室'
+            'zh-cn': '更衣室',
         },
         icon: 'Dressing Room.svg',
     },
@@ -1079,7 +1079,7 @@ const rooms = [
             pl: 'Workspace',
             pt: 'Área De Trabalho',
             es: 'Espacio De Trabajo',
-            'zh-cn': '工作区'
+            'zh-cn': '工作区',
         },
         icon: 'Workspace.svg',
     },
@@ -1095,7 +1095,7 @@ const rooms = [
             pl: 'Podjazd',
             pt: 'Entrada Da Garagem',
             es: 'Entrada De Coches',
-            'zh-cn': '车道'
+            'zh-cn': '车道',
         },
         icon: 'Driveway.svg',
     },
@@ -1111,7 +1111,7 @@ const rooms = [
             pl: 'Na Dworze',
             pt: 'Ao Ar Livre',
             es: 'Al Aire Libre',
-            'zh-cn': '户外'
+            'zh-cn': '户外',
         },
         icon: 'Outdoors.svg',
     },
@@ -1127,7 +1127,7 @@ const rooms = [
             pl: 'Łazienka',
             pt: 'Banheiro',
             es: 'Baño',
-            'zh-cn': '浴室'
+            'zh-cn': '浴室',
         },
         icon: 'Bathroom.svg',
     },
@@ -1143,7 +1143,7 @@ const rooms = [
             pl: 'Balkon',
             pt: 'Sacada',
             es: 'Balcón',
-            'zh-cn': '阳台'
+            'zh-cn': '阳台',
         },
         icon: 'Balcony.svg',
     },
@@ -1159,7 +1159,7 @@ const rooms = [
             pl: 'Gabinet',
             pt: 'Escritório',
             es: 'Oficina',
-            'zh-cn': '办公室'
+            'zh-cn': '办公室',
         },
         icon: 'Office.svg',
     },
@@ -1175,7 +1175,7 @@ const rooms = [
             pl: 'Wiata',
             pt: 'Telheiro',
             es: 'Cochera',
-            'zh-cn': '车棚'
+            'zh-cn': '车棚',
         },
         icon: 'Carport.svg',
     },
@@ -1191,7 +1191,7 @@ const rooms = [
             pl: 'Poddasze',
             pt: 'Sótão',
             es: 'Ático',
-            'zh-cn': '阁楼'
+            'zh-cn': '阁楼',
         },
         icon: 'Attic.svg',
     },
@@ -1207,7 +1207,7 @@ const rooms = [
             pl: 'Sala',
             pt: 'Corredor',
             es: 'Sala',
-            'zh-cn': '大厅'
+            'zh-cn': '大厅',
         },
         icon: 'Hall.svg',
     },
@@ -1223,7 +1223,7 @@ const rooms = [
             pl: 'Wejście',
             pt: 'Entrada',
             es: 'Entrada',
-            'zh-cn': '入口'
+            'zh-cn': '入口',
         },
         icon: 'Entrance.svg',
     },
@@ -1239,7 +1239,7 @@ const rooms = [
             pl: 'Parter',
             pt: 'Térreo',
             es: 'Planta Baja',
-            'zh-cn': '一楼'
+            'zh-cn': '一楼',
         },
         icon: 'Ground Floor.svg',
     },
@@ -1255,7 +1255,7 @@ const rooms = [
             pl: 'Jadalnia',
             pt: 'Área De Refeições',
             es: 'Comedor',
-            'zh-cn': '用餐区'
+            'zh-cn': '用餐区',
         },
         icon: 'Dining Area.svg',
     },
@@ -1271,7 +1271,7 @@ const rooms = [
             pl: 'Jadalnia',
             pt: 'Sala De Jantar',
             es: 'Comedor',
-            'zh-cn': '饭厅'
+            'zh-cn': '饭厅',
         },
         icon: 'Dining Room.svg',
     },
@@ -1287,7 +1287,7 @@ const rooms = [
             pl: 'Siłownia',
             pt: 'Ginásio',
             es: 'Gimnasio',
-            'zh-cn': '健身房'
+            'zh-cn': '健身房',
         },
         icon: 'Gym.svg',
     },
@@ -1303,7 +1303,7 @@ const rooms = [
             pl: 'Galeria',
             pt: 'Galeria',
             es: 'Galería',
-            'zh-cn': '画廊'
+            'zh-cn': '画廊',
         },
         icon: 'Gallery.svg',
     },
@@ -1319,7 +1319,7 @@ const rooms = [
             pl: 'Garaż',
             pt: 'Garagem',
             es: 'Garaje',
-            'zh-cn': '车库'
+            'zh-cn': '车库',
         },
         icon: 'Garage.svg',
     },
@@ -1335,7 +1335,7 @@ const rooms = [
             pl: 'Szafa',
             pt: 'Guarda Roupa',
             es: 'Armario',
-            'zh-cn': '衣柜'
+            'zh-cn': '衣柜',
         },
         icon: 'Wardrobe.svg',
     },
@@ -1351,7 +1351,7 @@ const rooms = [
             pl: 'Ogród',
             pt: 'Jardim',
             es: 'Jardín',
-            'zh-cn': '花园'
+            'zh-cn': '花园',
         },
         icon: 'Garden.svg',
     },
@@ -1367,7 +1367,7 @@ const rooms = [
             pl: 'Domek Letniskowy',
             pt: 'Summer House',
             es: 'Casa De Verano',
-            'zh-cn': '凉亭'
+            'zh-cn': '凉亭',
         },
         icon: 'Summer House.svg',
     },
@@ -1383,7 +1383,7 @@ const rooms = [
             pl: 'Łazienka Gościnna',
             pt: 'Banheiro De Hóspedes',
             es: 'Baño De Visitas',
-            'zh-cn': '客用浴室'
+            'zh-cn': '客用浴室',
         },
         icon: 'Guest Bathroom.svg',
     },
@@ -1399,7 +1399,7 @@ const rooms = [
             pl: 'Pokój Gościnny',
             pt: 'Quarto De Hóspedes',
             es: 'Habitación De Huéspedes',
-            'zh-cn': '客房'
+            'zh-cn': '客房',
         },
         icon: 'Guest Room.svg',
     },
@@ -1415,7 +1415,7 @@ const rooms = [
             pl: 'Pralnia',
             pt: 'Lavandaria',
             es: 'Cuarto De Lavado',
-            'zh-cn': '洗衣房'
+            'zh-cn': '洗衣房',
         },
         icon: 'Laundry Room.svg',
     },
@@ -1431,7 +1431,7 @@ const rooms = [
             pl: 'Kino Domowe',
             pt: 'Cinema Em Casa',
             es: 'Cine En Casa',
-            'zh-cn': '家庭电影院'
+            'zh-cn': '家庭电影院',
         },
         icon: 'Home Theater.svg',
     },
@@ -1447,7 +1447,7 @@ const rooms = [
             pl: 'Kotłownia',
             pt: 'Sala Da Caldeira',
             es: 'Sala De Calderas',
-            'zh-cn': '锅炉房'
+            'zh-cn': '锅炉房',
         },
         icon: 'Boiler Room.svg',
     },
@@ -1463,7 +1463,7 @@ const rooms = [
             pl: 'Izba',
             pt: 'Câmara',
             es: 'Cámara',
-            'zh-cn': '商会'
+            'zh-cn': '商会',
         },
         icon: 'Chamber.svg',
     },
@@ -1479,7 +1479,7 @@ const rooms = [
             pl: 'Piwnica, Piwnica',
             pt: 'Porão, Adega',
             es: 'Sótano, Bodega',
-            'zh-cn': '地下室，地窖'
+            'zh-cn': '地下室，地窖',
         },
         icon: 'Basement.svg',
     },
@@ -1495,7 +1495,7 @@ const rooms = [
             pl: 'Żłobek',
             pt: 'Berçário',
             es: 'Guardería',
-            'zh-cn': '苗圃'
+            'zh-cn': '苗圃',
         },
         icon: 'Nursery.svg',
     },
@@ -1511,7 +1511,7 @@ const rooms = [
             pl: 'Korytarz',
             pt: 'Corredor',
             es: 'Corredor',
-            'zh-cn': '走廊'
+            'zh-cn': '走廊',
         },
         icon: 'Corridor.svg',
     },
@@ -1527,7 +1527,7 @@ const rooms = [
             pl: 'Kuchnia',
             pt: 'Cozinha',
             es: 'Cocina',
-            'zh-cn': '厨房'
+            'zh-cn': '厨房',
         },
         icon: 'Kitchen.svg',
     },
@@ -1543,7 +1543,7 @@ const rooms = [
             pl: 'Na Górę',
             pt: 'Andar De Cima',
             es: 'Piso Superior',
-            'zh-cn': '楼上'
+            'zh-cn': '楼上',
         },
         icon: 'Upstairs.svg',
     },
@@ -1559,7 +1559,7 @@ const rooms = [
             pl: 'Gabinet',
             pt: 'Escritório',
             es: 'Oficina',
-            'zh-cn': '办公室'
+            'zh-cn': '办公室',
         },
         icon: 'Office.svg',
     },
@@ -1575,7 +1575,7 @@ const rooms = [
             pl: 'Basen',
             pt: 'Piscina',
             es: 'Piscina',
-            'zh-cn': '水池'
+            'zh-cn': '水池',
         },
         icon: 'Pool.svg',
     },
@@ -1591,7 +1591,7 @@ const rooms = [
             pl: 'Tylna Ściana',
             pt: 'Parede Traseira',
             es: 'Pared Posterior',
-            'zh-cn': '后墙'
+            'zh-cn': '后墙',
         },
         icon: 'Rear Wall.svg',
     },
@@ -1607,7 +1607,7 @@ const rooms = [
             pl: 'Stodoła',
             pt: 'Celeiro',
             es: 'Granero',
-            'zh-cn': '谷仓'
+            'zh-cn': '谷仓',
         },
         icon: 'Barn.svg',
     },
@@ -1623,7 +1623,7 @@ const rooms = [
             pl: 'Powierzchnia Spania',
             pt: 'Sleeping Area',
             es: 'Área De Dormir',
-            'zh-cn': '睡眠区'
+            'zh-cn': '睡眠区',
         },
         icon: 'Sleeping Area.svg',
     },
@@ -1639,7 +1639,7 @@ const rooms = [
             pl: 'Sypialnia',
             pt: 'Quarto',
             es: 'Cuarto',
-            'zh-cn': '卧室'
+            'zh-cn': '卧室',
         },
         icon: 'Bedroom.svg',
     },
@@ -1655,7 +1655,7 @@ const rooms = [
             pl: 'Budka',
             pt: 'Cabana',
             es: 'Cobertizo',
-            'zh-cn': '棚'
+            'zh-cn': '棚',
         },
         icon: 'Shed.svg',
     },
@@ -1671,7 +1671,7 @@ const rooms = [
             pl: 'Basen',
             pt: 'Piscina',
             es: 'Piscina',
-            'zh-cn': '游泳池'
+            'zh-cn': '游泳池',
         },
         icon: 'Swimming Pool.svg',
     },
@@ -1687,7 +1687,7 @@ const rooms = [
             pl: 'Jadalnia',
             pt: 'Jantar',
             es: 'Comida',
-            'zh-cn': '用餐'
+            'zh-cn': '用餐',
         },
         icon: 'Dining.svg',
     },
@@ -1703,7 +1703,7 @@ const rooms = [
             pl: 'Pokój Zabaw',
             pt: 'Sala De Jogos',
             es: 'Cuarto De Jugar',
-            'zh-cn': '游戏室'
+            'zh-cn': '游戏室',
         },
         icon: 'Playroom.svg',
     },
@@ -1719,7 +1719,7 @@ const rooms = [
             pl: 'Klatka Schodowa',
             pt: 'Escada',
             es: 'Escalera',
-            'zh-cn': '楼梯'
+            'zh-cn': '楼梯',
         },
         icon: 'Stairway.svg',
     },
@@ -1735,7 +1735,7 @@ const rooms = [
             pl: 'Wyposażenie Pokoi',
             pt: 'Sala De Equipamentos',
             es: 'Cuarto De Equipos',
-            'zh-cn': '机房'
+            'zh-cn': '机房',
         },
         icon: 'Equipment Room.svg',
     },
@@ -1751,7 +1751,7 @@ const rooms = [
             pl: 'Taras',
             pt: 'Terraço',
             es: 'Terraza',
-            'zh-cn': '阳台'
+            'zh-cn': '阳台',
         },
         icon: 'Terrace.svg',
     },
@@ -1767,7 +1767,7 @@ const rooms = [
             pl: 'Toaleta',
             pt: 'Banheiro',
             es: 'Inodoro',
-            'zh-cn': '洗手间'
+            'zh-cn': '洗手间',
         },
         icon: 'Toilet.svg',
     },
@@ -1799,7 +1799,7 @@ const rooms = [
             pl: 'Szatnia',
             pt: 'Vestiário',
             es: 'Vestuario',
-            'zh-cn': '更衣室'
+            'zh-cn': '更衣室',
         },
         icon: 'Locker Room.svg',
     },
@@ -1815,7 +1815,7 @@ const rooms = [
             pl: 'Piwnica',
             pt: 'Porão',
             es: 'Sótano',
-            'zh-cn': '地下室'
+            'zh-cn': '地下室',
         },
         icon: 'Basement.svg',
     },
@@ -1831,7 +1831,7 @@ const rooms = [
             pl: 'Podwórko',
             pt: 'Jardim Da Frente',
             es: 'Patio Delantero',
-            'zh-cn': '前院'
+            'zh-cn': '前院',
         },
         icon: 'Front Yard.svg',
     },
@@ -1847,7 +1847,7 @@ const rooms = [
             pl: 'Przedpokój',
             pt: 'Ante-Sala',
             es: 'Antesala',
-            'zh-cn': '接待室'
+            'zh-cn': '接待室',
         },
         icon: 'Anteroom.svg',
     },
@@ -1863,7 +1863,7 @@ const rooms = [
             pl: 'Umywalnia',
             pt: 'Banheiro',
             es: 'Baño',
-            'zh-cn': '卫生间'
+            'zh-cn': '卫生间',
         },
         icon: 'Washroom.svg',
     },
@@ -1879,7 +1879,7 @@ const rooms = [
             pl: 'Toaleta',
             pt: 'Banheiro',
             es: 'Wc',
-            'zh-cn': '厕所'
+            'zh-cn': '厕所',
         },
         icon: 'Wc.svg',
     },
@@ -1895,7 +1895,7 @@ const rooms = [
             pl: 'Warsztat',
             pt: 'Oficina',
             es: 'Taller',
-            'zh-cn': '作坊'
+            'zh-cn': '作坊',
         },
         icon: 'Workshop.svg',
     },
@@ -1911,7 +1911,7 @@ const rooms = [
             pl: 'Szyba Przednia',
             pt: 'Pára-Brisas',
             es: 'Parabrisas',
-            'zh-cn': '风档'
+            'zh-cn': '风档',
         },
         icon: 'Windscreen.svg',
     },
@@ -1927,7 +1927,7 @@ const rooms = [
             pl: 'Powierzchnia Mieszkalna',
             pt: 'Sala-De-Estar',
             es: 'Sala De Estar',
-            'zh-cn': '生活区域'
+            'zh-cn': '生活区域',
         },
         icon: 'Living Area.svg',
     },
@@ -1943,7 +1943,7 @@ const rooms = [
             pl: 'Salon',
             pt: 'Sala De Estar',
             es: 'Sala De Estar',
-            'zh-cn': '客厅'
+            'zh-cn': '客厅',
         },
         icon: 'Living Room.svg',
     },
@@ -1959,7 +1959,7 @@ const rooms = [
             pl: 'Salon',
             pt: 'Sala De Estar',
             es: 'Sala De Estar',
-            'zh-cn': '客厅'
+            'zh-cn': '客厅',
         },
         icon: 'Living Room.svg',
     },
@@ -2003,7 +2003,7 @@ class IconSelector extends Component {
                         try {
                             image = require(`../assets/rooms/${template.icon}`);
                         } catch (e) {
-                            return Promise.resolve(null);
+                            return;
                         }
 
                         names[i] = template.name;
@@ -2031,7 +2031,7 @@ class IconSelector extends Component {
                         try {
                             image = require(`../assets/devices/${template.icon}`);
                         } catch (e) {
-                            return Promise.resolve(null);
+                            return;
                         }
 
                         names[i + offset] = template.name;
@@ -2110,7 +2110,7 @@ class IconSelector extends Component {
                     {this.state.isAnyName ? <TextField
                         variant="standard"
                         margin="dense"
-                        style={{marginLeft: 20}}
+                        style={{ marginLeft: 20 }}
                         value={this.state.filter}
                         onChange={e => this.setState({ filter: e.target.value.toLowerCase() })}
                         placeholder={this.props.t('ra_Filter')}
@@ -2139,12 +2139,12 @@ class IconSelector extends Component {
                                                 (this.props.onSelect || this.props.onChange)(icon))}
                                         size="large"
                                     >
-                                        <Icon src={icon} alt={i} style={{ width: 32, height: 32, borderRadius: 5 }}/>
+                                        <Icon src={icon} alt={i} style={{ width: 32, height: 32, borderRadius: 5 }} />
                                     </IconButton>
                                 </Tooltip>;
-                            } else {
-                                return null;
                             }
+
+                            return null;
                         })}
                     </div>
                 </DialogContent>

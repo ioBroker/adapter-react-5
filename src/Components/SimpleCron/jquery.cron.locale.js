@@ -46,7 +46,7 @@ JQUERY_CRON_LOCALE.en = {
     'and every':        'and every',
     At:                 'At',
     on:                 'on', // on sun, mon
-    'in':               'in', // in jan, apr
+    in:                 'in', // in jan, apr
 };
 
 JQUERY_CRON_LOCALE.de = {
@@ -95,7 +95,7 @@ JQUERY_CRON_LOCALE.de = {
     'and every':        'und am jeden',
     At:                 'Um',
     on:                 'am', // on sun, mon
-    'in':               'im', // in jan, apr
+    in:                 'im', // in jan, apr
 };
 
 JQUERY_CRON_LOCALE.ru = {
@@ -144,7 +144,7 @@ JQUERY_CRON_LOCALE.ru = {
     'and every':        'и каждый',
     At:                 'В',
     on:                 'в', // on sun, mon
-    'in':               'в', // in jan, apr
+    in:                 'в', // in jan, apr
 };
 
 JQUERY_CRON_LOCALE.fr = {
@@ -192,7 +192,7 @@ JQUERY_CRON_LOCALE.fr = {
     'and every':        'et tous',
     At:                 'À',
     on:                 'sur',
-    'in':               'dans',
+    in:                 'dans',
 };
 
 JQUERY_CRON_LOCALE.it = {
@@ -241,7 +241,7 @@ JQUERY_CRON_LOCALE.it = {
     'and every':         'e ogni',
     At:                  'A',
     on:                  'sopra',
-    'in':                'in',
+    in:                  'in',
 };
 
 JQUERY_CRON_LOCALE.pt = {
@@ -290,7 +290,7 @@ JQUERY_CRON_LOCALE.pt = {
     'and every':            'e todos',
     At:                     'At',
     on:                     'em',
-    'in':                   'dentro',
+    in:                     'dentro',
 };
 
 JQUERY_CRON_LOCALE.pl = {
@@ -339,7 +339,7 @@ JQUERY_CRON_LOCALE.pl = {
     'and every':        'i każdego',
     At:                 'O',
     on:                 'w', // on sun, mon
-    'in':               'w', // in jan, apr
+    in:                 'w', // in jan, apr
 };
 
 JQUERY_CRON_LOCALE.es = {
@@ -388,7 +388,7 @@ JQUERY_CRON_LOCALE.es = {
     'and every':            'y cada',
     At:                     'A',
     on:                     'en',
-    'in':                   'en',
+    in:                     'en',
 };
 
 JQUERY_CRON_LOCALE.nl = {
@@ -437,7 +437,7 @@ JQUERY_CRON_LOCALE.nl = {
     'and every':            'en elke',
     At:                     'Op',
     on:                     'op',
-    'in':                   'in',
+    in:                     'in',
 };
 
 // TODO: add here Ukrainian translation
@@ -488,7 +488,7 @@ JQUERY_CRON_LOCALE['zh-cn'] = {
     'and every':        '且每',
     At:                 '在',
     on:                 '在', // on sun, mon
-    'in':               '在', // in jan, apr
+    in:                 '在', // in jan, apr
 };
 
 export default JQUERY_CRON_LOCALE;

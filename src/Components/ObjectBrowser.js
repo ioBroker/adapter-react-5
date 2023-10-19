@@ -3598,7 +3598,7 @@ class ObjectBrowser extends Component {
                     if (state) {
                         result[key].val = state.val;
                         result[key].ack = state.ack;
-                   }
+                    }
                 }
                 // add enum information
                 if (result[key].common) {
@@ -3713,8 +3713,8 @@ class ObjectBrowser extends Component {
                                 val = json.val;
                                 try {
                                     val = JSON.parse(val);
-                                } catch (e) {
-                                    console.log(`Cannot parse value: ${e}`);
+                                } catch (err) {
+                                    console.log(`Cannot parse value: ${err}`);
                                     val = null;
                                 }
                                 delete json.val;

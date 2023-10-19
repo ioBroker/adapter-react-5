@@ -54,10 +54,10 @@ class MDUtils {
                     if (!line.trim()) {
                         return;
                     }
-                    const pos = line.indexOf(':');
-                    if (pos !== -1) {
-                        const attr = line.substring(0, pos).trim();
-                        attrs[attr] = line.substring(pos + 1).trim();
+                    const _pos = line.indexOf(':');
+                    if (_pos !== -1) {
+                        const attr = line.substring(0, _pos).trim();
+                        attrs[attr] = line.substring(_pos + 1).trim();
                         attrs[attr] = attrs[attr].replace(/^['"]|['"]$/g, '');
                         if (attrs[attr] === 'true') {
                             attrs[attr] = true;
