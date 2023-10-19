@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.6.7 (2023-10-19)
 * (bluefox) Added return value for `subscribeOnInstance` for Connection class
 
 ### 4.6.6 (2023-10-13)
