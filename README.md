@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added return value for `subscribeOnInstance` for Connection class
+
 ### 4.6.6 (2023-10-13)
 * (bluefox) Fixed the legacy connection
 
