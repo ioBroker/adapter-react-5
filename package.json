@@ -51,7 +51,7 @@
     "react-cropper": "^2.3.3",
     "react-dropzone": "^14.2.3",
     "react-icons": "^4.11.0",
-    "react-inlinesvg": "4.0.6",
+    "react-inlinesvg": "4.0.3",
     "react-text-mask": "^5.5.0"
   },
   "devDependencies": {
