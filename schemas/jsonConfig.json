@@ -12,7 +12,50 @@
         }
       },
       "additionalProperties": false
-    }
+    },
+    "numberProps": {
+      "properties": {
+      "placeholder": {
+        "description": "Placeholder (for text control)",
+        "type": "string"
+      },
+      "min": {
+        "description": "Minimal value",
+        "type": "number"
+      },
+      "max": {
+        "description": "Maximum number",
+        "type": "number"
+      },
+      "label": true,
+      "type": true,
+      "sm": true,
+      "md": true,
+      "lg": true,
+      "xs": true,
+      "newLine": true,
+      "hidden": true,
+      "hideOnlyControl": true,
+      "disabled": true,
+      "helpLink": true,
+      "help": true,
+      "style": true,
+      "darkStyle": true,
+      "validator": true,
+      "validatorNoSaveOnError": true,
+      "validatorErrorText": true,
+      "noMultiEdit": true,
+      "tooltip": true,
+      "default": true,
+      "defaultFunc": true,
+      "onChange": true,
+      "noTranslation": true,
+      "confirm": true
+    },
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ]}
   },
   "type": "object",
   "additionalProperties": false,
@@ -966,53 +1009,12 @@
               "if": {
                 "properties": {
                   "type": {
-                    "const": "number"
+                    "enum": ["number", "port"]
                   }
                 }
               },
               "then": {
-                "properties": {
-                  "placeholder": {
-                    "description": "Placeholder (for text control)",
-                    "type": "string"
-                  },
-                  "min": {
-                    "description": "Minimal value",
-                    "type": "number"
-                  },
-                  "max": {
-                    "description": "Maximum number",
-                    "type": "number"
-                  },
-                  "label": true,
-                  "type": true,
-                  "sm": true,
-                  "md": true,
-                  "lg": true,
-                  "xs": true,
-                  "newLine": true,
-                  "hidden": true,
-                  "hideOnlyControl": true,
-                  "disabled": true,
-                  "helpLink": true,
-                  "help": true,
-                  "style": true,
-                  "darkStyle": true,
-                  "validator": true,
-                  "validatorNoSaveOnError": true,
-                  "validatorErrorText": true,
-                  "noMultiEdit": true,
-                  "tooltip": true,
-                  "default": true,
-                  "defaultFunc": true,
-                  "onChange": true,
-                  "noTranslation": true,
-                  "confirm": true
-                },
-                "additionalProperties": false,
-                "required": [
-                  "type"
-                ]
+                "$ref": "#/definitions/numberProps"
               }
             },
             {
@@ -2154,53 +2156,12 @@
                           "if": {
                             "properties": {
                               "type": {
-                                "const": "number"
+                                "enum": ["number", "port"]
                               }
                             }
                           },
                           "then": {
-                            "properties": {
-                              "placeholder": {
-                                "description": "Placeholder (for text control)",
-                                "type": "string"
-                              },
-                              "min": {
-                                "description": "Minimal value",
-                                "type": "number"
-                              },
-                              "max": {
-                                "description": "Maximum number",
-                                "type": "number"
-                              },
-                              "label": true,
-                              "type": true,
-                              "sm": true,
-                              "md": true,
-                              "lg": true,
-                              "xs": true,
-                              "newLine": true,
-                              "hidden": true,
-                              "hideOnlyControl": true,
-                              "disabled": true,
-                              "helpLink": true,
-                              "help": true,
-                              "style": true,
-                              "darkStyle": true,
-                              "validator": true,
-                              "validatorNoSaveOnError": true,
-                              "validatorErrorText": true,
-                              "noMultiEdit": true,
-                              "tooltip": true,
-                              "default": true,
-                              "defaultFunc": true,
-                              "onChange": true,
-                              "noTranslation": true,
-                              "confirm": true
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                              "type"
-                            ]
+                            "$ref": "#/definitions/numberProps"
                           }
                         },
                         {
@@ -4226,6 +4187,7 @@
                 "autocomplete",
                 "text",
                 "number",
+                "port",
                 "color",
                 "checkbox",
                 "chips",
