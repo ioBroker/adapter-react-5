@@ -309,6 +309,15 @@
           "type": "divider",
           "sm": 12
         },
+        "port": {
+          "type": "port",
+          "min": 1,
+          "max": 65565,
+          "label": "Port",
+          "sm": 12,
+          "md": 4,
+          "lg": 3
+        },
         "myTable": {
           "newLine": true,
           "sm": 12,
