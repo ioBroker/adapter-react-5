@@ -2763,6 +2763,15 @@
                                 "description": "icon for button",
                                 "type": "string"
                               },
+                              "variant": {
+                                "description": "If button is outlined, contained or text",
+                                "type": "string",
+                                "enum": [
+                                  "contained",
+                                  "outlined",
+                                  "text"
+                                ]
+                              },
                               "label": true,
                               "type": true,
                               "sm": true,
