@@ -13,6 +13,68 @@
       },
       "additionalProperties": false
     },
+    "i18n": {
+      "description": "If translations will be provided via files, e.g. in admin/i18n/de/translations.json or provide the path to the i18n folder if it's custom or provide the translations inside this attribute as an object",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object",
+          "patternProperties": {
+            "^.+": {
+              "$ref": "#/definitions/multilingual"
+            }
+          }
+        }
+      ]
+    },
+    "componentType": {
+      "description": "Type of the element",
+      "type": "string",
+      "enum": [
+        "autocomplete",
+        "text",
+        "number",
+        "port",
+        "color",
+        "checkbox",
+        "chips",
+        "header",
+        "slider",
+        "ip",
+        "user",
+        "room",
+        "func",
+        "select",
+        "icon",
+        "image",
+        "panel",
+        "password",
+        "file",
+        "sendTo",
+        "staticText",
+        "custom",
+        "pattern",
+        "table",
+        "instance",
+        "language",
+        "setState",
+        "certificate",
+        "certificates",
+        "staticImage",
+        "staticLink",
+        "divider",
+        "objectId",
+        "selectSendTo",
+        "autocompleteSendTo",
+        "checkLicense",
+        "uuid"
+      ]
+    },
     "numberProps": {
       "properties": {
         "placeholder": {
@@ -251,23 +313,37 @@
         "type"
       ]
     },
-    "i18n": {
-      "description": "If translations will be provided via files, e.g. in admin/i18n/de/translations.json or provide the path to the i18n folder if it's custom or provide the translations inside this attribute as an object",
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "boolean"
-        },
-        {
-          "type": "object",
-          "patternProperties": {
-            "^.+": {
-              "$ref": "#/definitions/multilingual"
-            }
-          }
-        }
+    "certificatesProps": {
+      "description": "Universal type that manages `certPublic`, `certPrivate`, `certChained` and `leCollection` attributes",
+      "properties": {
+        "label": true,
+        "type": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "helpLink": true,
+        "help": true,
+        "style": true,
+        "darkStyle": true,
+        "validator": true,
+        "validatorNoSaveOnError": true,
+        "validatorErrorText": true,
+        "noMultiEdit": true,
+        "tooltip": true,
+        "default": true,
+        "defaultFunc": true,
+        "onChange": true,
+        "noTranslation": true,
+        "confirm": true
+      },
+      "additionalProperties": false,
+      "required": [
+        "type"
       ]
     }
   },
@@ -2951,6 +3027,25 @@
                           "if": {
                             "properties": {
                               "type": {
+                                "const": "certificates"
+                              }
+                            }
+                          },
+                          "then": {
+                            "allOf": [
+                              {
+                                "$ref": "#/definitions/tableItemBaseProps"
+                              },
+                              {
+                                "$ref": "#/definitions/certificatesProps"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "if": {
+                            "properties": {
+                              "type": {
                                 "const": "staticLink"
                               }
                             }
@@ -3356,7 +3451,7 @@
                           ]
                         },
                         "type": {
-                          "type": "string"
+                          "$ref": "#/definitions/componentType"
                         },
                         "sm": {
                           "description": "Width in 1/12 of screen on small screen",
@@ -3984,6 +4079,18 @@
               "if": {
                 "properties": {
                   "type": {
+                    "const": "certificates"
+                  }
+                }
+              },
+              "then": {
+                "$ref": "#/definitions/certificatesProps"
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
                     "const": "staticLink"
                   }
                 }
@@ -4336,46 +4443,7 @@
               ]
             },
             "type": {
-              "description": "Type of the element",
-              "type": "string",
-              "enum": [
-                "autocomplete",
-                "text",
-                "number",
-                "port",
-                "color",
-                "checkbox",
-                "chips",
-                "header",
-                "slider",
-                "ip",
-                "user",
-                "room",
-                "func",
-                "select",
-                "icon",
-                "image",
-                "panel",
-                "password",
-                "file",
-                "sendTo",
-                "staticText",
-                "custom",
-                "pattern",
-                "table",
-                "instance",
-                "language",
-                "setState",
-                "certificate",
-                "staticImage",
-                "staticLink",
-                "divider",
-                "objectId",
-                "selectSendTo",
-                "autocompleteSendTo",
-                "checkLicense",
-                "uuid"
-              ]
+              "$ref": "#/definitions/componentType"
             },
             "sm": {
               "description": "Width in 1/12 of screen on small screen",

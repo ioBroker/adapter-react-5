@@ -221,6 +221,10 @@
             "marginTop": 15,
             "maxWidth": 200
           }
+        },
+        "certs": {
+          "type": "certificates",
+          "newLine": true
         }
       }
     },
@@ -343,7 +347,7 @@
           "uniqueColumns": ["ip"],
           "items": [
             {
-              "type": "text"
+              "type": "certificates"
             },
             {
               "type": "text",
