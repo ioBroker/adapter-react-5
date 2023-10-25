@@ -210,9 +210,16 @@
     },
     "customProps": {
       "properties": {
-        "component": {
-          "description": "Component name that will be provided via props, like componentInstancesEditor",
+        "name": {
+          "description": "Component name that will be provided via props, like ComponentInstancesEditor",
           "type": "string"
+        },
+        "url": {
+          "description": "Location of the component",
+          "type": "string"
+        },
+        "i18n": {
+          "$ref": "#/definitions/i18n"
         },
         "label": true,
         "type": true,
@@ -243,6 +250,25 @@
       "required": [
         "type"
       ]
+    },
+    "i18n": {
+      "description": "If translations will be provided via files, e.g. in admin/i18n/de/translations.json or provide the path to the i18n folder if it's custom or provide the translations inside this attribute as an object",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object",
+          "patternProperties": {
+            "^.+": {
+              "$ref": "#/definitions/multilingual"
+            }
+          }
+        }
+      ]
     }
   },
   "type": "object",
@@ -264,23 +290,7 @@
       "type": "string"
     },
     "i18n": {
-      "description": "If translations will be provided via files, e.g. in admin/i18n/de/translations.json or provide the path to the i18n folder if it's custom or provide the translations inside this attribute as an object",
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "boolean"
-        },
-        {
-          "type": "object",
-          "patternProperties": {
-            "^.+": {
-              "$ref": "#/definitions/multilingual"
-            }
-          }
-        }
-      ]
+      "$ref": "#/definitions/i18n"
     },
     "items": {
       "description": "Consists of objects representing e.g. a single tab",

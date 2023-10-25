@@ -303,7 +303,9 @@
           "hidden": "!data.accessLimit",
           "newLine": true,
           "type": "custom",
-          "component": "configCustomEasyAccess"
+          "url": "custom/customComponents.js",
+          "name": "AdminComponentEasyAccessSet/Components/ConfigCustomEasyAccess",
+          "i18n": true
         }
       }
     },
