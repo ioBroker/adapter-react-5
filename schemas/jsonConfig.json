@@ -36,7 +36,9 @@
       "description": "Type of the element",
       "type": "string",
       "enum": [
+        "alive",
         "autocomplete",
+        "cron",
         "text",
         "number",
         "port",
@@ -423,6 +425,92 @@
       "additionalProperties": false,
       "required": [
         "type"
+      ]
+    },
+    "aliveProps": {
+      "properties": {
+        "instance": {
+          "description": "Check if the instance is alive. If not defined, it will be used current instance. You can use `${data.number}` pattern in the text.",
+          "type": "number"
+        },
+        "textAlive": {
+          "description": "Default text is `Instance %s is alive`, where `%s` will be replaced by `ADAPTER.0`",
+          "type": "string"
+        },
+        "textNotAlive": {
+          "description": "Default text is `Instance %s is not alive`, where `%s` will be replaced by `ADAPTER.0`",
+          "type": "string"
+        },
+        "label": true,
+        "type": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "helpLink": true,
+        "help": true,
+        "style": true,
+        "darkStyle": true,
+        "validator": true,
+        "validatorNoSaveOnError": true,
+        "validatorErrorText": true,
+        "noMultiEdit": true,
+        "tooltip": true,
+        "default": true,
+        "defaultFunc": true,
+        "onChange": true,
+        "noTranslation": true,
+        "confirm": true
+      },
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ]
+    },
+    "cronProps": {
+      "properties": {
+        "complex": {
+          "description": "Show CRON with \"minutes\", \"seconds\" and so on",
+          "type": "boolean"
+        },
+        "simple": {
+          "description": "Show simple CRON settings",
+          "type": "boolean"
+        },
+        "label": true,
+        "type": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "helpLink": true,
+        "help": true,
+        "style": true,
+        "darkStyle": true,
+        "validator": true,
+        "validatorNoSaveOnError": true,
+        "validatorErrorText": true,
+        "noMultiEdit": true,
+        "tooltip": true,
+        "default": true,
+        "defaultFunc": true,
+        "onChange": true,
+        "noTranslation": true,
+        "confirm": true
+      },
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "simple",
+        "complex"
       ]
     },
     "doNotSaveProp": {
@@ -1277,6 +1365,18 @@
               "if": {
                 "properties": {
                   "type": {
+                    "const": "alive"
+                  }
+                }
+              },
+              "then": {
+                "$ref": "#/definitions/aliveProps"
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
                     "const": "autocomplete"
                   }
                 }
@@ -1335,6 +1435,18 @@
                   "type",
                   "options"
                 ]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "cron"
+                  }
+                }
+              },
+              "then": {
+                "$ref": "#/definitions/cronProps"
               }
             },
             {
@@ -2385,6 +2497,25 @@
                           "if": {
                             "properties": {
                               "type": {
+                                "const": "alive"
+                              }
+                            }
+                          },
+                          "then": {
+                            "allOf": [
+                              {
+                                "$ref": "#/definitions/tableItemBaseProps"
+                              },
+                              {
+                                "$ref": "#/definitions/aliveProps"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "if": {
+                            "properties": {
+                              "type": {
                                 "const": "autocomplete"
                               }
                             }
@@ -2448,6 +2579,25 @@
                                   "type",
                                   "options"
                                 ]
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "if": {
+                            "properties": {
+                              "type": {
+                                "const": "cron"
+                              }
+                            }
+                          },
+                          "then": {
+                            "allOf": [
+                              {
+                                "$ref": "#/definitions/tableItemBaseProps"
+                              },
+                              {
+                                "$ref": "#/definitions/cronProps"
                               }
                             ]
                           }
