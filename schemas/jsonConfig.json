@@ -24,7 +24,11 @@
           "type": "number"
         },
         "max": {
-          "description": "Maximum number",
+          "description": "Maximum value",
+          "type": "number"
+        },
+        "step": {
+          "description": "Step size for increase and decrease buttons",
           "type": "number"
         },
         "label": true,
