@@ -3832,8 +3832,7 @@
                 "additionalProperties": false,
                 "required": [
                   "type",
-                  "href",
-                  "text"
+                  "href"
                 ]
               }
             },
