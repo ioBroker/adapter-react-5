@@ -17,6 +17,7 @@
         },
         "port": {
           "type": "number",
+          "step": 1,
           "min": 1,
           "max": 65565,
           "label": "Port",
@@ -92,6 +93,7 @@
           "hidden": "!data.auth",
           "type": "number",
           "label": "Login timeout",
+          "step": 5,
           "help": {
             "en": "sec"
           },
@@ -352,7 +354,8 @@
               "width": "100%",
               "title": "Delay",
               "filter": false,
-              "sort": true
+              "sort": true,
+              "min": 1
             },
             {
               "type": "checkbox",
