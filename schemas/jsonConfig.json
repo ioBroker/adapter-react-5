@@ -55,7 +55,68 @@
       "additionalProperties": false,
       "required": [
         "type"
-      ]}
+      ]},
+    "staticLinkProps": {
+      "properties": {
+        "href": {
+          "description": "Link",
+          "type": "string"
+        },
+        "text": {
+          "description": "Static link or button",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/multilingual"
+            }
+          ]
+        },
+        "icon": {
+          "description": "icon for button",
+          "type": "string"
+        },
+        "variant": {
+          "description": "If button is outlined, contained or text",
+          "type": "string",
+          "enum": [
+            "contained",
+            "outlined",
+            "text"
+          ]
+        },
+        "label": true,
+        "type": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "helpLink": true,
+        "help": true,
+        "style": true,
+        "darkStyle": true,
+        "validator": true,
+        "validatorNoSaveOnError": true,
+        "validatorErrorText": true,
+        "noMultiEdit": true,
+        "tooltip": true,
+        "default": true,
+        "defaultFunc": true,
+        "noTranslation": true,
+        "confirm": true,
+        "button": true
+      },
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "href"
+      ]
+    }
   },
   "type": "object",
   "additionalProperties": false,
@@ -2743,66 +2804,7 @@
                             }
                           },
                           "then": {
-                            "properties": {
-                              "href": {
-                                "description": "Link",
-                                "type": "string"
-                              },
-                              "text": {
-                                "description": "Static link or button",
-                                "oneOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "$ref": "#/definitions/multilingual"
-                                  }
-                                ]
-                              },
-                              "icon": {
-                                "description": "icon for button",
-                                "type": "string"
-                              },
-                              "variant": {
-                                "description": "If button is outlined, contained or text",
-                                "type": "string",
-                                "enum": [
-                                  "contained",
-                                  "outlined",
-                                  "text"
-                                ]
-                              },
-                              "label": true,
-                              "type": true,
-                              "sm": true,
-                              "md": true,
-                              "lg": true,
-                              "xs": true,
-                              "newLine": true,
-                              "hidden": true,
-                              "hideOnlyControl": true,
-                              "disabled": true,
-                              "helpLink": true,
-                              "help": true,
-                              "style": true,
-                              "darkStyle": true,
-                              "validator": true,
-                              "validatorNoSaveOnError": true,
-                              "validatorErrorText": true,
-                              "noMultiEdit": true,
-                              "tooltip": true,
-                              "default": true,
-                              "defaultFunc": true,
-                              "noTranslation": true,
-                              "confirm": true,
-                              "button": true
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                              "type",
-                              "href",
-                              "text"
-                            ]
+                            "$ref": "#/definitions/staticLinkProps"
                           }
                         },
                         {
@@ -3793,56 +3795,7 @@
                 }
               },
               "then": {
-                "properties": {
-                  "href": {
-                    "description": "Link",
-                    "type": "string"
-                  },
-                  "text": {
-                    "description": "Static link or button",
-                    "oneOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "$ref": "#/definitions/multilingual"
-                      }
-                    ]
-                  },
-                  "icon": {
-                    "description": "icon for button",
-                    "type": "string"
-                  },
-                  "label": true,
-                  "type": true,
-                  "sm": true,
-                  "md": true,
-                  "lg": true,
-                  "xs": true,
-                  "newLine": true,
-                  "hidden": true,
-                  "hideOnlyControl": true,
-                  "disabled": true,
-                  "helpLink": true,
-                  "help": true,
-                  "style": true,
-                  "darkStyle": true,
-                  "validator": true,
-                  "validatorNoSaveOnError": true,
-                  "validatorErrorText": true,
-                  "noMultiEdit": true,
-                  "tooltip": true,
-                  "default": true,
-                  "defaultFunc": true,
-                  "noTranslation": true,
-                  "confirm": true,
-                  "button": true
-                },
-                "additionalProperties": false,
-                "required": [
-                  "type",
-                  "href"
-                ]
+                "$ref": "#/definitions/staticLinkProps"
               }
             },
             {

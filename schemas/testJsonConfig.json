@@ -184,6 +184,18 @@
             "marginBottom": 20
           }
         },
+        "_linkButton": {
+          "button": true,
+          "variant": "contained",
+          "newLine": true,
+          "type": "staticLink",
+          "href": "https://github.com/ioBroker/ioBroker.admin/blob/master/README.md#lets-encrypt-certificates",
+          "text": "Read about Let's Encrypt certificates",
+          "style": {
+            "fontSize": 16,
+            "marginBottom": 20
+          }
+        },
         "leEnabled": {
           "newLine": true,
           "type": "checkbox",
