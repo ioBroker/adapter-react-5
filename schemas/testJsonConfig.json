@@ -17,6 +17,7 @@
         },
         "port": {
           "type": "number",
+          "step": 1,
           "min": 1,
           "max": 65565,
           "label": "Port",
@@ -92,6 +93,7 @@
           "hidden": "!data.auth",
           "type": "number",
           "label": "Login timeout",
+          "step": 5,
           "help": {
             "en": "sec"
           },
@@ -184,6 +186,18 @@
             "marginBottom": 20
           }
         },
+        "_linkButton": {
+          "button": true,
+          "variant": "contained",
+          "newLine": true,
+          "type": "staticLink",
+          "href": "https://github.com/ioBroker/ioBroker.admin/blob/master/README.md#lets-encrypt-certificates",
+          "text": "Read about Let's Encrypt certificates",
+          "style": {
+            "fontSize": 16,
+            "marginBottom": 20
+          }
+        },
         "leEnabled": {
           "newLine": true,
           "type": "checkbox",
@@ -200,6 +214,7 @@
           "sm": 11,
           "lg": 4,
           "type": "number",
+          "doNotSave": true,
           "hidden": "!data.leEnabled || !data.leUpdate",
           "label": "Port to check the domain",
           "style": {
@@ -339,7 +354,8 @@
               "width": "100%",
               "title": "Delay",
               "filter": false,
-              "sort": true
+              "sort": true,
+              "min": 1
             },
             {
               "type": "checkbox",
