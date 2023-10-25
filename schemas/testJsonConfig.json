@@ -221,6 +221,10 @@
             "marginTop": 15,
             "maxWidth": 200
           }
+        },
+        "certs": {
+          "type": "certificates",
+          "newLine": true
         }
       }
     },
@@ -303,7 +307,9 @@
           "hidden": "!data.accessLimit",
           "newLine": true,
           "type": "custom",
-          "component": "configCustomEasyAccess"
+          "url": "custom/customComponents.js",
+          "name": "AdminComponentEasyAccessSet/Components/ConfigCustomEasyAccess",
+          "i18n": true
         }
       }
     },
@@ -340,6 +346,9 @@
           "type": "table",
           "uniqueColumns": ["ip"],
           "items": [
+            {
+              "type": "certificates"
+            },
             {
               "type": "text",
               "attr": "ip",
