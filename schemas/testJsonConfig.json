@@ -212,6 +212,7 @@
           "sm": 11,
           "lg": 4,
           "type": "number",
+          "doNotSave": true,
           "hidden": "!data.leEnabled || !data.leUpdate",
           "label": "Port to check the domain",
           "style": {

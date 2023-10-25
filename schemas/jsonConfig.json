@@ -15,47 +15,49 @@
     },
     "numberProps": {
       "properties": {
-      "placeholder": {
-        "description": "Placeholder (for text control)",
-        "type": "string"
+        "placeholder": {
+          "description": "Placeholder (for text control)",
+          "type": "string"
+        },
+        "min": {
+          "description": "Minimal value",
+          "type": "number"
+        },
+        "max": {
+          "description": "Maximum number",
+          "type": "number"
+        },
+        "label": true,
+        "type": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "helpLink": true,
+        "help": true,
+        "style": true,
+        "darkStyle": true,
+        "validator": true,
+        "validatorNoSaveOnError": true,
+        "validatorErrorText": true,
+        "noMultiEdit": true,
+        "tooltip": true,
+        "default": true,
+        "defaultFunc": true,
+        "onChange": true,
+        "noTranslation": true,
+        "confirm": true,
+        "doNotSave": true
       },
-      "min": {
-        "description": "Minimal value",
-        "type": "number"
-      },
-      "max": {
-        "description": "Maximum number",
-        "type": "number"
-      },
-      "label": true,
-      "type": true,
-      "sm": true,
-      "md": true,
-      "lg": true,
-      "xs": true,
-      "newLine": true,
-      "hidden": true,
-      "hideOnlyControl": true,
-      "disabled": true,
-      "helpLink": true,
-      "help": true,
-      "style": true,
-      "darkStyle": true,
-      "validator": true,
-      "validatorNoSaveOnError": true,
-      "validatorErrorText": true,
-      "noMultiEdit": true,
-      "tooltip": true,
-      "default": true,
-      "defaultFunc": true,
-      "onChange": true,
-      "noTranslation": true,
-      "confirm": true
-    },
       "additionalProperties": false,
       "required": [
         "type"
-      ]},
+      ]
+    },
     "staticLinkProps": {
       "properties": {
         "href": {
@@ -115,6 +117,67 @@
       "required": [
         "type",
         "href"
+      ]
+    },
+    "textProps": {
+      "properties": {
+        "text": {
+          "description": "Text input",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/multilingual"
+            }
+          ]
+        },
+        "trim": {
+          "description": "If text must be trimmed or not (default = true)",
+          "type": "boolean"
+        },
+        "placeholder": {
+          "description": "Placeholder (for text control)",
+          "type": "string"
+        },
+        "minRows": {
+          "description": "default is 1. Set this attribute to `2` or more if you want to have a textarea with more than one row",
+          "type": "number"
+        },
+        "maxRows": {
+          "description": "max rows of textarea. Used only if `minRows` > 1",
+          "type": "number"
+        },
+        "label": true,
+        "type": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "helpLink": true,
+        "help": true,
+        "style": true,
+        "darkStyle": true,
+        "validator": true,
+        "validatorNoSaveOnError": true,
+        "validatorErrorText": true,
+        "noMultiEdit": true,
+        "tooltip": true,
+        "default": true,
+        "defaultFunc": true,
+        "onChange": true,
+        "noTranslation": true,
+        "confirm": true,
+        "maxLength": true,
+        "doNotSave": true
+      },
+      "additionalProperties": false,
+      "required": [
+        "type"
       ]
     }
   },
@@ -1070,7 +1133,10 @@
               "if": {
                 "properties": {
                   "type": {
-                    "enum": ["number", "port"]
+                    "enum": [
+                      "number",
+                      "port"
+                    ]
                   }
                 }
               },
@@ -1151,64 +1217,7 @@
                 }
               },
               "then": {
-                "properties": {
-                  "text": {
-                    "description": "Text input",
-                    "oneOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "$ref": "#/definitions/multilingual"
-                      }
-                    ]
-                  },
-                  "trim": {
-                    "description": "If text must be trimmed or not (default = true)",
-                    "type": "boolean"
-                  },
-                  "placeholder": {
-                    "description": "Placeholder (for text control)",
-                    "type": "string"
-                  },
-                  "minRows": {
-                    "description": "default is 1. Set this attribute to `2` or more if you want to have a textarea with more than one row",
-                    "type": "number"
-                  },
-                  "maxRows": {
-                    "description": "max rows of textarea. Used only if `minRows` > 1",
-                    "type": "number"
-                  },
-                  "label": true,
-                  "type": true,
-                  "sm": true,
-                  "md": true,
-                  "lg": true,
-                  "xs": true,
-                  "newLine": true,
-                  "hidden": true,
-                  "hideOnlyControl": true,
-                  "disabled": true,
-                  "helpLink": true,
-                  "help": true,
-                  "style": true,
-                  "darkStyle": true,
-                  "validator": true,
-                  "validatorNoSaveOnError": true,
-                  "validatorErrorText": true,
-                  "noMultiEdit": true,
-                  "tooltip": true,
-                  "default": true,
-                  "defaultFunc": true,
-                  "onChange": true,
-                  "noTranslation": true,
-                  "confirm": true,
-                  "maxLength": true
-                },
-                "additionalProperties": false,
-                "required": [
-                  "type"
-                ]
+                "$ref": "#/definitions/textProps"
               }
             },
             {
@@ -2217,7 +2226,10 @@
                           "if": {
                             "properties": {
                               "type": {
-                                "enum": ["number", "port"]
+                                "enum": [
+                                  "number",
+                                  "port"
+                                ]
                               }
                             }
                           },
@@ -2298,64 +2310,7 @@
                             }
                           },
                           "then": {
-                            "properties": {
-                              "text": {
-                                "description": "Text input",
-                                "oneOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "$ref": "#/definitions/multilingual"
-                                  }
-                                ]
-                              },
-                              "trim": {
-                                "description": "If text must be trimmed or not (default = true)",
-                                "type": "boolean"
-                              },
-                              "placeholder": {
-                                "description": "Placeholder (for text control)",
-                                "type": "string"
-                              },
-                              "minRows": {
-                                "description": "default is 1. Set this attribute to `2` or more if you want to have a textarea with more than one row",
-                                "type": "number"
-                              },
-                              "maxRows": {
-                                "description": "max rows of textarea. Used only if `minRows` > 1",
-                                "type": "number"
-                              },
-                              "label": true,
-                              "type": true,
-                              "sm": true,
-                              "md": true,
-                              "lg": true,
-                              "xs": true,
-                              "newLine": true,
-                              "hidden": true,
-                              "hideOnlyControl": true,
-                              "disabled": true,
-                              "helpLink": true,
-                              "help": true,
-                              "style": true,
-                              "darkStyle": true,
-                              "validator": true,
-                              "validatorNoSaveOnError": true,
-                              "validatorErrorText": true,
-                              "noMultiEdit": true,
-                              "tooltip": true,
-                              "default": true,
-                              "defaultFunc": true,
-                              "onChange": true,
-                              "noTranslation": true,
-                              "confirm": true,
-                              "maxLength": true
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                              "type"
-                            ]
+                            "$ref": "#/definitions/textProps"
                           }
                         },
                         {
@@ -3247,6 +3202,10 @@
                               }
                             }
                           }
+                        },
+                        "doNotSave": {
+                          "type": "boolean",
+                          "description": "Do not save this attribute as used only for internal calculations"
                         },
                         "defaultFunc": {
                           "description": "JS function to calculate default value",
