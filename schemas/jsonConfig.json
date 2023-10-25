@@ -436,7 +436,7 @@
                     "type": "boolean"
                   },
                   "noTranslation": true,
-                  "multible": true,
+                  "multiple": true,
                   "label": true,
                   "type": true,
                   "sm": true,
@@ -1353,10 +1353,7 @@
                     "items": {
                       "type": "object",
                       "required": [
-                        "type",
-                        "attr",
-                        "width",
-                        "title"
+                        "type"
                       ],
                       "additionalProperties": false,
                       "allOf": [
@@ -1518,7 +1515,7 @@
                                     "type": "boolean"
                                   },
                                   "noTranslation": true,
-                                  "multible": true,
+                                  "multiple": true,
                                   "label": true,
                                   "type": true,
                                   "sm": true,

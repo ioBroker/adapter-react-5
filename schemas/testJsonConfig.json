@@ -343,6 +343,9 @@
           "uniqueColumns": ["ip"],
           "items": [
             {
+              "type": "text"
+            },
+            {
               "type": "text",
               "attr": "ip",
               "width": 100,
