@@ -62,6 +62,12 @@
           "md": 6,
           "lg": 2
         },
+        "cron": {
+          "label": "cron",
+          "type": "cron",
+          "complex": false,
+          "simple": true
+        },
         "auth": {
           "newLine": true,
           "type": "checkbox",
@@ -375,6 +381,12 @@
               "sort": false
             }
           ]
+        },
+        "alive": {
+          "type": "alive",
+          "instance": 0,
+          "textAlive": "Instance %s is alive",
+          "textNotAlive": "Instance %s is not alive"
         },
         "myInstance": {
           "newLine": true,

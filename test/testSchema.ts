@@ -29,10 +29,10 @@ function positiveTests(): void {
 
 /** Expected errors per test */
 const expectedErrorsPerTest = {
-    'testFailJsonConfig.json': [
+    'testFailJsonConfig.json':  [
         {
             "instancePath": "/items/demoTab/items/myTable/items/2",
-            "schemaPath": "#/patternProperties/%5E.%2B/allOf/20/then/properties/items/items/allOf/16/then/additionalProperties",
+            "schemaPath": "#/patternProperties/%5E.%2B/allOf/22/then/properties/items/items/allOf/16/then/additionalProperties",
             "keyword": "additionalProperties",
             "params": {
                 "additionalProperty": "test"
@@ -41,7 +41,7 @@ const expectedErrorsPerTest = {
         },
         {
             "instancePath": "/items/demoTab/items/myTable/items/2",
-            "schemaPath": "#/patternProperties/%5E.%2B/allOf/20/then/properties/items/items/allOf/16/if",
+            "schemaPath": "#/patternProperties/%5E.%2B/allOf/22/then/properties/items/items/allOf/16/if",
             "keyword": "if",
             "params": {
                 "failingKeyword": "then"
@@ -50,7 +50,7 @@ const expectedErrorsPerTest = {
         },
         {
             "instancePath": "/items/demoTab/items/myTable",
-            "schemaPath": "#/patternProperties/%5E.%2B/allOf/20/if",
+            "schemaPath": "#/patternProperties/%5E.%2B/allOf/22/if",
             "keyword": "if",
             "params": {
                 "failingKeyword": "then"
@@ -88,8 +88,8 @@ function failingTests(): void {
 
         if (JSON.stringify(expectedErrors) !== JSON.stringify(validate.errors)) {
             console.error(`Got different errors than expected on file ${fileName}`)
-            console.error(`Expected ${JSON.stringify(expectedErrors)}`)
-            console.error(`Got ${JSON.stringify(validate.errors)}`)
+            console.error(`Expected ${JSON.stringify(expectedErrors, null, 2)}`)
+            console.error(`Got ${JSON.stringify(validate.errors, null, 2)}`)
             process.exit(1)
         }
     }
