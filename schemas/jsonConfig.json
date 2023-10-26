@@ -1431,11 +1431,7 @@
                       "required": [
                         "type"
                       ],
-                      "additionalProperties": false,
                       "allOf": [
-                        {
-                          "$ref": "#/definitions/tableItemBaseProps"
-                        },
                         {
                           "if": {
                             "properties": {
@@ -1446,9 +1442,6 @@
                           },
                           "then": {
                             "allOf": [
-                              {
-                                "$ref": "#/definitions/tableItemBaseProps"
-                              },
                               {
                                 "properties": {
                                   "system": {
@@ -2382,39 +2375,42 @@
                             "allOf": [
                               {
                                 "$ref": "#/definitions/tableItemBaseProps"
-                              },
-                              {
-                                "properties": {
-                                  "label": true,
-                                  "type": true,
-                                  "sm": true,
-                                  "md": true,
-                                  "lg": true,
-                                  "xs": true,
-                                  "newLine": true,
-                                  "hidden": true,
-                                  "hideOnlyControl": true,
-                                  "disabled": true,
-                                  "helpLink": true,
-                                  "help": true,
-                                  "style": true,
-                                  "darkStyle": true,
-                                  "validator": true,
-                                  "validatorNoSaveOnError": true,
-                                  "validatorErrorText": true,
-                                  "noMultiEdit": true,
-                                  "tooltip": true,
-                                  "default": true,
-                                  "defaultFunc": true,
-                                  "onChange": true,
-                                  "noTranslation": true,
-                                  "confirm": true
-                                },
-                                "additionalProperties": false,
-                                "required": [
-                                  "type"
-                                ]
                               }
+                            ],
+                            "properties": {
+                              "attr": true,
+                              "width": true,
+                              "title": true,
+                              "filter": true,
+                              "sort": true,
+                              "label": true,
+                              "type": true,
+                              "sm": true,
+                              "md": true,
+                              "lg": true,
+                              "xs": true,
+                              "newLine": true,
+                              "hidden": true,
+                              "hideOnlyControl": true,
+                              "disabled": true,
+                              "helpLink": true,
+                              "help": true,
+                              "style": true,
+                              "darkStyle": true,
+                              "validator": true,
+                              "validatorNoSaveOnError": true,
+                              "validatorErrorText": true,
+                              "noMultiEdit": true,
+                              "tooltip": true,
+                              "default": true,
+                              "defaultFunc": true,
+                              "onChange": true,
+                              "noTranslation": true,
+                              "confirm": true
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                              "type"
                             ]
                           }
                         },
@@ -2433,10 +2429,59 @@
                             "allOf": [
                               {
                                 "$ref": "#/definitions/tableItemBaseProps"
-                              },
-                              {
-                                "$ref": "#/definitions/numberProps"
                               }
+                            ],
+                            "properties": {
+                              "attr": true,
+                              "width": true,
+                              "title": true,
+                              "filter": true,
+                              "sort": true,
+                              "placeholder": {
+                                "description": "Placeholder (for text control)",
+                                "type": "string"
+                              },
+                              "min": {
+                                "description": "Minimal value",
+                                "type": "number"
+                              },
+                              "max": {
+                                "description": "Maximum value",
+                                "type": "number"
+                              },
+                              "step": {
+                                "description": "Step size for increase and decrease buttons",
+                                "type": "number"
+                              },
+                              "label": true,
+                              "type": true,
+                              "sm": true,
+                              "md": true,
+                              "lg": true,
+                              "xs": true,
+                              "newLine": true,
+                              "hidden": true,
+                              "hideOnlyControl": true,
+                              "disabled": true,
+                              "helpLink": true,
+                              "help": true,
+                              "style": true,
+                              "darkStyle": true,
+                              "validator": true,
+                              "validatorNoSaveOnError": true,
+                              "validatorErrorText": true,
+                              "noMultiEdit": true,
+                              "tooltip": true,
+                              "default": true,
+                              "defaultFunc": true,
+                              "onChange": true,
+                              "noTranslation": true,
+                              "confirm": true,
+                              "doNotSave": true
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                              "type"
                             ]
                           }
                         },
@@ -2523,10 +2568,71 @@
                             "allOf": [
                               {
                                 "$ref": "#/definitions/tableItemBaseProps"
-                              },
-                              {
-                                "$ref": "#/definitions/textProps"
                               }
+                            ],
+                            "properties": {
+                              "attr": true,
+                              "width": true,
+                              "title": true,
+                              "filter": true,
+                              "sort": true,
+                              "text": {
+                                "description": "Text input",
+                                "oneOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "$ref": "#/definitions/multilingual"
+                                  }
+                                ]
+                              },
+                              "trim": {
+                                "description": "If text must be trimmed or not (default = true)",
+                                "type": "boolean"
+                              },
+                              "placeholder": {
+                                "description": "Placeholder (for text control)",
+                                "type": "string"
+                              },
+                              "minRows": {
+                                "description": "default is 1. Set this attribute to `2` or more if you want to have a textarea with more than one row",
+                                "type": "number"
+                              },
+                              "maxRows": {
+                                "description": "max rows of textarea. Used only if `minRows` > 1",
+                                "type": "number"
+                              },
+                              "label": true,
+                              "type": true,
+                              "sm": true,
+                              "md": true,
+                              "lg": true,
+                              "xs": true,
+                              "newLine": true,
+                              "hidden": true,
+                              "hideOnlyControl": true,
+                              "disabled": true,
+                              "helpLink": true,
+                              "help": true,
+                              "style": true,
+                              "darkStyle": true,
+                              "validator": true,
+                              "validatorNoSaveOnError": true,
+                              "validatorErrorText": true,
+                              "noMultiEdit": true,
+                              "tooltip": true,
+                              "default": true,
+                              "defaultFunc": true,
+                              "onChange": true,
+                              "noTranslation": true,
+                              "confirm": true,
+                              "maxLength": true,
+                              "doNotSave": true
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                              "type"
                             ]
                           }
                         },
