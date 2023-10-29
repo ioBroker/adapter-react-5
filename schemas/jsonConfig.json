@@ -40,6 +40,7 @@
         "autocomplete",
         "cron",
         "text",
+        "textSendTo",
         "number",
         "port",
         "color",

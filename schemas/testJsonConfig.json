@@ -305,6 +305,10 @@
             "en": "label is also ok instead of text"
           }
         },
+        "textSendTo": {
+          "type": "textSendTo",
+          "command": "test"
+        },
         "accessLimit": {
           "newLine": true,
           "type": "checkbox",
