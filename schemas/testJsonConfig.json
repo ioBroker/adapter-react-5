@@ -285,8 +285,12 @@
     },
     "instancesTab": {
       "type": "panel",
+      "icon": "",
+      "iconPosition": "start",
       "label": {
-        "en": "Access to instances"
+        "en": "Access to instances",
+        "de": "",
+        "uk": ""
       },
       "items": {
         "_text1": {
@@ -294,6 +298,16 @@
           "text": {
             "en": "There is a option to allow access to the specific configuration pages of selected instances."
           }
+        },
+        "_text2": {
+          "type": "staticText",
+          "label": {
+            "en": "label is also ok instead of text"
+          }
+        },
+        "textSendTo": {
+          "type": "textSendTo",
+          "command": "test"
         },
         "accessLimit": {
           "newLine": true,
@@ -352,6 +366,11 @@
           "type": "table",
           "uniqueColumns": ["ip"],
           "items": [
+            {
+              "type": "selectSendTo",
+              "command": "test",
+              "width": 50
+            },
             {
               "type": "certificates"
             },

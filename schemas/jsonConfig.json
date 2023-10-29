@@ -7,7 +7,7 @@
         "en"
       ],
       "patternProperties": {
-        "en|de|ru|pt|nl|fr|it|es|pl|zh-cn": {
+        "en|de|ru|pt|nl|fr|it|es|pl|uk|zh-cn": {
           "type": "string"
         }
       },
@@ -40,6 +40,7 @@
         "autocomplete",
         "cron",
         "text",
+        "textSendTo",
         "number",
         "port",
         "color",
@@ -516,6 +517,16 @@
     "doNotSaveProp": {
       "type": "boolean",
       "description": "Do not save this attribute as used only for internal calculations"
+    },
+    "iconPositionProp": {
+      "description": "Only for panels that has `icon` attribute.",
+      "default": "start",
+      "enum": [
+        "bottom",
+        "end",
+        "start",
+        "top"
+      ]
     }
   },
   "type": "object",
@@ -1012,6 +1023,9 @@
                   "icon": {
                     "description": "Panel can have icon (base64)",
                     "type": "string"
+                  },
+                  "iconPosition": {
+                    "$ref": "#/definitions/iconPositionProp"
                   },
                   "label": true,
                   "type": true,
@@ -1688,57 +1702,60 @@
                             "allOf": [
                               {
                                 "$ref": "#/definitions/tableItemBaseProps"
-                              },
-                              {
-                                "properties": {
-                                  "command": {
-                                    "description": "Command to be sent.",
-                                    "type": "string"
-                                  },
-                                  "jsonData": {
-                                    "description": "Data to be sent as parsable string, can contain special placeholder. E. g. '{\"subject1\": \"${data.subject}\", \"options1\": {\"host\": \"${data.host}\"}}'",
-                                    "type": "string"
-                                  },
-                                  "data": {
-                                    "description": "Data to be sent as JSON.",
-                                    "type": "object"
-                                  },
-                                  "manual": {
-                                    "description": "Allow manual editing. Without Dropdown",
-                                    "type": "boolean"
-                                  },
-                                  "noTranslation": true,
-                                  "multiple": true,
-                                  "label": true,
-                                  "type": true,
-                                  "sm": true,
-                                  "md": true,
-                                  "lg": true,
-                                  "xs": true,
-                                  "newLine": true,
-                                  "hidden": true,
-                                  "hideOnlyControl": true,
-                                  "disabled": true,
-                                  "helpLink": true,
-                                  "help": true,
-                                  "style": true,
-                                  "darkStyle": true,
-                                  "validator": true,
-                                  "validatorNoSaveOnError": true,
-                                  "validatorErrorText": true,
-                                  "noMultiEdit": true,
-                                  "tooltip": true,
-                                  "default": true,
-                                  "defaultFunc": true,
-                                  "onChange": true,
-                                  "confirm": true
-                                },
-                                "additionalProperties": false,
-                                "required": [
-                                  "type",
-                                  "command"
-                                ]
                               }
+                            ],
+                            "properties": {
+                              "attr": true,
+                              "width": true,
+                              "title": true,
+                              "filter": true,
+                              "sort": true,
+                              "command": {
+                                "description": "Command to be sent.",
+                                "type": "string"
+                              },
+                              "jsonData": {
+                                "description": "Data to be sent as parsable string, can contain special placeholder. E. g. '{\"subject1\": \"${data.subject}\", \"options1\": {\"host\": \"${data.host}\"}}'",
+                                "type": "string"
+                              },
+                              "data": {
+                                "description": "Data to be sent as JSON.",
+                                "type": "object"
+                              },
+                              "manual": {
+                                "description": "Allow manual editing. Without Dropdown",
+                                "type": "boolean"
+                              },
+                              "noTranslation": true,
+                              "multiple": true,
+                              "label": true,
+                              "type": true,
+                              "sm": true,
+                              "md": true,
+                              "lg": true,
+                              "xs": true,
+                              "newLine": true,
+                              "hidden": true,
+                              "hideOnlyControl": true,
+                              "disabled": true,
+                              "helpLink": true,
+                              "help": true,
+                              "style": true,
+                              "darkStyle": true,
+                              "validator": true,
+                              "validatorNoSaveOnError": true,
+                              "validatorErrorText": true,
+                              "noMultiEdit": true,
+                              "tooltip": true,
+                              "default": true,
+                              "defaultFunc": true,
+                              "onChange": true,
+                              "confirm": true
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                              "type",
+                              "command"
                             ]
                           }
                         },
@@ -1754,67 +1771,70 @@
                             "allOf": [
                               {
                                 "$ref": "#/definitions/tableItemBaseProps"
-                              },
-                              {
-                                "properties": {
-                                  "container": {
-                                    "description": "div, text",
-                                    "type": "string"
-                                  },
-                                  "copyToClipboard": {
-                                    "description": "If true, show button",
-                                    "type": "boolean"
-                                  },
-                                  "alsoDependsOn": {
-                                    "description": "Depends on other attributes and will be re-calculated when other attributes changed",
-                                    "type": "array",
-                                    "items": {
-                                      "type": "string"
-                                    }
-                                  },
-                                  "command": {
-                                    "description": "Command to be sent.",
-                                    "type": "string"
-                                  },
-                                  "jsonData": {
-                                    "description": "Data to be sent as parsable string, can contain special placeholder. E. g. '{\"subject1\": \"${data.subject}\", \"options1\": {\"host\": \"${data.host}\"}}'",
-                                    "type": "string"
-                                  },
-                                  "data": {
-                                    "description": "Data to be sent as JSON.",
-                                    "type": "object"
-                                  },
-                                  "noTranslation": true,
-                                  "label": true,
-                                  "type": true,
-                                  "sm": true,
-                                  "md": true,
-                                  "lg": true,
-                                  "xs": true,
-                                  "newLine": true,
-                                  "hidden": true,
-                                  "hideOnlyControl": true,
-                                  "disabled": true,
-                                  "helpLink": true,
-                                  "help": true,
-                                  "style": true,
-                                  "darkStyle": true,
-                                  "validator": true,
-                                  "validatorNoSaveOnError": true,
-                                  "validatorErrorText": true,
-                                  "noMultiEdit": true,
-                                  "tooltip": true,
-                                  "default": true,
-                                  "defaultFunc": true,
-                                  "onChange": true,
-                                  "confirm": true
-                                },
-                                "additionalProperties": false,
-                                "required": [
-                                  "type",
-                                  "command"
-                                ]
                               }
+                            ],
+                            "properties": {
+                              "attr": true,
+                              "width": true,
+                              "title": true,
+                              "filter": true,
+                              "sort": true,
+                              "container": {
+                                "description": "div, text",
+                                "type": "string"
+                              },
+                              "copyToClipboard": {
+                                "description": "If true, show button",
+                                "type": "boolean"
+                              },
+                              "alsoDependsOn": {
+                                "description": "Depends on other attributes and will be re-calculated when other attributes changed",
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "command": {
+                                "description": "Command to be sent.",
+                                "type": "string"
+                              },
+                              "jsonData": {
+                                "description": "Data to be sent as parsable string, can contain special placeholder. E. g. '{\"subject1\": \"${data.subject}\", \"options1\": {\"host\": \"${data.host}\"}}'",
+                                "type": "string"
+                              },
+                              "data": {
+                                "description": "Data to be sent as JSON.",
+                                "type": "object"
+                              },
+                              "noTranslation": true,
+                              "label": true,
+                              "type": true,
+                              "sm": true,
+                              "md": true,
+                              "lg": true,
+                              "xs": true,
+                              "newLine": true,
+                              "hidden": true,
+                              "hideOnlyControl": true,
+                              "disabled": true,
+                              "helpLink": true,
+                              "help": true,
+                              "style": true,
+                              "darkStyle": true,
+                              "validator": true,
+                              "validatorNoSaveOnError": true,
+                              "validatorErrorText": true,
+                              "noMultiEdit": true,
+                              "tooltip": true,
+                              "default": true,
+                              "defaultFunc": true,
+                              "onChange": true,
+                              "confirm": true
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                              "type",
+                              "command"
                             ]
                           }
                         },
@@ -2079,6 +2099,9 @@
                                   "icon": {
                                     "description": "Panel can have icon (base64)",
                                     "type": "string"
+                                  },
+                                  "iconPosition": {
+                                    "$ref": "#/definitions/iconPositionProp"
                                   },
                                   "label": true,
                                   "type": true,
@@ -3339,8 +3362,19 @@
                                 },
                                 "additionalProperties": false,
                                 "required": [
-                                  "type",
-                                  "text"
+                                  "type"
+                                ],
+                                "oneOf": [
+                                  {
+                                    "required": [
+                                      "text"
+                                    ]
+                                  },
+                                  {
+                                    "required": [
+                                      "label"
+                                    ]
+                                  }
                                 ]
                               }
                             ]
@@ -4371,8 +4405,19 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                  "type",
-                  "text"
+                  "type"
+                ],
+                "oneOf": [
+                  {
+                    "required": [
+                      "text"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "label"
+                    ]
+                  }
                 ]
               }
             },
