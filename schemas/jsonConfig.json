@@ -3355,8 +3355,19 @@
                                 },
                                 "additionalProperties": false,
                                 "required": [
-                                  "type",
-                                  "text"
+                                  "type"
+                                ],
+                                "oneOf": [
+                                  {
+                                    "required": [
+                                      "text"
+                                    ]
+                                  },
+                                  {
+                                    "required": [
+                                      "label"
+                                    ]
+                                  }
                                 ]
                               }
                             ]
