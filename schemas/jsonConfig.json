@@ -7,7 +7,7 @@
         "en"
       ],
       "patternProperties": {
-        "en|de|ru|pt|nl|fr|it|es|pl|zh-cn": {
+        "en|de|ru|pt|nl|fr|it|es|pl|uk|zh-cn": {
           "type": "string"
         }
       },
@@ -516,6 +516,11 @@
     "doNotSaveProp": {
       "type": "boolean",
       "description": "Do not save this attribute as used only for internal calculations"
+    },
+    "iconPositionProp": {
+      "description": "Only for panels that has `icon` attribute.",
+      "default": "start",
+      "enum": ["bottom", "end", "start", "top"]
     }
   },
   "type": "object",
@@ -1012,6 +1017,9 @@
                   "icon": {
                     "description": "Panel can have icon (base64)",
                     "type": "string"
+                  },
+                  "iconPosition": {
+                    "$ref": "#/definitions/iconPositionProp"
                   },
                   "label": true,
                   "type": true,
@@ -2079,6 +2087,9 @@
                                   "icon": {
                                     "description": "Panel can have icon (base64)",
                                     "type": "string"
+                                  },
+                                  "iconPosition": {
+                                    "$ref": "#/definitions/iconPositionProp"
                                   },
                                   "label": true,
                                   "type": true,

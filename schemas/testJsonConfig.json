@@ -285,8 +285,12 @@
     },
     "instancesTab": {
       "type": "panel",
+      "icon": "",
+      "iconPosition": "start",
       "label": {
-        "en": "Access to instances"
+        "en": "Access to instances",
+        "de": "",
+        "uk": ""
       },
       "items": {
         "_text1": {
