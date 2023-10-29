@@ -299,6 +299,12 @@
             "en": "There is a option to allow access to the specific configuration pages of selected instances."
           }
         },
+        "_text2": {
+          "type": "staticText",
+          "label": {
+            "en": "label is also ok instead of text"
+          }
+        },
         "accessLimit": {
           "newLine": true,
           "type": "checkbox",

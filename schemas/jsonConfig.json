@@ -520,7 +520,12 @@
     "iconPositionProp": {
       "description": "Only for panels that has `icon` attribute.",
       "default": "start",
-      "enum": ["bottom", "end", "start", "top"]
+      "enum": [
+        "bottom",
+        "end",
+        "start",
+        "top"
+      ]
     }
   },
   "type": "object",
@@ -4382,8 +4387,19 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                  "type",
-                  "text"
+                  "type"
+                ],
+                "oneOf": [
+                  {
+                    "required": [
+                      "text"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "label"
+                    ]
+                  }
                 ]
               }
             },
