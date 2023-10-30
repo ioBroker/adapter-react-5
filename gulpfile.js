@@ -96,43 +96,6 @@ function handleError (error) {
     this.emit('end');
 }
 
-gulp.task('patchJsonSchemeForTable', async () => {
-    const schema = require('./schemas/jsonConfig.json');
-    const allOf = JSON.parse(JSON.stringify(schema.properties.items.patternProperties['^.+'].allOf));
-    const pos = allOf.findIndex(item => item.if.properties.type.const === 'table');
-    if (pos !== -1) {
-        allOf.splice(pos, 1)
-    }
-    const properties = JSON.parse(JSON.stringify(schema.properties.items.patternProperties['^.+'].properties))
-    Object.assign(properties, {
-        type: {
-            type: 'string'
-        },
-        attr: {
-            type: 'string'
-        },
-        width: {
-            type: [
-                'number',
-                'string'
-            ]
-        },
-        title: {
-            type: 'string'
-        },
-        filter: {
-            type: 'boolean'
-        },
-        sort: {
-            type: 'boolean'
-        },
-    });
-
-    schema.properties.items.patternProperties['^.+'].allOf[pos].then.properties.items.items.properties = properties;
-    schema.properties.items.patternProperties['^.+'].allOf[pos].then.properties.items.items.allOf = allOf;
-    fs.writeFileSync('./schemas/jsonConfig.json', JSON.stringify(schema, null, 2));
-});
-
 gulp.task('patchReadme', async () => {
     const pack = require('./package.json');
     let readme = fs.readFileSync(`${__dirname}/README.md`).toString('utf8');
@@ -186,4 +149,4 @@ gulp.task('compile', gulp.parallel('copy',
     ])
 ));
 
-gulp.task('default', gulp.series('npm', 'compile', 'patchReadme', 'patchJsonSchemeForTable'));
+gulp.task('default', gulp.series('npm', 'compile', 'patchReadme'));
