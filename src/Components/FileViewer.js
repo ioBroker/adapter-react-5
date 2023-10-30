@@ -61,7 +61,7 @@ const styles = () => ({
 });
 
 export const EXTENSIONS = {
-    images: ['png', 'jpg', 'svg', 'jpeg', 'bmp', 'gif'],
+    images: ['png', 'jpg', 'svg', 'jpeg', 'bmp', 'gif', 'apng', 'avif', 'webp'],
     code:   ['js', 'json', 'json5', 'md'],
     txt:    ['log', 'txt', 'html', 'css', 'xml'],
     audio:  ['mp3', 'wav', 'ogg', 'acc'],
