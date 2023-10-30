@@ -417,7 +417,7 @@ class ConfigFileSelector extends ConfigGeneric {
         let accept = { '*/*': [] };
         if (this.props.schema.fileTypes === 'image') {
             accept = {
-                'image/*': ['.png', '.jpg', '.svg', '.gif', 'apng', 'avif', 'webp'],
+                'image/*': ['.png', '.jpg', '.svg', '.gif', '.apng', '.avif', '.webp'],
             };
         } else if (this.props.schema.fileTypes === 'audio') {
             accept = {
