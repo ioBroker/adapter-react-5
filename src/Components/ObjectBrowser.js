@@ -798,9 +798,73 @@ const styles = theme => ({
     },
 });
 
-function generateFile(filename, obj) {
+/**
+ * Function that walks through all keys of an object or array and applies a function to each key.
+ * @returns {unknown} The copied object
+ */
+function walkThrough(object, iteratee) {
+    if (Array.isArray(object)) {
+        const copiedObject = [];
+        for (let index = 0; index < object.length; index++) {
+            iteratee(copiedObject, object[index], index);
+        }
+        return copiedObject;
+    }
+
+    const copiedObject = {};
+    for (const key in object) {
+        if (Object.prototype.hasOwnProperty.call(object, key)) {
+            iteratee(copiedObject, object[key], key);
+        }
+    }
+    return copiedObject;
+}
+
+/**
+ * Function to reduce an object primarily by a given list of keys
+ * @param obj The object which should be filtered
+ * @param filterKeys The keys which should be excluded
+ * @param excludeTranslations Whether translations should be reduced to only the english value
+ * @returns {unknown} The filtered object
+ */
+function filterObject(obj, filterKeys, excludeTranslations) {
+    return walkThrough(obj, (result, value, key) => {
+        if (value === undefined || value === null) {
+            return;
+        }
+        if (typeof key === 'string' && filterKeys.includes(key)) {
+            return;
+        }
+        // if the key is an object, run it through the inner function - omitFromObject
+        const isObject = typeof value === 'object';
+        if (excludeTranslations && isObject) {
+            if (typeof value.en === 'string' && typeof value.de === 'string') {
+                result[key] = value.en;
+                return;
+            }
+        }
+        result[key] = isObject ? filterObject(value, filterKeys, excludeTranslations) : value;
+    });
+}
+
+/**
+ * Function to generate a json-file for an object and trigger download it
+ * @param filename {string} The desired filename
+ * @param obj {unknown} The obj which should be downloaded
+ * @param options Options to filter/reduce the output
+ * @param options.beautify {boolean} Whether the output should be beautified
+ * @param options.excludeSystemRepositories {boolean} Whether "system.repositories" should be excluded
+ * @param options.excludeTranslations {boolean} Whether translations should be reduced to only the english value
+ */
+function generateFile(filename, obj, options) {
     const el = document.createElement('a');
-    el.setAttribute('href', `data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify(obj, null, 2))}`);
+    const filterKeys = [];
+    if (options.excludeSystemRepositories) {
+        filterKeys.push('system.repositories');
+    }
+    const filteredObject = filterKeys.length > 0 || options.excludeTranslations ? filterObject(obj, filterKeys, options.excludeTranslations) : obj;
+    const data = options.beautify ? JSON.stringify(filteredObject, null, 2) : JSON.stringify(filteredObject);
+    el.setAttribute('href', `data:application/json;charset=utf-8,${encodeURIComponent(data)}`);
     el.setAttribute('download', filename);
 
     el.style.display = 'none';
@@ -2012,6 +2076,9 @@ class ObjectBrowser extends Component {
                 (window._localStorage || window.localStorage).getItem(`${props.dialogName || 'App'}.desc`) !== 'false',
             showContextMenu: null,
             noStatesByExportImport: false,
+            beautifyJsonExport: true,
+            excludeSystemRepositoriesFromExport: true,
+            excludeTranslations: false,
         };
 
         this.edit = {};
@@ -2934,53 +3001,20 @@ class ObjectBrowser extends Component {
 
         if (Array.isArray(id)) {
             id.forEach(event => {
-                console.log(`> objectChange ${event.id}`);
-
-                if (event.obj && typeof this.props.filterFunc === 'function' && !this.props.filterFunc(event.obj)) {
+                const { newInnerState, filtered } = this.processOnObjectChangeElement(event.id, event.obj);
+                if (filtered) {
                     return;
                 }
-
-                if (event.id.startsWith('system.adapter.') && event.obj && event.obj.type === 'adapter') {
-                    const columnsForAdmin = JSON.parse(JSON.stringify(this.state.columnsForAdmin));
-
-                    this.parseObjectForAdmins(columnsForAdmin, event.obj);
-
-                    if (JSON.stringify(this.state.columnsForAdmin) !== JSON.stringify(columnsForAdmin)) {
-                        newState = { columnsForAdmin };
-                    }
-                }
-                this.objects = this.objects || [];
-                if (this.objects[event.id]) {
-                    if (event.obj) {
-                        this.objects[event.id] = event.obj;
-                    } else {
-                        delete this.objects[event.id];
-                    }
+                if (newInnerState) {
+                    newState = newInnerState;
                 }
             });
         } else {
-            console.log(`> objectChange ${id}`);
-            this.objects = this.objects || [];
-
-            if (obj && typeof this.props.filterFunc === 'function' && !this.props.filterFunc(obj)) {
+            const { newInnerState, filtered } = this.processOnObjectChangeElement(id, obj);
+            if (filtered) {
                 return;
             }
-
-            if (id.startsWith('system.adapter.') && obj && obj.type === 'adapter') {
-                const columnsForAdmin = JSON.parse(JSON.stringify(this.state.columnsForAdmin));
-                this.parseObjectForAdmins(columnsForAdmin, obj);
-                if (JSON.stringify(this.state.columnsForAdmin) !== JSON.stringify(columnsForAdmin)) {
-                    newState = { columnsForAdmin };
-                }
-            }
-
-            if (this.objects[id]) {
-                if (obj) {
-                    this.objects[id] = obj;
-                } else {
-                    delete this.objects[id];
-                }
-            }
+            newState = newInnerState;
         }
 
         newState && this.setState(newState);
@@ -3000,6 +3034,38 @@ class ObjectBrowser extends Component {
             }, 500);
         }
     };
+
+    /**
+     * Processes a single element in regard to certain filters, columns for admin and updates object dict
+     * @param id The id of the object
+     * @param obj The object itself
+     * @returns {{filtered: boolean, newState: null}} Returns an object containing the new state (if any) and whether the object was filtered.
+     */
+    processOnObjectChangeElement(id, obj) {
+        console.log(`> objectChange ${id}`);
+        let newState = null;
+
+        if (obj && typeof this.props.filterFunc === 'function' && !this.props.filterFunc(obj)) {
+            return { newState, filtered: true };
+        }
+
+        if (id.startsWith('system.adapter.') && obj && obj.type === 'adapter') {
+            const columnsForAdmin = JSON.parse(JSON.stringify(this.state.columnsForAdmin));
+
+            this.parseObjectForAdmins(columnsForAdmin, obj);
+
+            if (JSON.stringify(this.state.columnsForAdmin) !== JSON.stringify(columnsForAdmin)) {
+                newState = { columnsForAdmin };
+            }
+        }
+        this.objects = this.objects || [];
+        if (obj) {
+            this.objects[id] = obj;
+        } else if (this.objects[id]) {
+            delete this.objects[id];
+        }
+        return { newState, filtered: false };
+    }
 
     /**
      * @private
@@ -3505,12 +3571,6 @@ class ObjectBrowser extends Component {
 
                 if (obj.val) {
                     val = obj.val;
-                    try {
-                        val = JSON.parse(val);
-                    } catch (e) {
-                        console.log(`Cannot parse value: ${e}`);
-                        val = null;
-                    }
                     delete obj.val;
                 }
                 if (obj.ack !== undefined) {
@@ -3580,39 +3640,49 @@ class ObjectBrowser extends Component {
         return [];
     }
 
-    async _exportObjects(isAll, noStatesByExportImport) {
-        if (isAll) {
-            generateFile('allObjects.json', this.objects);
-        } else if (this.state.selected.length || this.state.selectedNonObject) {
-            const result = {};
-            const id = this.state.selected[0] || this.state.selectedNonObject;
-            const ids = this._getSelectedIdsForExport();
+    /**
+     * Exports the selected objects based on the given options and triggers file generation
+     * @param options Options to filter/reduce the output
+     * @param options.isAll {boolean} Whether all objects should be exported or only the selected ones
+     * @param options.beautify {boolean} Whether the output should be beautified
+     * @param options.excludeSystemRepositories {boolean} Whether "system.repositories" should be excluded
+     * @param options.excludeTranslations {boolean} Whether translations should be reduced to only the english value
+     * @returns {Promise<void>}
+     * @private
+     */
+    async _exportObjects(options) {
+        if (options.isAll) {
+            generateFile('allObjects.json', this.objects, options);
+            return;
+        }
+        if (!(this.state.selected.length || this.state.selectedNonObject)) {
+            window.alert(this.props.t('ra_Save of objects-tree is not possible'));
+            return;
+        }
+        const result = {};
+        const id = this.state.selected[0] || this.state.selectedNonObject;
+        const ids = this._getSelectedIdsForExport();
 
-            for (let i = 0; i < ids.length; i++) {
-                const key = ids[i];
-                result[key] = JSON.parse(JSON.stringify(this.objects[key]));
-
-                // read states values
-                if (result[key]?.type === 'state' && !noStatesByExportImport) {
-                    const state = await this.props.socket.getState(key);
-                    if (state) {
-                        result[key].val = state.val;
-                        result[key].ack = state.ack;
-                    }
-                }
-                // add enum information
-                if (result[key].common) {
-                    const enums = this.getEnumsForId(key);
-                    if (enums) {
-                        result[key].common.enums = enums;
-                    }
+        for (const key of ids) {
+            result[key] = JSON.parse(JSON.stringify(this.objects[key]));
+            // read states values
+            if (result[key]?.type === 'state' && !options.noStatesByExportImport) {
+                const state = await this.props.socket.getState(key);
+                if (state) {
+                    result[key].val = state.val;
+                    result[key].ack = state.ack;
                 }
             }
-
-            generateFile(`${id}.json`, result, noStatesByExportImport);
-        } else {
-            window.alert(this.props.t('ra_Save of objects-tree is not possible'));
+            // add enum information
+            if (result[key].common) {
+                const enums = this.getEnumsForId(key);
+                if (enums) {
+                    result[key].common.enums = enums;
+                }
+            }
         }
+
+        generateFile(`${id}.json`, result, options);
     }
 
     renderExportDialog() {
@@ -3620,12 +3690,12 @@ class ObjectBrowser extends Component {
             return null;
         }
         return <Dialog open={!0}>
-            <DialogTitle>{this.props.t('Select type of export')}</DialogTitle>
+            <DialogTitle>{this.props.t('ra_Select type of export')}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    {this.props.t('You can export all objects or just the selected branch.')}
+                    {this.props.t('ra_You can export all objects or just the selected branch.')}
                     <br />
-                    {this.props.t('Selected %s object(s)', this.state.showExportDialog)}
+                    {this.props.t('ra_Selected %s object(s)', this.state.showExportDialog)}
                     <br />
                     <FormControlLabel
                         control={<Checkbox
@@ -3634,13 +3704,46 @@ class ObjectBrowser extends Component {
                         />}
                         label={this.props.t('ra_Do not export values of states')}
                     />
+                    <br />
+                    {this.props.t('These options can reduce the size of the export file:')}
+                    <FormControlLabel
+                        control={<Checkbox
+                            checked={this.state.beautifyJsonExport}
+                            onChange={e => this.setState({ beautifyJsonExport: e.target.checked })}
+                        />}
+                        label={this.props.t('Beautify JSON output')}
+                    />
+                    <br />
+                    <FormControlLabel
+                        control={<Checkbox
+                            checked={this.state.excludeSystemRepositoriesFromExport}
+                            onChange={e => this.setState({ excludeSystemRepositoriesFromExport: e.target.checked })}
+                        />}
+                        label={this.props.t('Exclude system repositories from export JSON')}
+                    />
+                    <FormControlLabel
+                        control={<Checkbox
+                            checked={this.state.excludeTranslations}
+                            onChange={e => this.setState({ excludeTranslations: e.target.checked })}
+                        />}
+                        label={this.props.t('Exclude translations (except english) from export JSON')}
+                    />
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
                 <Button
                     color="grey"
                     variant="outlined"
-                    onClick={() => this.setState({ showExportDialog: false }, () => this._exportObjects(true, this.state.noStatesByExportImport))}
+                    onClick={() => this.setState(
+                        { showExportDialog: false },
+                        () => this._exportObjects({
+                            isAll: true,
+                            noStatesByExportImport: this.state.noStatesByExportImport,
+                            beautify: this.state.beautifyJsonExport,
+                            excludeSystemRepositories: this.state.excludeSystemRepositoriesFromExport,
+                            excludeTranslations: this.state.excludeTranslations,
+                        }),
+                    )}
                 >
                     {this.props.t('ra_All objects')}
                     {' '}
@@ -3652,7 +3755,16 @@ class ObjectBrowser extends Component {
                     color="primary"
                     variant="contained"
                     autoFocus
-                    onClick={() => this.setState({ showExportDialog: false }, () => this._exportObjects(false, this.state.noStatesByExportImport))}
+                    onClick={() => this.setState(
+                        { showExportDialog: false },
+                        () => this._exportObjects({
+                            isAll: false,
+                            noStatesByExportImport: this.state.noStatesByExportImport,
+                            beautify: this.state.beautifyJsonExport,
+                            excludeSystemRepositories: this.state.excludeSystemRepositoriesFromExport,
+                            excludeTranslations: this.state.excludeTranslations,
+                        }),
+                    )}
                 >
                     {this.props.t('ra_Only selected')}
                     {' '}
@@ -3711,12 +3823,6 @@ class ObjectBrowser extends Component {
                             }
                             if (json.val) {
                                 val = json.val;
-                                try {
-                                    val = JSON.parse(val);
-                                } catch (err) {
-                                    console.log(`Cannot parse value: ${err}`);
-                                    val = null;
-                                }
                                 delete json.val;
                             }
                             if (json.ack !== undefined) {

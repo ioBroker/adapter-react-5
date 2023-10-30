@@ -2,13 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
-import Grid from '@mui/material/Grid';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
+import {
+    Grid,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Typography,
+} from '@mui/material';
 
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 
 import Utils from './wrapper/Components/Utils';
 
@@ -36,6 +38,7 @@ import ConfigIP from './ConfigIP';
 import ConfigImageSendTo from './ConfigImageSendTo';
 import ConfigImageUpload from './ConfigImageUpload';
 import ConfigInstanceSelect from './ConfigInstanceSelect';
+import ConfigInterface from './ConfigInterface';
 import ConfigJsonEditor from './ConfigJsonEditor';
 import ConfigLanguage from './ConfigLanguage';
 import ConfigLicense from './ConfigLicense';
@@ -88,6 +91,7 @@ const components = {
     image: ConfigImageUpload,
     imageSendTo: ConfigImageSendTo,
     instance: ConfigInstanceSelect,
+    interface: ConfigInterface,
     ip: ConfigIP,
     jsonEditor: ConfigJsonEditor,
     language: ConfigLanguage,
