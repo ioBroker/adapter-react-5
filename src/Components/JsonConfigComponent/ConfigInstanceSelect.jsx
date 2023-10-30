@@ -2,11 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import {
+    InputLabel,
+    MenuItem,
+    FormHelperText,
+    FormControl,
+    Select,
+} from '@mui/material';
 
 import I18n from './wrapper/i18n';
 import ConfigGeneric from './ConfigGeneric';
@@ -14,6 +16,11 @@ import ConfigGeneric from './ConfigGeneric';
 const styles = () => ({
     fullWidth: {
         width: '100%',
+    },
+    icon: {
+        width: 20,
+        height: 20,
+        marginRight: 4,
     },
 });
 
@@ -31,15 +38,22 @@ class ConfigInstanceSelect extends ConfigGeneric {
             .then(async instances => {
                 if (this.props.schema.adapter === '_dataSources') {
                     // get only "data-sources", like history, sql, influx
-                    instances = instances.filter(instance => instance && instance.common && instance.common.getHistory);
+                    instances = instances.filter(instance => instance?.common?.getHistory);
                 } else if (this.props.schema.adapter) {
-                    instances = instances.filter(instance => instance && instance._id.startsWith(`system.adapter.${this.props.schema.adapter}.`));
+                    instances = instances.filter(instance => instance?._id.startsWith(`system.adapter.${this.props.schema.adapter}.`));
+                } else if (this.props.schema.adapters && Array.isArray(this.props.schema.adapters)) {
+                    instances = instances.filter(instance => this.props.schema.adapters.includes(instance?.common?.name));
+                }
+
+                if (this.props.schema.onlyEnabled) {
+                    instances = instances.filter(instance => instance?.common?.enabled);
                 }
 
                 const selectOptions = instances.map(instance => ({
                     value: this.props.schema.long ? instance._id :
                         (this.props.schema.short ? instance._id.split('.').pop() : instance._id.replace(/^system\.adapter\./, '')),
                     label: `${instance.common.name} [${instance._id.replace(/^system\.adapter\./, '')}]`,
+                    icon: `adapter/${instance.common.name}/${instance.common.icon}`,
                 }));
 
                 selectOptions.sort((a, b) => {
@@ -101,6 +115,7 @@ class ConfigInstanceSelect extends ConfigGeneric {
                     value: this.props.schema.long ? obj._id :
                         (this.props.schema.short ? obj._id.split('.').pop() : obj._id.replace(/^system\.adapter\./, '')),
                     label: `${obj.common.name} [${obj._id.replace(/^system\.adapter\./, '')}]`,
+                    icon: `adapter/${obj.common.name}/${obj.common.icon}`,
                 });
                 selectOptions.sort((a, b) => (a.label > b.label ? 1 : (a.label < b.label ? -1 : 0)));
                 this.setState({ selectOptions });
@@ -123,13 +138,17 @@ class ConfigInstanceSelect extends ConfigGeneric {
                 displayEmpty
                 disabled={!!disabled}
                 value={this.state.value}
-                renderValue={() => this.getText(item?.label, true)}
+                renderValue={() => <span style={{ display: 'flex' }}>
+                    {item?.icon ? <img src={`./${item.icon}`} alt={item.value} className={this.props.classes.icon} /> : null}
+                    {this.getText(item?.label, true)}
+                </span>}
                 onChange={e =>
                     this.setState({ value: e.target.value }, () =>
                         this.onChange(this.props.attr, this.state.value))}
             >
                 {this.state.selectOptions.map(it =>
                     <MenuItem key={it.value} value={it.value} style={it.value === ConfigGeneric.NONE_VALUE ? { opacity: 0.5 } : {}}>
+                        {it.icon ? <img src={`./${it.icon}`} alt={it.value} className={this.props.classes.icon} /> : null}
                         {this.getText(it.label, true)}
                     </MenuItem>)}
             </Select>

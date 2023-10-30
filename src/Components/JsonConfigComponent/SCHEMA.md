@@ -1,5 +1,25 @@
 # ioBroker JSON Config
-**Note: attributes or controls marked with "!", are not yet implemented.**
+Admin (from version 6) supports JSON configuration for adapters.
+It is possible to define the configuration in JSON file and then use it in Admin.
+
+Example of `jsonConfig.json` file with multiple tabs can be found here: https://github.com/ioBroker/ioBroker.admin/blob/master/admin/jsonConfig.json5
+and example with just one panel here: https://github.com/ioBroker/ioBroker.dwd/blob/master/admin/jsonConfig.json
+
+You can define the settings in JSON or in JSON5 format. JSON5 is more human-readable and supports comments.
+
+Additionally, to the JSON file, you must define in the `io-package.json` in `common` part:
+```json
+...
+"adminUI": {
+  "config": "json"
+}
+...
+```
+to say that the adapter supports JSON configuration.
+
+You can see almost all components in action if you test this adapter: https://github.com/mcm1957/ioBroker.jsonconfig-demo.
+You can install it via GitHub icon in admin by entering `iobroker.jsonconfig-demo` on the npm tab.
+
 
 All labels, texts, help texts can be multi-language or just strings.
 
@@ -10,12 +30,13 @@ Possible types:
 
 - `tabs` - Tabs with items
   - `items` - Object with panels `{"tab1": {}, "tab2": {}...}`
+  - `iconPosition` - `bottom`, `end`, `start` or `top`. Only for panels that has `icon` attribute. Default: `start`
   
 - `panel` - Tab with items
-  - `icon` - tab can have icon (base64)
+  - `icon` - tab can have icon (base64 like `data:image/svg+xml;base64,...`) or `jpg/png` images (ends with `.png`)
   - `label` - Label of tab
   - `items` - Object `{"attr1": {}, "attr2": {}}...`
-  - `collapsable` - only possible as not part of tabs
+  - `collapsable` - only possible as not part of tabs[jsonConfig.json](..%2F..%2F..%2F..%2F..%2FioBroker.ring%2Fadmin%2FjsonConfig.json)
   - `color` - color of collapsable header `primary` or `secondary` or nothing
 
 - `text` - Text component
@@ -64,13 +85,6 @@ Possible types:
 - `autocomplete`
   - `options` - `["value1", "value2", ...]` or `[{"value": "value", "label": "Value1"}, "value2", ...]`
   - `freeSolo` - Set `freeSolo` to `true`, so the textbox can contain any arbitrary value.
-
-- `!icon` - base64 icon
-  - `maxSize`
-  - `maxWidth`
-  - `maxHeight`
-  - `crop` - if true, allow user to crop the image (only for non svg)
-  - `square` - width must be equal to height, or crop must allow only square as shape
 
 - `image` - saves image as file of the `adapter.X` object or as base64 in attribute
   - `filename` - name of file is structure name. In the below example `login-bg.png` is file name for `writeFile("myAdapter.INSTANCE", "login-bg.png")`
@@ -128,7 +142,9 @@ Possible types:
 
 - `instance`
     - `adapter` - name of adapter. With special name `_dataSources` you can get all adapters with flag `common.getHistory`.
+    - `adapters` - optional list of adapters, that should be shown. If not defined, all adapters will be shown. Only active if `adapter` attribute is not defined.
     - `allowDeactivate` - if true. Additional option "deactivate" is shown
+    - `onlyEnabled` - if true. Only enabled instances will be shown
     - `long` - value will look like `system.adapter.ADAPTER.0` and not `ADAPTER.0`
     - `short` - value will look like `0` and not `ADAPTER.0`
     - `all` - Add to the options "all" option with value `*`
@@ -158,7 +174,7 @@ Possible types:
     - `reloadBrowser` - if true - reload the current browser window, if response contains attribute `reloadBrowser`, like `{"reloadBrowser": true}`.
     - `window` - if `openUrl` is true, this is name of the new window. Could be overwritten if response consist `window` attribute.
       `this.props.socket.sendTo(adapterName.instance, command || 'send', data, result => {});`
-    - `icon` - if icon should be shown: `auth`, `send`, `web`, `warning`, `error`, `info`, `search`. You can use `base64` icons. (Request via issue if you need more icons)
+    - `icon` - if icon should be shown: `auth`, `send`, `web`, `warning`, `error`, `info`, `search`. You can use `base64` icons (like `data:image/svg+xml;base64,...`) or `jpg/png` images (ends with `.png`). (Request via issue if you need more icons)
     - `useNative` - if adapter returns a result with `native` attribute it will be used for configuration. If `saveConfig` is true, the user will be requested to save the configuration.
     - `showProcess` - Show spinner while request is in progress
     - `timeout` - timeout for request in ms. Default: none.
@@ -180,7 +196,7 @@ Possible types:
     - `button` - show a link as button
     - `variant` - type of button (`outlined`, `contained`, `text`)
     - `color` - color of button (e.g. `primary`)
-    - `icon` - if icon should be shown: `auth`, `send`, `web`, `warning`, `error`, `info`, `search`, `book`, `help`, `upload`. You can use `base64` icons (start with `data:image/svg+xml;base64,...`). (Request via issue if you need more icons)
+    - `icon` - if icon should be shown: `auth`, `send`, `web`, `warning`, `error`, `info`, `search`, `book`, `help`, `upload`. You can use `base64` icons (it starts with `data:image/svg+xml;base64,...`) or `jpg/png` images (ends with `.png`) . (Request via issue if you need more icons)
 
 - `staticImage` - static image
     - `href` - optional HTTP link
@@ -197,6 +213,7 @@ Possible types:
     - `clone` - [optional] - if clone button should be shown. If true, the clone button will be shown. If attribute name, this name will be unique.
     - `export` - [optional] - if export button should be shown. Export as csv file.
     - `import` - [optional] - if import button should be shown. Import from csv file.
+    - `uniqueColumns` - [optional] - specify an array of columns, which need to have unique entries
 
 - `accordion` - accordion with items that could be deleted, added, moved up, moved down (Admin 6.6.0 and newer)
     - `items` - `[{"type": see above, "attr": "name", "default": ""}]` - items can be placed like on a `panel` (xs, sm, md, lg and newLine)
@@ -248,7 +265,7 @@ Possible types:
     - `simple` - show simple CRON settings
 
 - `fileSelector` (only Admin6)
-    - `pattern` - File extension pattern. Allowed `**/*.ext` to show all files from sub-folders too, `*.ext` to show from root folder or `folderName/*.ext` to show all files in sub-folder `folderName`. Default `**/*.*`.
+    - `pattern` - File extension pattern. Allowed `**/*.ext` to show all files from subfolders too, `*.ext` to show from root folder or `folderName/*.ext` to show all files in sub-folder `folderName`. Default `**/*.*`.
     - `fileTypes` - [optional] type of files: `audio`, `image`, `text`
     - `objectID` - Object ID of type `meta`. You can use special placeholder `%INSTANCE%`: like `myAdapter.%INSTANCE%.files`
     - `upload` - path, where the uploaded files will be stored. Like `folderName`. If not defined, no upload field will be shown. To upload in the root, set this field to `/`.
@@ -376,6 +393,11 @@ adapter.on('message', obj => {
   - `latitudeName` - if defined, the latitude will be stored in this attribute, divider will be ignored
   - `useSystemName` - if defined, the checkbox with "Use system settings" will be shown and latitude, longitude will be read from system.config, a boolean will be saved to the given name
 
+- `interface`
+  Selects the interface from of the host, where the instance runs
+  - `ignoreLoopback` - do not show loopback interface (127.0.0.1) 
+  - `ignoreInternal` - do not show internal interfaces (normally it is 127.0.0.1 too) 
+
 - `license` - shows the license information if not already accepted. One of attributes `texts` or `licenseUrl` must be defined. When the license is accepted, the defined configuration attribute will be set to `true`.
   - `texts` - array of paragraphs with texts, which will be shown each as a separate paragraph
   - `licenseUrl` - URL to the license file (e.g. https://raw.githubusercontent.com/ioBroker/ioBroker.docs/master/LICENSE)
@@ -390,6 +412,8 @@ adapter.on('message', obj => {
 - `uuid` - Show iobroker UUID
 - `port` - Special input for ports. It checks automatically if port is used by other instances and shows a warning
 
+**Note: attributes or controls marked with "!", are not yet implemented.**
+
 ## Common attributes of controls
 All types could have:
 - `sm` - width in 1/12 of screen on small screen
@@ -403,9 +427,6 @@ All types could have:
 - `disabled` - JS function that could use `native.attribute` for calculation
 - `help` - help text (multi-language)
 - `helpLink` - href to help (could be used only together with `help`)
-- `icon` - base64 svg
-- `!encrypted` - is value encrypted or not (of course only for texts)
-  - if encrypted, use `__encrypted__` value for show and if was changed, encrypt it with `socket.encrypt`
 - `style` - css style in ReactJS notation: `radiusBorder` and not `radius-border`.
 - `darkStyle` - css style for dark mode
 - `validator` - JS function: true no error, false - error
@@ -538,6 +559,24 @@ If no schema is provided, the schema must be created automatically from data.
 - name `timeout` => number, help="ms"
 
 If element has no attribute `type`, assume it has default type 'panel'.
+
+## Panel style
+You can provide style for panels too. Here is an example with panel background:
+```json
+{
+  "i18n": true,
+  "type": "panel",
+  "style": {
+    "backgroundImage": "url(adapter/mpd/background.png)",
+    "backgroundPosition": "top",
+    "backgroundRepeat": "no-repeat",
+    "backgroundSize": "cover"
+  },
+  "items": {
+    "...": {}
+  }
+}
+```
 
 ## i18n
 There are several options to provide the translations.
@@ -673,7 +712,8 @@ The following variables are available in JS function in custom settings:
     onChange={(newData, isChanged) => {}} 
     onError={error => error can be true/false or text}
 />
-````
+```
+You can find examples in [`telegram`](https://github.com/iobroker-community-adapters/ioBroker.telegram/tree/master/src-admin) or in [`pushbullet`](https://github.com/Jens1809/ioBroker.pushbullet/tree/master/src-admin) adapter.
 
 ## Schema
 Schema is [here](https://github.com/ioBroker/adapter-react-v5/tree/master/schemas)
