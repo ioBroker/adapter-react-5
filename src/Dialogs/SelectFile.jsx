@@ -78,7 +78,7 @@ const styles = () => ({
  * @property {boolean} [allowView] if tile view enabled (default true)
  * @property {boolean} [showToolbar] Show toolbar (default true)
  * @property {array} [limitPath] Limit file browser to one specific objectID of type meta and following path (like vis.0/main)
- * @property {array} [filterFiles] like `['png', 'svg', 'bmp', 'jpg', 'jpeg']`
+ * @property {array} [filterFiles] like `['png', 'svg', 'bmp', 'jpg', 'jpeg', 'gif']`
  * @property {string} [filterByType] images, code, txt, audio, video
  * @property {bool} [selectOnlyFolders] allow only folder's selection * @property {() => void} onClose Close handler that is always called when the dialog is closed.
  * @property {(selected: string | string[] | undefined) => void} onOk Handler that is called when the user presses OK or by double click.
@@ -224,7 +224,7 @@ DialogSelectFile.propTypes = {
     allowDelete: PropTypes.bool,
     allowView: PropTypes.bool, // allow view of files
     showToolbar: PropTypes.bool,
-    filterFiles: PropTypes.arrayOf(PropTypes.string), // array of extensions ['jpg', 'png]
+    filterFiles: PropTypes.arrayOf(PropTypes.string), // array of extensions ['png', 'svg', 'bmp', 'jpg', 'jpeg', 'gif']
     filterByType: PropTypes.string, // e.g. images
     limitPath: PropTypes.string,
     selectOnlyFolders: PropTypes.bool,

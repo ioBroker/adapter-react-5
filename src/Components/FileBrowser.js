@@ -2003,7 +2003,7 @@ FileBrowser.propTypes = {
 
     selected: PropTypes.string,
     tileView: PropTypes.bool,
-    filterFiles: PropTypes.array, // like ['png', 'svg', 'bmp', 'jpg', 'jpeg']
+    filterFiles: PropTypes.array, // like ['png', 'svg', 'bmp', 'jpg', 'jpeg', 'gif']
     filterByType: PropTypes.string, // images, code or txt from EXTENSIONS
     onSelect: PropTypes.func, // function (id, isDoubleClick)
 

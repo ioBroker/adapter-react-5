@@ -41,7 +41,7 @@ export interface FileBrowserProps {
     showViewTypeButton?: boolean;
     /** The ID of the selected file. */
     selected?: string;
-    /** The file extensions to show, like ['png', 'svg', 'bmp', 'jpg', 'jpeg']. */
+    /** The file extensions to show, like ['png', 'svg', 'bmp', 'jpg', 'jpeg', 'gif']. */
     filterFiles?: string[];
     /** The file extension categories to show. */
     filterByType?: 'images' | 'code' | 'txt';

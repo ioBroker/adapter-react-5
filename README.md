@@ -670,8 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### 4.6.11 (2023-10-30)
+### **WORK IN PROGRESS**
 * (bluefox) Synced with admin
+* (bluefox) Added GIF to image files
 
 ### 4.6.7 (2023-10-19)
 * (bluefox) Added return value for `subscribeOnInstance` for Connection class
