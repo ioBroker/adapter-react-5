@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.6.13 (2023-10-30)
 * (bluefox) Synced with admin
 * (bluefox) Added GIF to image files
 
