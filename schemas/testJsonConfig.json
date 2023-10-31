@@ -359,17 +359,89 @@
           "md": 4,
           "lg": 3
         },
+        "sendTo": {
+          "type": "sendTo",
+          "command": "test",
+          "openUrl": true
+        },
+        "reverseProxy": {
+          "sm": 12,
+          "newLine": true,
+          "type": "table",
+          "items": [
+            {
+              "type": "text",
+              "width": "50%",
+              "title": "Global path",
+              "attr": "globalPath",
+              "filter": false,
+              "sort": false,
+              "default": "/iobroker/"
+            },
+            {
+              "type": "staticText",
+              "text": "=>",
+              "noTranslation": true,
+              "width": 20
+            },
+            {
+              "type": "table",
+              "width": "50%",
+              "attr": "paths",
+              "filter": false,
+              "sort": false,
+              "default": [
+                {
+                  "instance": "web.0",
+                  "path": "/web/"
+                }
+              ],
+              "items": [
+                {
+                  "type": "instance",
+                  "width": 200,
+                  "title": {
+                    "en": "Instance"
+                  },
+                  "attr": "instance",
+                  "filter": false,
+                  "sort": false,
+                  "default": "web.0"
+                },
+                {
+                  "type": "text",
+                  "width": "80%",
+                  "title": {
+                    "en": "Instance path behind proxy"
+                  },
+                  "attr": "path",
+                  "filter": false,
+                  "sort": false,
+                  "default": "/web/"
+                }
+              ]
+            }
+          ]
+        },
         "myTable": {
           "newLine": true,
           "sm": 12,
           "noDelete": false,
           "type": "table",
-          "uniqueColumns": ["ip"],
+          "export": true,
+          "uniqueColumns": [
+            "ip"
+          ],
           "items": [
             {
               "type": "selectSendTo",
               "command": "test",
-              "width": 50
+              "width": 50,
+              "title": {
+                "en": "Select send to",
+                "de": ""
+              },
+              "doNotSave": true
             },
             {
               "type": "certificates"
