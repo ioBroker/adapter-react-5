@@ -359,6 +359,11 @@
           "md": 4,
           "lg": 3
         },
+        "sendTo": {
+          "type": "sendTo",
+          "command": "test",
+          "openUrl": true
+        },
         "myTable": {
           "newLine": true,
           "sm": 12,

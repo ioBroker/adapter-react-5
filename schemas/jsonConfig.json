@@ -521,6 +521,95 @@
         "complex"
       ]
     },
+    "sendToProps": {
+      "properties": {
+        "command": {
+          "description": "Command to be sent.",
+          "type": "string"
+        },
+        "color": {
+          "description": "Optional color",
+          "type": "string",
+          "enum": [
+            "primary",
+            "secondary"
+          ]
+        },
+        "icon": {
+          "description": "sendTo can have icon (base64)",
+          "type": "string"
+        },
+        "jsonData": {
+          "description": "Data to be sent as parsable string, can contain special placeholder. E. g. '{\"subject1\": \"${data.subject}\", \"options1\": {\"host\": \"${data.host}\"}}'",
+          "type": "string"
+        },
+        "data": {
+          "description": "Data to be sent as JSON.",
+          "type": "object"
+        },
+        "result": {
+          "description": "{result1: {en: 'A'}, result2: {en: 'B'}}",
+          "type": "object"
+        },
+        "error": {
+          "description": "{error1: {en: 'E'}, error2: {en: 'E2'}}",
+          "type": "object"
+        },
+        "variant": {
+          "description": "If outlined or contained",
+          "type": "string",
+          "enum": [
+            "contained",
+            "outlined"
+          ]
+        },
+        "placeholder": {
+          "description": "Placeholder (for text control)",
+          "type": "string"
+        },
+        "useNative": {
+          "description": "if adapter returns result with `native` attribute it will be used for configuration. If `saveConfig` is true, the user will be requested to save the configuration",
+          "type": "boolean"
+        },
+        "showProcess": {
+          "description": "Show spinner while request is in progress",
+          "type": "boolean"
+        },
+        "openUrl": {
+          "description": "if true - open URL in new tab, if response contains attribute openUrl, like {\"openUrl\": \"http://1.2.3.4:80/aaa\", \"window\": \"_blank\", \"saveConfig\": true}. If saveConfig is true, the user will be requested to save the configuration.",
+          "type": "boolean"
+        },
+        "label": true,
+        "type": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "helpLink": true,
+        "help": true,
+        "style": true,
+        "darkStyle": true,
+        "validator": true,
+        "validatorNoSaveOnError": true,
+        "validatorErrorText": true,
+        "noMultiEdit": true,
+        "tooltip": true,
+        "default": true,
+        "defaultFunc": true,
+        "onChange": true,
+        "noTranslation": true,
+        "confirm": true
+      },
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "command"
+      ]
+    },
     "doNotSaveProp": {
       "type": "boolean",
       "description": "Do not save this attribute as used only for internal calculations"
@@ -1144,89 +1233,7 @@
                 }
               },
               "then": {
-                "properties": {
-                  "command": {
-                    "description": "Command to be sent.",
-                    "type": "string"
-                  },
-                  "color": {
-                    "description": "Optional color",
-                    "type": "string",
-                    "enum": [
-                      "primary",
-                      "secondary"
-                    ]
-                  },
-                  "icon": {
-                    "description": "sendTo can have icon (base64)",
-                    "type": "string"
-                  },
-                  "jsonData": {
-                    "description": "Data to be sent as parsable string, can contain special placeholder. E. g. '{\"subject1\": \"${data.subject}\", \"options1\": {\"host\": \"${data.host}\"}}'",
-                    "type": "string"
-                  },
-                  "data": {
-                    "description": "Data to be sent as JSON.",
-                    "type": "object"
-                  },
-                  "result": {
-                    "description": "{result1: {en: 'A'}, result2: {en: 'B'}}",
-                    "type": "object"
-                  },
-                  "error": {
-                    "description": "{error1: {en: 'E'}, error2: {en: 'E2'}}",
-                    "type": "object"
-                  },
-                  "variant": {
-                    "description": "If outlined or contained",
-                    "type": "string",
-                    "enum": [
-                      "contained",
-                      "outlined"
-                    ]
-                  },
-                  "placeholder": {
-                    "description": "Placeholder (for text control)",
-                    "type": "string"
-                  },
-                  "useNative": {
-                    "description": "if adapter returns result with `native` attribute it will be used for configuration. If `saveConfig` is true, the user will be requested to save the configuration",
-                    "type": "boolean"
-                  },
-                  "showProcess": {
-                    "description": "Show spinner while request is in progress",
-                    "type": "boolean"
-                  },
-                  "label": true,
-                  "type": true,
-                  "sm": true,
-                  "md": true,
-                  "lg": true,
-                  "xs": true,
-                  "newLine": true,
-                  "hidden": true,
-                  "hideOnlyControl": true,
-                  "disabled": true,
-                  "helpLink": true,
-                  "help": true,
-                  "style": true,
-                  "darkStyle": true,
-                  "validator": true,
-                  "validatorNoSaveOnError": true,
-                  "validatorErrorText": true,
-                  "noMultiEdit": true,
-                  "tooltip": true,
-                  "default": true,
-                  "defaultFunc": true,
-                  "onChange": true,
-                  "noTranslation": true,
-                  "confirm": true
-                },
-                "additionalProperties": false,
-                "required": [
-                  "type",
-                  "command"
-                ]
+                "$ref": "#/definitions/sendToProps"
               }
             },
             {
@@ -2282,6 +2289,10 @@
                                       "contained",
                                       "outlined"
                                     ]
+                                  },
+                                  "openUrl": {
+                                    "description": "if true - open URL in new tab, if response contains attribute openUrl, like {\"openUrl\": \"http://1.2.3.4:80/aaa\", \"window\": \"_blank\", \"saveConfig\": true}. If saveConfig is true, the user will be requested to save the configuration.",
+                                    "type": "boolean"
                                   },
                                   "placeholder": {
                                     "description": "Placeholder (for text control)",
