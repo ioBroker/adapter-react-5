@@ -262,7 +262,14 @@
           ]
         },
         "title": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/multilingual"
+            }
+          ]
         },
         "filter": {
           "type": "boolean"
