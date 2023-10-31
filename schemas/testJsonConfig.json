@@ -364,6 +364,7 @@
           "sm": 12,
           "noDelete": false,
           "type": "table",
+          "export": true,
           "uniqueColumns": ["ip"],
           "items": [
             {

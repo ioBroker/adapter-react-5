@@ -1568,6 +1568,14 @@
                       "type": "string"
                     }
                   },
+                  "export": {
+                    "description": "If export button should be shown. Export as csv file.",
+                    "type": "boolean"
+                  },
+                  "import": {
+                    "description": "if import button should be shown. Import from csv file.",
+                    "type": "boolean"
+                  },
                   "items": {
                     "description": "Items of the table",
                     "type": "array",
