@@ -1903,7 +1903,8 @@ class Connection {
                     } else {
                         resolve(doc.rows.map(item => item.value));
                     }
-                }));
+                },
+            ));
 
         return this._promises.users;
     }
@@ -1933,7 +1934,8 @@ class Connection {
                     } else {
                         resolve(doc.rows.map(item => item.value));
                     }
-                }));
+                },
+            ));
 
         return this._promises.groups;
     }

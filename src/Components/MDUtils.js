@@ -26,7 +26,9 @@ class MDUtils {
     }
 
     static getTitle(text) {
-        let { body, header } = MDUtils.extractHeader(text);
+        const result = MDUtils.extractHeader(text);
+        let body = result.body;
+        const header = result.header;
         if (!header.title) {
             // remove {docsify-bla}
             body = body.replace(/{[^}]*}/g, '');

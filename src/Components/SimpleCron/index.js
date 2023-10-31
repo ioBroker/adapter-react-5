@@ -470,12 +470,12 @@ class SimpleCron extends React.Component {
                     label={I18n.t('sc_hours')}
                     value={settings.hours}
                     onChange={e => {
-                        const settings = JSON.parse(JSON.stringify(this.state[type]));
-                        settings.hours = parseInt(e.target.value, 10);
-                        if (settings.hours < 1) {
-                            settings.hours = 1;
+                        const _settings = JSON.parse(JSON.stringify(this.state[type]));
+                        _settings.hours = parseInt(e.target.value, 10);
+                        if (_settings.hours < 1) {
+                            _settings.hours = 1;
                         }
-                        this.setState({ [type]: settings }, () => this.recalcCron());
+                        this.setState({ [type]: _settings }, () => this.recalcCron());
                     }}
                     min={1}
                     max={24}
@@ -494,12 +494,12 @@ class SimpleCron extends React.Component {
                 label={I18n.t('sc_every')}
                 value={settings.period}
                 onChange={e => {
-                    const settings = JSON.parse(JSON.stringify(this.state[type]));
-                    settings.period = parseInt(e.target.value, 10);
-                    if (settings.period < 1) {
-                        settings.period = 1;
+                    const _settings = JSON.parse(JSON.stringify(this.state[type]));
+                    _settings.period = parseInt(e.target.value, 10);
+                    if (_settings.period < 1) {
+                        _settings.period = 1;
                     }
-                    this.setState({ [type]: settings }, () => this.recalcCron());
+                    this.setState({ [type]: _settings }, () => this.recalcCron());
                 }}
                 min={1}
                 max={60}

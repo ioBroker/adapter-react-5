@@ -444,50 +444,46 @@ function cronToText(cronspec, withSeconds, locale) {
             if (!_schedule.d && !_schedule.D) {
                 outputText += ` ${locale['every day']} `;
             }
-        } else {
+        } else if (_schedule.h) { // runs only at specific hours
             // Otherwise, list out every specified hour/minute value.
-
-            if (_schedule.h) { // runs only at specific hours
-                if (_schedule.m) { // and only at specific minutes
-                    if (_withSeconds) {
-                        if (!_schedule.s || _schedule.s.length === 60) {
-                            outputText += `${locale['second of every']} ${numberList(_schedule.m)} ${locale['minute past the']} ${numberList(_schedule.h)} ${locale.hour}`;
-                        } else {
-                            outputText += `${numberList(_schedule.s)} ${locale['second of every']} ${numberList(_schedule.m)} ${locale['minute past the']} ${numberList(_schedule.h)} ${locale.hour}`;
-                        }
-                    } else {
-                        outputText += `${numberList(_schedule.m)} ${locale['minute past the']} ${numberList(_schedule.h)} ${locale.hour}`;
-                    }
-                } else { // specific hours, but every minute
-                    if (_withSeconds) {
-                        if (!_schedule.s || _schedule.s.length === 60) {
-                            outputText += `${locale['second of every']} ${locale['minute of']} ${numberList(_schedule.h)} ${locale.hour}`;
-                        } else {
-                            outputText += `${numberList(_schedule.s)} ${locale['second of every']} ${locale['minute of']} ${numberList(_schedule.h)} ${locale.hour}`;
-                        }
-                    } else {
-                        outputText += `${locale['minute of']} ${numberList(_schedule.h)} ${locale.hour}`;
-                    }
-                }
-            } else if (_schedule.m) { // every hour, but specific minutes
+            if (_schedule.m) { // and only at specific minutes
                 if (_withSeconds) {
                     if (!_schedule.s || _schedule.s.length === 60) {
-                        outputText += `${locale['second of every']} ${numberList(_schedule.m)} ${locale['minute every hour']}`;
+                        outputText += `${locale['second of every']} ${numberList(_schedule.m)} ${locale['minute past the']} ${numberList(_schedule.h)} ${locale.hour}`;
                     } else {
-                        outputText += `${numberList(_schedule.s)} ${locale['second of every']} ${numberList(_schedule.m)} ${locale['minute every hour']}`;
+                        outputText += `${numberList(_schedule.s)} ${locale['second of every']} ${numberList(_schedule.m)} ${locale['minute past the']} ${numberList(_schedule.h)} ${locale.hour}`;
                     }
                 } else {
-                    outputText += `${numberList(_schedule.m)} ${locale['minute every hour']}`;
+                    outputText += `${numberList(_schedule.m)} ${locale['minute past the']} ${numberList(_schedule.h)} ${locale.hour}`;
                 }
             } else if (_withSeconds) {
+                // specific hours, but every minute
                 if (!_schedule.s || _schedule.s.length === 60) {
-                    outputText += locale.second;
+                    outputText += `${locale['second of every']} ${locale['minute of']} ${numberList(_schedule.h)} ${locale.hour}`;
                 } else {
-                    outputText += `${numberList(_schedule.s)} ${locale.second}`;
+                    outputText += `${numberList(_schedule.s)} ${locale['second of every']} ${locale['minute of']} ${numberList(_schedule.h)} ${locale.hour}`;
                 }
-            } else { // cronspec has "*" for both hour and minute
-                outputText += locale.minute;
+            } else {
+                outputText += `${locale['minute of']} ${numberList(_schedule.h)} ${locale.hour}`;
             }
+        } else if (_schedule.m) { // every hour, but specific minutes
+            if (_withSeconds) {
+                if (!_schedule.s || _schedule.s.length === 60) {
+                    outputText += `${locale['second of every']} ${numberList(_schedule.m)} ${locale['minute every hour']}`;
+                } else {
+                    outputText += `${numberList(_schedule.s)} ${locale['second of every']} ${numberList(_schedule.m)} ${locale['minute every hour']}`;
+                }
+            } else {
+                outputText += `${numberList(_schedule.m)} ${locale['minute every hour']}`;
+            }
+        } else if (_withSeconds) {
+            if (!_schedule.s || _schedule.s.length === 60) {
+                outputText += locale.second;
+            } else {
+                outputText += `${numberList(_schedule.s)} ${locale.second}`;
+            }
+        } else { // cronspec has "*" for both hour and minute
+            outputText += locale.minute;
         }
 
         if (_schedule.D) { // runs only on specific day(s) of month
