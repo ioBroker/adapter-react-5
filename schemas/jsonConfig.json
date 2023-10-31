@@ -789,6 +789,9 @@
                     "description": "Allow manual editing. Without Dropdown",
                     "type": "boolean"
                   },
+                  "doNotSave": {
+                    "$ref": "#/definitions/doNotSaveProp"
+                  },
                   "noTranslation": true,
                   "multiple": true,
                   "label": true,
@@ -1747,6 +1750,9 @@
                               "manual": {
                                 "description": "Allow manual editing. Without Dropdown",
                                 "type": "boolean"
+                              },
+                              "doNotSave": {
+                                "$ref": "#/definitions/doNotSaveProp"
                               },
                               "noTranslation": true,
                               "multiple": true,

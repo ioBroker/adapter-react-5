@@ -379,7 +379,8 @@
               "title": {
                 "en": "Select send to",
                 "de": ""
-              }
+              },
+              "doNotSave": true
             },
             {
               "type": "certificates"
