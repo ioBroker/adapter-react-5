@@ -45,7 +45,7 @@
     "@mui/material": "5.14.14",
     "@mui/styles": "5.14.16",
     "@mui/x-date-pickers": "^6.17.0",
-    "@sentry/browser": "^7.76.0",
+    "@sentry/browser": "^7.77.0",
     "@sentry/integrations": "^7.76.0",
     "@types/iobroker": "^4.0.5",
     "react-color": "^2.19.3",
