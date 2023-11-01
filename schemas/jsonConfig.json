@@ -2823,63 +2823,66 @@
                             "allOf": [
                               {
                                 "$ref": "#/definitions/tableItemBaseProps"
-                              },
-                              {
-                                "properties": {
-                                  "options": {
-                                    "description": "Options which can be selected",
-                                    "type": "array",
-                                    "items": {
-                                      "type": "object",
-                                      "required": [
-                                        "label",
-                                        "value"
-                                      ],
-                                      "additionalProperties": false,
-                                      "properties": {
-                                        "label": {
-                                          "description": "Label"
-                                        },
-                                        "value": {
-                                          "description": "Value"
-                                        },
-                                        "hidden": {
-                                          "type": "string",
-                                          "description": "JS function that could use `native.attribute` for calculation"
-                                        }
-                                      }
-                                    }
-                                  },
-                                  "label": true,
-                                  "type": true,
-                                  "sm": true,
-                                  "md": true,
-                                  "lg": true,
-                                  "xs": true,
-                                  "newLine": true,
-                                  "hidden": true,
-                                  "hideOnlyControl": true,
-                                  "disabled": true,
-                                  "helpLink": true,
-                                  "help": true,
-                                  "style": true,
-                                  "darkStyle": true,
-                                  "validator": true,
-                                  "validatorNoSaveOnError": true,
-                                  "validatorErrorText": true,
-                                  "noMultiEdit": true,
-                                  "tooltip": true,
-                                  "default": true,
-                                  "defaultFunc": true,
-                                  "onChange": true,
-                                  "noTranslation": true,
-                                  "confirm": true
-                                },
-                                "additionalProperties": false,
-                                "required": [
-                                  "type"
-                                ]
                               }
+                            ],
+                            "properties": {
+                              "attr": true,
+                              "width": true,
+                              "title": true,
+                              "filter": true,
+                              "sort": true,
+                              "options": {
+                                "description": "Options which can be selected",
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "required": [
+                                    "label",
+                                    "value"
+                                  ],
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "label": {
+                                      "description": "Label"
+                                    },
+                                    "value": {
+                                      "description": "Value"
+                                    },
+                                    "hidden": {
+                                      "type": "string",
+                                      "description": "JS function that could use `native.attribute` for calculation"
+                                    }
+                                  }
+                                }
+                              },
+                              "label": true,
+                              "type": true,
+                              "sm": true,
+                              "md": true,
+                              "lg": true,
+                              "xs": true,
+                              "newLine": true,
+                              "hidden": true,
+                              "hideOnlyControl": true,
+                              "disabled": true,
+                              "helpLink": true,
+                              "help": true,
+                              "style": true,
+                              "darkStyle": true,
+                              "validator": true,
+                              "validatorNoSaveOnError": true,
+                              "validatorErrorText": true,
+                              "noMultiEdit": true,
+                              "tooltip": true,
+                              "default": true,
+                              "defaultFunc": true,
+                              "onChange": true,
+                              "noTranslation": true,
+                              "confirm": true
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                              "type"
                             ]
                           }
                         },

@@ -434,6 +434,10 @@
           ],
           "items": [
             {
+              "type": "select",
+              "width": 50
+            },
+            {
               "type": "selectSendTo",
               "command": "test",
               "width": 50,
