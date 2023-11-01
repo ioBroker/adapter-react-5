@@ -53,5 +53,5 @@ body:
     id: additional
     attributes:
       label: Additional information
-      description: Please write why do you think this is a schema inconsistent as well as additional information.
+      description: Please write why do you think this is a schema inconsistency as well as additional information.
       placeholder: The property is working as expected and was communicated, but the schema validation fails.
