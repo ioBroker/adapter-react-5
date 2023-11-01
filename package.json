@@ -65,7 +65,7 @@
     "@babel/preset-env": "^7.23.2",
     "@babel/preset-flow": "^7.22.15",
     "@babel/preset-react": "^7.22.15",
-    "@types/node": "^20.8.7",
+    "@types/node": "^20.8.10",
     "@types/react": "^18.2.29",
     "ajv": "^8.12.0",
     "babel": "^6.23.0",
