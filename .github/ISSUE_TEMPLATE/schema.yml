@@ -1,7 +1,7 @@
 name: Schema - jsonConfig
 description: Report inconsistencies/improvements for the jsonConfig schema
 title: "[jsonConfig]: "
-labels: ["schema 📖"]
+labels: ["schema :book:"]
 assignees:
   - foxriver76
 body:
