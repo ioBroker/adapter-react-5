@@ -520,9 +520,19 @@
       },
       "additionalProperties": false,
       "required": [
-        "type",
-        "simple",
-        "complex"
+        "type"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "complex"
+          ]
+        },
+        {
+          "required": [
+            "simple"
+          ]
+        }
       ]
     },
     "sendToProps": {
@@ -627,6 +637,11 @@
         "start",
         "top"
       ]
+    },
+    "allowAddByFilterProp": {
+      "type": "boolean",
+      "description": "If add allowed even if filter is set",
+      "default": false
     }
   },
   "type": "object",
@@ -1589,6 +1604,13 @@
                   "import": {
                     "description": "if import button should be shown. Import from csv file.",
                     "type": "boolean"
+                  },
+                  "clone": {
+                    "description": "If clone button should be shown. If true, the clone button will be shown. If attribute name, this name will be unique.",
+                    "type": "boolean"
+                  },
+                  "allowAddByFilter": {
+                    "$ref": "#/definitions/allowAddByFilterProp"
                   },
                   "items": {
                     "description": "Items of the table",
@@ -2728,9 +2750,61 @@
                             "allOf": [
                               {
                                 "$ref": "#/definitions/tableItemBaseProps"
+                              }
+                            ],
+                            "properties": {
+                              "attr": true,
+                              "width": true,
+                              "title": true,
+                              "filter": true,
+                              "sort": true,
+                              "complex": {
+                                "description": "Show CRON with \"minutes\", \"seconds\" and so on",
+                                "type": "boolean"
+                              },
+                              "simple": {
+                                "description": "Show simple CRON settings",
+                                "type": "boolean"
+                              },
+                              "label": true,
+                              "type": true,
+                              "sm": true,
+                              "md": true,
+                              "lg": true,
+                              "xs": true,
+                              "newLine": true,
+                              "hidden": true,
+                              "hideOnlyControl": true,
+                              "disabled": true,
+                              "helpLink": true,
+                              "help": true,
+                              "style": true,
+                              "darkStyle": true,
+                              "validator": true,
+                              "validatorNoSaveOnError": true,
+                              "validatorErrorText": true,
+                              "noMultiEdit": true,
+                              "tooltip": true,
+                              "default": true,
+                              "defaultFunc": true,
+                              "onChange": true,
+                              "noTranslation": true,
+                              "confirm": true
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                              "type"
+                            ],
+                            "oneOf": [
+                              {
+                                "required": [
+                                  "complex"
+                                ]
                               },
                               {
-                                "$ref": "#/definitions/cronProps"
+                                "required": [
+                                  "simple"
+                                ]
                               }
                             ]
                           }
@@ -3831,6 +3905,10 @@
                         "showSecondAddAt": {
                           "description": "Number of lines from which the second add button at the bottom of the table will be shown. Default 5",
                           "type": "number"
+                        },
+                        "showFirstAddOnTop": {
+                          "type": "boolean",
+                          "description": "Show first plus button on top of the first column and not on the left."
                         },
                         "tooltip": {
                           "description": "Optional tooltip",

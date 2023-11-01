@@ -65,7 +65,6 @@
         "cron": {
           "label": "cron",
           "type": "cron",
-          "complex": false,
           "simple": true
         },
         "auth": {
@@ -368,6 +367,7 @@
           "sm": 12,
           "newLine": true,
           "type": "table",
+          "showSecondAddAt": 1,
           "items": [
             {
               "type": "text",
@@ -429,10 +429,16 @@
           "noDelete": false,
           "type": "table",
           "export": true,
+          "allowAddByFilter": false,
           "uniqueColumns": [
             "ip"
           ],
           "items": [
+            {
+              "type": "cron",
+              "complex": true,
+              "width": 50
+            },
             {
               "type": "select",
               "width": 50
