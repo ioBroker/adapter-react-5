@@ -642,6 +642,13 @@
       "type": "boolean",
       "description": "If add allowed even if filter is set",
       "default": false
+    },
+    "alsoDependsOnSendProp": {
+      "description": "Depends on other attributes and will be re-calculated when other attributes changed",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   },
   "type": "object",
@@ -811,6 +818,9 @@
                   "doNotSave": {
                     "$ref": "#/definitions/doNotSaveProp"
                   },
+                  "alsoDependsOn": {
+                    "$ref": "#/definitions/alsoDependsOnSendProp"
+                  },
                   "noTranslation": true,
                   "multiple": true,
                   "label": true,
@@ -863,11 +873,7 @@
                     "type": "boolean"
                   },
                   "alsoDependsOn": {
-                    "description": "Depends on other attributes and will be re-calculated when other attributes changed",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
+                    "$ref": "#/definitions/alsoDependsOnSendProp"
                   },
                   "command": {
                     "description": "Command to be sent.",
@@ -1780,6 +1786,9 @@
                               "doNotSave": {
                                 "$ref": "#/definitions/doNotSaveProp"
                               },
+                              "alsoDependsOn": {
+                                "$ref": "#/definitions/alsoDependsOnSendProp"
+                              },
                               "noTranslation": true,
                               "multiple": true,
                               "label": true,
@@ -1842,11 +1851,7 @@
                                 "type": "boolean"
                               },
                               "alsoDependsOn": {
-                                "description": "Depends on other attributes and will be re-calculated when other attributes changed",
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                }
+                                "$ref": "#/definitions/alsoDependsOnSendProp"
                               },
                               "command": {
                                 "description": "Command to be sent.",
@@ -3930,11 +3935,7 @@
                               "type": "boolean"
                             },
                             "alsoDependsOn": {
-                              "description": "Depends on other attributes and will be re-calculated when other attributes changed",
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              }
+                              "$ref": "#/definitions/alsoDependsOnSendProp"
                             }
                           }
                         },
@@ -3956,11 +3957,7 @@
                                   "type": "string"
                                 },
                                 "alsoDependsOn": {
-                                  "description": "Depends on other attributes and will be re-calculated when other attributes changed",
-                                  "type": "array",
-                                  "items": {
-                                    "type": "string"
-                                  }
+                                  "$ref": "#/definitions/alsoDependsOnSendProp"
                                 }
                               }
                             }
@@ -4033,7 +4030,7 @@
                               ]
                             },
                             "alsoDependsOn": {
-                              "description": "Trigger confirm dialog if on of the components changed.",
+                              "description": "Trigger confirm dialog if one of the components changed.",
                               "type": "array",
                               "items": {
                                 "type": "string"
@@ -4932,11 +4929,7 @@
                   "type": "boolean"
                 },
                 "alsoDependsOn": {
-                  "description": "Depends on other attributes and will be re-calculated when other attributes changed",
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
+                  "$ref": "#/definitions/alsoDependsOnSendProp"
                 }
               }
             },
@@ -4958,11 +4951,7 @@
                       "type": "string"
                     },
                     "alsoDependsOn": {
-                      "description": "Depends on other attributes and will be re-calculated when other attributes changed",
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
+                      "$ref": "#/definitions/alsoDependsOnSendProp"
                     }
                   }
                 }
