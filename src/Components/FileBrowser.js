@@ -381,8 +381,9 @@ const styles = theme => ({
         paddingLeft: 2,
         paddingRight: 2,
         cursor: 'pointer',
+        color: '#CCC',
         '&:hover': {
-            background: theme.palette.mode === 'dark' ? '#333' : '#CCC',
+            background: '#333',
         },
     },
     backgroundImageLight: {
@@ -1843,21 +1844,6 @@ class FileBrowser extends Component {
         }
         return null;
     }
-
-    /*
-    updateItemsAcl(info) {
-        const folders = JSON.parse(JSON.stringify(this.state.folders));
-        let changed;
-        info.forEach(it => {
-            const item = this.findItem(it.id, folders);
-            if (item && JSON.stringify(item.acl) !== JSON.stringify(it.acl)) {
-                item.acl = it.acl;
-                changed = true;
-            }
-        });
-        changed && this.setState({ folders });
-    }
-    */
 
     changeToPath() {
         setTimeout(() => {
