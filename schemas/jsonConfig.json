@@ -3693,66 +3693,69 @@
                             "allOf": [
                               {
                                 "$ref": "#/definitions/tableItemBaseProps"
-                              },
-                              {
-                                "properties": {
-                                  "types": {
-                                    "description": "Array of possible types: ['channel', 'device', ...] (has only state by default)",
-                                    "type": "array",
-                                    "items": {
-                                      "type": "string",
-                                      "enum": [
-                                        "state",
-                                        "channel",
-                                        "device",
-                                        "enum",
-                                        "host",
-                                        "adapter",
-                                        "instance",
-                                        "meta",
-                                        "config",
-                                        "script",
-                                        "user",
-                                        "group",
-                                        "chart",
-                                        "folder"
-                                      ]
-                                    }
-                                  },
-                                  "placeholder": {
-                                    "description": "Placeholder (for text control)",
-                                    "type": "string"
-                                  },
-                                  "label": true,
-                                  "type": true,
-                                  "sm": true,
-                                  "md": true,
-                                  "lg": true,
-                                  "xs": true,
-                                  "newLine": true,
-                                  "hidden": true,
-                                  "hideOnlyControl": true,
-                                  "disabled": true,
-                                  "helpLink": true,
-                                  "help": true,
-                                  "style": true,
-                                  "darkStyle": true,
-                                  "validator": true,
-                                  "validatorNoSaveOnError": true,
-                                  "validatorErrorText": true,
-                                  "noMultiEdit": true,
-                                  "tooltip": true,
-                                  "default": true,
-                                  "defaultFunc": true,
-                                  "onChange": true,
-                                  "noTranslation": true,
-                                  "confirm": true
-                                },
-                                "additionalProperties": false,
-                                "required": [
-                                  "type"
-                                ]
                               }
+                            ],
+                            "properties": {
+                              "attr": true,
+                              "width": true,
+                              "title": true,
+                              "filter": true,
+                              "sort": true,
+                              "types": {
+                                "description": "Array of possible types: ['channel', 'device', ...] (has only state by default)",
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "enum": [
+                                    "state",
+                                    "channel",
+                                    "device",
+                                    "enum",
+                                    "host",
+                                    "adapter",
+                                    "instance",
+                                    "meta",
+                                    "config",
+                                    "script",
+                                    "user",
+                                    "group",
+                                    "chart",
+                                    "folder"
+                                  ]
+                                }
+                              },
+                              "placeholder": {
+                                "description": "Placeholder (for text control)",
+                                "type": "string"
+                              },
+                              "label": true,
+                              "type": true,
+                              "sm": true,
+                              "md": true,
+                              "lg": true,
+                              "xs": true,
+                              "newLine": true,
+                              "hidden": true,
+                              "hideOnlyControl": true,
+                              "disabled": true,
+                              "helpLink": true,
+                              "help": true,
+                              "style": true,
+                              "darkStyle": true,
+                              "validator": true,
+                              "validatorNoSaveOnError": true,
+                              "validatorErrorText": true,
+                              "noMultiEdit": true,
+                              "tooltip": true,
+                              "default": true,
+                              "defaultFunc": true,
+                              "onChange": true,
+                              "noTranslation": true,
+                              "confirm": true
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                              "type"
                             ]
                           }
                         },
