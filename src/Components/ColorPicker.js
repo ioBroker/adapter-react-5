@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 import React from 'react';
 import { ChromePicker } from 'react-color';
 import PropTypes from 'prop-types';
@@ -126,20 +126,6 @@ class ColorPicker extends React.Component {
     }
 
     /**
-     * Get the state derived from the given properties and state.
-     * @param {{ color: Color; }} props
-     * @param {{ color: Color; }} state
-     */
-    static getDerivedStateFromProps(props, state) {
-        const pColor = ColorPicker.getColor(props.value || props.color);
-        const sColor = ColorPicker.getColor(state.color);
-        if (pColor !== sColor) {
-            return {  color: props.value || props.color };
-        }
-        return null;
-    }
-
-    /**
      * @private
      */
     handleClick = e => {
@@ -198,6 +184,19 @@ class ColorPicker extends React.Component {
             this.props.onChange && this.props.onChange(ColorPicker.getColor(color)));
     };
 
+    /**
+     * IF the props are updated from outside, they should override the state
+     * @param _prevProps
+     * @param prevState
+     */
+    componentDidUpdate(_prevProps, prevState) {
+        const color = ColorPicker.getColor(this.props.color || this.props.value);
+
+        if (color !== prevState.color) {
+            this.setState({ color });
+        }
+    }
+
     renderCustomPalette() {
         if (!this.props.customPalette) {
             return null;
@@ -218,10 +217,9 @@ class ColorPicker extends React.Component {
     }
 
     render() {
-        const color = ColorPicker.getColor(this.state.color);
-
         const style = { ...(this.props.style || {}) };
         style.position = 'relative';
+        const { color } = this.state;
 
         return <div
             style={style}
@@ -258,7 +256,7 @@ class ColorPicker extends React.Component {
             >
                 <div className={this.props.classes.color} style={{ background: color }} />
             </div>
-            { this.state.displayColorPicker && !this.props.disabled ? <Menu
+            {this.state.displayColorPicker && !this.props.disabled ? <Menu
                 classes={{ paper: this.props.classes.popover, list: this.props.classes.popoverList }}
                 anchorEl={this.state.anchorEl}
                 open={!0}
