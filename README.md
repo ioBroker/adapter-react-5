@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### 4.7.1 (2023-11-03)
+### 4.7.2 (2023-11-03)
 * (foxriver76) fixed problem with color picker, where editing TextField was buggy
 * (foxriver76) fixed light mode color of path in FileBrowser
 

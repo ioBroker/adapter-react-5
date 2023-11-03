@@ -381,9 +381,8 @@ const styles = theme => ({
         paddingLeft: 2,
         paddingRight: 2,
         cursor: 'pointer',
-        color: '#CCC',
         '&:hover': {
-            background: '#333',
+            background: theme.palette.primary.main,
         },
     },
     backgroundImageLight: {
@@ -1872,7 +1871,7 @@ class FileBrowser extends Component {
     renderBreadcrumb() {
         const parts = this.state.currentDir.startsWith('/') ? this.state.currentDir.split('/') : (`/${this.state.currentDir}`).split('/');
         const p = [];
-        return <Breadcrumbs>
+        return <Breadcrumbs color={'white'}>
             {parts.map((part, i) => {
                 part && p.push(part);
                 const path = p.join('/');
@@ -1887,6 +1886,7 @@ class FileBrowser extends Component {
                 }
 
                 return <div
+                    className={this.props.classes.pathDivBreadcrumbSelected}
                     key={`${this.state.selected}_${i}`}
                     onClick={() => this.setState({ pathFocus: true })}
                 >
