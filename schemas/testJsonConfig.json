@@ -86,6 +86,11 @@
           "md": 6,
           "lg": 2
         },
+        "autocmpleteSendTo": {
+          "type": "autocompleteSendTo",
+          "command": "",
+          "alsoDependsOn": ["auth"]
+        },
         "defaultUser": {
           "hidden": "!!data.auth",
           "type": "user",
@@ -369,6 +374,12 @@
           "type": "table",
           "showSecondAddAt": 1,
           "items": [
+            {
+              "type": "autocompleteSendTo",
+              "command": "",
+              "alsoDependsOn": [],
+              "width": 50
+            },
             {
               "type": "text",
               "width": "50%",
