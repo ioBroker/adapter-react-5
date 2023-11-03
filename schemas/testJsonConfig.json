@@ -375,6 +375,14 @@
           "showSecondAddAt": 1,
           "items": [
             {
+              "type": "objectId",
+              "title": "s_TargetState",
+              "attr": "chTargetState",
+              "filter": false,
+              "sort": false,
+              "width": "40%"
+            },
+            {
               "type": "autocompleteSendTo",
               "command": "",
               "alsoDependsOn": [],
