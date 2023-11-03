@@ -756,6 +756,9 @@
                     "description": "Placeholder (for text control)",
                     "type": "string"
                   },
+                  "alsoDependsOn": {
+                    "$ref": "#/definitions/alsoDependsOnSendProp"
+                  },
                   "label": true,
                   "type": true,
                   "sm": true,
@@ -1689,61 +1692,67 @@
                             "allOf": [
                               {
                                 "$ref": "#/definitions/tableItemBaseProps"
-                              },
-                              {
-                                "properties": {
-                                  "command": {
-                                    "description": "Command to be sent.",
-                                    "type": "string"
-                                  },
-                                  "jsonData": {
-                                    "description": "Data to be sent as parsable string, can contain special placeholder. E. g. '{\"subject1\": \"${data.subject}\", \"options1\": {\"host\": \"${data.host}\"}}'",
-                                    "type": "string"
-                                  },
-                                  "data": {
-                                    "description": "Data to be sent as JSON.",
-                                    "type": "object"
-                                  },
-                                  "freeSolo": {
-                                    "description": "Set freeSolo to true so the textbox can contain any arbitrary value.",
-                                    "type": "boolean"
-                                  },
-                                  "placeholder": {
-                                    "description": "Placeholder (for text control)",
-                                    "type": "string"
-                                  },
-                                  "label": true,
-                                  "type": true,
-                                  "sm": true,
-                                  "md": true,
-                                  "lg": true,
-                                  "xs": true,
-                                  "newLine": true,
-                                  "hidden": true,
-                                  "hideOnlyControl": true,
-                                  "disabled": true,
-                                  "helpLink": true,
-                                  "help": true,
-                                  "style": true,
-                                  "darkStyle": true,
-                                  "validator": true,
-                                  "validatorNoSaveOnError": true,
-                                  "validatorErrorText": true,
-                                  "noMultiEdit": true,
-                                  "tooltip": true,
-                                  "default": true,
-                                  "defaultFunc": true,
-                                  "onChange": true,
-                                  "noTranslation": true,
-                                  "confirm": true,
-                                  "maxLength": true
-                                },
-                                "additionalProperties": false,
-                                "required": [
-                                  "type",
-                                  "command"
-                                ]
                               }
+                            ],
+                            "properties": {
+                              "attr": true,
+                              "width": true,
+                              "title": true,
+                              "filter": true,
+                              "sort": true,
+                              "command": {
+                                "description": "Command to be sent.",
+                                "type": "string"
+                              },
+                              "jsonData": {
+                                "description": "Data to be sent as parsable string, can contain special placeholder. E. g. '{\"subject1\": \"${data.subject}\", \"options1\": {\"host\": \"${data.host}\"}}'",
+                                "type": "string"
+                              },
+                              "data": {
+                                "description": "Data to be sent as JSON.",
+                                "type": "object"
+                              },
+                              "freeSolo": {
+                                "description": "Set freeSolo to true so the textbox can contain any arbitrary value.",
+                                "type": "boolean"
+                              },
+                              "placeholder": {
+                                "description": "Placeholder (for text control)",
+                                "type": "string"
+                              },
+                              "alsoDependsOn": {
+                                "$ref": "#/definitions/alsoDependsOnSendProp"
+                              },
+                              "label": true,
+                              "type": true,
+                              "sm": true,
+                              "md": true,
+                              "lg": true,
+                              "xs": true,
+                              "newLine": true,
+                              "hidden": true,
+                              "hideOnlyControl": true,
+                              "disabled": true,
+                              "helpLink": true,
+                              "help": true,
+                              "style": true,
+                              "darkStyle": true,
+                              "validator": true,
+                              "validatorNoSaveOnError": true,
+                              "validatorErrorText": true,
+                              "noMultiEdit": true,
+                              "tooltip": true,
+                              "default": true,
+                              "defaultFunc": true,
+                              "onChange": true,
+                              "noTranslation": true,
+                              "confirm": true,
+                              "maxLength": true
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                              "type",
+                              "command"
                             ]
                           }
                         },
