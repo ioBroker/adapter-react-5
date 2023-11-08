@@ -231,7 +231,7 @@ class ColorPicker extends React.Component {
                 id="ar_color_picker_name"
                 style={color ? { width: 'calc(100% - 80px)' } : { width: 'calc(100% - 56px)', marginRight: 8 }}
                 label={this.props.label || this.props.name || 'color'}
-                value={color}
+                value={color || ''}
                 margin="dense"
                 classes={{ root: this.props.classes.textDense }}
                 onChange={e => this.handleChange(e.target.value)}
@@ -264,13 +264,13 @@ class ColorPicker extends React.Component {
             >
                 <ChromePicker
                     className={this.props.classes.picker}
-                    color={this.state.color}
+                    color={this.state.color || ''}
                     onChangeComplete={_color => this.handleChange(_color)}
                     styles={{ picker: { background: '#112233' } }}
                 />
                 <IconButton className={this.props.classes.closeButton} onClick={() => this.handleClose()}><IconClose /></IconButton>
                 {this.renderCustomPalette()}
-            </Menu> : null }
+            </Menu> : null}
         </div>;
     }
 }
