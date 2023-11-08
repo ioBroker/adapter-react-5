@@ -42,7 +42,7 @@
     "@emotion/styled": "^11.11.0",
     "@iobroker/socket-client": "^2.3.11",
     "@mui/icons-material": "^5.14.16",
-    "@mui/material": "5.14.14",
+    "@mui/material": "5.14.17",
     "@mui/styles": "5.14.14",
     "@mui/x-date-pickers": "^6.18.0",
     "@sentry/browser": "^7.79.0",
