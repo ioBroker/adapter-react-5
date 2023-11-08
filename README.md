@@ -670,9 +670,12 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Updated packages
+
 ### 4.7.2 (2023-11-03)
 * (foxriver76) fixed problem with color picker, where editing TextField was buggy
-* (foxriver76) fixed light mode color of path in FileBrowser
+* (foxriver76) fixed light mode color of a path in FileBrowser
 
 ### 4.7.0 (2023-10-31)
 * (bluefox) Synced with admin
@@ -849,7 +852,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 * (bluefox) Corrected expert mode for object browser
 
 ### 3.2.2 (2022-10-25)
-* (bluefox) Added support of prefixes for translations
+* (bluefox) Added support for prefixes for translations
 
 ### 3.2.1 (2022-10-24)
 * (bluefox) Corrected color inversion
@@ -902,7 +905,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 * (bluefox) Update object browser
 
 ### 3.1.15 (2022-06-27)
-* (bluefox) Allow using spaces in name
+* (bluefox) Allowed using of spaces in name
 
 ### 3.1.14 (2022-06-23)
 * (bluefox) Added translations
@@ -914,7 +917,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 * (bluefox) Added translations
 
 ### 3.1.9 (2022-06-20)
-* (bluefox) Allowed to work behind reverse proxy
+* (bluefox) Allowed working behind reverse proxy
 
 ### 3.1.7 (2022-06-19)
 * (bluefox) Added file select dialog
@@ -926,7 +929,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 * (bluefox) Added new document icon (read only)
 
 ### 3.1.1 (2022-06-09)
-* (bluefox) Allowed to work behind reverse proxy
+* (bluefox) Allowed working behind reverse proxy
 
 ### 3.1.0 (2022-06-07)
 * (bluefox) Some german texts were corrected
