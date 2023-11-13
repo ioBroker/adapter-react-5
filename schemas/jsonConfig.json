@@ -624,6 +624,70 @@
         "command"
       ]
     },
+    "instanceProps": {
+      "properties": {
+        "adapter": {
+          "description": "Name of the adapter. With special name _dataSources you can get all adapters with flag common.getHistory",
+          "type": "string"
+        },
+        "adapters": {
+          "description": "Optional list of adapters, that should be shown. If not defined, all adapters will be shown. Only active if adapter attribute is not defined.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowDeactivate": {
+          "description": "If true. Additional option \"deactivate\" is shown",
+          "type": "boolean"
+        },
+        "onlyEnabled": {
+          "description": "If true. Only enabled instances will be shown",
+          "type": "boolean"
+        },
+        "long": {
+          "description": "Value will look like system.adapter.ADAPTER.0 and not ADAPTER.0",
+          "type": "boolean"
+        },
+        "short": {
+          "description": "Value will look like 0 and not ADAPTER.0",
+          "type": "boolean"
+        },
+        "all": {
+          "description": "Add to the options ALL option with value *",
+          "type": "boolean"
+        },
+        "label": true,
+        "type": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "helpLink": true,
+        "help": true,
+        "style": true,
+        "darkStyle": true,
+        "validator": true,
+        "validatorNoSaveOnError": true,
+        "validatorErrorText": true,
+        "noMultiEdit": true,
+        "tooltip": true,
+        "default": true,
+        "defaultFunc": true,
+        "onChange": true,
+        "noTranslation": true,
+        "confirm": true
+      },
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "adapter"
+      ]
+    },
     "doNotSaveProp": {
       "type": "boolean",
       "description": "Do not save this attribute as used only for internal calculations"
@@ -3538,6 +3602,29 @@
                                 "description": "Name of the adapter. With special name _dataSources you can get all adapters with flag common.getHistory",
                                 "type": "string"
                               },
+                              "adapters": {
+                                "description": "Optional list of adapters, that should be shown. If not defined, all adapters will be shown. Only active if adapter attribute is not defined.",
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "allowDeactivate": {
+                                "description": "If true. Additional option \"deactivate\" is shown",
+                                "type": "boolean"
+                              },
+                              "onlyEnabled": {
+                                "description": "If true. Only enabled instances will be shown",
+                                "type": "boolean"
+                              },
+                              "long": {
+                                "description": "Value will look like system.adapter.ADAPTER.0 and not ADAPTER.0",
+                                "type": "boolean"
+                              },
+                              "short": {
+                                "description": "Value will look like 0 and not ADAPTER.0",
+                                "type": "boolean"
+                              },
                               "all": {
                                 "description": "Add to the options ALL option with value *",
                                 "type": "boolean"
@@ -4566,45 +4653,7 @@
                 }
               },
               "then": {
-                "properties": {
-                  "adapter": {
-                    "description": "Name of the adapter. With special name _dataSources you can get all adapters with flag common.getHistory",
-                    "type": "string"
-                  },
-                  "all": {
-                    "description": "Add to the options ALL option with value *",
-                    "type": "boolean"
-                  },
-                  "label": true,
-                  "type": true,
-                  "sm": true,
-                  "md": true,
-                  "lg": true,
-                  "xs": true,
-                  "newLine": true,
-                  "hidden": true,
-                  "hideOnlyControl": true,
-                  "disabled": true,
-                  "helpLink": true,
-                  "help": true,
-                  "style": true,
-                  "darkStyle": true,
-                  "validator": true,
-                  "validatorNoSaveOnError": true,
-                  "validatorErrorText": true,
-                  "noMultiEdit": true,
-                  "tooltip": true,
-                  "default": true,
-                  "defaultFunc": true,
-                  "onChange": true,
-                  "noTranslation": true,
-                  "confirm": true
-                },
-                "additionalProperties": false,
-                "required": [
-                  "type",
-                  "adapter"
-                ]
+                "$ref": "#/definitions/instanceProps"
               }
             },
             {
