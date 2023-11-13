@@ -168,6 +168,11 @@
           "sm": 12,
           "md": 6,
           "lg": 3
+        },
+        "instance": {
+          "type": "instance",
+          "adapter": "admin",
+          "long": true
         }
       }
     },
