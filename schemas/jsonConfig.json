@@ -39,6 +39,7 @@
         "alive",
         "autocomplete",
         "cron",
+        "fileSelector",
         "text",
         "textSendTo",
         "number",
@@ -687,6 +688,80 @@
         "type",
         "adapter"
       ]
+    },
+    "fileSelectorProps": {
+      "properties": {
+        "pattern": {
+          "type": "string",
+          "description": "File extension pattern. Allowed '**/*.ext' to show all files from sub-folders too, '*.ext' to show from root folder or 'folderName/*.ext' to show all files in sub-folder folderName. Default '**/*.*'"
+        },
+        "fileTypes": {
+          "enum": [
+            "audio",
+            "image",
+            "text"
+          ],
+          "description": "Type of files"
+        },
+        "objectID": {
+          "type": "string",
+          "description": "Object ID of type meta. You can use special placeholder '%INSTANCE%': like 'myAdapter.%INSTANCE%.files'"
+        },
+        "upload": {
+          "type": "string",
+          "description": "path, where the uploaded files will be stored. Like 'folderName'. If not defined, no upload field will be shown. To upload in the root, set this field to '/'"
+        },
+        "refresh": {
+          "type": "boolean",
+          "description": "Show refresh button near the select"
+        },
+        "maxSize": {
+          "type": "string",
+          "description": "max file size (default 2MB)"
+        },
+        "withFolder": {
+          "type": "boolean",
+          "description": "show folder name even if all files in same folder"
+        },
+        "delete": {
+          "type": "boolean",
+          "description": "Allow deletion of files"
+        },
+        "noNone": {
+          "type": "boolean",
+          "description": "Do not show 'none' option"
+        },
+        "noSize": {
+          "type": "boolean",
+          "description": "Do not show size of files"
+        },
+        "label": true,
+        "type": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "helpLink": true,
+        "help": true,
+        "style": true,
+        "darkStyle": true,
+        "validator": true,
+        "validatorNoSaveOnError": true,
+        "validatorErrorText": true,
+        "noMultiEdit": true,
+        "tooltip": true,
+        "default": true,
+        "defaultFunc": true,
+        "onChange": true,
+        "noTranslation": true,
+        "confirm": true
+      },
+      "additionalProperties": false,
+      "required": []
     },
     "doNotSaveProp": {
       "type": "boolean",
@@ -1473,6 +1548,18 @@
               "if": {
                 "properties": {
                   "type": {
+                    "const": "fileSelector"
+                  }
+                }
+              },
+              "then": {
+                "$ref": "#/definitions/fileSelectorProps"
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
                     "enum": [
                       "number",
                       "port"
@@ -2139,6 +2226,101 @@
                                   "type"
                                 ]
                               }
+                            ]
+                          }
+                        },
+                        {
+                          "if": {
+                            "properties": {
+                              "type": {
+                                "const": "fileSelector"
+                              }
+                            }
+                          },
+                          "then": {
+                            "allOf": [
+                              {
+                                "$ref": "#/definitions/tableItemBaseProps"
+                              }
+                            ],
+                            "properties": {
+                              "attr": true,
+                              "width": true,
+                              "title": true,
+                              "filter": true,
+                              "sort": true,
+                              "pattern": {
+                                "type": "string",
+                                "description": "File extension pattern. Allowed '**/*.ext' to show all files from sub-folders too, '*.ext' to show from root folder or 'folderName/*.ext' to show all files in sub-folder folderName. Default '**/*.*'"
+                              },
+                              "fileTypes": {
+                                "enum": [
+                                  "audio",
+                                  "image",
+                                  "text"
+                                ],
+                                "description": "Type of files"
+                              },
+                              "objectID": {
+                                "type": "string",
+                                "description": "Object ID of type meta. You can use special placeholder '%INSTANCE%': like 'myAdapter.%INSTANCE%.files'"
+                              },
+                              "upload": {
+                                "type": "string",
+                                "description": "path, where the uploaded files will be stored. Like 'folderName'. If not defined, no upload field will be shown. To upload in the root, set this field to '/'"
+                              },
+                              "refresh": {
+                                "type": "boolean",
+                                "description": "Show refresh button near the select"
+                              },
+                              "maxSize": {
+                                "type": "string",
+                                "description": "max file size (default 2MB)"
+                              },
+                              "withFolder": {
+                                "type": "boolean",
+                                "description": "show folder name even if all files in same folder"
+                              },
+                              "delete": {
+                                "type": "boolean",
+                                "description": "Allow deletion of files"
+                              },
+                              "noNone": {
+                                "type": "boolean",
+                                "description": "Do not show 'none' option"
+                              },
+                              "noSize": {
+                                "type": "boolean",
+                                "description": "Do not show size of files"
+                              },
+                              "label": true,
+                              "type": true,
+                              "sm": true,
+                              "md": true,
+                              "lg": true,
+                              "xs": true,
+                              "newLine": true,
+                              "hidden": true,
+                              "hideOnlyControl": true,
+                              "disabled": true,
+                              "helpLink": true,
+                              "help": true,
+                              "style": true,
+                              "darkStyle": true,
+                              "validator": true,
+                              "validatorNoSaveOnError": true,
+                              "validatorErrorText": true,
+                              "noMultiEdit": true,
+                              "tooltip": true,
+                              "default": true,
+                              "defaultFunc": true,
+                              "onChange": true,
+                              "noTranslation": true,
+                              "confirm": true
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                              "type"
                             ]
                           }
                         },

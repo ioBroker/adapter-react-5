@@ -7,6 +7,12 @@
       "type": "panel",
       "label": "Main settings",
       "items": {
+        "fileSelector": {
+          "type": "fileSelector",
+          "pattern": "*.jsx",
+          "maxSize": "2MB",
+          "noSize": true
+        },
         "bind": {
           "type": "ip",
           "listenOnAllPorts": true,
@@ -379,6 +385,10 @@
           "type": "table",
           "showSecondAddAt": 1,
           "items": [
+            {
+              "type": "fileSelector",
+              "pattern": "*.js"
+            },
             {
               "type": "objectId",
               "title": "s_TargetState",
