@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.7.4 (2023-11-23)
 * (bluefox) Updated packages
 * (bluefox) Made getStates method in legacy connection compatible with new one
 
