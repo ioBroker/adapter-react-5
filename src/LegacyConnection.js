@@ -935,16 +935,22 @@ class Connection {
 
     /**
      * Gets all states.
+     * @param {string} pattern The pattern to filter states.
      * @param {boolean} disableProgressUpdate don't call onProgress() when done
      * @returns {Promise<Record<string, ioBroker.State>>}
      */
-    getStates(disableProgressUpdate) {
+    getStates(pattern, disableProgressUpdate) {
         if (!this.connected) {
             return Promise.reject(NOT_CONNECTED);
         }
 
+        if (typeof pattern === 'boolean') {
+            disableProgressUpdate = pattern;
+            pattern = undefined;
+        }
+
         return new Promise((resolve, reject) =>
-            this._socket.emit('getStates', (err, res) => {
+            this._socket.emit('getStates', pattern, (err, res) => {
                 this.states = res;
                 // @ts-ignore
                 !disableProgressUpdate && this.onProgress(PROGRESS.STATES_LOADED);
