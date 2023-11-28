@@ -689,7 +689,7 @@ class Connection {
                 }
                 this.objectsSubscribes[_id] = { reg: new RegExp(reg), cbs: [] };
                 this.objectsSubscribes[_id].cbs.push(cb);
-                ids.push(_id);
+                toSubscribe.push(_id);
             } else {
                 !this.objectsSubscribes[_id].cbs.includes(cb) && this.objectsSubscribes[_id].cbs.push(cb);
             }
