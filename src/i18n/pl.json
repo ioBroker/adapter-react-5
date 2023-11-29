@@ -413,5 +413,11 @@
   "ra_Select type of export": "Wybierz rodzaj eksportu",
   "ra_You can export all objects or just the selected branch.": "Możesz wyeksportować wszystkie obiekty lub tylko wybraną gałąź.",
   "ra_Do not export values of states": "Nie eksportuj wartości stanów",
-  "ra_Selected %s object(s)": "Wybrane obiekty %s"
+  "ra_Selected %s object(s)": "Wybrane obiekty %s",
+  "ra_create_device": "Utwórz urządzenie",
+  "ra_create_channel": "Utwórz kanał",
+  "ra_create_state": "Utwórz stan",
+  "ra_create_string_state": "Utwórz stan ciągu",
+  "ra_create_number_state": "Utwórz stan liczbowy",
+  "ra_create_boolean_state": "Utwórz stan logiczny"
 }

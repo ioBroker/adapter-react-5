@@ -413,5 +413,11 @@
   "ra_Select type of export": "Выберите тип экспорта",
   "ra_You can export all objects or just the selected branch.": "Вы можете экспортировать все объекты или только выбранную ветвь.",
   "ra_Do not export values of states": "Не экспортировать значения состояний",
-  "ra_Selected %s object(s)": "Объектов: %s"
+  "ra_Selected %s object(s)": "Объектов: %s",
+  "ra_create_device": "Создать устройство",
+  "ra_create_channel": "Создать канал",
+  "ra_create_state": "Создать состояние",
+  "ra_create_string_state": "Создать состояние строки",
+  "ra_create_number_state": "Создать состояние номера",
+  "ra_create_boolean_state": "Создать логическое состояние"
 }

@@ -413,5 +413,11 @@
   "ra_Select type of export": "选择导出类型",
   "ra_You can export all objects or just the selected branch.": "您可以导出所有对象或仅导出选定的分支。",
   "ra_Do not export values of states": "不导出状态值",
-  "ra_Selected %s object(s)": "选定的 %s 个对象"
+  "ra_Selected %s object(s)": "选定的 %s 个对象",
+  "ra_create_device": "创建设备",
+  "ra_create_channel": "创建频道",
+  "ra_create_state": "创建状态",
+  "ra_create_string_state": "创建字符串状态",
+  "ra_create_number_state": "创建号码状态",
+  "ra_create_boolean_state": "创建布尔状态"
 }

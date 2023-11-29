@@ -413,5 +413,11 @@
   "ra_Select type of export": "Seleccione tipo de exportación",
   "ra_You can export all objects or just the selected branch.": "Puede exportar todos los objetos o solo la rama seleccionada.",
   "ra_Do not export values of states": "No exportar valores de estados.",
-  "ra_Selected %s object(s)": "%s objetos seleccionados"
+  "ra_Selected %s object(s)": "%s objetos seleccionados",
+  "ra_create_device": "Crear dispositivo",
+  "ra_create_channel": "Crear canal",
+  "ra_create_state": "Crear estado",
+  "ra_create_string_state": "Crear estado de cadena",
+  "ra_create_number_state": "Crear estado numérico",
+  "ra_create_boolean_state": "Crear estado booleano"
 }

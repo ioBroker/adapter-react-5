@@ -413,5 +413,11 @@
   "ra_Select type of export": "Selecteer het type export",
   "ra_You can export all objects or just the selected branch.": "U kunt alle objecten of alleen de geselecteerde tak exporteren.",
   "ra_Do not export values of states": "Exporteer geen waarden van staten",
-  "ra_Selected %s object(s)": "Geselecteerde %s object(en)"
+  "ra_Selected %s object(s)": "Geselecteerde %s object(en)",
+  "ra_create_device": "Apparaat maken",
+  "ra_create_channel": "Kanaal maken",
+  "ra_create_state": "Staat creëren",
+  "ra_create_string_state": "Tekenreeksstatus maken",
+  "ra_create_number_state": "Nummerstatus maken",
+  "ra_create_boolean_state": "Creëer een Booleaanse status"
 }
