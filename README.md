@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added translations
+
 ### 4.7.5 (2023-11-28)
 * (bluefox) Corrected subscribe on objects in the legacy connection
 
