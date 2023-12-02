@@ -594,6 +594,10 @@
           "description": "if true - open URL in new tab, if response contains attribute openUrl, like {\"openUrl\": \"http://1.2.3.4:80/aaa\", \"window\": \"_blank\", \"saveConfig\": true}. If saveConfig is true, the user will be requested to save the configuration.",
           "type": "boolean"
         },
+        "onLoaded": {
+          "description": "if true - execute the button logic once initially",
+          "type": "boolean"
+        },
         "label": true,
         "type": true,
         "sm": true,
@@ -2584,6 +2588,10 @@
                                   },
                                   "openUrl": {
                                     "description": "if true - open URL in new tab, if response contains attribute openUrl, like {\"openUrl\": \"http://1.2.3.4:80/aaa\", \"window\": \"_blank\", \"saveConfig\": true}. If saveConfig is true, the user will be requested to save the configuration.",
+                                    "type": "boolean"
+                                  },
+                                  "onLoaded": {
+                                    "description": "if true - execute the button logic once initially",
                                     "type": "boolean"
                                   },
                                   "placeholder": {
