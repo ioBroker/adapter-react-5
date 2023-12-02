@@ -808,6 +808,9 @@
         "panel"
       ]
     },
+    "iconPosition": {
+      "$ref": "#/definitions/iconPositionProp"
+    },
     "$schema": {
       "description": "Specify a JSON schema",
       "type": "string"
