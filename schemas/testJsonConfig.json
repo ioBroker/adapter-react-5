@@ -377,7 +377,8 @@
         "sendTo": {
           "type": "sendTo",
           "command": "test",
-          "openUrl": true
+          "openUrl": true,
+          "onLoaded": true
         },
         "reverseProxy": {
           "sm": 12,
