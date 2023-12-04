@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Corrected the icon picker
+
 ### 4.7.8 (2023-12-04)
 * (foxriver76) port to `@iobroker/types`
 

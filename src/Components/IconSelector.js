@@ -1972,7 +1972,7 @@ class IconSelector extends Component {
             opened: false,
             names: [],
             filter: '',
-            icons: props.icons || null,
+            icons: null,
         };
     }
 
