@@ -4,15 +4,6 @@ import React, { Component } from 'react';
 import { withStyles } from '@mui/styles';
 import PropTypes from 'prop-types';
 
-// File viewer in adapter-react does not use ace editor
-// import AceEditor from 'react-ace';
-// import 'ace-builds/src-min-noconflict/mode-json';
-// import 'ace-builds/src-min-noconflict/mode-json5';
-// import 'ace-builds/src-min-noconflict/worker-json';
-// import 'ace-builds/src-min-noconflict/theme-clouds_midnight';
-// import 'ace-builds/src-min-noconflict/theme-chrome';
-// import 'ace-builds/src-min-noconflict/ext-language_tools';
-
 import {
     TextField,
     Button,
@@ -34,6 +25,8 @@ import {
 import IconNoIcon from '../icons/IconNoIcon';
 import withWidth from './withWidth';
 import Utils from './Utils';
+// File viewer in adapter-react does not use ace editor
+// import Editor from './Editor';
 
 const styles = () => ({
     dialog: {
@@ -244,7 +237,7 @@ class FileViewer extends Component {
             />;
         }
         if (this.state.code !== null || this.state.text !== null || this.state.editing) {
-            // File viewer does use ace in adapter-react
+            // File viewer in adapter-react does not support write
             // return <AceEditor
             //     mode={FileViewer.getEditFile(this.props.formatEditFile)}
             //     width="100%"
@@ -337,6 +330,7 @@ FileViewer.propTypes = {
     onClose: PropTypes.func,
     href: PropTypes.string.isRequired,
     supportSubscribes: PropTypes.bool,
+    themeType: PropTypes.string,
 };
 
 /** @type {typeof FileViewer} */

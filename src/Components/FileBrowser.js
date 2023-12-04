@@ -477,8 +477,6 @@ class FileBrowser extends Component {
 
         let currentDir = '';
 
-        const backgroundImage = (window._localStorage || window.localStorage).getItem('files.backgroundImage') || null;
-
         if (props.restrictToFolder) {
             selected = props.restrictToFolder;
             currentDir = props.restrictToFolder;
@@ -501,6 +499,7 @@ class FileBrowser extends Component {
                 currentDir = selected;
             }
         }
+        const backgroundImage = (window._localStorage || window.localStorage).getItem('files.backgroundImage') || null;
 
         this.state = {
             viewType,
@@ -965,13 +964,17 @@ class FileBrowser extends Component {
     }
 
     renderFolder(item, expanded) {
-        if (this.state.filterEmpty && (!this.state.folders[item.id] || !this.state.folders[item.id].length) && item.id !== USER_DATA && !item.temp) {
+        if (this.state.viewType === TABLE &&
+            this.state.filterEmpty &&
+            (!this.state.folders[item.id] || !this.state.folders[item.id].length) &&
+            item.id !== USER_DATA && !item.temp
+        ) {
             return null;
         }
         const Icon = expanded ? IconOpen : IconClosed;
         const padding = this.state.viewType === TABLE ? item.level * this.levelPadding : 0;
         const isUserData = item.name === USER_DATA;
-        const isSpecialData = isUserData || item.name === 'vis.0' || item.name === 'vis-2-beta.0';
+        const isSpecialData = isUserData || item.name === 'vis.0' || item.name === 'vis-2.0';
 
         return <div
             key={item.id}
@@ -993,14 +996,18 @@ class FileBrowser extends Component {
                 onClick={this.state.viewType === TABLE ? e => this.toggleFolder(item, e) : undefined}
             />
 
-            <div className={Utils.clsx(this.props.classes[`itemName${this.state.viewType}`], this.props.classes[`itemNameFolder${this.state.viewType}`])}>{isUserData ? this.props.t('ra_User files') : item.name}</div>
+            <div className={Utils.clsx(this.props.classes[`itemName${this.state.viewType}`], this.props.classes[`itemNameFolder${this.state.viewType}`])}>
+                {isUserData ? this.props.t('ra_User files') : item.name}
+            </div>
 
             <Hidden smDown>
-                <div className={this.props.classes[`itemSize${this.state.viewType}`]}>{this.state.viewType === TABLE && this.state.folders[item.id] ? this.state.folders[item.id].length : ''}</div>
+                <div className={this.props.classes[`itemSize${this.state.viewType}`]}>
+                    {this.state.viewType === TABLE && this.state.folders[item.id] ? this.state.folders[item.id].length : ''}
+                </div>
             </Hidden>
 
             <Hidden smDown>
-                {this.state.viewType === TABLE ? this.formatAcl(item.acl) : null}
+                {this.state.viewType === TABLE && this.props.expertMode ? this.formatAcl(item.acl) : null}
             </Hidden>
 
             <Hidden smDown>
@@ -1063,13 +1070,13 @@ class FileBrowser extends Component {
         }
 
         return <div className={this.props.classes[`itemAccess${this.state.viewType}`]}>
-            <IconButton
+            {this.props.modalEditOfAccessControl ? <IconButton
                 size="large"
                 onClick={() => this.setState({ modalEditOfAccess: true })}
                 className={this.props.classes[`itemAclButton${this.state.viewType}`]}
             >
                 {access || '---'}
-            </IconButton>
+            </IconButton> : access || '---'}
         </div>;
     }
 
@@ -1193,7 +1200,7 @@ class FileBrowser extends Component {
                 this.getFileIcon(ext)}
             <div className={this.props.classes[`itemName${this.state.viewType}`]}>{item.name}</div>
             <Hidden smDown>{this.formatSize(item.size)}</Hidden>
-            <Hidden smDown>{this.state.viewType === TABLE ? this.formatAcl(item.acl) : null}</Hidden>
+            <Hidden smDown>{this.state.viewType === TABLE && this.props.expertMode ? this.formatAcl(item.acl) : null}</Hidden>
             <Hidden smDown>
                 {this.state.viewType === TABLE && this.props.expertMode && FileBrowser.getEditFile(ext) ?
                     <IconButton
@@ -1232,7 +1239,7 @@ class FileBrowser extends Component {
             {this.state.viewType === TABLE &&
                 this.props.allowDelete &&
                 item.id !== 'vis.0/' &&
-                item.id !== 'vis-2-beta.0/' &&
+                item.id !== 'vis-2.0/' &&
                 item.id !== USER_DATA
                 ?
                 <IconButton
@@ -1476,7 +1483,7 @@ class FileBrowser extends Component {
                         disabled={
                             !this.state.selected ||
                             this.state.selected === 'vis.0/' ||
-                            this.state.selected === 'vis-2-beta.0/' ||
+                            this.state.selected === 'vis-2.0/' ||
                             this.state.selected === USER_DATA
                         }
                         color="inherit"
@@ -1821,7 +1828,7 @@ class FileBrowser extends Component {
             key={this.state.viewer}
             href={this.state.viewer}
             formatEditFile={this.state.formatEditFile}
-            themeName={this.props.themeName}
+            themeType={this.props.themeType}
             setStateBackgroundImage={this.setStateBackgroundImage}
             getClassBackgroundImage={this.getClassBackgroundImage}
             t={this.props.t}
@@ -1842,6 +1849,30 @@ class FileBrowser extends Component {
             />;
         }
         return null;
+    }
+
+    // used in tabs/Files
+    // eslint-disable-next-line react/no-unused-class-component-methods
+    updateItemsAcl(info) {
+        this.cacheFolders = this.cacheFolders || JSON.parse(JSON.stringify(this.state.folders));
+        let changed;
+
+        info.forEach(it => {
+            const item = this.findItem(it.id, this.cacheFolders);
+            if (item && JSON.stringify(item.acl) !== JSON.stringify(it.acl)) {
+                item.acl = it.acl;
+                changed = true;
+            }
+        });
+        if (changed) {
+            this.cacheFoldersTimeout && clearTimeout(this.cacheFoldersTimeout);
+            this.cacheFoldersTimeout = setTimeout(() => {
+                this.cacheFoldersTimeout = null;
+                const folders = this.cacheFolders;
+                this.cacheFolders = null;
+                this.setState({ folders });
+            }, 200);
+        }
     }
 
     changeToPath() {
@@ -1871,7 +1902,7 @@ class FileBrowser extends Component {
     renderBreadcrumb() {
         const parts = this.state.currentDir.startsWith('/') ? this.state.currentDir.split('/') : (`/${this.state.currentDir}`).split('/');
         const p = [];
-        return <Breadcrumbs color={'white'}>
+        return <Breadcrumbs style={{ paddingLeft: 8 }}>
             {parts.map((part, i) => {
                 part && p.push(part);
                 const path = p.join('/');
@@ -1955,7 +1986,7 @@ class FileBrowser extends Component {
             {this.props.allowUpload ? this.renderUpload() : null}
             {this.props.allowDelete ? this.renderDeleteDialog() : null}
             {this.props.allowView ? this.renderViewDialog() : null}
-            {this.state.modalEditOfAccess && this.props.modalEditOfAccessControl && this.props.modalEditOfAccessControl(this, this.state.modalEditOfAccessObjData)}
+            {this.state.modalEditOfAccess && this.props.modalEditOfAccessControl && this.props.modalEditOfAccessControl(this)}
             {this.renderError()}
         </div>;
     }
@@ -1984,6 +2015,7 @@ FileBrowser.propTypes = {
     showExpertButton: PropTypes.bool,
     viewType: PropTypes.string,
     showViewTypeButton: PropTypes.bool,
+    themeType: PropTypes.string,
     restrictToFolder: PropTypes.string, // If defined, allow selecting only files from this folder
     allowNonRestricted: PropTypes.bool, // If restrictToFolder defined, allow selecting files outside of this folder
 
