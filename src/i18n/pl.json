@@ -419,5 +419,6 @@
   "ra_create_state": "Utwórz stan",
   "ra_create_string_state": "Utwórz stan ciągu",
   "ra_create_number_state": "Utwórz stan liczbowy",
-  "ra_create_boolean_state": "Utwórz stan logiczny"
+  "ra_create_boolean_state": "Utwórz stan logiczny",
+  "ra_Select color": "Wybierz kolor"
 }

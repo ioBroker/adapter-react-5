@@ -21,7 +21,13 @@ import { withStyles } from '@mui/styles';
 import {
     TextField, Menu, IconButton, Button,
 } from '@mui/material';
-import { Delete as IconDelete, Close as IconClose } from '@mui/icons-material';
+
+import {
+    Delete as IconDelete,
+    Close as IconClose,
+} from '@mui/icons-material';
+
+import { I18n } from '@iobroker/adapter-react-v5';
 
 import Utils from './Utils';
 
@@ -202,8 +208,7 @@ class ColorPicker extends React.Component {
             return null;
         }
         return <div style={{ width: '100%', display: 'flex', flexWrap: 'flex' }}>
-            {this.props.customPalette.map(color =>
-                <Button
+            {this.props.customPalette.map(color => <Button
                     className={this.props.classes.button}
                     key={color}
                     onClick={() => {
@@ -225,7 +230,7 @@ class ColorPicker extends React.Component {
             style={style}
             className={this.props.className || ''}
         >
-            <TextField
+            {this.props.noInputField ? null : <TextField
                 disabled={this.props.disabled}
                 variant="standard"
                 id="ar_color_picker_name"
@@ -235,8 +240,8 @@ class ColorPicker extends React.Component {
                 margin="dense"
                 classes={{ root: this.props.classes.textDense }}
                 onChange={e => this.handleChange(e.target.value)}
-            />
-            {color ? <IconButton
+            />}
+            {!this.props.noInputField && color ? <IconButton
                 disabled={this.props.disabled}
                 onClick={() => this.handleChange('')}
                 size="small"
@@ -248,13 +253,21 @@ class ColorPicker extends React.Component {
             <div
                 className={Utils.clsx(this.props.classes.swatch, this.props.disabled && this.props.classes.swatchDisabled)}
                 onClick={e => !this.props.disabled && this.handleClick(e)}
+                title={I18n.t('ra_Select color')}
                 style={{
                     background: color ? undefined : 'transparent',
                     border: color ? undefined : '1px dashed #ccc',
                     boxSizing: 'border-box',
+                    marginTop: this.props.noInputField ? 0 : undefined,
                 }}
             >
-                <div className={this.props.classes.color} style={{ background: color }} />
+                <div
+                    className={this.props.classes.color}
+                    style={{
+                        background: color,
+                        width: this.props.noInputField ? (this.props.barWidth || 16) : (this.props.barWidth || undefined),
+                    }}
+                />
             </div>
             {this.state.displayColorPicker && !this.props.disabled ? <Menu
                 classes={{ paper: this.props.classes.popover, list: this.props.classes.popoverList }}
@@ -268,6 +281,7 @@ class ColorPicker extends React.Component {
                     onChangeComplete={_color => this.handleChange(_color)}
                     styles={{ picker: { background: '#112233' } }}
                 />
+                {color && this.props.noInputField ? <IconButton className={this.props.classes.closeButton} onClick={() => this.handleChange('')}><IconDelete /></IconButton> : null}
                 <IconButton className={this.props.classes.closeButton} onClick={() => this.handleClose()}><IconClose /></IconButton>
                 {this.renderCustomPalette()}
             </Menu> : null}
@@ -284,6 +298,8 @@ ColorPicker.propTypes = {
     style: PropTypes.object,
     className: PropTypes.string,
     customPalette: PropTypes.array,
+    noInputField: PropTypes.bool,
+    barWidth: PropTypes.number,
 };
 
 /** @type {typeof ColorPicker} */

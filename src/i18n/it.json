@@ -419,5 +419,6 @@
   "ra_create_state": "Crea stato",
   "ra_create_string_state": "Crea lo stato della stringa",
   "ra_create_number_state": "Crea lo stato del numero",
-  "ra_create_boolean_state": "Crea uno stato booleano"
+  "ra_create_boolean_state": "Crea uno stato booleano",
+  "ra_Select color": "Seleziona il colore"
 }
