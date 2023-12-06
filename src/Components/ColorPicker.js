@@ -27,7 +27,7 @@ import {
     Close as IconClose,
 } from '@mui/icons-material';
 
-import { I18n } from '@iobroker/adapter-react-v5';
+import I18n from '../i18n';
 
 import Utils from './Utils';
 
