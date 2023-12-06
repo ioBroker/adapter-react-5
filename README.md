@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.7.11 (2023-12-06)
 * (bluefox) Extended color picker with "noInputField" option
 
 ### 4.7.9 (2023-12-04)
