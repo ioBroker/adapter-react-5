@@ -4,5 +4,6 @@
 	"compilerOptions": {
 		"checkJs": false,
 		"strict": false,
+		"skipLibCheck": true
 	}
 }

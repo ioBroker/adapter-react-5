@@ -792,6 +792,10 @@
       "items": {
         "type": "string"
       }
+    },
+    "noInternalProp": {
+      "description": "Do not show internal IP addresses",
+      "type": "boolean"
     }
   },
   "type": "object",
@@ -3566,6 +3570,9 @@
                                     "description": "Show only IP6 addresses",
                                     "type": "boolean"
                                   },
+                                  "noInternal": {
+                                    "$ref": "#/definitions/noInternalProp"
+                                  },
                                   "label": true,
                                   "type": true,
                                   "sm": true,
@@ -4664,6 +4671,9 @@
                   "onlyIp6": {
                     "description": "Show only IP6 addresses",
                     "type": "boolean"
+                  },
+                  "noInternal": {
+                    "$ref": "#/definitions/noInternalProp"
                   },
                   "label": true,
                   "type": true,

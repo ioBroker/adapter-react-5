@@ -2,7 +2,7 @@ import Ajv from "ajv"
 import fs from 'node:fs'
 import path from 'node:path'
 
-const ajv = new Ajv({allErrors: true, strict: false})
+const ajv = new Ajv({ allErrors: true, strict: false })
 const basePath = path.join(__dirname, '..', 'schemas');
 
 const schema = fs.readFileSync(path.join(basePath, 'jsonConfig.json'), {encoding: 'utf-8'});
