@@ -19,7 +19,8 @@
           "label": "IP",
           "sm": 12,
           "md": 8,
-          "lg": 5
+          "lg": 5,
+          "noInternal": true
         },
         "port": {
           "type": "number",
