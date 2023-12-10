@@ -376,7 +376,7 @@ class JsonConfigComponent extends Component {
             return <LinearProgress />;
         }
 
-        return <div className={this.props.classes.root}>
+        return <div className={this.props.classes.root} style={this.state.schema.style}>
             {this.renderItem(this.state.schema)}
         </div>;
     }

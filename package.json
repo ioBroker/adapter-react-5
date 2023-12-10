@@ -45,9 +45,9 @@
     "@mui/icons-material": "^5.14.19",
     "@mui/material": "5.14.14",
     "@mui/styles": "5.14.14",
-    "@mui/x-date-pickers": "^6.18.3",
-    "@sentry/browser": "^7.85.0",
-    "@sentry/integrations": "^7.85.0",
+    "@mui/x-date-pickers": "^6.18.4",
+    "@sentry/browser": "^7.86.0",
+    "@sentry/integrations": "^7.86.0",
     "react-color": "^2.19.3",
     "react-colorful": "^5.6.1",
     "react-cropper": "^2.3.3",
@@ -65,8 +65,8 @@
     "@babel/preset-env": "^7.23.5",
     "@babel/preset-flow": "^7.23.3",
     "@babel/preset-react": "^7.23.3",
-    "@types/node": "^20.10.3",
-    "@types/react": "^18.2.42",
+    "@types/node": "^20.10.4",
+    "@types/react": "^18.2.43",
     "ajv": "^8.12.0",
     "babel": "^6.23.0",
     "babel-plugin-inline-json-import": "^0.3.2",
@@ -82,7 +82,7 @@
     "gulp-babel": "^8.0.0",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.3.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   }
 }
