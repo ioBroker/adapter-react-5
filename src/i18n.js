@@ -48,7 +48,7 @@ class I18n {
      * @param {ioBroker.Languages} lang
      */
     static extendTranslations(words, lang) {
-        // extend automatically all languages with prefix
+        // automatically extend all languages with prefix
         if (words.prefix) {
             if (typeof words.prefix === 'string') {
                 const prefix = words.prefix;
