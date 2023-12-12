@@ -668,7 +668,7 @@ class Utils {
      * @returns {string | JSX.Element[]}
      */
     static renderTextWithA(text) {
-        let m = text.match(/<a [^<]+<\/a>|<br\/?>|<b>[^<]+<\/b>|<i>[^<]+<\/i>/);
+        let m = text.match(/<a [^<]+<\/a>|<br\s?\/?>|<b>[^<]+<\/b>|<i>[^<]+<\/i>/);
         if (m) {
             const result = [];
             let key = 1;
