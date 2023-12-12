@@ -670,8 +670,8 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### 4.7.14 (2023-12-12)
-* (bluefox) Corrected parsing of text
+### **WORK IN PROGRESS**
+* (bluefox) Corrected parsing of a text
 
 ### 4.7.13 (2023-12-10)
 * (bluefox) Added possibility to define the root style and embedded property
