@@ -93,7 +93,6 @@ class ConfigJsonEditor extends ConfigGeneric {
 ConfigJsonEditor.propTypes = {
     socket: PropTypes.object.isRequired,
     themeType: PropTypes.string,
-//    themeName: PropTypes.string,
     style: PropTypes.object,
     className: PropTypes.string,
     data: PropTypes.object.isRequired,

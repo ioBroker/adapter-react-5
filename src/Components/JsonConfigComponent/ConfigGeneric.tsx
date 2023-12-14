@@ -15,6 +15,7 @@ import {
     UploadFile as IconUploadFile,
 } from '@mui/icons-material';
 
+import BaseUtils from '@/Utils';
 import type AdminConnection from './wrapper/AdminConnection';
 
 import I18n from './wrapper/i18n';
@@ -57,6 +58,7 @@ export interface ConfigGenericProps {
     themeType: string;
     commandRunning: any;
     disabled?: boolean;
+    classes: Record<string, any>;
 }
 
 export interface ConfigGenericState {
@@ -69,7 +71,7 @@ export interface ConfigGenericState {
     confirmDepNewValue?: any;
 }
 
-export default class ConfigGeneric<Props extends ConfigGenericProps, State extends ConfigGenericState> extends Component<Props, State> {
+export default class ConfigGeneric<Props extends ConfigGenericProps = ConfigGenericProps, State extends ConfigGenericState = ConfigGenericState> extends Component<Props, State> {
     static DIFFERENT_VALUE = '__different__';
 
     static DIFFERENT_LABEL = 'ra___different__';
@@ -186,7 +188,6 @@ export default class ConfigGeneric<Props extends ConfigGenericProps, State exten
                         if (this.props.custom) {
                             this.props.onChange(this.props.attr, value, () =>
                                 this.props.forceUpdate([this.props.attr], this.props.data));
-                            // this.onChange(this.props.attr, this.defaultValue);
                         } else {
                             ConfigGeneric.setValue(this.props.data, this.props.attr, value);
                             this.props.onChange(this.props.data, undefined, () =>
@@ -196,7 +197,7 @@ export default class ConfigGeneric<Props extends ConfigGenericProps, State exten
                 });
         } else {
             this.defaultSendToDone = false;
-            // show error, that instance does not started
+            // show error, that instance did not start
             this.onError(this.props.attr, I18n.t('ra_Instance %s is not alive', this.props.instance.toString()));
         }
     }
@@ -349,7 +350,7 @@ export default class ConfigGeneric<Props extends ConfigGenericProps, State exten
     }
 
     // eslint-disable-next-line react/no-unused-class-component-methods
-    getIcon(iconSettings: string | undefined | null): React.JSX.Element | null {
+    getIcon(iconSettings?: string | null): React.JSX.Element | null {
         iconSettings = iconSettings || this.props.schema.icon;
         let icon = null;
         if (iconSettings === 'auth') {
@@ -391,11 +392,21 @@ export default class ConfigGeneric<Props extends ConfigGenericProps, State exten
      *
      * @param attr the changed attribute
      * @param newValue new value of the attribute
+     */
+    onChangeAsync(attr: string, newValue: unknown): Promise<void> {
+        return new Promise(resolve => this.onChange(attr, newValue, resolve));
+    }
+
+    /**
+     * Trigger onChange, to activate save button on change
+     *
+     * @param attr the changed attribute
+     * @param newValue new value of the attribute
      * @param cb optional callback function, else returns a Promise
      */
     // eslint-disable-next-line react/no-unused-class-component-methods
-    onChange(attr: string, newValue: any, cb?: () => void): Promise<void> {
-        const data = JSON.parse(JSON.stringify(this.props.data));
+    onChange(attr: string, newValue: unknown, cb?: () => void): Promise<void> {
+        const data = BaseUtils.deepClone(this.props.data);
         ConfigGeneric.setValue(data, attr, newValue);
 
         if (
@@ -557,7 +568,7 @@ export default class ConfigGeneric<Props extends ConfigGenericProps, State exten
         return Promise.resolve();
     }
 
-    execute(func: string| Record<string, string>, defaultValue: any, data: Record<string, any>, arrayIndex: number, globalData: Record<string, any>) {
+    execute(func: string | Record<string, string>, defaultValue: any, data: Record<string, any>, arrayIndex: number, globalData: Record<string, any>) {
         let fun: string;
 
         if (isObject(func)) {
@@ -729,7 +740,7 @@ export default class ConfigGeneric<Props extends ConfigGenericProps, State exten
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    renderItem(_error: unknown, _disabled: boolean, _defaultValue?: unknown): React.JSX.Element | string {
+    renderItem(_error: unknown, _disabled: boolean, _defaultValue?: unknown): React.JSX.Element | string | null {
         return this.getText(this.props.schema.label) || this.getText(this.props.schema.text);
     }
 
@@ -925,10 +936,9 @@ export default class ConfigGeneric<Props extends ConfigGenericProps, State exten
                 marginBottom: 0,
                 // marginRight: 8,
                 textAlign: 'left',
-                width:
-                            schema.type === 'divider' || schema.type === 'header'
-                                ? schema.width || '100%'
-                                : undefined,
+                width: schema.type === 'divider' || schema.type === 'header'
+                    ? schema.width || '100%'
+                    : undefined,
                 ...schema.style,
                 ...(this.props.themeType === 'dark' ? schema.darkStyle : {}),
             })}
