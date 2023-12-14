@@ -275,7 +275,7 @@ export default class DeviceList extends Communication<DeviceListProps, DeviceLis
                 {this.props.selectedInstance ? <Tooltip title={getTranslation('refreshTooltip')}>
                     <span>
                         <IconButton
-                            onClick={() => this.loadDevices().catch(console.error)}
+                            onClick={() => this.loadData()}
                             disabled={!this.state.alive}
                             size="small"
                         >
