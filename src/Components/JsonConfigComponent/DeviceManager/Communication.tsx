@@ -138,8 +138,8 @@ class Communication<P extends CommunicationProps, S extends CommunicationState> 
     }
 
     // eslint-disable-next-line class-methods-use-this
-    loadData(): Promise<void> {
-        return Promise.resolve();
+    loadData(): void {
+        console.error('loadData not implemented');
     }
 
     sendActionToInstance = (command: string, messageToSend: any, refresh?: () => void) => {
@@ -215,7 +215,7 @@ class Communication<P extends CommunicationProps, S extends CommunicationState> 
                     console.log('Response content', response.result);
                     if (response.result.refresh) {
                         if (response.result.refresh === true) {
-                            this.loadData().catch(console.error);
+                            this.loadData();
                             console.log('Refreshing all');
                         } else if (response.result.refresh === 'instance') {
                             console.log(`Refreshing instance infos: ${this.props.selectedInstance}`);

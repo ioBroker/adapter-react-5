@@ -1,10 +1,10 @@
 import React from 'react';
 import {
     IconButton, InputAdornment, TextField,
-    Toolbar,
+    Toolbar, Tooltip, LinearProgress,
 } from '@mui/material';
 
-import { Clear } from '@mui/icons-material';
+import { Clear, Refresh } from '@mui/icons-material';
 
 import I18n from '../../../i18n';
 import { DeviceInfo, InstanceDetails } from '@iobroker/dm-utils';
@@ -138,11 +138,7 @@ export default class DeviceList extends Communication<DeviceListProps, DeviceLis
             }
         }
         if (alive) {
-            try {
-                await this.loadData();
-            } catch (error) {
-                console.error(error);
-            }
+            this.loadData();
         }
     }
 
@@ -166,21 +162,29 @@ export default class DeviceList extends Communication<DeviceListProps, DeviceLis
     /**
     * Load devices
     */
-    async loadData(): Promise<void> {
-        this.setState({ loading: true });
+    loadData(): void {
+        this.setState({ loading: true }, async () => {
         console.log(`Loading devices for ${this.props.selectedInstance}...`);
-        const devices = await this.loadDevices();
+            let devices;
+            try {
+                devices = await this.loadDevices();
 
         if (!devices || !Array.isArray(devices)) {
-            throw new Error(
+                    console.error(
                 `Message returned from sendTo() doesn't look like one from DeviceManagement, did you accidentally handle the message in your adapter? ${JSON.stringify(
                     devices,
                 )}`,
             );
+                    devices = [];
+                }
+            } catch (error) {
+                console.error(error);
+                devices = [];
         }
 
         this.setState({ devices, loading: false }, () =>
             this.applyFilter());
+        });
     }
 
     getText(text: ioBroker.StringOrTranslated): string {
@@ -226,7 +230,7 @@ export default class DeviceList extends Communication<DeviceListProps, DeviceLis
         }
         if (this.props.embedded && this.lastInstance !== this.props.selectedInstance) {
             this.lastInstance = this.props.selectedInstance;
-            setTimeout(() => this.loadData().catch(console.error), 50);
+            setTimeout(() => this.loadData(), 50);
         }
 
         let list;
@@ -259,17 +263,27 @@ export default class DeviceList extends Communication<DeviceListProps, DeviceLis
         }
 
         if (this.props.embedded) {
-            return list;
+            return <>
+                {this.state.loading ? <LinearProgress style={{ width: '100%' }} /> : null}
+                {list}
+            </>;
         }
 
         return <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
             <Toolbar variant="dense" style={{ backgroundColor: '#777', display: 'flex' }}>
                 {this.props.title}
-                {this.state.alive && this.state.instanceInfo?.actions?.length ? <div
-                    style={{
-                        marginLeft: 20,
-                    }}
-                >
+                {this.props.selectedInstance ? <Tooltip title={getTranslation('refreshTooltip')}>
+                    <span>
+                        <IconButton
+                            onClick={() => this.loadDevices().catch(console.error)}
+                            disabled={!this.state.alive}
+                            size="small"
+                        >
+                            <Refresh />
+                        </IconButton>
+                    </span>
+                </Tooltip> : null}
+                {this.state.alive && this.state.instanceInfo?.actions?.length ? <div style={{ marginLeft: 20 }}>
                     {this.state.instanceInfo.actions.map(action =>
                         <InstanceActionButton
                             key={action.id}
@@ -319,6 +333,7 @@ export default class DeviceList extends Communication<DeviceListProps, DeviceLis
                     ...this.props.style,
                 }}
             >
+                {this.state.loading ? <LinearProgress style={{ width: '100%' }} /> : null}
                 {list}
             </div>
         </div>;
