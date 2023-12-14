@@ -16,7 +16,7 @@ class ConfigDeviceManager extends ConfigGeneric<ConfigGenericProps, ConfigGeneri
             title={this.props.schema.label}
             socket={this.props.socket}
             selectedInstance={`${this.props.adapterName}.${this.props.instance}`}
-        />
+        />;
     }
 }
 

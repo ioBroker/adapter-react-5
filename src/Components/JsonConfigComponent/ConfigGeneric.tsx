@@ -405,6 +405,7 @@ export default class ConfigGeneric<Props extends ConfigGenericProps = ConfigGene
      */
     // eslint-disable-next-line react/no-unused-class-component-methods
     onChange(attr: string, newValue: unknown, cb?: () => void): Promise<void> {
+        // Do not use here deep copy, as it is not JsonConfig
         const data = JSON.parse(JSON.stringify(this.props.data));
         ConfigGeneric.setValue(data, attr, newValue);
 
