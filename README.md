@@ -192,7 +192,7 @@ This is a non-react class to provide the communication for socket connection wit
 ### Dialogs
 Some dialogs are predefined and could be used out of the box.
 
-#### Confirm.js
+#### Confirm.tsx
 <!-- TODO: Provide screenshot here -->
 
 Usage: 
@@ -238,10 +238,10 @@ class ExportImportDialog extends React.Component {
 export default ExportImportDialog;
 ```
 
-#### Error.js
+#### Error.tsx
 <!-- TODO: Provide screenshot here -->
 
-#### Message.js
+#### Message.tsx
 <!-- TODO: Provide screenshot here -->
 ```
 renderMessage() {
@@ -318,7 +318,7 @@ function renderCron() {
 
 ### Components
 
-#### Utils.js
+#### Utils.tsx
 ##### getObjectNameFromObj
 `getObjectNameFromObj(obj, settings, options, isDesc)`
 
@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added Device manager to JSON Config
+
 ### 4.7.15 (2023-12-12)
 * (bluefox) Corrected parsing of a text
 

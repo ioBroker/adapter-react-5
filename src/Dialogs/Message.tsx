@@ -6,29 +6,51 @@
  **/
 
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+} from '@mui/material';
 
-import IconClose from '@mui/icons-material/Close';
+import {
+    Close as IconClose,
+} from '@mui/icons-material';
 
 import I18n from '../i18n';
 
+interface DialogMessageProps {
+    /* The dialog title; default: Message (translated) */
+    title?: string;
+    /* The dialog text */
+    text: string | React.JSX.Element;
+    /* Close handler. */
+    onClose?: () => void;
+    /* Optional style classes */
+    classes?: {
+        titleBackground: string;
+        titleColor: string;
+    };
+    /* if the dialog must be fill sized */
+    fullWidth?: boolean;
+    /* optional icon */
+    icon?: React.JSX.Element;
+    /* optional ok button text */
+    ok?: string;
+}
+
 /**
- * @typedef {object} DialogMessageProps
- * @property {string} [title] The dialog title; default: Message (translated)
- * @property {string} text The dialog text.
- * @property {() => void} [onClose] Close handler.
+ * @property title The dialog title; default: Message (translated)
+ * @property text The dialog text.
+ * @property onClose Close handler.
  *
  * @extends {React.Component<DialogMessageProps>}
  */
-class DialogMessage extends React.Component {
+class DialogMessage extends Component<DialogMessageProps> {
     handleOk() {
         this.props.onClose && this.props.onClose();
     }
@@ -57,14 +79,5 @@ class DialogMessage extends React.Component {
         </Dialog>;
     }
 }
-
-DialogMessage.propTypes = {
-    fullWidth: PropTypes.bool,
-    onClose: PropTypes.func.isRequired,
-    title: PropTypes.string,
-    text: PropTypes.string,
-    ok: PropTypes.string,
-    icon: PropTypes.object,
-};
 
 export default DialogMessage;

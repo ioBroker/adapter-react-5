@@ -2,15 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
-import Button from '@mui/material/Button';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Dialog from '@mui/material/Dialog';
+import {
+    Button,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Dialog,
+} from '@mui/material';
 
-import IconOk from '@mui/icons-material/Check';
-import IconCancel from '@mui/icons-material/Cancel';
-import IconClear from '@mui/icons-material/Delete';
+import {
+    Check as IconOk,
+    Cancel as IconCancel,
+    Delete as IconClear,
+} from '@mui/icons-material';
 
 import ComplexCron from '../Components/ComplexCron';
 
@@ -80,9 +84,32 @@ class DialogComplexCron extends React.Component {
                 />
             </DialogContent>
             <DialogActions>
-                {!!this.props.clearButton && <Button color="grey" variant="contained" onClick={() => this.handleClear()} startIcon={<IconClear />}>{this.props.clear || I18n.t('ra_Clear')}</Button>}
-                <Button variant="contained" onClick={() => this.handleOk()} color="primary" startIcon={<IconOk />}>{this.props.ok || I18n.t('ra_Ok')}</Button>
-                <Button color="grey" variant="contained" onClick={() => this.handleCancel()} startIcon={<IconCancel />}>{this.props.cancel || I18n.t('ra_Cancel')}</Button>
+                {!!this.props.clearButton && <Button
+                    // @ts-expect-error
+                    color="grey"
+                    variant="contained"
+                    onClick={() => this.handleClear()}
+                    startIcon={<IconClear />}
+                >
+                    {this.props.clear || I18n.t('ra_Clear')}
+                </Button>}
+                <Button
+                    variant="contained"
+                    onClick={() => this.handleOk()}
+                    color="primary"
+                    startIcon={<IconOk />}
+                >
+                    {this.props.ok || I18n.t('ra_Ok')}
+                </Button>
+                <Button
+                    // @ts-expect-error
+                    color="grey"
+                    variant="contained"
+                    onClick={() => this.handleCancel()}
+                    startIcon={<IconCancel />}
+                >
+                    {this.props.cancel || I18n.t('ra_Cancel')}
+                </Button>
             </DialogActions>
         </Dialog>;
     }

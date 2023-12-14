@@ -5,8 +5,7 @@
  *
  **/
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 import {
     Button,
@@ -21,16 +20,29 @@ import { Check as IconCheck } from '@mui/icons-material';
 
 import I18n from '../i18n';
 
+interface DialogErrorProps {
+    /* The dialog title; default: Error (translated) */
+    title?: string;
+    /* The dialog text */
+    text: string | React.JSX.Element;
+    /* Close handler. */
+    onClose?: () => void;
+    /* Optional style classes */
+    classes?: {
+        titleBackground: string;
+        titleColor: string;
+    };
+    /* if the dialog must be fill sized */
+    fullWidth?: boolean;
+}
+
 /**
- * @typedef {object} DialogErrorProps
- * @property {string} [title] The dialog title; default: Error (translated)
- * @property {string | JSX.Element} text The dialog text.
- * @property {() => void} [onClose] Close handler.
- * @property {{titleBackground: string; titleColor: string}} classes The styling class names.
- *
- * @extends {React.Component<DialogErrorProps>}
+ * @property title The dialog title; default: Error (translated)
+ * @property text The dialog text.
+ * @property onClose Close handler.
+ * @property classes The styling class names.
  */
-class DialogError extends React.Component {
+class DialogError extends Component<DialogErrorProps> {
     handleOk() {
         this.props.onClose && this.props.onClose();
     }
@@ -67,16 +79,6 @@ class DialogError extends React.Component {
         </Dialog>;
     }
 }
-
-DialogError.propTypes = {
-    onClose: PropTypes.func.isRequired,
-    fullWidth: PropTypes.bool,
-    title: PropTypes.string,
-    text: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.element,
-    ]),
-};
 
 /** @type {typeof DialogError} */
 const _export = DialogError;
