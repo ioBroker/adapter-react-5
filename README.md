@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.8.0 (2023-12-14)
 * (bluefox) Added Device manager to JSON Config
 
 ### 4.7.15 (2023-12-12)
