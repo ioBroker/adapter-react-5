@@ -9,9 +9,18 @@ import {
     Brightness7 as Brightness7Icon,
 } from '@mui/icons-material';
 
+interface ToggleThemeMenuProps {
+    themeName: 'dark' | 'blue' | 'colored' | 'light';
+    toggleTheme: () => void;
+    t: (key: string) => string;
+    className?: string;
+    style?: React.CSSProperties;
+    size?: 'small' | 'medium' | 'large';
+}
+
 export default function ToggleThemeMenu({
     themeName, toggleTheme, t, className, style, size,
-}) {
+}: ToggleThemeMenuProps) {
     return <div className={className || undefined} style={style || undefined}>
         <Tooltip title={t('ra_Change color theme')}>
             <IconButton onClick={() => toggleTheme()} size={size || 'medium'}>
