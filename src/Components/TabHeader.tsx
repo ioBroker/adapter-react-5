@@ -1,14 +1,12 @@
-// please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
 
 import { Grid } from '@mui/material';
 
-/**
- * @typedef {object} TabHeaderProps
- *
- * @extends {React.Component<TabHeaderProps>}
- */
-class TabHeader extends React.Component {
+interface TabHeaderProps {
+    children: React.ReactNode;
+}
+
+class TabHeader extends React.Component<TabHeaderProps> {
     render() {
         return <Grid
             item

@@ -1,7 +1,6 @@
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
 import { withStyles } from '@mui/styles';
-import PropTypes from 'prop-types';
 
 import { Fab, Toolbar } from '@mui/material';
 
@@ -18,6 +17,28 @@ const styles = () => ({
     },
 });
 
+interface SaveCloseButtonsProps {
+    /* Are the buttons without text */
+    noTextOnButtons?: boolean;
+    /* Theme object (from this.state.theme) */
+    theme: any;
+    /* bottom position 0 or 38 for iFrame */
+    isIFrame?: boolean;
+    /* is used in new React */
+    newReact?: boolean;
+    /* on Save handler */
+    onSave: (close: boolean) => void;
+    /* on Close handler */
+    onClose: () => void;
+    dense?: boolean;
+    paddingLeft?: number;
+    changed: boolean;
+    error?: boolean;
+    classes: {
+        buttonIcon: string;
+    };
+}
+
 /**
  * @typedef {object} SaveCloseButtonsProps
  * @property {boolean} noTextOnButtons Are the buttons without text
@@ -29,11 +50,12 @@ const styles = () => ({
  *
  * @extends {React.Component<SaveCloseButtonsProps>}
  */
-class SaveCloseButtons extends React.Component {
+class SaveCloseButtons extends React.Component<SaveCloseButtonsProps> {
+    private isIFrame: boolean;
     /**
      * @param {SaveCloseButtonsProps} props
      */
-    constructor(props) {
+    constructor(props: SaveCloseButtonsProps) {
         super(props);
         const newReact = props.newReact === undefined ? true : props.newReact;
 
@@ -46,12 +68,12 @@ class SaveCloseButtons extends React.Component {
 
     render() {
         const noTextOnButtons = this.props.noTextOnButtons;
-        const buttonStyle = {
+        const buttonStyle: React.CSSProperties = {
             borderRadius: this.props.theme.saveToolbar.button.borderRadius || 3,
             height:       this.props.theme.saveToolbar.button.height       || 32,
         };
 
-        const style = {
+        const style: React.CSSProperties = {
             bottom: this.isIFrame ? 38 : 0,
             left: this.props.paddingLeft || 0,
             right: 0,
@@ -66,7 +88,10 @@ class SaveCloseButtons extends React.Component {
             buttonStyle.border = '1px solid red';
         }
 
-        return <Toolbar position="absolute" style={style}>
+        return <Toolbar
+            // position="absolute"
+            style={style}
+        >
             <Fab
                 variant="extended"
                 aria-label="Save"
@@ -96,18 +121,6 @@ class SaveCloseButtons extends React.Component {
         </Toolbar>;
     }
 }
-
-SaveCloseButtons.propTypes = {
-    dense: PropTypes.bool,
-    paddingLeft: PropTypes.number,
-    noTextOnButtons: PropTypes.bool,
-    theme: PropTypes.object,
-    changed: PropTypes.bool.isRequired,
-    error: PropTypes.bool,
-    onSave: PropTypes.func.isRequired,
-    onClose: PropTypes.func.isRequired,
-    newReact: PropTypes.bool,
-};
 
 /** @type {typeof SaveCloseButtons} */
 const _export = withStyles(styles)(SaveCloseButtons);

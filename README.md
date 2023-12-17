@@ -357,7 +357,7 @@ render() {
 
 ```
 
-#### Logo.js
+#### Logo.tsx
 ![Logo](img/logo.png)
 
 ```

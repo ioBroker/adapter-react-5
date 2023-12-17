@@ -16,36 +16,28 @@ const styles = {
     },
 };
 
-/**
- * @typedef {object} TabContentProps
- * @property {string} [overflow]
- * @property {{ [key in keyof styles]: string}} classes The styling class names.
- *
- * @extends {React.Component<TabContentProps>}
- */
-class TabContent extends React.Component {
+interface TabContentProps {
+    /* Set to 'auto' to show the overflow. */
+    overflow?: string;
+    classes: {
+        root: string;
+        overflowAuto: string;
+    };
+    children: React.ReactNode;
+}
+
+class TabContent extends React.Component<TabContentProps> {
     render() {
         const { classes } = this.props;
 
         return <Grid
             item
-            className={Utils.clsx(classes.root, { [classes.overflowAuto]: this.props.overflow === 'auto' })}
+            className={Utils.clsx(classes.root, this.props.overflow === 'auto' ? classes.overflowAuto : '')}
         >
             {this.props.children}
         </Grid>;
     }
 }
-
-TabContent.propTypes = {
-    /**
-     * The content of the component.
-     */
-    children: PropTypes.node,
-    /**
-     * Overflow behavior
-     */
-    overflow: PropTypes.string,
-};
 
 /** @type {typeof TabContent} */
 const _export = withStyles(styles)(TabContent);

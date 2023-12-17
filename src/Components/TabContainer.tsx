@@ -1,7 +1,5 @@
-// please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
-import React from 'react';
+import React, { Component } from 'react';
 import { withStyles } from '@mui/styles';
-import PropTypes from 'prop-types';
 
 import { Grid, Paper } from '@mui/material';
 
@@ -20,15 +18,23 @@ const styles = {
     },
 };
 
-/**
- * @typedef {object} TabContainerProps
- * @property {number} [elevation] The elevation of the tab container.
- * @property {string} [overflow] Set to 'visible' show the overflow.
- * @property {{ [key in keyof styles]: string}} classes The styling class names.
- *
- * @extends {React.Component<TabContainerProps>}
- */
-class TabContainer extends React.Component {
+interface TabContainerProps {
+    /* The elevation of the tab container. */
+    elevation?: number;
+    /* Set to 'visible' show the overflow. */
+    overflow?: string;
+    className?: string;
+    onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+    tabIndex?: number;
+    classes: {
+        root: string;
+        overflowHidden: string;
+        container: string;
+    };
+    children: React.ReactNode;
+}
+
+class TabContainer extends Component<TabContainerProps> {
     render() {
         const { classes } = this.props;
 
@@ -49,14 +55,6 @@ class TabContainer extends React.Component {
         </Paper>;
     }
 }
-
-TabContainer.propTypes = {
-    elevation: PropTypes.number,
-    overflow: PropTypes.string,
-    className: PropTypes.string,
-    onKeyDown: PropTypes.func,
-    tabIndex: PropTypes.number,
-};
 
 /** @type {typeof TabContainer} */
 const _export = withStyles(styles)(TabContainer);
