@@ -1,7 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { withStyles } from '@mui/styles';
-import MaskedInput from 'react-text-mask';
+// import MaskedInput from 'react-text-mask';
+
+import type { Theme } from '@mui/system/createTheme/createTheme';
 
 import {
     Input,
@@ -16,7 +17,7 @@ import {
 
 import I18n from '../i18n';
 
-const styles = theme => ({
+const styles = (theme: Theme) => ({
     hr: {
         border: 0,
         borderTop: '1px solid gray',
@@ -155,46 +156,68 @@ const ASTRO = [
     'nadir',
 ];
 
-function padding(num) {
+function padding(num: number): string {
     if (num < 10) {
         return `0${num}`;
     }
     return `${num}`;
 }
 
-function TextTime(props) {
-    const { inputRef, ...other } = props;
-
-    return <MaskedInput
-        {...other}
-        ref={inputRef}
-        mask={[/[0-2]/, /[0-9]/, ':', /[0-5]/, /[0-9]/]}
-        placeholderChar={props.placeholder || '00:00'}
-        showMask
-    />;
+interface ScheduleConfig {
+    time: {
+        exactTime: boolean;
+        start: string;
+        end: string;
+        mode: string;
+        interval: number;
+    };
+    period: {
+        once: string;
+        days: number;
+        dows: string;
+        dates: string;
+        weeks: number;
+        months: string | number;
+        years: number;
+        yearMonth: number;
+        yearDate: number;
+    };
+    valid: {
+        from: string;
+        to?: string;
+    };
 }
 
-TextTime.propTypes = {
-    inputRef: PropTypes.func.isRequired,
-};
+// interface TextTimeProps {
+//     inputRef: React.RefObject<HTMLInputElement>;
+//     placeholder?: string;
+// }
 
-function TextDate(props) {
-    const { inputRef, ...other } = props;
+// function TextTime(props: TextTimeProps) {
+//     const { inputRef, ...other } = props;
+//
+//     return <MaskedInput
+//         {...other}
+//         ref={inputRef}
+//         mask={[/[0-2]/, /[0-9]/, ':', /[0-5]/, /[0-9]/]}
+//         placeholderChar={props.placeholder || '00:00'}
+//         showMask
+//     />;
+// }
 
-    return <MaskedInput
-        {...other}
-        ref={inputRef}
-        mask={[/[0-3]/, /[0-9]/, '.', /[0-1]/, /[0-9]/, '.', '2', '0', /[0-9]/, /[0-9]/]}
-        placeholderChar={props.placeholder || '01.01.2020'}
-        showMask
-    />;
-}
+// function TextDate(props: TextTimeProps) {
+//     const { inputRef, ...other } = props;
+//
+//     return <MaskedInput
+//         {...other}
+//         ref={inputRef}
+//         mask={[/[0-3]/, /[0-9]/, '.', /[0-1]/, /[0-9]/, '.', '2', '0', /[0-9]/, /[0-9]/]}
+//         placeholderChar={props.placeholder || '01.01.2020'}
+//         showMask
+//     />;
+// }
 
-TextDate.propTypes = {
-    inputRef: PropTypes.func.isRequired,
-};
-
-const DEFAULT = {
+const DEFAULT: ScheduleConfig = {
     time: {
         exactTime: false,
 
@@ -222,7 +245,7 @@ const DEFAULT = {
     },
 };
 
-function string2USdate(date) {
+function string2USdate(date: string): string {
     const parts = date.split('.');
     if (parts.length === 3) {
         return `${parts[2]}-${parts[1]}-${parts[0]}`;
@@ -230,22 +253,42 @@ function string2USdate(date) {
     return '';
 }
 
-class Schedule extends React.Component {
-    constructor(props) {
+interface ScheduleProps {
+    classes: Record<string, string>;
+    schedule: string | ScheduleConfig;
+    onChange: (schedule: string, desc?: string) => void;
+}
+
+interface ScheduleState {
+    schedule: ScheduleConfig;
+    desc: string;
+}
+
+class Schedule extends Component<ScheduleProps, ScheduleState> {
+    private readonly refFrom: React.RefObject<HTMLInputElement>;
+    private readonly refTo: React.RefObject<HTMLInputElement>;
+    private readonly refOnce: React.RefObject<HTMLInputElement>;
+    private timerOnce: ReturnType<typeof setTimeout> | null = null;
+    private timerFrom: ReturnType<typeof setTimeout> | null = null;
+    private timerTo: ReturnType<typeof setTimeout> | null = null;
+
+    constructor(props: ScheduleProps) {
         super(props);
-        let schedule;
+        let schedule: ScheduleConfig | undefined = undefined;
         if (this.props.schedule && typeof this.props.schedule === 'string' && this.props.schedule[0] === '{') {
             try {
                 schedule = JSON.parse(this.props.schedule);
             } catch (e) {
                 // ignore
             }
+        } else if (typeof this.props.schedule === 'object') {
+            schedule = this.props.schedule;
         }
 
-        if ((!schedule || !Object.keys(schedule).length) && this.props.onChange) {
+        if ((!schedule || !Object.keys(schedule).length)) {
             setTimeout(() => this.onChange(this.state.schedule, true), 200);
+            schedule = DEFAULT;
         }
-        schedule = schedule || {};
         schedule = { ...DEFAULT, ...schedule };
         schedule.valid.from = schedule.valid.from || Schedule.now2string();
 
@@ -264,7 +307,7 @@ class Schedule extends React.Component {
         }
     }
 
-    onChange(schedule, force) {
+    onChange(schedule: ScheduleConfig, force?: boolean) {
         const isDiff = JSON.stringify(schedule) !== JSON.stringify(this.state.schedule);
         if (force || isDiff) {
             isDiff && this.setState({ schedule, desc: Schedule.state2text(schedule) });
@@ -276,19 +319,19 @@ class Schedule extends React.Component {
                 delete copy.valid;
             } else if (copy.period.days) {
                 const days = copy.period.days;
-                const dows = copy.period.dows;
+                const daysOfWeek = copy.period.dows;
                 delete copy.period;
                 copy.period = { days };
-                if (dows && dows !== '[]') {
-                    copy.period.dows = dows;
+                if (daysOfWeek && daysOfWeek !== '[]') {
+                    copy.period.dows = daysOfWeek;
                 }
             } else if (copy.period.weeks) {
                 const weeks = copy.period.weeks;
-                const dows = copy.period.dows;
+                const daysOfWeek = copy.period.dows;
                 delete copy.period;
                 copy.period = { weeks };
-                if (dows && dows !== '[]') {
-                    copy.period.dows = dows;
+                if (daysOfWeek && daysOfWeek !== '[]') {
+                    copy.period.dows = daysOfWeek;
                 }
             } else if (copy.period.months) {
                 const months = copy.period.months;
@@ -340,12 +383,12 @@ class Schedule extends React.Component {
         }
     }
 
-    static state2text(schedule) {
+    static state2text(schedule: string | ScheduleConfig): string {
         if (typeof schedule === 'string') {
             try {
-                schedule = JSON.parse(schedule);
+                schedule = JSON.parse(schedule) as ScheduleConfig;
             } catch (e) {
-                schedule = {};
+                return '';
             }
         }
 
@@ -370,15 +413,15 @@ class Schedule extends React.Component {
         } else if (schedule.period.days) {
             if (schedule.period.days === 1) {
                 if (schedule.period.dows) {
-                    const dows = JSON.parse(schedule.period.dows);
-                    if (dows.length === 2 && dows[0] === 0 && dows[1] === 6) {
+                    const daysOfWeek = JSON.parse(schedule.period.dows);
+                    if (daysOfWeek.length === 2 && daysOfWeek[0] === 0 && daysOfWeek[1] === 6) {
                         // on weekends
                         desc.push(I18n.t('sch_desc_onWeekends'));
-                    } else if (dows.length === 5 && dows[0] === 1 && dows[1] === 2 && dows[2] === 3 && dows[3] === 4 && dows[4] === 5) {
+                    } else if (daysOfWeek.length === 5 && daysOfWeek[0] === 1 && daysOfWeek[1] === 2 && daysOfWeek[2] === 3 && daysOfWeek[3] === 4 && daysOfWeek[4] === 5) {
                         // on workdays
                         desc.push(I18n.t('sch_desc_onWorkdays'));
                     } else {
-                        const tDows = dows.map(day => I18n.t(WEEKDAYS[day]));
+                        const tDows = daysOfWeek.map((day: number) => I18n.t(WEEKDAYS[day]));
                         if (tDows.length === 1) {
                             // on Monday
                             desc.push(I18n.t('sch_desc_onWeekday', tDows[0]));
@@ -395,25 +438,25 @@ class Schedule extends React.Component {
                     desc.push(I18n.t('sch_desc_everyDay'));
                 }
             } else {
-                desc.push(I18n.t('sch_desc_everyNDay', schedule.period.days));
+                desc.push(I18n.t('sch_desc_everyNDay', schedule.period.days.toString()));
             }
         } else if (schedule.period.weeks) {
             if (schedule.period.weeks === 1) {
                 desc.push(I18n.t('sch_desc_everyWeek'));
             } else {
-                desc.push(I18n.t('sch_desc_everyNWeeks', schedule.period.weeks));
+                desc.push(I18n.t('sch_desc_everyNWeeks', schedule.period.weeks.toString()));
             }
 
             if (schedule.period.dows) {
-                const dows = JSON.parse(schedule.period.dows);
-                if (dows.length === 2 && dows[0] === 0 && dows[1] === 6) {
+                const daysOfWeek = JSON.parse(schedule.period.dows);
+                if (daysOfWeek.length === 2 && daysOfWeek[0] === 0 && daysOfWeek[1] === 6) {
                     // on weekends
                     desc.push(I18n.t('sch_desc_onWeekends'));
-                } else if (dows.length === 5 && dows[0] === 1 && dows[1] === 2 && dows[2] === 3 && dows[3] === 4 && dows[4] === 5) {
+                } else if (daysOfWeek.length === 5 && daysOfWeek[0] === 1 && daysOfWeek[1] === 2 && daysOfWeek[2] === 3 && daysOfWeek[3] === 4 && daysOfWeek[4] === 5) {
                     // on workdays
                     desc.push(I18n.t('sch_desc_onWorkdays'));
                 } else {
-                    const tDows = dows.map(day => I18n.t(WEEKDAYS[day]));
+                    const tDows = daysOfWeek.map((day: number) => I18n.t(WEEKDAYS[day]));
                     if (tDows.length === 1) {
                         // on Monday
                         desc.push(I18n.t('sch_desc_onWeekday', tDows[0]));
@@ -451,10 +494,10 @@ class Schedule extends React.Component {
             if (schedule.period.months === 1) {
                 desc.push(I18n.t('sch_desc_everyMonth'));
             } else if (typeof schedule.period.months === 'number') {
-                desc.push(I18n.t('sch_desc_everyNMonths', schedule.period.months));
+                desc.push(I18n.t('sch_desc_everyNMonths', schedule.period.months.toString()));
             } else {
                 const months = JSON.parse(schedule.period.months);
-                const tMonths = months.map(month => I18n.t(MONTHS[month - 1]));
+                const tMonths = months.map((month: number) => I18n.t(MONTHS[month - 1]));
                 if (!tMonths.length) {
                     // in January
                     return I18n.t('sch_desc_never');
@@ -475,9 +518,13 @@ class Schedule extends React.Component {
             if (schedule.period.years === 1) {
                 desc.push(I18n.t('sch_desc_everyYear'));
             } else {
-                desc.push(I18n.t('sch_desc_everyNYears', schedule.period.years));
+                desc.push(I18n.t('sch_desc_everyNYears', schedule.period.years.toString()));
             }
-            desc.push(I18n.t('sch_desc_onDate', schedule.period.yearDate, schedule.period.yearMonth ? I18n.t(MONTHS[schedule.period.yearMonth - 1]) : I18n.t('sch_desc_everyMonth')));
+            desc.push(I18n.t(
+                'sch_desc_onDate',
+                schedule.period.yearDate.toString(),
+                schedule.period.yearMonth ? I18n.t(MONTHS[schedule.period.yearMonth - 1]) : I18n.t('sch_desc_everyMonth')
+            ));
         }
 
         // time
@@ -496,14 +543,14 @@ class Schedule extends React.Component {
                     desc.push(I18n.t('sch_desc_everyMinute'));
                 } else {
                     // every N minutes
-                    desc.push(I18n.t('sch_desc_everyNMinutes', schedule.time.interval));
+                    desc.push(I18n.t('sch_desc_everyNMinutes', schedule.time.interval.toString()));
                 }
             } else if (schedule.time.interval === 1) {
                 // every minute
                 desc.push(I18n.t('sch_desc_everyHour'));
             } else {
                 // every N minutes
-                desc.push(I18n.t('sch_desc_everyNHours', schedule.time.interval));
+                desc.push(I18n.t('sch_desc_everyNHours', schedule.time.interval.toString()));
             }
 
             const start = ASTRO.indexOf(schedule.time.start) !== -1 ? I18n.t(`sch_astro_${schedule.time.start}`) : schedule.time.start;
@@ -768,11 +815,16 @@ class Schedule extends React.Component {
                         // InputProps={{inputComponent: TextTime}}
                         onChange={e => {
                             this.timerOnce && clearTimeout(this.timerOnce);
+                            this.timerOnce = null;
 
-                            this.refOnce.current.style.background = '#ff000030';
+                            if (this.refOnce.current) {
+                                this.refOnce.current.style.background = '#ff000030';
+                            }
                             this.timerOnce = setTimeout(value => {
                                 this.timerOnce = null;
-                                this.refOnce.current.style.background = '';
+                                if (this.refOnce.current) {
+                                    this.refOnce.current.style.background = '';
+                                }
                                 const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                                 const date = Schedule.string2date(value);
                                 if (date.toString() !== 'Invalid Date') {
@@ -961,8 +1013,7 @@ class Schedule extends React.Component {
                             value={this.state.schedule.period.yearDate}
                             className={this.props.classes.inputEvery}
                             type="number"
-                            min={1}
-                            max={31}
+                            inputProps={{ min: 1, max: 31 }}
                             onChange={e => {
                                 const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                                 _schedule.period.yearDate = parseInt(e.target.value, 10);
@@ -997,7 +1048,7 @@ class Schedule extends React.Component {
                 style={{ verticalAlign: 'bottom' }}
                 className={this.props.classes.inputEvery}
                 type="number"
-                min={1}
+                inputProps={{ min: 1 }}
                 onChange={e => {
                     const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                     _schedule.time.interval = parseInt(e.target.value, 10);
@@ -1071,7 +1122,7 @@ class Schedule extends React.Component {
                         checked={!!isSpecific}
                         onClick={() => {
                             const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                            _schedule.period.dows = '[0,1,2,3,4,5,6]';
+                            _schedule.period.dows = '[0, 1, 2, 3, 4, 5, 6]';
                             if (_schedule.period.days) {
                                 _schedule.period.days = 1;
                             }
@@ -1086,32 +1137,30 @@ class Schedule extends React.Component {
                         <FormControlLabel
                             key={`specific_${i}`}
                             className={this.props.classes.inputGroupElement}
-                            control={
-                                <Checkbox
-                                    className={this.props.classes.inputSmallCheck}
-                                    checked={schedule.period.dows.includes(i.toString())}
-                                    onChange={e => {
-                                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                                        let dows;
-                                        try {
-                                            dows = JSON.parse(_schedule.period.dows);
-                                        } catch (err) {
-                                            dows = [];
-                                        }
-                                        if (e.target.checked && !dows.includes(i)) {
-                                            dows.push(i);
-                                        } else if (!e.target.checked && dows.includes(i)) {
-                                            dows.splice(dows.indexOf(i), 1);
-                                        }
-                                        dows.sort((a, b) => a - b);
-                                        _schedule.period.dows = JSON.stringify(dows);
-                                        if (_schedule.period.days) {
-                                            _schedule.period.days = 1;
-                                        }
-                                        this.onChange(_schedule);
-                                    }}
-                                />
-                            }
+                            control={<Checkbox
+                                className={this.props.classes.inputSmallCheck}
+                                checked={schedule.period.dows.includes(i.toString())}
+                                onChange={e => {
+                                    const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                                    let daysOfWeek: number[];
+                                    try {
+                                        daysOfWeek = JSON.parse(_schedule.period.dows);
+                                    } catch (err) {
+                                        daysOfWeek = [];
+                                    }
+                                    if (e.target.checked && !daysOfWeek.includes(i)) {
+                                        daysOfWeek.push(i);
+                                    } else if (!e.target.checked && daysOfWeek.includes(i)) {
+                                        daysOfWeek.splice(daysOfWeek.indexOf(i), 1);
+                                    }
+                                    daysOfWeek.sort((a: number, b: number) => a - b);
+                                    _schedule.period.dows = JSON.stringify(daysOfWeek);
+                                    if (_schedule.period.days) {
+                                        _schedule.period.days = 1;
+                                    }
+                                    this.onChange(_schedule);
+                                }}
+                            />}
                             label={I18n.t(WEEKDAYS[i])}
                         />)}
                 </FormGroup>}
@@ -1160,7 +1209,7 @@ class Schedule extends React.Component {
                         value={this.state.schedule.period.days}
                         className={this.props.classes.inputEvery}
                         type="number"
-                        min={2}
+                        inputProps={{ min: 2 }}
                         onChange={e => {
                             const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                             _schedule.period.days = parseInt(e.target.value, 10);
@@ -1214,7 +1263,7 @@ class Schedule extends React.Component {
                             value={this.state.schedule.period.weeks}
                             className={this.props.classes.inputEvery}
                             type="number"
-                            min={2}
+                            inputProps={{ min: 2 }}
                             onChange={e => {
                                 const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                                 _schedule.period.weeks = parseInt(e.target.value, 10);
@@ -1248,60 +1297,54 @@ class Schedule extends React.Component {
         >
             <FormControlLabel
                 className={this.props.classes.inputDateDay}
-                control={
-                    <Checkbox
-                        className={this.props.classes.inputDateDayCheck}
-                        checked={parsedDates.length === 31}
-                        onChange={() => {
-                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                            const _dates = [];
-                            for (let i = 1; i <= 31; i++) {
-                                _dates.push(i);
-                            }
-                            _schedule.period.dates = JSON.stringify(_dates);
-                            this.onChange(_schedule);
-                        }}
-                    />
-                }
+                control={<Checkbox
+                    className={this.props.classes.inputDateDayCheck}
+                    checked={parsedDates.length === 31}
+                    onChange={() => {
+                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                        const _dates = [];
+                        for (let i = 1; i <= 31; i++) {
+                            _dates.push(i);
+                        }
+                        _schedule.period.dates = JSON.stringify(_dates);
+                        this.onChange(_schedule);
+                    }}
+                />}
                 label={I18n.t('sch_all')}
             />
             <FormControlLabel
                 className={this.props.classes.inputDateDay}
-                control={
-                    <Checkbox
-                        className={this.props.classes.inputDateDayCheck}
-                        checked={!parsedDates.length}
-                        onChange={() => {
-                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                            _schedule.period.dates = '[]';
-                            this.onChange(_schedule);
-                        }}
-                    />
-                }
+                control={<Checkbox
+                    className={this.props.classes.inputDateDayCheck}
+                    checked={!parsedDates.length}
+                    onChange={() => {
+                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                        _schedule.period.dates = '[]';
+                        this.onChange(_schedule);
+                    }}
+                />}
                 label={I18n.t('sch_no_one')}
             />
             {parsedDates.length !== 31 && !!parsedDates.length &&
             <FormControlLabel
                 className={this.props.classes.inputDateDay}
-                control={
-                    <Checkbox
-                        className={this.props.classes.inputDateDayCheck}
-                        checked={false}
-                        onChange={() => {
-                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                            const result = [];
-                            const _parsedDates = JSON.parse(_schedule.period.dates);
-                            for (let i = 1; i <= 31; i++) {
-                                if (!_parsedDates.includes(i)) {
-                                    result.push(i);
-                                }
+                control={<Checkbox
+                    className={this.props.classes.inputDateDayCheck}
+                    checked={false}
+                    onChange={() => {
+                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                        const result = [];
+                        const _parsedDates = JSON.parse(_schedule.period.dates);
+                        for (let i = 1; i <= 31; i++) {
+                            if (!_parsedDates.includes(i)) {
+                                result.push(i);
                             }
-                            result.sort((a, b) => a - b);
-                            _schedule.period.dates = JSON.stringify(result);
-                            this.onChange(_schedule);
-                        }}
-                    />
-                }
+                        }
+                        result.sort((a, b) => a - b);
+                        _schedule.period.dates = JSON.stringify(result);
+                        this.onChange(_schedule);
+                    }}
+                />}
                 label={I18n.t('sch_invert')}
             />}
             <div />
@@ -1315,29 +1358,27 @@ class Schedule extends React.Component {
                         userSelect: 'none',
                         pointerEvents: 'none',
                     } : {}}
-                    control={
-                        <Checkbox
-                            className={this.props.classes.inputDateDayCheck}
-                            checked={JSON.parse(schedule.period.dates).includes(i)}
-                            onChange={e => {
-                                const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                                let _dates;
-                                try {
-                                    _dates = JSON.parse(_schedule.period.dates);
-                                } catch (err) {
-                                    _dates = [];
-                                }
-                                if (e.target.checked && !_dates.includes(i)) {
-                                    _dates.push(i);
-                                } else if (!e.target.checked && _dates.includes(i)) {
-                                    _dates.splice(_dates.indexOf(i), 1);
-                                }
-                                _dates.sort((a, b) => a - b);
-                                _schedule.period.dates = JSON.stringify(_dates);
-                                this.onChange(_schedule);
-                            }}
-                        />
-                    }
+                    control={<Checkbox
+                        className={this.props.classes.inputDateDayCheck}
+                        checked={JSON.parse(schedule.period.dates).includes(i)}
+                        onChange={e => {
+                            const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                            let _dates;
+                            try {
+                                _dates = JSON.parse(_schedule.period.dates);
+                            } catch (err) {
+                                _dates = [];
+                            }
+                            if (e.target.checked && !_dates.includes(i)) {
+                                _dates.push(i);
+                            } else if (!e.target.checked && _dates.includes(i)) {
+                                _dates.splice(_dates.indexOf(i), 1);
+                            }
+                            _dates.sort((a: number, b: number) => a - b);
+                            _schedule.period.dates = JSON.stringify(_dates);
+                            this.onChange(_schedule);
+                        }}
+                    />}
                     label={i < 10 ? [
                         <span key="0" style={{ opacity: 0 }}>0</span>,
                         <span key="num">{i}</span>,
@@ -1387,7 +1428,7 @@ class Schedule extends React.Component {
                         value={schedule.period.months}
                         className={this.props.classes.inputEvery}
                         type="number"
-                        min={2}
+                        inputProps={{ min: 2 }}
                         onChange={e => {
                             const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                             _schedule.period.months = parseInt(e.target.value, 10);
@@ -1419,89 +1460,81 @@ class Schedule extends React.Component {
                 >
                     <FormControlLabel
                         className={this.props.classes.inputDateDay}
-                        control={
-                            <Checkbox
-                                className={this.props.classes.inputDateDayCheck}
-                                checked={parsedMonths.length === 12}
-                                onChange={() => {
-                                    const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                                    const months = [];
-                                    for (let i = 1; i <= 12; i++) {
-                                        months.push(i);
-                                    }
-                                    _schedule.period.months = JSON.stringify(months);
-                                    this.onChange(_schedule);
-                                }}
-                            />
-                        }
+                        control={<Checkbox
+                            className={this.props.classes.inputDateDayCheck}
+                            checked={parsedMonths.length === 12}
+                            onChange={() => {
+                                const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                                const months = [];
+                                for (let i = 1; i <= 12; i++) {
+                                    months.push(i);
+                                }
+                                _schedule.period.months = JSON.stringify(months);
+                                this.onChange(_schedule);
+                            }}
+                        />}
                         label={I18n.t('sch_all')}
                     />
                     <FormControlLabel
                         className={this.props.classes.inputDateDay}
-                        control={
-                            <Checkbox
-                                className={this.props.classes.inputDateDayCheck}
-                                checked={!parsedMonths.length}
-                                onChange={() => {
-                                    const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                                    _schedule.period.months = '[]';
-                                    this.onChange(_schedule);
-                                }}
-                            />
-                        }
+                        control={<Checkbox
+                            className={this.props.classes.inputDateDayCheck}
+                            checked={!parsedMonths.length}
+                            onChange={() => {
+                                const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                                _schedule.period.months = '[]';
+                                this.onChange(_schedule);
+                            }}
+                        />}
                         label={I18n.t('sch_no_one')}
                     />
                     {parsedMonths.length !== 12 && !!parsedMonths.length &&
                         <FormControlLabel
                             className={this.props.classes.inputDateDay}
-                            control={
-                                <Checkbox
-                                    className={this.props.classes.inputDateDayCheck}
-                                    checked={false}
-                                    onChange={() => {
-                                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                                        const result = [];
-                                        const _parsedMonths = JSON.parse(_schedule.period.months);
-                                        for (let i = 1; i <= 12; i++) {
-                                            if (!_parsedMonths.includes(i)) {
-                                                result.push(i);
-                                            }
+                            control={<Checkbox
+                                className={this.props.classes.inputDateDayCheck}
+                                checked={false}
+                                onChange={() => {
+                                    const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                                    const result = [];
+                                    const _parsedMonths = JSON.parse(_schedule.period.months);
+                                    for (let i = 1; i <= 12; i++) {
+                                        if (!_parsedMonths.includes(i)) {
+                                            result.push(i);
                                         }
-                                        result.sort((a, b) => a - b);
-                                        _schedule.period.months = JSON.stringify(result);
-                                        this.onChange(_schedule);
-                                    }}
-                                />
-                            }
+                                    }
+                                    result.sort((a, b) => a - b);
+                                    _schedule.period.months = JSON.stringify(result);
+                                    this.onChange(_schedule);
+                                }}
+                            />}
                             label={I18n.t('sch_invert')}
                         />}
                     <div />
                     {MONTHS.map((month, i) =>
                         <FormControlLabel
                             className={this.props.classes.inputGroupElement}
-                            control={
-                                <Checkbox
-                                    className={this.props.classes.inputSmallCheck}
-                                    checked={JSON.parse(schedule.period.months).includes(i + 1)}
-                                    onChange={e => {
-                                        const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
-                                        let months;
-                                        try {
-                                            months = JSON.parse(_schedule.period.months);
-                                        } catch (err) {
-                                            months = [];
-                                        }
-                                        if (e.target.checked && !months.includes(i + 1)) {
-                                            months.push(i + 1);
-                                        } else if (!e.target.checked && months.includes(i + 1)) {
-                                            months.splice(months.indexOf(i + 1), 1);
-                                        }
-                                        months.sort((a, b) => a - b);
-                                        _schedule.period.months = JSON.stringify(months);
-                                        this.onChange(_schedule);
-                                    }}
-                                />
-                            }
+                            control={<Checkbox
+                                className={this.props.classes.inputSmallCheck}
+                                checked={typeof schedule.period.months === 'string' ? JSON.parse(schedule.period.months).includes(i + 1) : schedule.period.months === i}
+                                onChange={e => {
+                                    const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
+                                    let months;
+                                    try {
+                                        months = JSON.parse(_schedule.period.months);
+                                    } catch (err) {
+                                        months = [];
+                                    }
+                                    if (e.target.checked && !months.includes(i + 1)) {
+                                        months.push(i + 1);
+                                    } else if (!e.target.checked && months.includes(i + 1)) {
+                                        months.splice(months.indexOf(i + 1), 1);
+                                    }
+                                    months.sort((a: number, b: number) => a - b);
+                                    _schedule.period.months = JSON.stringify(months);
+                                    this.onChange(_schedule);
+                                }}
+                            />}
                             label={I18n.t(month)}
                         />)}
                 </FormGroup>}
@@ -1548,7 +1581,7 @@ class Schedule extends React.Component {
                         value={this.state.schedule.period.years}
                         className={this.props.classes.inputEvery}
                         type="number"
-                        min={2}
+                        inputProps={{ min: 2 }}
                         onChange={e => {
                             const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                             _schedule.period.years = parseInt(e.target.value, 10);
@@ -1562,7 +1595,7 @@ class Schedule extends React.Component {
         ];
     }
 
-    static now2string(isEnd) {
+    static now2string(isEnd?: boolean): string {
         const d = new Date();
         d.setHours(0);
         d.setMinutes(0);
@@ -1576,7 +1609,7 @@ class Schedule extends React.Component {
         return `${padding(d.getDate())}.${padding(d.getMonth() + 1)}.${padding(d.getFullYear())}`;
     }
 
-    static string2date(str) {
+    static string2date(str: string): Date {
         let parts = str.split('.'); // 31.12.2019
         if (parts.length === 1) {
             parts = str.split('-'); // 2018-12-31
@@ -1606,11 +1639,15 @@ class Schedule extends React.Component {
                     onChange={e => {
                         this.timerFrom && clearTimeout(this.timerFrom);
 
-                        this.refFrom.current.style.background = '#ff000030';
+                        if (this.refFrom.current) {
+                            this.refFrom.current.style.background = '#ff000030';
+                        }
 
                         this.timerFrom = setTimeout(value => {
                             this.timerFrom = null;
-                            this.refFrom.current.style.background = '';
+                            if (this.refFrom.current) {
+                                this.refFrom.current.style.background = '';
+                            }
                             const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                             const date = Schedule.string2date(value);
                             if (date.toString() !== 'Invalid Date') {
@@ -1646,10 +1683,14 @@ class Schedule extends React.Component {
                     onChange={e => {
                         this.timerTo && clearTimeout(this.timerTo);
 
-                        this.refTo.current.style.background = '#ff000030';
+                        if (this.refTo.current) {
+                            this.refTo.current.style.background = '#ff000030';
+                        }
                         this.timerTo = setTimeout(value => {
                             this.timerTo = null;
-                            this.refTo.current.style.background = '';
+                            if (this.refTo.current) {
+                                this.refTo.current.style.background = '';
+                            }
                             const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                             const date = Schedule.string2date(value);
                             if (date.toString() !== 'Invalid Date') {
@@ -1681,10 +1722,5 @@ class Schedule extends React.Component {
         </div>;
     }
 }
-
-Schedule.propTypes = {
-    schedule: PropTypes.string,
-    onChange: PropTypes.func.isRequired,
-};
 
 export default withStyles(styles)(Schedule);
