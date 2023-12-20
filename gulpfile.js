@@ -120,14 +120,11 @@ gulp.task('compile', gulp.parallel('copy',
             .pipe(sourcemaps.write('.'))
             .pipe(gulp.dest('dist/icons')),
 
-        gulp.src(['src/*.js', 'src/*.jsx', '!src/gulpfile.js', '!src/index.js'])
+        gulp.src(['src/*.js', 'src/*.jsx', '!src/gulpfile.js'])
             .pipe(sourcemaps.init())
             .pipe(babel(babelOptions))
             .on('error', handleError)
             .pipe(sourcemaps.write('.'))
-            .pipe(gulp.dest('dist')),
-
-        gulp.src(['src/index.js'])
             .pipe(gulp.dest('dist')),
 
         gulp.src(['src/Components/*.js', 'src/Components/**/*.js', 'src/Components/*.jsч', 'src/Components/**/*.jsx'])
