@@ -103,8 +103,8 @@ export * from './Components/Loaders/Vendor';
 export { default as LoaderPT } from './Components/Loaders/PT';
 export * from './Components/Loaders/PT';
 
-export { default as JsonConfigComponent } from './Components/JsonConfigComponent';
-export * from './Components/JsonConfigComponent';
+export { JsonConfigComponent } from '@iobroker/json-config';
+export type * from '@iobroker/json-config';
 
 export { default as IconAdapter } from './icons/IconAdapter';
 export * from './icons/IconAdapter';
@@ -181,8 +181,7 @@ export * from './Dialogs/SimpleCron';
 export { default as TextInput } from './Dialogs/TextInput';
 export * from './Dialogs/TextInput';
 
-export { default as ConfigGeneric } from './Components/JsonConfigComponent/ConfigGeneric';
-export * from './Components/JsonConfigComponent/ConfigGeneric';
+export { ConfigGeneric } from '@iobroker/json-config';
 
 export { default as Connection } from './Connection';
 export * from './Connection';

@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (foxriver76) migrate to `@iobroker/json-config` module to have a single point of truth
+
 ### 4.8.1 (2023-12-14)
 * (bluefox) Added Device manager to JSON Config
 
