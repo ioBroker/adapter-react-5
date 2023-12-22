@@ -397,7 +397,8 @@
               "attr": "chTargetState",
               "filter": false,
               "sort": false,
-              "width": "40%"
+              "width": "40%",
+              "types": ["state"]
             },
             {
               "type": "autocompleteSendTo",
