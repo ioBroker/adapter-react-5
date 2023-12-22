@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.9.0 (2023-12-22)
 * (foxriver76) migrate to `@iobroker/json-config` module to have a single point of truth
 * (bluefox) Allowed using of `filterFunc` as string
 
