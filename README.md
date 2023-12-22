@@ -256,7 +256,7 @@ renderMessage() {
 }
 ```
 
-#### SelectID.js
+#### SelectID.tsx
 ![Logo](img/selectID.png)
 ```
 import DialogSelectID from '@iobroker/adapter-react/Dialogs/SelectID';
@@ -672,6 +672,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 ## Changelog
 ### **WORK IN PROGRESS**
 * (foxriver76) migrate to `@iobroker/json-config` module to have a single point of truth
+* (bluefox) Allowed using of `filterFunc` as string
 
 ### 4.8.1 (2023-12-14)
 * (bluefox) Added Device manager to JSON Config
