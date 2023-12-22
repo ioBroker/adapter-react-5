@@ -693,6 +693,98 @@
         "adapter"
       ]
     },
+    "objectIdProps": {
+      "properties": {
+        "types": {
+          "description": "Filter for one of the possible types: 'channel', 'device', ... (is state by default)",
+          "oneOf": [
+            {
+              "default": "state",
+              "type": "string",
+              "enum": [
+                "state",
+                "channel",
+                "device",
+                "enum",
+                "host",
+                "adapter",
+                "instance",
+                "meta",
+                "config",
+                "script",
+                "user",
+                "group",
+                "chart",
+                "folder"
+              ]
+            },
+            {
+              "type": "array",
+              "maxItems": 1,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "state",
+                  "channel",
+                  "device",
+                  "enum",
+                  "host",
+                  "adapter",
+                  "instance",
+                  "meta",
+                  "config",
+                  "script",
+                  "user",
+                  "group",
+                  "chart",
+                  "folder"
+                ]
+              }
+            }
+          ]
+        },
+        "root": {
+          "description": "Show only this root object and its children",
+          "type": "boolean"
+        },
+        "customFilter": {
+          "description": "Cannot be used together with `types` settings. Example: `{type: ['channel', 'device']}` - show only channels and devices",
+          "type": "string"
+        },
+        "placeholder": {
+          "description": "Placeholder (for text control)",
+          "type": "string"
+        },
+        "label": true,
+        "type": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "helpLink": true,
+        "help": true,
+        "style": true,
+        "darkStyle": true,
+        "validator": true,
+        "validatorNoSaveOnError": true,
+        "validatorErrorText": true,
+        "noMultiEdit": true,
+        "tooltip": true,
+        "default": true,
+        "defaultFunc": true,
+        "onChange": true,
+        "noTranslation": true,
+        "confirm": true
+      },
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ]
+    },
     "fileSelectorProps": {
       "properties": {
         "pattern": {
@@ -3986,27 +4078,60 @@
                               "filter": true,
                               "sort": true,
                               "types": {
-                                "description": "Array of possible types: ['channel', 'device', ...] (has only state by default)",
-                                "type": "array",
-                                "items": {
-                                  "type": "string",
-                                  "enum": [
-                                    "state",
-                                    "channel",
-                                    "device",
-                                    "enum",
-                                    "host",
-                                    "adapter",
-                                    "instance",
-                                    "meta",
-                                    "config",
-                                    "script",
-                                    "user",
-                                    "group",
-                                    "chart",
-                                    "folder"
-                                  ]
-                                }
+                                "description": "Filter for one of the possible types: 'channel', 'device', ... (is state by default)",
+                                "oneOf": [
+                                  {
+                                    "default": "state",
+                                    "type": "string",
+                                    "enum": [
+                                      "state",
+                                      "channel",
+                                      "device",
+                                      "enum",
+                                      "host",
+                                      "adapter",
+                                      "instance",
+                                      "meta",
+                                      "config",
+                                      "script",
+                                      "user",
+                                      "group",
+                                      "chart",
+                                      "folder"
+                                    ]
+                                  },
+                                  {
+                                    "type": "array",
+                                    "maxItems": 1,
+                                    "items": {
+                                      "type": "string",
+                                      "enum": [
+                                        "state",
+                                        "channel",
+                                        "device",
+                                        "enum",
+                                        "host",
+                                        "adapter",
+                                        "instance",
+                                        "meta",
+                                        "config",
+                                        "script",
+                                        "user",
+                                        "group",
+                                        "chart",
+                                        "folder"
+                                      ]
+                                    }
+                                  }
+                                ]
+                              },
+                              "root": {
+                                "description": "Show only this root object and its children",
+                                "type": "boolean"
+                              },
+                              "customFilter": {
+                                "description": "Cannot be used together with `types` settings. Example: `{type: ['channel', 'device']}` - show only channels and devices",
+                                "type": "string"
                               },
                               "placeholder": {
                                 "description": "Placeholder (for text control)",
@@ -4958,63 +5083,7 @@
                 }
               },
               "then": {
-                "properties": {
-                  "types": {
-                    "description": "Array of possible types: ['channel', 'device', ...] (has only state by default)",
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "enum": [
-                        "state",
-                        "channel",
-                        "device",
-                        "enum",
-                        "host",
-                        "adapter",
-                        "instance",
-                        "meta",
-                        "config",
-                        "script",
-                        "user",
-                        "group",
-                        "chart",
-                        "folder"
-                      ]
-                    }
-                  },
-                  "placeholder": {
-                    "description": "Placeholder (for text control)",
-                    "type": "string"
-                  },
-                  "label": true,
-                  "type": true,
-                  "sm": true,
-                  "md": true,
-                  "lg": true,
-                  "xs": true,
-                  "newLine": true,
-                  "hidden": true,
-                  "hideOnlyControl": true,
-                  "disabled": true,
-                  "helpLink": true,
-                  "help": true,
-                  "style": true,
-                  "darkStyle": true,
-                  "validator": true,
-                  "validatorNoSaveOnError": true,
-                  "validatorErrorText": true,
-                  "noMultiEdit": true,
-                  "tooltip": true,
-                  "default": true,
-                  "defaultFunc": true,
-                  "onChange": true,
-                  "noTranslation": true,
-                  "confirm": true
-                },
-                "additionalProperties": false,
-                "required": [
-                  "type"
-                ]
+                "$ref": "#/definitions/objectIdProps"
               }
             },
             {
