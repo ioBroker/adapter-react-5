@@ -1,15 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 import IconNoIcon from '../icons/IconNoIcon';
 
-function getElementFromSource(src) {
+function getElementFromSource(src: string): HTMLElement | null {
     const svgContainer = document.createElement('div');
     svgContainer.innerHTML = src;
-    const svg = svgContainer.firstElementChild;
-    if (svg.remove) {
+    const svg: HTMLElement = svgContainer.firstElementChild as HTMLElement;
+    if (svg?.remove) {
         svg.remove();
-    } else {
+    } else if (svg) {
         svgContainer.removeChild(svg);
     }
 
@@ -17,8 +16,11 @@ function getElementFromSource(src) {
     return svg;
 }
 
-function serializeAttrs(map) {
-    const ret = {};
+function serializeAttrs(map: NamedNodeMap | undefined): Record<string, string> {
+    const ret: Record<string, string> = {};
+    if (!map) {
+        return ret;
+    }
     for (let prop, i = 0; i < map.length; i++) {
         const key = map[i].name;
         if (key === 'class') {
@@ -34,38 +36,52 @@ function serializeAttrs(map) {
     return ret;
 }
 
-/**
- * @typedef {object} ImageProps
- * @property {string} [color] The color.
- * @property {string} [src] The source of the image.
- * @property {string} [imagePrefix] The image prefix (default: './files/')
- * @property {string} [className] The CSS class name.
- * @property {boolean} [showError] Show image errors (or just show no image)?
- *
- * @extends {React.Component<ImageProps>}
- */
-class Image extends React.Component {
-    constructor(props) {
+interface ImageProps {
+    /* The color */
+    color?: string;
+    /* The source of the image */
+    src?: string;
+    /* The image prefix (default: './files/') */
+    imagePrefix?: string;
+    /* The CSS class name */
+    className?: string;
+    /* Show image errors (or just show no image)? */
+    showError?: boolean;
+}
+
+interface ImageState {
+    svg?: boolean;
+    created?: boolean;
+    color?: string;
+    src?: string;
+    imgError?: boolean;
+    showError?: boolean;
+}
+
+class Image extends Component<ImageProps, ImageState> {
+    private svg: React.JSX.Element | null;
+
+    constructor(props: ImageProps) {
         super(props);
         this.state = {
-            svg: !!(this.props.src && this.props.src.startsWith('data:')),
+            svg: !!this.props.src?.startsWith('data:'),
             created: true,
             color: this.props.color || '',
             src: this.props.src || '',
             imgError: false,
-            showError: this.props.showError,
+            showError: !!this.props.showError,
         };
 
-        this.svg = this.state.svg ? this.getSvgFromData(this.state.src) : null;
+        this.svg = this.state.svg && this.state.src ? this.getSvgFromData(this.state.src) : null;
     }
 
-    static getDerivedStateFromProps(props, state) {
-        const newState = {};
+    static getDerivedStateFromProps(props: ImageProps, state: ImageState) {
+        const newState: ImageState = {};
         let changed = false;
 
         if (props && state && props.src !== state.src) {
             newState.src = props.src;
-            newState.svg = props.src && props.src.startsWith('data:');
+            newState.svg = props.src?.startsWith('data:');
             newState.created = false;
             changed = true;
         }
@@ -84,7 +100,7 @@ class Image extends React.Component {
         return changed ? newState : null;
     }
 
-    getSvgFromData(src) {
+     getSvgFromData(src: string): React.JSX.Element | null {
         const len = 'data:image/svg+xml;base64,';
         if (!src.startsWith(len)) {
             return null;
@@ -92,7 +108,7 @@ class Image extends React.Component {
         src = src.substring(len.length);
         try {
             src = atob(src);
-            const svg = getElementFromSource(src);
+            const svg = getElementFromSource(src) as HTMLElement;
             const inner = svg.innerHTML;
             const svgProps = serializeAttrs(svg.attributes || []);
 
@@ -114,7 +130,7 @@ class Image extends React.Component {
         if (this.state.svg) {
             if (!this.state.created) {
                 setTimeout(() => {
-                    this.svg = this.getSvgFromData(this.state.src);
+                    this.svg = this.state.src ? this.getSvgFromData(this.state.src) : null
                     this.setState({ created: true });
                 }, 50);
             }
@@ -136,12 +152,5 @@ class Image extends React.Component {
         return null;
     }
 }
-
-Image.propTypes = {
-    color: PropTypes.string,
-    src: PropTypes.string.isRequired,
-    className: PropTypes.string,
-    imagePrefix: PropTypes.string,
-};
 
 export default Image;

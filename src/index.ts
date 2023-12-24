@@ -17,7 +17,7 @@ export * from './Components/ColorPicker';
 export { default as ComplexCron } from './Components/ComplexCron';
 export * from './Components/ComplexCron';
 
-export { default as copy } from './Components/copy-to-clipboard';
+export { default as copy } from './Components/CopyToClipboard';
 
 export { default as CustomModal } from './Components/CustomModal';
 export * from './Components/CustomModal';

@@ -1,7 +1,7 @@
 /**
  * Print the ioBroker welcome screen to the developer console.
  */
-function printPrompt() {
+function printPrompt(): void {
     const prompt = `
 ██╗ ██████╗ ██████╗ ██████╗  ██████╗ ██╗  ██╗███████╗██████╗ 
 ██║██╔═══██╗██╔══██╗██╔══██╗██╔═══██╗██║ ██╔╝██╔════╝██╔══██╗

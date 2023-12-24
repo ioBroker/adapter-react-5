@@ -5,10 +5,10 @@
  *
  **/
 import React from 'react';
-import copy from './copy-to-clipboard';
+import copy from './CopyToClipboard';
 
 class MDUtils {
-    static text2link(text) {
+    static text2link(text: string): string {
         const m = text.match(/\d+\.\)\s/);
         if (m) {
             text = text.replace(m[0], m[0].replace(/\s/, '&nbsp;'));
@@ -17,15 +17,15 @@ class MDUtils {
         return text.replace(/[^a-zA-Zа-яА-Я0-9]/g, '').trim().replace(/\s/g, '').toLowerCase();
     }
 
-    static openLink(url, target) {
+    static openLink(url: string, target?: string) {
         if (target === 'this') {
-            window.location = url;
+            window.location.href = url;
         } else {
             window.open(url, target || '_blank');
         }
     }
 
-    static getTitle(text) {
+    static getTitle(text: string) {
         const result = MDUtils.extractHeader(text);
         let body = result.body;
         const header = result.header;
@@ -45,8 +45,8 @@ class MDUtils {
         return header.title;
     }
 
-    static extractHeader(text) {
-        const attrs = {};
+    static extractHeader(text: string): { header: Record<string, string | boolean | number>; body: string } {
+        const attrs: Record<string, string | boolean | number> = {};
         if (text.substring(0, 3) === '---') {
             const pos = text.substring(3).indexOf('\n---');
             if (pos !== -1) {
@@ -56,17 +56,19 @@ class MDUtils {
                     if (!line.trim()) {
                         return;
                     }
-                    const _pos = line.indexOf(':');
-                    if (_pos !== -1) {
-                        const attr = line.substring(0, _pos).trim();
-                        attrs[attr] = line.substring(_pos + 1).trim();
-                        attrs[attr] = attrs[attr].replace(/^['"]|['"]$/g, '');
-                        if (attrs[attr] === 'true') {
+                    const pos_ = line.indexOf(':');
+                    if (pos_ !== -1) {
+                        const attr = line.substring(0, pos_).trim();
+                        let val: string = line.substring(pos_ + 1).trim();
+                        val = val.replace(/^['"]|['"]$/g, '');
+                        if (val === 'true') {
                             attrs[attr] = true;
-                        } else if (attrs[attr] === 'false') {
+                        } else if (val === 'false') {
                             attrs[attr] = false;
-                        } else if (parseFloat(attrs[attr]).toString() === attrs[attr]) {
-                            attrs[attr] = parseFloat(attrs[attr]);
+                        } else if (parseFloat(val).toString() === val) {
+                            attrs[attr] = parseFloat(val);
+                        } else {
+                            attrs[attr] = val;
                         }
                     } else {
                         attrs[line.trim()] = true;
@@ -78,7 +80,7 @@ class MDUtils {
         return { header: attrs, body: text };
     }
 
-    static removeDocsify(text) {
+    static removeDocsify(text: string): string {
         const m = text.match(/{docsify-[^}]*}/g);
         if (m) {
             m.forEach(doc => text = text.replace(doc, ''));
@@ -86,7 +88,7 @@ class MDUtils {
         return text;
     }
 
-    static onCopy(e, text) {
+    static onCopy(e: Event | null, text: string): void {
         copy(text);
         e && e.stopPropagation();
         e && e.preventDefault();
