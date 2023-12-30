@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.9.2 (2023-12-30)
 * (foxriver76) bump version of `@iobroker/json-config`
 
 ### 4.9.1 (2023-12-22)
