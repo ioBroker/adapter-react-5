@@ -16,7 +16,7 @@ function getElementFromSource(src: string): HTMLElement | null {
     return svg;
 }
 
-function serializeAttrs(map: NamedNodeMap | undefined): Record<string, string> {
+function serializeAttrs(map?: NamedNodeMap): Record<string, string> {
     const ret: Record<string, string> = {};
     if (!map) {
         return ret;
@@ -110,7 +110,7 @@ class Image extends Component<ImageProps, ImageState> {
             src = atob(src);
             const svg = getElementFromSource(src) as HTMLElement;
             const inner = svg.innerHTML;
-            const svgProps = serializeAttrs(svg.attributes || []);
+            const svgProps = serializeAttrs(svg.attributes);
 
             svg.remove();
 

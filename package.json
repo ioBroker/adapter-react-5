@@ -41,7 +41,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@iobroker/dm-utils": "^0.1.8",
-    "@iobroker/json-config": "^6.13.3",
+    "@iobroker/json-config": "^6.13.14",
     "@iobroker/socket-client": "^2.3.13",
     "@iobroker/types": "^5.0.17",
     "@mui/icons-material": "^5.15.1",
