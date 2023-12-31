@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (foxriver76) try to fix `SelectID` scrolling
+
 ### 4.9.2 (2023-12-30)
 * (foxriver76) bump version of `@iobroker/json-config`
 
