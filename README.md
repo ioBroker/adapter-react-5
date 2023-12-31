@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.9.3 (2023-12-31)
 * (foxriver76) try to fix `SelectID` scrolling
 
 ### 4.9.2 (2023-12-30)
