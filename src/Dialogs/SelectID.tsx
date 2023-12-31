@@ -26,33 +26,6 @@ import I18n from '../i18n';
 import ObjectBrowser from '../Components/ObjectBrowser';
 import { ObjectBrowserColumn, ObjectBrowserCustomFilter, ObjectBrowserType } from '../Components/types';
 
-/* const styles = {
-    dialog: {
-        height: '95%',
-    },
-    dialogMobile: {
-        padding: 4,
-        width: '100%',
-        maxWidth: '100%',
-        maxHeight: 'calc(100% - 16px)',
-        height: '100%',
-    },
-    content: {
-        height: '100%',
-        overflow: 'hidden',
-    },
-    contentMobile: {
-        padding: '8px 4px',
-    },
-    titleRoot: {
-        whiteSpace: 'nowrap',
-        width: 'calc(100% - 72px)',
-        overflow: 'hidden',
-        display: 'inline-block',
-        textOverflow: 'ellipsis',
-    },
-};
-*/
 interface SelectIDFilters {
     id?: string;
     name?: string;
@@ -212,13 +185,14 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
         return <Dialog
             onClose={() => {}}
             maxWidth={false}
-            //classes={{ paper: Utils.clsx(this.props.classes.dialog, this.props.classes.dialogMobile) }}
-            style={{
-                height: '95%',
-                padding: 4,
-                width: '100%',
-                maxWidth: '100%',
-                maxHeight: 'calc(100% - 16px)',
+            sx={{
+                '&.MuiDialog-paper': {
+                    height: '95%',
+                    padding: 4,
+                    width: '100%',
+                    maxWidth: '100%',
+                    maxHeight: 'calc(100% - 16px)',
+                }
             }}
             fullWidth
             open={!0}
