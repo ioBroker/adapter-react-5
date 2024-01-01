@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (foxriver76) make `copyToClipboard` event parameter optional
+
 ### 4.9.4 (2024-01-01)
 * (foxriver76) try to fix `SelectID` scrolling
 
