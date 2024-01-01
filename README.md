@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.9.5 (2024-01-01)
 * (foxriver76) make `copyToClipboard` event parameter optional
 
 ### 4.9.4 (2024-01-01)
