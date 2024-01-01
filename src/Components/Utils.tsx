@@ -1000,10 +1000,12 @@ class Utils {
      */
     static copyToClipboard(
         text: string,
-        e: Event
+        e?: Event
     ) {
-        e && e.stopPropagation();
-        e && e.preventDefault();
+        if (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
         return copy(text);
     }
 
