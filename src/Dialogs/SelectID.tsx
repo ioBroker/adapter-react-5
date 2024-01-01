@@ -186,7 +186,7 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
             onClose={() => {}}
             maxWidth={false}
             sx={{
-                '&.MuiDialog-paper': {
+                '& .MuiDialog-paper': {
                     height: '95%',
                     padding: 4,
                     width: '100%',

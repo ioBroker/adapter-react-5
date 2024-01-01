@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### 4.9.3 (2023-12-31)
+### 4.9.4 (2024-01-01)
 * (foxriver76) try to fix `SelectID` scrolling
 
 ### 4.9.2 (2023-12-30)
@@ -1034,7 +1034,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2019-2023 bluefox <dogafox@gmail.com>
+Copyright (c) 2019-2024 bluefox <dogafox@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
