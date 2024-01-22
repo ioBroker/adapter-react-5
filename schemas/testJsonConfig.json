@@ -321,6 +321,10 @@
             "en": "label is also ok instead of text"
           }
         },
+        "defaultSendToText": {
+          "type": "text",
+          "defaultSendTo": "fill"
+        },
         "textSendTo": {
           "type": "textSendTo",
           "command": "test"
@@ -387,6 +391,10 @@
           "type": "table",
           "showSecondAddAt": 1,
           "items": [
+            {
+              "type": "text",
+              "defaultSendTo": "fill"
+            },
             {
               "type": "fileSelector",
               "pattern": "*.js"
