@@ -45,7 +45,7 @@
     "@iobroker/socket-client": "^2.3.13",
     "@iobroker/types": "^5.0.19",
     "@mui/icons-material": "^5.15.7",
-    "@mui/material": "5.14.14",
+    "@mui/material": "5.15.7",
     "@mui/styles": "5.14.14",
     "@mui/x-date-pickers": "^6.18.6",
     "@sentry/browser": "^7.91.0",
