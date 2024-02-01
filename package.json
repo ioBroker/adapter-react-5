@@ -43,7 +43,7 @@
     "@iobroker/dm-utils": "^0.1.9",
     "@iobroker/json-config": "^6.13.14",
     "@iobroker/socket-client": "^2.3.13",
-    "@iobroker/types": "^5.0.17",
+    "@iobroker/types": "^5.0.19",
     "@mui/icons-material": "^5.15.2",
     "@mui/material": "5.14.14",
     "@mui/styles": "5.14.14",
