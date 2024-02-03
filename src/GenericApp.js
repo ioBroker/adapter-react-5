@@ -136,7 +136,7 @@ class GenericApp extends Router {
         });
 
         // extract instance from URL
-        this.instance = settings?.instance ?? props.instance ?? args.instance !== undefined ? parseInt(args.instance, 10) || 0 : (parseInt(window.location.search.slice(1), 10) || 0);
+        this.instance = settings?.instance ?? props.instance ?? (args.instance !== undefined ? parseInt(args.instance, 10) || 0 : (parseInt(window.location.search.slice(1), 10) || 0));
         // extract adapter name from URL
         const tmp = window.location.pathname.split('/');
         this.adapterName = settings?.adapterName || props.adapterName || window.adapterName || tmp[tmp.length - 2] || 'iot';
