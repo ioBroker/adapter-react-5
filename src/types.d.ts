@@ -45,6 +45,8 @@ export interface OldObject {
 export type ObjectChangeHandler = (id: string, obj: ioBroker.Object | null | undefined, oldObj: OldObject) => void | Promise<void>;
 
 export interface GenericAppProps {
+    /** Adapter instance number if known, else will be determined from url */
+    instance?: number;
     /** The name of the adapter. */
     adapterName?: string;
     /** Should the bottom buttons be shown (default: true). */

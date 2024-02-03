@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (foxriver76) allow to pass down the instance number do avoid determining from url
+
 ### 4.9.5 (2024-01-01)
 * (foxriver76) make `copyToClipboard` event parameter optional
 
