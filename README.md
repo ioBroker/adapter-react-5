@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.9.7 (2024-02-03)
 * (foxriver76) allow to pass down the instance number do avoid determining from url
 
 ### 4.9.5 (2024-01-01)
