@@ -76,7 +76,9 @@
         "selectSendTo",
         "autocompleteSendTo",
         "checkLicense",
-        "uuid"
+        "uuid",
+        "timePicker",
+        "datePicker"
       ]
     },
     "numberProps": {
@@ -871,6 +873,63 @@
       },
       "additionalProperties": false,
       "required": []
+    },
+    "timePickerProps": {
+      "properties": {
+        "format": {
+          "description": "Format passed to the date picker",
+          "type": "string",
+          "default": "HH:mm:ss"
+        },
+        "views": {
+          "description": "Configure which views should be shown to the users",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["hours", "minutes", "seconds"]
+          },
+          "default": ["hours", "minutes", "seconds"]
+        },
+        "timeSteps": {
+          "description": "Represent the available time steps for each view",
+          "type": "object",
+          "additionalProperties": false,
+          "default": { "hours": 1, "minutes": 5, "seconds": 5 },
+          "properties": {
+            "hours": {
+              "type": "number"
+            },
+            "minutes": {
+              "type": "number"
+            },
+            "seconds": {
+              "type": "number"
+            }
+          }
+        },
+        "returnFormat": {
+          "description": "Use `fullDate` or `HH:mm:ss`. Defaults to full date for backward compatibility reasons.",
+          "type": "string",
+          "enum": ["fullDate", "HH:mm:ss"]
+        },
+        "label": true,
+        "type": true,
+        "defaultSendTo": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "style": true,
+        "darkStyle": true,
+        "noMultiEdit": true,
+        "noTranslation": true
+      },
+      "additionalProperties": false,
+      "required": ["type"]
     },
     "doNotSaveProp": {
       "type": "boolean",
@@ -4306,6 +4365,130 @@
                               }
                             ]
                           }
+                        },
+                        {
+                          "if": {
+                            "properties": {
+                              "type": {
+                                "const": "datePicker"
+                              }
+                            }
+                          },
+                          "then": {
+                            "allOf": [
+                              {
+                                "$ref": "#/definitions/tableItemBaseProps"
+                              }
+                            ],
+                            "properties": {
+                              "label": true,
+                              "type": true,
+                              "defaultSendTo": true,
+                              "sm": true,
+                              "md": true,
+                              "lg": true,
+                              "xs": true,
+                              "newLine": true,
+                              "hidden": true,
+                              "hideOnlyControl": true,
+                              "disabled": true,
+                              "helpLink": true,
+                              "help": true,
+                              "style": true,
+                              "darkStyle": true,
+                              "validator": true,
+                              "validatorNoSaveOnError": true,
+                              "validatorErrorText": true,
+                              "noMultiEdit": true,
+                              "tooltip": true,
+                              "noTranslation": true,
+                              "confirm": true
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                              "type"
+                            ]
+                          }
+                        },
+                        {
+                          "if": {
+                            "properties": {
+                              "type": {
+                                "const": "timePicker"
+                              }
+                            }
+                          },
+                          "then": {
+                            "allOf": [
+                              {
+                                "$ref": "#/definitions/tableItemBaseProps"
+                              }
+                            ],
+                            "properties": {
+                              "format": {
+                                "description": "Format passed to the date picker",
+                                "type": "string",
+                                "default": "HH:mm:ss"
+                              },
+                              "views": {
+                                "description": "Configure which views should be shown to the users",
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "enum": ["hours", "minutes", "seconds"]
+                                },
+                                "default": ["hours", "minutes", "seconds"]
+                              },
+                              "timeSteps": {
+                                "description": "Represent the available time steps for each view",
+                                "type": "object",
+                                "additionalProperties": false,
+                                "default": { "hours": 1, "minutes": 5, "seconds": 5 },
+                                "properties": {
+                                  "hours": {
+                                    "type": "number"
+                                  },
+                                  "minutes": {
+                                    "type": "number"
+                                  },
+                                  "seconds": {
+                                    "type": "number"
+                                  }
+                                }
+                              },
+                              "returnFormat": {
+                                "description": "Use `fullDate` or `HH:mm:ss`. Defaults to full date for backward compatibility reasons.",
+                                "type": "string",
+                                "enum": ["fullDate", "HH:mm:ss"]
+                              },
+                              "label": true,
+                              "type": true,
+                              "defaultSendTo": true,
+                              "sm": true,
+                              "md": true,
+                              "lg": true,
+                              "xs": true,
+                              "newLine": true,
+                              "hidden": true,
+                              "hideOnlyControl": true,
+                              "disabled": true,
+                              "helpLink": true,
+                              "help": true,
+                              "style": true,
+                              "darkStyle": true,
+                              "validator": true,
+                              "validatorNoSaveOnError": true,
+                              "validatorErrorText": true,
+                              "noMultiEdit": true,
+                              "tooltip": true,
+                              "noTranslation": true,
+                              "confirm": true
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                              "type"
+                            ]
+                          }
                         }
                       ],
                       "properties": {
@@ -5197,6 +5380,47 @@
                   "noTranslation": true
                 },
                 "additionalProperties": false
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "datePicker"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "label": true,
+                  "type": true,
+                  "defaultSendTo": true,
+                  "sm": true,
+                  "md": true,
+                  "lg": true,
+                  "xs": true,
+                  "newLine": true,
+                  "hidden": true,
+                  "hideOnlyControl": true,
+                  "disabled": true,
+                  "style": true,
+                  "darkStyle": true,
+                  "noMultiEdit": true,
+                  "noTranslation": true
+                },
+                "additionalProperties": false
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "timePicker"
+                  }
+                }
+              },
+              "then": {
+                "$ref": "#/definitions/timePickerProps"
               }
             },
             {

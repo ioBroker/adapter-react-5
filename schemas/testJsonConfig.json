@@ -7,6 +7,19 @@
       "type": "panel",
       "label": "Main settings",
       "items": {
+        "timePicker": {
+          "type": "timePicker",
+          "format": "HH:mm:ss",
+          "views": ["hours", "minutes"],
+          "returnFormat": "HH:mm:ss",
+          "timeSteps": {
+            "minutes":  1,
+            "hours": 1
+          }
+        },
+        "datePicker": {
+          "type": "datePicker"
+        },
         "fileSelector": {
           "type": "fileSelector",
           "pattern": "*.jsx",
@@ -391,6 +404,19 @@
           "type": "table",
           "showSecondAddAt": 1,
           "items": [
+            {
+              "type": "datePicker"
+            },
+            {
+              "type": "timePicker",
+              "format": "HH:mm:ss",
+              "views": ["hours", "minutes"],
+              "returnFormat": "HH:mm:ss",
+              "timeSteps": {
+                "minutes":  1,
+                "hours": 1
+              }
+            },
             {
               "type": "text",
               "defaultSendTo": "fill"
