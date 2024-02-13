@@ -384,36 +384,36 @@ It is better to use `Dialog/SelectID`, but if you want:
 
 ```
 <ObjectBrowser
-   foldersFirst={ this.props.foldersFirst }
-   imagePrefix={ this.props.imagePrefix || this.props.prefix } // prefix is for back compatibility
-   defaultFilters={ this.filters }
+   foldersFirst={this.props.foldersFirst}
+   imagePrefix={this.props.imagePrefix || this.props.prefix} // prefix is for back compatibility
+   defaultFilters={this.filters}
    dialogName={this.dialogName}
-   showExpertButton={ this.props.showExpertButton !== undefined ? this.props.showExpertButton : true }
-   style={ {width: '100%', height: '100%'} }
-   columns={ this.props.columns || ['name', 'type', 'role', 'room', 'func', 'val'] }
-   types={ this.props.types || ['state'] }
-   t={ I18n.t }
-   lang={ this.props.lang || I18n.getLanguage() }
-   socket={ this.props.socket }
-   selected={ this.state.selected }
-   multiSelect={ this.props.multiSelect }
-   notEditable={ this.props.notEditable === undefined ? true : this.props.notEditable }
-   name={ this.state.name }
-   themeName={ this.props.themeName }
-   themeType={ this.props.themeType }
-   customFilter={ this.props.customFilter }
-   onFilterChanged={ filterConfig => {
+   showExpertButton={this.props.showExpertButton !== undefined ? this.props.showExpertButton : true}
+   style={{ width: '100%', height: '100%' }}
+   columns={this.props.columns || ['name', 'type', 'role', 'room', 'func', 'val']}
+   types={this.props.types || ['state']}
+   t={I18n.t}
+   lang={this.props.lang || I18n.getLanguage()}
+   socket={this.props.socket}
+   selected={this.state.selected}
+   multiSelect={this.props.multiSelect}
+   notEditable={this.props.notEditable === undefined ? true : this.props.notEditable}
+   name={this.state.name}
+   themeName={this.props.themeName}
+   themeType={this.props.themeType}
+   customFilter={this.props.customFilter}
+   onFilterChanged={filterConfig => {
       this.filters = filterConfig;
       window.localStorage.setItem(this.dialogName, JSON.stringify(filterConfig));
-   } }
-   onSelect={ (selected, name, isDouble) => {
+   }}
+   onSelect={(selected, name, isDouble) => {
       if (JSON.stringify(selected) !== JSON.stringify(this.state.selected)) {
           this.setState({selected, name}, () =>
               isDouble && this.handleOk());
       } else if (isDouble) {
           this.handleOk();
       }
-   } }
+   }}
 />
 ```
 
@@ -456,7 +456,7 @@ class MyComponent extends Component {
               cellStyle: {            // CSS style - // optional
                   maxWidth: '12rem',
                   overflow: 'hidden',
-                  wordBreak: 'break-word'
+                  wordBreak: 'break-word',
               },
               lookup: {               // optional => edit will be automatically "SELECT"
                   'value1': 'text1',
@@ -670,8 +670,11 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) allowed hiding wizard in cron dialog
+
 ### 4.9.7 (2024-02-03)
-* (foxriver76) allow to pass down the instance number do avoid determining from url
+* (foxriver76) allow passing down the instance number do avoid determining from url
 
 ### 4.9.5 (2024-01-01)
 * (foxriver76) make `copyToClipboard` event parameter optional
