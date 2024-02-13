@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.9.8 (2024-02-13)
 * (bluefox) allowed hiding wizard in cron dialog
 
 ### 4.9.7 (2024-02-03)
