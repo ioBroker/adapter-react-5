@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.9.9 (2024-02-16)
 * (foxriver76) also check plugin state of instance to see if Sentry is explicitly disabled
 
 ### 4.9.8 (2024-02-13)
