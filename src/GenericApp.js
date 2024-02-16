@@ -249,13 +249,15 @@ class GenericApp extends Router {
                         this._systemConfig = obj?.common || {};
                         return this.socket.getObject(this.instanceId);
                     })
-                    .then(instanceObj => {
+                    .then(async (instanceObj) => {
                         let waitPromise;
 
+                        const sentryPluginEnabled = (await this.socket.getState(`${this.instanceId}.plugins.sentry.enabled`))?.val
+
                         const sentryEnabled =
+                            sentryPluginEnabled !== false &&
                             this._systemConfig.diag !== 'none' &&
-                            instanceObj &&
-                            instanceObj.common &&
+                            instanceObj?.common &&
                             instanceObj.common.name &&
                             instanceObj.common.version &&
                             !instanceObj.common.disableDataReporting &&
@@ -272,6 +274,8 @@ class GenericApp extends Router {
                                     new SentryIntegrations.Dedupe(),
                                 ],
                             });
+
+                            console.log('Sentry initialized')
                         }
 
                         // read UUID and init sentry with it.

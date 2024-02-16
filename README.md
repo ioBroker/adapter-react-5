@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (foxriver76) also check plugin state of instance to see if Sentry is explicitly disabled
+
 ### 4.9.7 (2024-02-03)
 * (foxriver76) allow to pass down the instance number do avoid determining from url
 
