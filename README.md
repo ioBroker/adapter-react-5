@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (foxriver76) also check plugin state of instance to see if Sentry is explicitly disabled
+
 ### 4.9.8 (2024-02-13)
 * (bluefox) allowed hiding wizard in cron dialog
 
