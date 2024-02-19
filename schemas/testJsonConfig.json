@@ -555,6 +555,30 @@
             }
           ]
         },
+        "myAccordion": {
+          "hidden": "!!data.foreignSettingsInstance",
+          "newLine": true,
+          "type": "accordion",
+          "titleAttr": "name",
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "items": [
+            {
+              "type": "text",
+              "attr": "name",
+              "label": "Name",
+              "sm": 12,
+              "md": 4,
+              "lg": 4,
+              "default": "custom",
+              "help": "Just lower case letters (a-z)",
+              "validator": "/^([a-z]{1,})$/.test(data.name) && !['time', 'date', 'temperature', 'humidity', 'battery'].includes(data.name) && [...globalData.customApps, ...globalData.historyApps, ...globalData.expertApps].filter(app => app.name === data.name).length === 1",
+              "validatorErrorText": "Just lower case letters (a-z)",
+              "validatorNoSaveOnError": true
+            }
+          ]
+        },
         "alive": {
           "type": "alive",
           "instance": 0,
