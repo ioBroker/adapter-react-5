@@ -670,6 +670,10 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) translations
+* (bluefox) updated json config
+
 ### 4.9.9 (2024-02-16)
 * (foxriver76) also check plugin state of instance to see if Sentry is explicitly disabled
 
