@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.9.10 (2024-02-21)
 * (bluefox) translations
 * (bluefox) updated json config
 
