@@ -44,7 +44,7 @@
     "@iobroker/json-config": "^6.14.1",
     "@iobroker/socket-client": "^2.3.13",
     "@iobroker/types": "^5.0.19",
-    "@mui/icons-material": "^5.15.10",
+    "@mui/icons-material": "^5.15.11",
     "@mui/material": "5.14.14",
     "@mui/styles": "5.14.14",
     "@mui/x-date-pickers": "^6.19.4",
