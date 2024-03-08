@@ -89,7 +89,7 @@ if (!window.localStorage) {
  */
 class GenericApp extends Router {
     /**
-     * @var {LegacyConnection | AdminConnection}
+     * @type {import('@iobroker/socket-client').Connection | import('@iobroker/socket-client').AdminConnection}
      */
     socket;
 
