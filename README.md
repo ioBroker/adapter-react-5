@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### 4.9.11 (2024-03-08)
+* (foxriver76) type GenericApp socket correctly
+
 ### 4.9.10 (2024-02-21)
 * (bluefox) translations
 * (bluefox) updated json config
