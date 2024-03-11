@@ -330,7 +330,6 @@ FileViewer.propTypes = {
     onClose: PropTypes.func,
     href: PropTypes.string.isRequired,
     supportSubscribes: PropTypes.bool,
-    themeType: PropTypes.string,
 };
 
 /** @type {typeof FileViewer} */

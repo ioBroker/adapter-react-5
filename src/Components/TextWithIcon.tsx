@@ -1,11 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
 import Icon from './Icon';
 import Utils from './Utils';
 
-const styles = () => ({
+const styles: Record<string, any> = {
     div: {
         borderRadius: 3,
         padding: '0 3px',
@@ -26,17 +25,46 @@ const styles = () => ({
         overflow: 'hidden',
         textOverflow: 'ellipsis',
     },
-});
+};
 
-const TextWithIcon = props => {
-    let item = props.value;
+interface TextWithIconProps {
+    lang: ioBroker.Languages;
+    themeType?: 'dark' | 'light';
+    value: string | Record<string, any>;
+    list?: ioBroker.Object[] | Record<string, ioBroker.Object>;
+    options?: Record<string, any>;
+    className?: string;
+    style?: React.CSSProperties;
+    title?: string;
+    removePrefix?: string;
+    moreClasses?: {
+        root?: string;
+        icon?: string;
+        text?: string;
+    };
+    icon?: string;
+    color?: string;
+    classes: Record<string, string>;
+}
+
+interface TextWithIconItem {
+    name: string;
+    value: string;
+    icon?: string;
+    color?: string;
+}
+
+const TextWithIcon = (props: TextWithIconProps) => {
+    let value = props.value;
+    let item: TextWithIconItem;
     const prefix = props.removePrefix || '';
 
-    if (typeof item === 'string') {
+    if (typeof value === 'string') {
         const list = props.list || props.options;
-        if (props.list) {
+        if (list) {
+            // if list is array, then it is list of ioBroker.Object
             if (Array.isArray(list)) {
-                const _item = list.find(obj => obj._id === prefix + item);
+                const _item: ioBroker.Object = list.find((obj: ioBroker.Object) => obj._id === prefix + value);
                 if (_item) {
                     item = {
                         name: Utils.getObjectNameFromObj(_item, props.lang).replace('system.group.', ''),
@@ -46,34 +74,37 @@ const TextWithIcon = props => {
                     };
                 } else {
                     item = {
-                        name: item,
-                        value: prefix + item,
+                        name: value,
+                        value: prefix + value,
                     };
                 }
-            } else if (list[prefix + item]) {
+            } else if (list[prefix + value]) {
+                // List is object with key-value pairs: {'enum.rooms.1': {common: {name: 'Room 1'}}}
+                const obj: ioBroker.Object = list[prefix + value];
                 item = {
-                    name: Utils.getObjectNameFromObj(list[prefix + item], props.lang).replace('system.group.', ''),
-                    value: list[prefix + item]._id,
-                    icon: props.icon || list[prefix + item].common?.icon,
-                    color: props.color || list[prefix + item].common?.color,
+                    name: Utils.getObjectNameFromObj(obj, props.lang).replace('system.group.', ''),
+                    value: obj._id,
+                    icon: props.icon || obj.common?.icon,
+                    color: props.color || obj.common?.color,
                 };
             } else {
+                // value is a string, ignore list
                 item = {
-                    name: item,
-                    value: prefix + item,
+                    name: value,
+                    value: prefix + value,
                     icon: props.icon,
                     color: props.color,
                 };
             }
         } else {
             item = {
-                name: item,
-                value: prefix + item,
+                name: value,
+                value: prefix + value,
                 icon: props.icon,
                 color: props.color,
             };
         }
-    } else if (!item || typeof item !== 'object') {
+    } else if (!value || typeof value !== 'object') {
         item = {
             name: '',
             value: '',
@@ -81,15 +112,17 @@ const TextWithIcon = props => {
             color: props.color,
         };
     } else {
+        // Item is an ioBroker.Object
+        const obj: ioBroker.Object = value as ioBroker.Object;
         item = {
-            name: Utils.getObjectNameFromObj(item, props.lang)
+            name: Utils.getObjectNameFromObj(obj, props.lang)
                 .replace('system.group.', '')
                 .replace('system.user.', '')
                 .replace('enum.rooms.', '')
                 .replace('enum.functions.', ''),
-            value: item._id,
-            icon: props.icon || item.common?.icon,
-            color: props.color || item.common?.color,
+            value: obj._id,
+            icon: props.icon || obj.common?.icon,
+            color: props.color || obj.common?.color,
         };
     }
 
@@ -107,21 +140,6 @@ const TextWithIcon = props => {
         {item?.icon ? <Icon src={item?.icon} className={Utils.clsx(props.classes.icon, props.moreClasses?.icon)} /> : null}
         <div className={Utils.clsx(props.classes.text, props.moreClasses?.text)}>{item?.name}</div>
     </div>;
-};
-
-TextWithIcon.propTypes = {
-    lang: PropTypes.string.isRequired,
-    themeType: PropTypes.string,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-    list: PropTypes.oneOfType([PropTypes.array, PropTypes.object]), // one of "list"(Array) or "options"(object) is required
-    options: PropTypes.oneOfType([PropTypes.array, PropTypes.object]), // one of "list"(Array) or "options"(object) is required
-    className: PropTypes.string,
-    style: PropTypes.object,
-    title: PropTypes.string,
-    removePrefix: PropTypes.string,
-    moreClasses: PropTypes.object,
-    icon: PropTypes.string,
-    color: PropTypes.string,
 };
 
 export default withStyles(styles)(TextWithIcon);

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import SVG from 'react-inlinesvg';
 
 import {
@@ -12,11 +11,11 @@ import {
     Info as IconInfo,
     Description as IconMeta,
 } from '@mui/icons-material';
-import IconAlias from '../icons/IconAlias';
 
+import IconAlias from '../icons/IconAlias';
 import Utils from './Utils';
 
-export function getSystemIcon(obj) {
+export function getSystemIcon(obj: ioBroker.Object | null): React.JSX.Element | null {
     let icon;
     const id = obj?._id;
 
@@ -50,7 +49,7 @@ export function getSystemIcon(obj) {
     return icon || null;
 }
 
-export function getSelectIdIcon(obj, imagePrefix) {
+export function getSelectIdIcon(obj: ioBroker.Object | null, imagePrefix?: string): string | null {
     imagePrefix = imagePrefix || '.'; // http://localhost:8081';
     let src = '';
     const common = obj?.common;
@@ -93,50 +92,49 @@ export function getSelectIdIcon(obj, imagePrefix) {
     return src || null;
 }
 
-class Icon extends React.Component {
-    render() {
-        if (this.props.src) {
-            if (typeof this.props.src === 'string') {
-                if (this.props.src.length < 3) {
-                    // utf-8 char
-                    return <span
-                        title={this.props.title || undefined}
-                        style={{ height: 27, marginTop: -8, ...(this.props.styleUTF8 || this.props.style) }}
-                        className={Utils.clsx(this.props.className, 'iconOwn')}
-                    >
-                        {this.props.src}
-                    </span>;
-                }
-                if (this.props.src.startsWith('data:image/svg')) {
-                    return <SVG
-                        title={this.props.title || undefined}
-                        src={this.props.src}
-                        className={Utils.clsx(this.props.className, 'iconOwn')}
-                        width={this.props.style?.width || 28}
-                        height={this.props.style?.height || this.props.style?.width || 28}
-                        style={this.props.style || {}}
-                    />;
-                }
-                return <img
-                    title={this.props.title || undefined}
-                    style={this.props.style || {}}
-                    className={Utils.clsx(this.props.className, 'iconOwn')}
-                    src={this.props.src}
-                    alt=""
-                />;
-            }
-            return this.props.src;
-        }
-        return null;
-    }
+interface IconProps {
+    src: string | React.JSX.Element | null | undefined;
+    className?: string;
+    style?: React.CSSProperties;
+    title?: string,
+    styleUTF8?: React.CSSProperties;
 }
 
-Icon.propTypes = {
-    title: PropTypes.string,
-    src: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-    className: PropTypes.string,
-    style: PropTypes.object,
-    styleUTF8: PropTypes.object,
-};
+const Icon = (props: IconProps) => {
+    if (props.src) {
+        if (typeof props.src === 'string') {
+            if (props.src.length < 3) {
+                // utf-8 char
+                return <span
+                    title={props.title || undefined}
+                    style={{ height: 27, marginTop: -8, ...(props.styleUTF8 || props.style) }}
+                    className={Utils.clsx(props.className, 'iconOwn')}
+                >
+                    {props.src}
+                </span>;
+            }
+            if (props.src.startsWith('data:image/svg')) {
+                return <SVG
+                    title={props.title || undefined}
+                    src={props.src}
+                    className={Utils.clsx(props.className, 'iconOwn')}
+                    width={props.style?.width || 28}
+                    height={props.style?.height || props.style?.width || 28}
+                    style={props.style || {}}
+                />;
+            }
+            return <img
+                title={props.title || undefined}
+                style={props.style || {}}
+                className={Utils.clsx(props.className, 'iconOwn')}
+                src={props.src}
+                alt=""
+            />;
+        }
+
+        return props.src;
+    }
+    return null;
+}
 
 export default Icon;

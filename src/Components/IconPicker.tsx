@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
 import { useDropzone } from 'react-dropzone';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from '@mui/styles';
 
 import {
     InputLabel,
@@ -15,20 +14,25 @@ import Icon from './Icon';
 import I18n from '../i18n';
 import Utils from './Utils';
 
-/**
- * @typedef {object} IconPickerProps
- * @property {string} [value] The value.
- * @property {string} [label] The label.
- * @property {boolean} [disabled] Set to true to disable the icon picker.
- * @property {(icon: string) => void} onChange The icon change callback.
- * @property {import('../Connection').default} socket The socket connection.
- * @property {string} [imagePrefix] The image prefix (default: './files/')
- * @property {React.CSSProperties} [style] Additional styling for this component.
- * @property {string} [className] The CSS class name.
- *
- * @extends {React.Component<IconPickerProps>}
- */
-const IconPicker = props => {
+interface IconPickerProps {
+    previewClassName?: string;
+    /** Custom icon element. */
+    icon?: React.ComponentType<any>;
+    customClasses?: Record<string, string>;
+    /** The label. */
+    label?: string;
+    /** The value. */
+    value?: any;
+    /** Set to true to disable the icon picker. */
+    disabled?: boolean;
+    /** The icon change callback. */
+    onChange: (icon: string) => void;
+    icons: any[];
+    onlyRooms: boolean;
+    onlyDevices: boolean;
+}
+
+const IconPicker = (props: IconPickerProps) => {
     const IconCustom = props.icon;
 
     const useStyles = makeStyles(() => ({
@@ -70,11 +74,11 @@ const IconPicker = props => {
 
     const classes = useStyles();
 
-    const onDrop = useCallback(acceptedFiles => {
+    const onDrop = useCallback((acceptedFiles: File[]) => {
         const reader = new FileReader();
 
         reader.addEventListener('load', () =>
-            props.onChange(reader.result), false);
+            props.onChange(reader.result as string), false);
 
         if (acceptedFiles[0]) {
             reader.readAsDataURL(acceptedFiles[0]);
@@ -92,7 +96,7 @@ const IconPicker = props => {
             <div className={classes.formContainer}>
                 {props.value ?
                     <div className={classes.divContainer}>
-                        <Icon alt="" className={Utils.clsx(props.previewClassName, props.customClasses?.icon)} src={props.value} />
+                        <Icon className={Utils.clsx(props.previewClassName, props.customClasses?.icon)} src={props.value} />
                         {!props.disabled && <IconButton
                             style={{ verticalAlign: 'top' }}
                             title={I18n.t('ra_Clear icon')}
@@ -107,7 +111,7 @@ const IconPicker = props => {
                         icons={props.icons}
                         onlyRooms={props.onlyRooms}
                         onlyDevices={props.onlyDevices}
-                        onSelect={base64 => props.onChange(base64)}
+                        onSelect={(base64: string) => props.onChange(base64)}
                         t={I18n.t}
                         lang={I18n.getLanguage()}
                     />)}
@@ -129,19 +133,4 @@ const IconPicker = props => {
     </div>;
 };
 
-IconPicker.propTypes = {
-    previewClassName: PropTypes.string,
-    icon: PropTypes.object,
-    customClasses: PropTypes.object,
-    label: PropTypes.string,
-    value: PropTypes.any,
-    disabled: PropTypes.bool,
-    onChange: PropTypes.func.isRequired,
-
-    icons: PropTypes.array,
-    onlyRooms: PropTypes.bool,
-    onlyDevices: PropTypes.bool,
-};
-
-/** @type {typeof IconPicker} */
 export default IconPicker;

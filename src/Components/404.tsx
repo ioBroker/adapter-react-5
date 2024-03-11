@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { withStyles } from '@mui/styles';
 
 /*
@@ -8,7 +8,7 @@ https://codepen.io/robinselmer/pen/vJjbOZ
 
 import I18n from '../i18n';
 
-const styles = theme => ({
+const styles: Record<string, any> = {
     content: {
         background: 'black',
         position: 'absolute',
@@ -16,7 +16,6 @@ const styles = theme => ({
         bottom: 0,
         left: 0,
         right: 0,
-        ...theme.content,
     },
     root: {
         boxSizing: 'border-box',
@@ -87,32 +86,31 @@ const styles = theme => ({
     errorCode: {
         color: 'white',
     },
-});
+};
 
-class Page404 extends Component {
-    render() {
-        return <div className={this.props.classes.content}>
-            <div className={this.props.classes.root}>
-                <div className={this.props.classes.overlay}>
-                    <div className={this.props.classes.terminal}>
-                        <h1>
-                            {I18n.t('ra_Error')}
-                            <span className={this.props.classes.errorCode}>404</span>
-                        </h1>
-                        <p className={this.props.classes.output}>
-                            {I18n.t('ra_The page you are looking for was not found')}
-                        </p>
-                        <p className={this.props.classes.output}>
-                            {I18n.t('ra_Good luck')}
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>;
-    }
+interface Page404Props {
+    classes: Record<string, string>;
 }
 
-Page404.propTypes = {
-};
+function Page404(props: Page404Props) {
+    return <div className={props.classes.content}>
+        <div className={props.classes.root}>
+            <div className={props.classes.overlay}>
+                <div className={props.classes.terminal}>
+                    <h1>
+                        {I18n.t('ra_Error')}
+                        <span className={props.classes.errorCode}>404</span>
+                    </h1>
+                    <p className={props.classes.output}>
+                        {I18n.t('ra_The page you are looking for was not found')}
+                    </p>
+                    <p className={props.classes.output}>
+                        {I18n.t('ra_Good luck')}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>;
+}
 
 export default withStyles(styles)(Page404);

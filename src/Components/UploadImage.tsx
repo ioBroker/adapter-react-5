@@ -1,7 +1,6 @@
-import { Component, createRef } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, createRef } from 'react';
 import Dropzone from 'react-dropzone';
-import { Cropper } from 'react-cropper';
+import { Cropper, ReactCropperElement } from 'react-cropper';
 
 import { withStyles } from '@mui/styles';
 import {
@@ -15,6 +14,7 @@ import {
 import { FaFileUpload as UploadIcon } from 'react-icons/fa';
 
 import Utils from './Utils';
+import I18n from "../i18n";
 
 // import 'cropperjs/dist/cropper.css';
 const cropperStyles = `
@@ -324,7 +324,7 @@ const cropperStyles = `
 }
 `;
 
-const styles = () => ({
+const styles: Record<string, any> = {
     dropZone: {
         width: '100%',
         height: 100,
@@ -404,11 +404,32 @@ const styles = () => ({
         border: '2px solid red',
         boxSizing: 'border-box',
     },
-});
+};
 
-class UploadImage extends Component {
-    constructor(props) {
+interface UploadImageProps {
+    classes: Record<string, string>;
+    maxSize?: number;
+    disabled?: boolean;
+    crop?: boolean;
+    error?: boolean;
+    onChange: (base64: string) => void | undefined;
+    icon: string | null;
+    removeIconFunc: () => void | null;
+    accept: Record<string, string[]>;
+}
+
+interface UploadImageState {
+    uploadFile: boolean | 'dragging';
+    anchorEl: HTMLElement | null;
+    cropHandler: boolean;
+}
+
+class UploadImage extends Component<UploadImageProps, UploadImageState> {
+    private readonly cropperRef: React.RefObject<ReactCropperElement>;
+
+    constructor(props: UploadImageProps) {
         super(props);
+
         this.state = {
             uploadFile: false,
             anchorEl: null,
@@ -424,8 +445,9 @@ class UploadImage extends Component {
         }
     }
 
-    onDrop(acceptedFiles) {
-        const { maxSize, t, onChange } = this.props;
+    onDrop(acceptedFiles: File[]) {
+        const onChange = this.props.onChange;
+        const maxSize = this.props.maxSize || 10 * 1024;
 
         const file = acceptedFiles[0];
         const reader = new FileReader();
@@ -433,21 +455,29 @@ class UploadImage extends Component {
         reader.onabort = () => console.log('file reading was aborted');
         reader.onerror = () => console.log('file reading has failed');
         reader.onload = () => {
-            let ext = `image/${file.name.split('.').pop().toLowerCase()}`;
+            if (!file || !file.name) {
+                return;
+            }
+            const parts = file.name?.split('.');
+            let ext = parts?.length ? `image/${parts.pop()?.toLowerCase()}` : 'image/jpeg';
             if (ext === 'image/jpg') {
                 ext = 'image/jpeg';
             } else if (ext.includes('svg')) {
                 ext = 'image/svg+xml';
             }
             if (file.size > maxSize) {
-                window.alert(t('ra_File is too big. Max %sk allowed. Try use SVG.', Math.round(maxSize / 1024)));
+                window.alert(I18n.t('ra_File is too big. Max %sk allowed. Try use SVG.', Math.round(maxSize / 1024)));
             } else {
                 const base64 = `data:${ext};base64,${btoa(
-                    new Uint8Array(reader.result)
+                    new Uint8Array(reader.result as ArrayBufferLike)
                         .reduce((data, byte) => data + String.fromCharCode(byte), ''),
                 )}`;
 
-                onChange(base64);
+                if (onChange) {
+                    onChange(base64);
+                } else {
+                    console.log(base64);
+                }
             }
         };
         reader.readAsArrayBuffer(file);
@@ -455,21 +485,23 @@ class UploadImage extends Component {
 
     render() {
         const {
-            disabled, maxSize, classes, icon, t, removeIconFunc, accept, error, crop, onChange,
+            disabled, classes, icon, removeIconFunc, error, crop, onChange,
         } = this.props;
+        const maxSize = this.props.maxSize || 10 * 1024;
+        const accept = this.props.accept || { 'image/*': [] };
         const { uploadFile, anchorEl, cropHandler } = this.state;
         return <Dropzone
-            disabled={disabled || cropHandler}
+            disabled={!!disabled || cropHandler}
             key="dropzone"
             multiple={false}
             accept={accept}
             maxSize={maxSize}
             onDragEnter={() => this.setState({ uploadFile: 'dragging' })}
             onDragLeave={() => this.setState({ uploadFile: true })}
-            onDrop={(acceptedFiles, errors) => {
+            onDrop={(acceptedFiles: File[], errors) => {
                 this.setState({ uploadFile: false });
                 if (!acceptedFiles.length) {
-                    window.alert((errors && errors[0] && errors[0].errors && errors[0].errors[0] && errors[0].errors[0].message) || t('ra_Cannot upload'));
+                    window.alert((errors && errors[0] && errors[0].errors && errors[0].errors[0] && errors[0].errors[0].message) || I18n.t('ra_Cannot upload'));
                 } else {
                     this.onDrop(acceptedFiles);
                 }
@@ -491,14 +523,14 @@ class UploadImage extends Component {
                         <UploadIcon className={classes.uploadCenterIcon} />
                         <div className={classes.uploadCenterText}>
                             {
-                                uploadFile === 'dragging' ? t('ra_Drop file here') :
-                                    t('ra_Place your files here or click here to open the browse dialog')
+                                uploadFile === 'dragging' ? I18n.t('ra_Drop file here') :
+                                    I18n.t('ra_Place your files here or click here to open the browse dialog')
                             }
                         </div>
                     </div>
                         :
                         removeIconFunc && !cropHandler && <div className={classes.buttonRemoveWrapper}>
-                            <Tooltip title={t('ra_Clear')}>
+                            <Tooltip title={I18n.t('ra_Clear')}>
                                 <IconButton
                                     size="large"
                                     onClick={e => {
@@ -511,7 +543,7 @@ class UploadImage extends Component {
                             </Tooltip>
                         </div>}
                     {icon && crop && <div className={classes.buttonCropWrapper}>
-                        <Tooltip title={t('ra_Crop')}>
+                        <Tooltip title={I18n.t('ra_Crop')}>
                             <IconButton
                                 size="large"
                                 onClick={e => {
@@ -534,12 +566,18 @@ class UploadImage extends Component {
                         >
                             <MenuItem onClick={() => this.setState({ anchorEl: null, cropHandler: false }, () => {
                                 const imageElement = this.cropperRef?.current?.cropper;
-                                onChange(imageElement.getCroppedCanvas().toDataURL());
+                                if (imageElement) {
+                                    if (onChange) {
+                                        onChange(imageElement.getCroppedCanvas().toDataURL());
+                                    } else {
+                                        console.log(imageElement.getCroppedCanvas().toDataURL());
+                                    }
+                                }
                             })}
                             >
-                                {t('ra_Save')}
+                                {I18n.t('ra_Save')}
                             </MenuItem>
-                            <MenuItem onClick={() => this.setState({ anchorEl: null, cropHandler: false })}>{t('ra_Close')}</MenuItem>
+                            <MenuItem onClick={() => this.setState({ anchorEl: null, cropHandler: false })}>{I18n.t('ra_Close')}</MenuItem>
                         </Menu>
                     </div>}
                     {icon && !cropHandler ? <img src={icon} className={classes.image} alt="icon" /> : null}
@@ -561,30 +599,5 @@ class UploadImage extends Component {
         </Dropzone>;
     }
 }
-
-UploadImage.defaultProps = {
-    disabled: false,
-    maxSize: 10 * 1024,
-    icon: null,
-    removeIconFunc: null,
-    accept: { 'image/*': [] },
-    error: false,
-    onChange: base64 => console.log(base64),
-    t: el => el,
-    crop: false,
-};
-
-UploadImage.propTypes = {
-    classes: PropTypes.object,
-    maxSize: PropTypes.number,
-    disabled: PropTypes.bool,
-    crop: PropTypes.bool,
-    error: PropTypes.bool,
-    onChange: PropTypes.func,
-    icon: PropTypes.string,
-    removeIconFunc: PropTypes.func,
-    accept: PropTypes.object,
-    t: PropTypes.func,
-};
 
 export default withStyles(styles)(UploadImage);

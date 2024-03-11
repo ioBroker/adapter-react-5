@@ -83,8 +83,10 @@ export interface GenericAppState {
     width: Width;
 }
 
-export type Width = ('xs' | 'sm' | 'md' | 'lg' | 'xl');
+export type Width = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
+export type ThemeName = 'dark' | 'light' | 'colored' | 'blue' | 'PT' | 'DX';
 
 export interface Theme extends MuiTheme {
-    name: string;
+    name: ThemeName;
 }

@@ -209,15 +209,15 @@ class ColorPicker extends React.Component {
         }
         return <div style={{ width: '100%', display: 'flex', flexWrap: 'flex' }}>
             {this.props.customPalette.map(color => <Button
-                    className={this.props.classes.button}
-                    key={color}
-                    onClick={() => {
-                        this.handleChange(color);
-                        setTimeout(() => this.handleClose(), 300);
-                    }}
-                >
-                    <div className={this.props.classes.iconButton} style={{ background: color }} />
-                </Button>)}
+                className={this.props.classes.button}
+                key={color}
+                onClick={() => {
+                    this.handleChange(color);
+                    setTimeout(() => this.handleClose(), 300);
+                }}
+            >
+                <div className={this.props.classes.iconButton} style={{ background: color }} />
+            </Button>)}
         </div>;
     }
 

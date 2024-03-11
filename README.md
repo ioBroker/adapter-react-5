@@ -185,9 +185,9 @@ This is a non-react class to provide the communication for socket connection wit
 
 ### GenericApp.js
 
-### i18n.js
+### i18n.ts
 
-### Theme.js
+### Theme.tsx
 
 ### Dialogs
 Some dialogs are predefined and could be used out of the box.
@@ -342,7 +342,7 @@ return (<img src={icon}/>);
 
 Usage: `
 
-#### Loader.js
+#### Loader.tsx
 ![Logo](img/loader.png)
 
 ```
@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Migrated some components to typescript
+
 ### 4.9.11 (2024-03-08)
 * (foxriver76) type GenericApp socket correctly
 
