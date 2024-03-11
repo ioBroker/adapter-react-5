@@ -93,11 +93,18 @@ export function getSelectIdIcon(obj: ioBroker.Object | null, imagePrefix?: strin
 }
 
 interface IconProps {
+    /** URL, UTF-8 character, or svg code (data:image/svg...) */
     src: string | React.JSX.Element | null | undefined;
+    /** Class name */
     className?: string;
+    /** Style for image */
     style?: React.CSSProperties;
-    title?: string,
+    /** Tooltip */
+    title?: string;
+    /** Styles for utf-8 characters */
     styleUTF8?: React.CSSProperties;
+    /** Alternative text for image */
+    alt?: string;
 }
 
 const Icon = (props: IconProps) => {
@@ -128,7 +135,7 @@ const Icon = (props: IconProps) => {
                 style={props.style || {}}
                 className={Utils.clsx(props.className, 'iconOwn')}
                 src={props.src}
-                alt=""
+                alt={props.alt || undefined}
             />;
         }
 
