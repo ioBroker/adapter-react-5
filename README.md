@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### 4.11.1 (2024-03-16)
+### **WORK IN PROGRESS**
 * (bluefox) Migrated GenericApp to typescript
 
 ### 4.10.4 (2024-03-16)

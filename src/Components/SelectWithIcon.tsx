@@ -4,6 +4,7 @@ import { withStyles } from '@mui/styles';
 import {
     FormControl, InputLabel, MenuItem, Select,
 } from '@mui/material';
+import { InputProps } from '@mui/material/Input';
 
 import { ThemeType, Translator } from '../types';
 
@@ -38,7 +39,7 @@ interface SelectWithIconProps {
     style?: React.CSSProperties;
     removePrefix?: string;
     allowNone?: boolean,
-    inputProps: any,
+    inputProps?: InputProps['inputProps'],
     classes: Record<string, string>;
     dense?: boolean;
 }
