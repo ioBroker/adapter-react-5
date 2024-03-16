@@ -11,7 +11,7 @@ import Icon from './Icon';
 import Utils from './Utils';
 import I18n from '../i18n';
 
-const styles = () => ({
+const styles: Record<string, any> = {
     different: {
         opacity: 0.5,
     },
@@ -20,7 +20,7 @@ const styles = () => ({
         height: 16,
         marginRight: 8,
     },
-});
+};
 
 interface SelectWithIconProps {
     t: Translator,
