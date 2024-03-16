@@ -415,7 +415,7 @@ interface UploadImageProps {
     onChange: (base64: string) => void | undefined;
     icon: string | null;
     removeIconFunc: () => void | null;
-    accept: Record<string, string[]>;
+    accept?: Record<string, string[]>;
 }
 
 interface UploadImageState {
