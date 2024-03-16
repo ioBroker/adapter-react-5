@@ -5,12 +5,11 @@
  *
  **/
 import React from 'react';
-import { Connection, PROGRESS } from '@iobroker/socket-client';
-import PropTypes from 'prop-types';
+import { PROGRESS, Connection, AdminConnection } from '@iobroker/socket-client';
 import * as Sentry from '@sentry/browser';
 import * as SentryIntegrations from '@sentry/integrations';
 
-import { Snackbar, IconButton } from '@mui/material';
+import { Snackbar, IconButton, type Theme } from '@mui/material';
 
 import { Close as IconClose } from '@mui/icons-material';
 
@@ -23,6 +22,8 @@ import SaveCloseButtons from './Components/SaveCloseButtons';
 import ConfirmDialog from './Dialogs/Confirm';
 import I18n from './i18n';
 import DialogError from './Dialogs/Error';
+import LegacyConnection from './LegacyConnection';
+import {ConnectionProps, ThemeName, ThemeType, Width} from './types';
 
 // import './index.css';
 const cssStyle = `
@@ -76,29 +77,103 @@ body {
 }
 `;
 
-// legacy and could be deleted
-if (!window.localStorage) {
-    window.localStorage = {
-        getItem: () => null,
-        setItem: () => null,
-    };
+declare global {
+
+    interface Window {
+        io: any;
+        SocketClient: any;
+        adapterName: string;
+        socketUrl: string;
+        oldAlert: any;
+        changed: boolean;
+    }
+}
+interface GenericAppProps {
+    /** Adapter instance number if known, else will be determined from url */
+    instance?: number;
+    /** The name of the adapter. */
+    adapterName?: string;
+    /** Should the bottom buttons be shown (default: true). */
+    bottomButtons?: boolean;
+    /** Additional translations. */
+    translations?: { [lang in ioBroker.Languages]?: Record<string, string>; };
+    /** Fields that should be encrypted/decrypted. */
+    encryptedFields?: string[];
+    /** Socket.io configuration. */
+    socket?: ConnectionProps;
+    /** Desired connection object */
+    Connection?: LegacyConnection | Connection | AdminConnection;
+    /** sentry DNS */
+    sentryDSN?: string;
+    onThemeChange?: (newThemeName: ThemeName) => void;
+    classes?: Record<string, string>;
 }
 
-/**
- * @extends {Router<import('./types').GenericAppProps, import('./types').GenericAppState>}
- */
-class GenericApp extends Router {
-    /**
-     * @type {import('@iobroker/socket-client').Connection | import('@iobroker/socket-client').AdminConnection}
-     */
-    socket;
+interface GenericAppSettings extends GenericAppProps {
+    /** Don't load all objects on start-up. */
+    doNotLoadAllObjects?: boolean;
+}
+
+interface GenericAppState {
+    loaded: boolean;
+    themeType: ThemeType;
+    themeName: ThemeName;
+    theme: Theme;
+    expertMode: boolean;
+    selectedTab: string;
+    selectedTabNum: number | undefined;
+    native: Record<string, any>;
+    errorText: string | React.JSX.Element;
+    changed: boolean;
+    connected: boolean;
+    isConfigurationError: string;
+    toast: string | React.JSX.Element;
+    bottomButtons: boolean;
+    width: Width;
+    confirmClose: boolean;
+    _alert: boolean;
+    _alertType: 'info' | 'warning' | 'error' | 'success';
+    _alertMessage: string | React.JSX.Element;
+    common?: Record<string, any>;
+}
+
+class GenericApp extends Router<GenericAppProps, GenericAppState> {
+    protected socket: AdminConnection;
+
+    protected readonly instance: number;
+
+    protected readonly adapterName: string;
+
+    protected readonly instanceId: string;
+
+    protected readonly newReact: boolean;
+
+    protected encryptedFields: string[];
+
+    protected readonly sentryDSN: string | undefined;
+
+    private alertDialogRendered: boolean;
+
+    private _secret: string | undefined;
+
+    protected _systemConfig: Record<string, any> | undefined;
+
+    private savedNative: Record<string, any>;
+
+    private common: ioBroker.InstanceCommon | null = null;
+
+    private sentryStarted: boolean = false;
+
+    private sentryInited: boolean = false;
+
+    private resizeTimer: ReturnType<typeof setTimeout> | null= null;
 
     /**
      * @param {import('./types').GenericAppProps} props
      * @param {import('./types').GenericAppSettings | undefined} settings
      */
-    constructor(props, settings) {
-        const ConnectionClass = props.Connection || settings.Connection || Connection;
+    constructor(props: GenericAppProps, settings?: GenericAppSettings) {
+        const ConnectionClass: AdminConnection = (props.Connection || settings?.Connection || Connection) as unknown as AdminConnection;
         // const ConnectionClass = props.Connection === 'admin' || settings.Connection = 'admin' ? AdminConnection : (props.Connection || settings.Connection || Connection);
 
         if (!window.document.getElementById('generic-app-iobroker-component')) {
@@ -109,7 +184,7 @@ class GenericApp extends Router {
         }
 
         // Remove `!Connection.isWeb() && window.adapterName !== 'material'` when iobroker.socket will support native ws
-        if (!ConnectionClass.isWeb() && window.io && window.location.port === '3000') {
+        if (!GenericApp.isWeb() && window.io && window.location.port === '3000') {
             try {
                 const io = new window.SocketClient();
                 delete window.io;
@@ -124,7 +199,7 @@ class GenericApp extends Router {
         printPrompt();
 
         const query = (window.location.search || '').replace(/^\?/, '').replace(/#.*$/, '');
-        const args = {};
+        const args: Record<string, string | boolean> = {};
         query.trim().split('&').filter(t => t.trim()).forEach(b => {
             const parts = b.split('=');
             args[parts[0]] = parts.length === 2 ? parts[1] : true;
@@ -136,7 +211,7 @@ class GenericApp extends Router {
         });
 
         // extract instance from URL
-        this.instance = settings?.instance ?? props.instance ?? (args.instance !== undefined ? parseInt(args.instance, 10) || 0 : (parseInt(window.location.search.slice(1), 10) || 0));
+        this.instance = settings?.instance ?? props.instance ?? (args.instance !== undefined ? parseInt(args.instance as string, 10) || 0 : (parseInt(window.location.search.slice(1), 10) || 0));
         // extract adapter name from URL
         const tmp = window.location.pathname.split('/');
         this.adapterName = settings?.adapterName || props.adapterName || window.adapterName || tmp[tmp.length - 2] || 'iot';
@@ -144,12 +219,12 @@ class GenericApp extends Router {
         this.newReact = args.newReact === true; // it is admin5
 
         const location = Router.getLocation();
-        location.tab = location.tab || (window._localStorage || window.localStorage).getItem(`${this.adapterName}-adapter`) || '';
+        location.tab = location.tab || ((window as any)._localStorage || window.localStorage).getItem(`${this.adapterName}-adapter`) || '';
 
         const themeInstance = this.createTheme();
 
         this.state = {
-            selectedTab:    (window._localStorage || window.localStorage).getItem(`${this.adapterName}-adapter`) || '',
+            selectedTab:    ((window as any)._localStorage || window.localStorage).getItem(`${this.adapterName}-adapter`) || '',
             selectedTabNum: -1,
             native:         {},
             errorText:      '',
@@ -171,7 +246,7 @@ class GenericApp extends Router {
         };
 
         // init translations
-        const translations = {
+        const translations: Record<ioBroker.Languages, Record<string, string>> = {
             en: require('./i18n/en.json'),
             de: require('./i18n/de.json'),
             ru: require('./i18n/ru.json'),
@@ -187,9 +262,17 @@ class GenericApp extends Router {
 
         // merge together
         if (settings && settings.translations) {
-            Object.keys(settings.translations).forEach(lang => translations[lang] = Object.assign(translations[lang], settings.translations[lang]));
+            Object.keys(settings.translations).forEach(lang => {
+                if (settings.translations) {
+                    translations[lang as ioBroker.Languages] = Object.assign(translations[lang as ioBroker.Languages], settings.translations[lang as ioBroker.Languages] || {})
+                }
+            });
         } else if (props.translations) {
-            Object.keys(props.translations).forEach(lang => translations[lang] = Object.assign(translations[lang], props.translations[lang]));
+            Object.keys(props.translations).forEach(lang => {
+                if (props.translations) {
+                    translations[lang as ioBroker.Languages] = Object.assign(translations[lang as ioBroker.Languages], props.translations[lang as ioBroker.Languages] || {})
+                }
+            });
         }
 
         I18n.setTranslations(translations);
@@ -208,11 +291,11 @@ class GenericApp extends Router {
             }
         }
 
-        this.alerDialogRendered = false;
+        this.alertDialogRendered = false;
 
         window.oldAlert = window.alert;
         window.alert = message => {
-            if (!this.alerDialogRendered) {
+            if (!this.alertDialogRendered) {
                 window.oldAlert(message);
                 return;
             }
@@ -225,11 +308,12 @@ class GenericApp extends Router {
             }
         };
 
+        // @ts-expect-error I don't know
         this.socket = new ConnectionClass({
             ...(props?.socket || settings?.socket),
             name: this.adapterName,
             doNotLoadAllObjects: settings?.doNotLoadAllObjects,
-            onProgress: progress => {
+            onProgress: (progress: PROGRESS) => {
                 if (progress === PROGRESS.CONNECTING) {
                     this.setState({ connected: false });
                 } else if (progress === PROGRESS.READY) {
@@ -249,17 +333,19 @@ class GenericApp extends Router {
                         this._systemConfig = obj?.common || {};
                         return this.socket.getObject(this.instanceId);
                     })
-                    .then(async (instanceObj) => {
+                    .then(async (obj) => {
                         let waitPromise;
+                        const instanceObj: ioBroker.InstanceObject | null | undefined = obj as ioBroker.InstanceObject | null | undefined;
 
                         const sentryPluginEnabled = (await this.socket.getState(`${this.instanceId}.plugins.sentry.enabled`))?.val
 
                         const sentryEnabled =
                             sentryPluginEnabled !== false &&
-                            this._systemConfig.diag !== 'none' &&
+                            this._systemConfig?.diag !== 'none' &&
                             instanceObj?.common &&
                             instanceObj.common.name &&
                             instanceObj.common.version &&
+                            // @ts-expect-error will be extended in js-controller
                             !instanceObj.common.disableDataReporting &&
                             window.location.host !== 'localhost:3000';
 
@@ -317,14 +403,22 @@ class GenericApp extends Router {
                     })
                     .catch(e => window.alert(`Cannot settings: ${e}`));
             },
-            onError: err => {
+            onError: (err: string) => {
                 console.error(err);
                 this.showError(err);
             },
         });
     }
 
-    showAlert(message, type) {
+    /**
+     * Checks if this connection is running in a web adapter and not in an admin.
+     * @returns True if running in a web adapter or in a socketio adapter.
+     */
+    static isWeb(): boolean {
+        return window.socketUrl !== undefined;
+    }
+
+    showAlert(message: string, type?: 'info' | 'warning' | 'error' | 'success') {
         if (type !== 'error' && type !== 'warning' && type !== 'info' && type !== 'success') {
             type = 'info';
         }
@@ -337,7 +431,7 @@ class GenericApp extends Router {
     }
 
     renderAlertSnackbar() {
-        this.alerDialogRendered = true;
+        this.alertDialogRendered = true;
 
         return <Snackbar
             style={this.state._alertType === 'error' ?
@@ -345,19 +439,19 @@ class GenericApp extends Router {
                 (this.state._alertType === 'success' ? { backgroundColor: '#4caf50' } : undefined)}
             open={this.state._alert}
             autoHideDuration={6000}
-            onClose={reason => reason !== 'clickaway' && this.setState({ _alert: false })}
-            message={this.state.alertMessage}
+            onClose={(_e, reason) => reason !== 'clickaway' && this.setState({ _alert: false })}
+            message={this.state._alertMessage}
         />;
     }
 
-    onSystemConfigChanged = (id, obj) => {
+    onSystemConfigChanged = (id: string, obj: ioBroker.Object | null | undefined) => {
         if (obj && id === 'system.config') {
             if (this.socket.systemLang !== obj?.common.language) {
                 this.socket.systemLang = obj?.common.language || 'en';
                 I18n.setLanguage(this.socket.systemLang);
             }
 
-            if (this._systemConfig.expertMode !== !!obj?.common?.expertMode) {
+            if (this._systemConfig?.expertMode !== !!obj?.common?.expertMode) {
                 this._systemConfig = obj?.common || {};
                 this.setState({ expertMode: this.getExpertMode() });
             } else {
@@ -384,7 +478,7 @@ class GenericApp extends Router {
         super.componentWillUnmount();
     }
 
-    onReceiveMessage = message => {
+    onReceiveMessage = (message: { data: string } | null) => {
         if (message?.data) {
             if (message.data === 'updateTheme') {
                 const newThemeName = Utils.getThemeName();
@@ -423,14 +517,14 @@ class GenericApp extends Router {
      * Gets the width depending on the window inner width.
      * @returns {import('./types').Width}
      */
-    static getWidth() {
+    static getWidth(): Width {
         /**
          * innerWidth |xs      sm      md      lg      xl
          *            |-------|-------|-------|-------|------>
          * width      |  xs   |  sm   |  md   |  lg   |  xl
          */
 
-        const SIZES = {
+        const SIZES: Record<Width, number> = {
             xs: 0,
             sm: 600,
             md: 960,
@@ -439,43 +533,47 @@ class GenericApp extends Router {
         };
         const width = window.innerWidth;
         const keys = Object.keys(SIZES).reverse();
-        const widthComputed = keys.find(key => width >= SIZES[key]);
+        const widthComputed = keys.find(key => width >= SIZES[key as Width]) as Width;
 
         return widthComputed || 'xs';
     }
 
     /**
      * Get a theme
-     * @param {string} name Theme name
-     * @returns {import('./types').Theme}
+     * @param name Theme name
      */
-    createTheme(name = '') {
+    createTheme(name?: ThemeName | null | undefined): Theme {
         return theme(Utils.getThemeName(name));
     }
 
     /**
      * Get the theme name
-     * @param {import('./types').Theme} currentTheme Theme
-     * @returns {string} Theme name
      */
-    getThemeName(currentTheme) {
-        return currentTheme.name;
+    getThemeName(currentTheme: Theme): ThemeName {
+        return (currentTheme as (Theme & { name: ThemeName })).name;
     }
 
     /**
      * Get the theme type
-     * @param {import('./types').Theme} currentTheme Theme
-     * @returns {string} Theme type
      */
-    getThemeType(currentTheme) {
+    getThemeType(currentTheme: Theme): ThemeType {
         return currentTheme.palette.mode;
+    }
+
+
+    onThemeChanged(newThemeName: string) {
+
+    }
+
+    onToggleExpertMode(expertMode: boolean) {
+
     }
 
     /**
      * Changes the current theme
-     * @param {string} newThemeName Theme name
+     * @param newThemeName Theme name
      **/
-    toggleTheme(newThemeName) {
+    toggleTheme(newThemeName?: ThemeName) {
         const themeName = this.state.themeName;
 
         // dark => blue => colored => light => dark
@@ -493,8 +591,8 @@ class GenericApp extends Router {
                 themeName: this.getThemeName(newTheme),
                 themeType: this.getThemeType(newTheme),
             }, () => {
-                this.props.onThemeChange && this.props.onThemeChange(newThemeName);
-                this.onThemeChanged && this.onThemeChanged(newThemeName);
+                this.props.onThemeChange && this.props.onThemeChange(newThemeName || 'light');
+                this.onThemeChanged && this.onThemeChanged(newThemeName || 'light');
             });
         }
     }
@@ -512,7 +610,7 @@ class GenericApp extends Router {
      * @returns {boolean}
      */
     getExpertMode() {
-        return window.sessionStorage.getItem('App.expertMode') === 'true' || !!this._systemConfig.expertMode;
+        return window.sessionStorage.getItem('App.expertMode') === 'true' || !!this._systemConfig?.expertMode;
     }
 
     /**
@@ -524,26 +622,26 @@ class GenericApp extends Router {
 
     /**
      * Encrypts a string.
-     * @param {string} value
-     * @returns {string}
      */
-    encrypt(value) {
+    encrypt(value: string): string {
         let result = '';
-        for (let i = 0; i < value.length; i++) {
-            result += String.fromCharCode(this._secret[i % this._secret.length].charCodeAt(0) ^ value.charCodeAt(i));
+        if (this._secret) {
+            for (let i = 0; i < value.length; i++) {
+                result += String.fromCharCode(this._secret[i % this._secret.length].charCodeAt(0) ^ value.charCodeAt(i));
+            }
         }
         return result;
     }
 
     /**
      * Decrypts a string.
-     * @param {string} value
-     * @returns {string}
      */
-    decrypt(value) {
+    decrypt(value: string): string {
         let result = '';
-        for (let i = 0; i < value.length; i++) {
-            result += String.fromCharCode(this._secret[i % this._secret.length].charCodeAt(0) ^ value.charCodeAt(i));
+        if (this._secret) {
+            for (let i = 0; i < value.length; i++) {
+                result += String.fromCharCode(this._secret[i % this._secret.length].charCodeAt(0) ^ value.charCodeAt(i));
+            }
         }
         return result;
     }
@@ -561,20 +659,17 @@ class GenericApp extends Router {
 
     /**
      * Selects the given tab.
-     * @param {string} tab
-     * @param {number} [index]
      */
-    selectTab(tab, index) {
-        (window._localStorage || window.localStorage).setItem(`${this.adapterName}-adapter`, tab);
+    selectTab(tab: string, index?: number) {
+        ((window as any)._localStorage || window.localStorage).setItem(`${this.adapterName}-adapter`, tab);
         this.setState({ selectedTab: tab, selectedTabNum: index });
     }
 
     /**
      * Gets called before the settings are saved.
      * You may override this if needed.
-     * @param {Record<string, any>} settings
      */
-    onPrepareSave(settings) {
+    onPrepareSave(settings: Record<string, any>): boolean {
         // here you can encode values
         this.encryptedFields && this.encryptedFields.forEach(attr => {
             if (settings[attr]) {
@@ -588,10 +683,9 @@ class GenericApp extends Router {
     /**
      * Gets called after the settings are loaded.
      * You may override this if needed.
-     * @param {Record<string, any>} settings
-     * @param {string[]} encryptedNative optional list of fields to be decrypted
+     * @param encryptedNative optional list of fields to be decrypted
      */
-    onPrepareLoad(settings, encryptedNative) {
+    onPrepareLoad(settings: Record<string, any>, encryptedNative?: string[]) {
         // here you can encode values
         this.encryptedFields && this.encryptedFields.forEach(attr => {
             if (settings[attr]) {
@@ -611,54 +705,38 @@ class GenericApp extends Router {
      * Gets the extendable instances.
      * @returns {Promise<any[]>}
      */
-    getExtendableInstances() {
-        return new Promise(resolve => {
-            this.socket._socket.emit('getObjectView', 'system', 'instance', null, (err, doc) => {
-                if (err) {
-                    resolve([]);
-                } else {
-                    resolve(doc.rows
-                        .filter(item => item.value.common.webExtendable)
-                        .map(item => item.value));
-                }
-            });
-        });
+    async getExtendableInstances(): Promise<ioBroker.InstanceObject[]> {
+        try {
+            const instances = await this.socket.getObjectViewSystem('instance', 'system.adapter.', 'system.adapter.\u9999');
+            return Object.values(instances).filter(instance => !!instance?.common?.webExtendable);
+        } catch (e) {
+            return [];
+        }
     }
 
     /**
      * Gets the IP addresses of the given host.
-     * @param {string} host
      */
-    getIpAddresses(host) {
-        return new Promise(resolve => {
-            this.socket._socket.emit('getHostByIp', host || this.common.host, (ip, _host) => {
-                const IPs4 = [{ name: `[IPv4] 0.0.0.0 - ${I18n.t('ra_Listen on all IPs')}`, address: '0.0.0.0', family: 'ipv4' }];
-                const IPs6 = [{ name: '[IPv6] ::', address: '::', family: 'ipv6' }];
-                if (_host) {
-                    host = _host;
-                    if (host.native.hardware && host.native.hardware.networkInterfaces) {
-                        Object.keys(host.native.hardware.networkInterfaces).forEach(eth =>
-                            host.native.hardware.networkInterfaces[eth].forEach(inter => {
-                                if (inter.family !== 'IPv6') {
-                                    IPs4.push({ name: `[${inter.family}] ${inter.address} - ${eth}`, address: inter.address, family: 'ipv4' });
-                                } else {
-                                    IPs6.push({ name: `[${inter.family}] ${inter.address} - ${eth}`, address: inter.address, family: 'ipv6' });
-                                }
-                            }));
-                    }
-                    IPs6.forEach(_ip => IPs4.push(_ip));
-                }
-                resolve(IPs4);
-            });
-        });
+    async getIpAddresses(host: string): Promise<{ name: string; address: string; family: 'ipv4' | 'ipv6' }[]> {
+        const ips = await this.socket.getHostByIp(host || this.common?.host || '');
+        // translate names
+        const ip4_0 = ips.find(ip => ip.address === '0.0.0.0');
+        if (ip4_0) {
+            ip4_0.name = `[IPv4] 0.0.0.0 - ${I18n.t('ra_Listen on all IPs')}`
+        }
+        const ip6_0 = ips.find(ip => ip.address === '::');
+        if (ip6_0) {
+            ip6_0.name = `[IPv4] :: - ${I18n.t('ra_Listen on all IPs')}`
+        }
+        return ips;
     }
 
     /**
      * Saves the settings to the server.
-     * @param {boolean} isClose True if the user is closing the dialog.
+     * @param isClose True if the user is closing the dialog.
      */
-    onSave(isClose) {
-        let oldObj;
+    onSave(isClose?: boolean) {
+        let oldObj: ioBroker.InstanceObject;
         if (this.state.isConfigurationError) {
             this.setState({ errorText: this.state.isConfigurationError });
             return;
@@ -666,7 +744,7 @@ class GenericApp extends Router {
 
         this.socket.getObject(this.instanceId)
             .then(_oldObj => {
-                oldObj = _oldObj || {};
+                oldObj = (_oldObj || {}) as ioBroker.InstanceObject;
 
                 for (const a in this.state.native) {
                     if (Object.prototype.hasOwnProperty.call(this.state.native, a)) {
@@ -683,11 +761,11 @@ class GenericApp extends Router {
                 if (this.state.common) {
                     for (const b in this.state.common) {
                         if (this.state.common[b] === null) {
-                            oldObj.common[b] = null;
+                            (oldObj as Record<string, any>).common[b] = null;
                         } else if (this.state.common[b] !== undefined) {
-                            oldObj.common[b] = JSON.parse(JSON.stringify(this.state.common[b]));
+                            (oldObj as Record<string, any>).common[b] = JSON.parse(JSON.stringify(this.state.common[b]));
                         } else {
-                            delete oldObj.common[b];
+                            delete (oldObj as Record<string, any>).common[b];
                         }
                     }
                 }
@@ -715,7 +793,6 @@ class GenericApp extends Router {
 
     /**
      * Renders the toast.
-     * @returns {JSX.Element | null} The JSX element.
      */
     renderToast() {
         if (!this.state.toast) {
@@ -737,7 +814,7 @@ class GenericApp extends Router {
                     key="close"
                     aria-label="Close"
                     color="inherit"
-                    className={this.props.classes.close}
+                    className={this.props.classes?.close}
                     onClick={() => this.setState({ toast: '' })}
                     size="large"
                 >
@@ -754,7 +831,9 @@ class GenericApp extends Router {
     static onClose() {
         if (typeof window.parent !== 'undefined' && window.parent) {
             try {
+                // @ts-expect-error No idea how to solve it
                 if (window.parent.$iframeDialog && typeof window.parent.$iframeDialog.close === 'function') {
+                    // @ts-expect-error No idea how to solve it
                     window.parent.$iframeDialog.close();
                 } else {
                     window.parent.postMessage('close', '*');
@@ -781,7 +860,7 @@ class GenericApp extends Router {
      * Checks if the configuration has changed.
      * @param {Record<string, any>} [native] the new state
      */
-    getIsChanged(native) {
+    getIsChanged(native: Record<string, any>): boolean {
         native = native || this.state.native;
         const isChanged =  JSON.stringify(native) !== JSON.stringify(this.savedNative);
 
@@ -792,9 +871,9 @@ class GenericApp extends Router {
 
     /**
      * Gets called when loading the configuration.
-     * @param {Record<string, any>} newNative The new configuration object.
+     * @param newNative The new configuration object.
      */
-    onLoadConfig(newNative) {
+    onLoadConfig(newNative: Record<string, any>) {
         if (JSON.stringify(newNative) !== JSON.stringify(this.state.native)) {
             this.setState({ native: newNative, changed: this.getIsChanged(newNative) });
         }
@@ -802,9 +881,8 @@ class GenericApp extends Router {
 
     /**
      * Sets the configuration error.
-     * @param {string} errorText
      */
-    setConfigurationError(errorText) {
+    setConfigurationError(errorText: string) {
         if (this.state.isConfigurationError !== errorText) {
             this.setState({ isConfigurationError: errorText });
         }
@@ -848,16 +926,12 @@ class GenericApp extends Router {
 
     /**
      * @private
-     * @param {Record<string, any>} obj
-     * @param {any} attrs
-     * @param {any} value
-     * @returns {boolean | undefined}
      */
-    _updateNativeValue(obj, attrs, value) {
+    _updateNativeValue(obj: Record<string, any>, attrs: string | string[], value: any): boolean {
         if (typeof attrs !== 'object') {
             attrs = attrs.split('.');
         }
-        const attr = attrs.shift();
+        const attr: string = attrs.shift() || '';
         if (!attrs.length) {
             if (value && typeof value === 'object') {
                 if (JSON.stringify(obj[attr]) !== JSON.stringify(value)) {
@@ -883,11 +957,11 @@ class GenericApp extends Router {
 
     /**
      * Update the native value
-     * @param {string} attr The attribute name with dots as delimiter.
-     * @param {any} value The new value.
-     * @param {(() => void)} [cb] Callback which will be called upon completion.
+     * @param attr The attribute name with dots as delimiter.
+     * @param value The new value.
+     * @param cb Callback which will be called upon completion.
      */
-    updateNativeValue(attr, value, cb) {
+    updateNativeValue(attr: string, value: any, cb: () => void) {
         const native = JSON.parse(JSON.stringify(this.state.native));
         if (this._updateNativeValue(native, attr, value)) {
             const changed = this.getIsChanged(native);
@@ -906,9 +980,8 @@ class GenericApp extends Router {
 
     /**
      * Set the error text to be shown.
-     * @param {string | JSX.Element} text
      */
-    showError(text) {
+    showError(text: string | React.JSX.Element) {
         this.setState({ errorText: text });
     }
 
@@ -916,7 +989,7 @@ class GenericApp extends Router {
      * Sets the toast to be shown.
      * @param {string} toast
      */
-    showToast(toast) {
+    showToast(toast: string | React.JSX.Element) {
         this.setState({ toast });
     }
 
@@ -939,7 +1012,7 @@ class GenericApp extends Router {
      */
     render() {
         if (!this.state.loaded) {
-            return <Loader theme={this.state.themeType} />;
+            return <Loader themeType={this.state.themeType} />;
         }
 
         return <div className="App">
@@ -950,14 +1023,5 @@ class GenericApp extends Router {
         </div>;
     }
 }
-
-GenericApp.propTypes = {
-    adapterName: PropTypes.string, // (optional) name of adapter
-    onThemeChange: PropTypes.func, // (optional) called by theme change
-    socket: PropTypes.object, // (optional) socket information (host, port)
-    encryptedFields: PropTypes.array, // (optional) list of native attributes that must be encrypted
-    bottomButtons: PropTypes.bool, // If the bottom buttons (Save/Close) must be shown
-    Connection: PropTypes.object, // If the bottom buttons (Save/Close) must be shown
-};
 
 export default GenericApp;

@@ -1,16 +1,11 @@
-// please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
 
-/**
- * @template P Type of the properties' object.
- * @template S Type of the internal state object.
- * @extends {React.Component<P, S>}
- */
-class Router extends React.Component {
-    /**
-     * @param {P} props The React properties of this component.
-     */
-    constructor(props) {
+interface Router<P = {}, S = {}> extends React.Component<P, S> {}
+
+class Router<P, S> extends React.Component<P, S> {
+    protected onHashChangedBound: () => void;
+
+    constructor(props: P) {
         super(props);
         this.onHashChangedBound = this.onHashChanged.bind(this);
     }
@@ -29,9 +24,8 @@ class Router extends React.Component {
 
     /**
      * Gets the location object.
-     * @returns {{ tab: string; dialog: string; id: string; arg: string; }}
      */
-    static getLocation() {
+    static getLocation(): { tab: string; dialog: string; id: string; arg: string; } {
         let hash = window.location.hash;
         hash = hash.replace(/^#/, '');
         const parts = hash.split('/').map(item => {
@@ -53,12 +47,13 @@ class Router extends React.Component {
 
     /**
      * Navigate to a new location. Any parameters that are not set will be taken from the current location.
-     * @param {string | undefined | null} [tab]
-     * @param {string | undefined | null} [dialog]
-     * @param {string | undefined | null} [id]
-     * @param {string | undefined} [arg]
      */
-    static doNavigate(tab, dialog, id, arg) {
+    static doNavigate(
+        tab: string | undefined | null,
+        dialog?: string | null,
+        id?: string | null,
+        arg?: string | null,
+    ) {
         let hash = '';
         const location = Router.getLocation();
         if (arg !== undefined && !id) {

@@ -7,6 +7,7 @@
 import React from 'react';
 import copy from './CopyToClipboard';
 import I18n from '../i18n';
+import {ThemeName, ThemeType} from "../types";
 
 const NAMESPACE    = 'material';
 const days         = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -1287,10 +1288,8 @@ class Utils {
 
     /**
      * Get the current theme name (either from local storage or the browser settings).
-     * @param {string} [themeName]
-     * @returns {string}
      */
-    static getThemeName(themeName = '') {
+    static getThemeName(themeName?: ThemeName | null): ThemeName {
         if ((window as any).vendorPrefix && (window as any).vendorPrefix !== '@@vendorPrefix@@') {
             return (window as any).vendorPrefix;
         }
@@ -1302,7 +1301,7 @@ class Utils {
     /**
      * Get the type of theme.
      */
-    static getThemeType(themeName?: string): 'dark' | 'light' {
+    static getThemeType(themeName?: ThemeName): ThemeType {
         if ((window as any).vendorPrefix && (window as any).vendorPrefix !== '@@vendorPrefix@@') {
             return 'light';
         }
@@ -1314,7 +1313,7 @@ class Utils {
     /**
      * Set the theme name and theme type.
      */
-    static setThemeName(themeName: string): void {
+    static setThemeName(themeName: ThemeName): void {
         if ((window as any).vendorPrefix && (window as any).vendorPrefix !== '@@vendorPrefix@@') {
             return; // ignore
         }
@@ -1324,10 +1323,9 @@ class Utils {
 
     /**
      * Toggle the theme name between 'dark' and 'colored'.
-     * @param {string | null} themeName
-     * @returns {string} the new theme name.
+     * @returns the new theme name.
      */
-    static toggleTheme(themeName: string | null): string {
+    static toggleTheme(themeName: ThemeName | null): ThemeName {
         if ((window as any).vendorPrefix && (window as any).vendorPrefix !== '@@vendorPrefix@@') {
             return (window as any).vendorPrefix;
         }
@@ -1336,7 +1334,7 @@ class Utils {
         // dark => blue => colored => light => dark
         const themes = Utils.getThemeNames();
         const pos = themeName ? themes.indexOf(themeName) : -1;
-        let newTheme;
+        let newTheme: ThemeName;
         if (pos !== -1) {
             newTheme = themes[(pos + 1) % themes.length];
         } else {
@@ -1351,7 +1349,7 @@ class Utils {
      * Get the list of themes
      * @returns list of possible themes
      */
-    static getThemeNames(): string[] {
+    static getThemeNames(): ThemeName[] {
         if ((window as any).vendorPrefix && (window as any).vendorPrefix !== '@@vendorPrefix@@') {
             return [(window as any).vendorPrefix];
         }

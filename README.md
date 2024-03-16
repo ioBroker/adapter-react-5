@@ -183,7 +183,7 @@ onPrepareSave(settings) {
 ### Connection.js
 This is a non-react class to provide the communication for socket connection with the server. 
 
-### GenericApp.js
+### GenericApp.tsx
 
 ### i18n.ts
 
@@ -375,7 +375,7 @@ render() {
 }
 ```
 
-#### Router.js
+#### Router.tsx
 
 #### ObjectBrowser.js
 It is better to use `Dialog/SelectID`, but if you want:
@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Migrated GenericApp to typescript
+
 ### 4.10.4 (2024-03-16)
 * (bluefox) Migrated some components to typescript
 
