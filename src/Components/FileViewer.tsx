@@ -2,7 +2,6 @@
 // import { Buffer } from 'buffer';
 import React, { Component } from 'react';
 import { withStyles } from '@mui/styles';
-import PropTypes from 'prop-types';
 
 import {
     TextField,
@@ -22,13 +21,16 @@ import {
     Brightness6 as Brightness5Icon,
 } from '@mui/icons-material';
 
+import type { Connection } from '@iobroker/socket-client';
+
 import IconNoIcon from '../icons/IconNoIcon';
 import withWidth from './withWidth';
 import Utils from './Utils';
+import { Translator } from '../types';
 // File viewer in adapter-react does not use ace editor
 // import Editor from './Editor';
 
-const styles = () => ({
+const styles: Record<string, any> = {
     dialog: {
         height: '100%',
     },
@@ -51,7 +53,7 @@ const styles = () => ({
         justifyContent: 'space-between',
         display: 'flex',
     },
-});
+};
 
 export const EXTENSIONS = {
     images: ['png', 'jpg', 'svg', 'jpeg', 'bmp', 'gif', 'apng', 'avif', 'webp'],
@@ -61,7 +63,7 @@ export const EXTENSIONS = {
     video:  ['mp4', 'mov', 'avi'],
 };
 
-function bufferToBase64(buffer, isFull) {
+function bufferToBase64(buffer: Buffer, isFull?: boolean) {
     let binary = '';
     const bytes = new Uint8Array(buffer);
     const len = bytes.byteLength;
@@ -71,24 +73,44 @@ function bufferToBase64(buffer, isFull) {
     return window.btoa(binary);
 }
 
-/**
- * @typedef {object} FileViewerProps
- * @property {string} [key] The key to identify this component.
- * @property {import('../types').Translator} t Translation function
- * @property {ioBroker.Languages} [lang] The selected language.
- * @property {boolean} [expertMode] Is expert mode enabled? (default: false)
- * @property {() => void} onClose Callback when the viewer is closed.
- * @property {string} href The URL to the file to be displayed.
- *
- * @extends {React.Component<FileViewerProps>}
- */
-class FileViewer extends Component {
-    /**
-     * @param {Readonly<FileViewerProps>} props
-     */
-    constructor(props) {
+interface FileViewerProps {
+    /** Translation function */
+    t: Translator;
+    /** The selected language. */
+    lang?: ioBroker.Languages;
+    /**  Is expert mode enabled? (default: false) */
+    expertMode?: boolean;
+    /** Callback when the viewer is closed. */
+    onClose: () => void;
+    /** The URL (file path) to the file to be displayed. */
+    href: string;
+    formatEditFile?: string;
+    socket: Connection;
+    setStateBackgroundImage: () => void;
+    getClassBackgroundImage: () => string | null;
+    classes: Record<string, string>;
+    /** Flag is the js-controller support subscribe on file */
+    supportSubscribes?: boolean;
+}
+
+interface FileViewerState {
+    text: string | null;
+    code: string | null;
+    ext: string | null;
+    editing: boolean;
+    editingValue: string | null;
+    copyPossible: boolean;
+    forceUpdate: number;
+    changed: boolean;
+    imgError: boolean;
+}
+
+class FileViewer extends Component<FileViewerProps, FileViewerState> {
+    private timeout: ReturnType<typeof setTimeout> | null = null;
+
+    constructor(props: FileViewerProps) {
         super(props);
-        const ext = Utils.getFileExtension(this.props.href);
+        const ext = Utils.getFileExtension(props.href);
 
         this.state = {
             text: null,
@@ -97,7 +119,7 @@ class FileViewer extends Component {
             // File viewer in adapter-react does not support write
             editing: /* !!this.props.formatEditFile || */ false,
             editingValue: null,
-            copyPossible: EXTENSIONS.code.includes(ext) || EXTENSIONS.txt.includes(ext),
+            copyPossible: !!ext && (EXTENSIONS.code.includes(ext) || EXTENSIONS.txt.includes(ext)),
             forceUpdate: Date.now(),
             changed: false,
             imgError: false,
@@ -112,25 +134,26 @@ class FileViewer extends Component {
             const name = parts.splice(1).join('/');
 
             this.props.socket.readFile(adapter, name)
-                .then(data => {
-                    if (data.file !== undefined) {
-                        data = data.file;
+                .then((data: { data: Buffer; type: string } | { file: string; mimeType: string; }) => {
+                    let fileData: string = '';
+                    if ((data as { file: string; mimeType: string; }).file !== undefined) {
+                        fileData = (data as { file: string; mimeType: string; }).file;
                     }
 
-                    const newState = { copyPossible: this.state.copyPossible, ext: this.state.ext };
+                    const newState: Partial<FileViewerState> = { copyPossible: this.state.copyPossible, ext: this.state.ext };
                     // try to detect valid extension
-                    if (data.type === 'Buffer') {
+                    if ((data as { data: Buffer; type: string }).type === 'Buffer') {
                         if (name.toLowerCase().endsWith('.json5')) {
                             newState.ext = 'json5';
                             newState.copyPossible = true;
                             try {
-                                data = atob(bufferToBase64(data.data, true));
+                                fileData = atob(bufferToBase64((data as { data: Buffer; type: string }).data, true));
                             } catch (e) {
                                 console.error('Cannot convert base64 to string');
-                                data = '';
+                                fileData = '';
                             }
                         } else {
-                            const ext = Utils.detectMimeType(bufferToBase64(data.data));
+                            const ext = Utils.detectMimeType(bufferToBase64((data as { data: Buffer; type: string }).data));
                             if (ext) {
                                 newState.ext = ext;
                                 newState.copyPossible = EXTENSIONS.code.includes(ext) || EXTENSIONS.txt.includes(ext);
@@ -139,15 +162,16 @@ class FileViewer extends Component {
                     }
 
                     if (newState.copyPossible) {
-                        if (EXTENSIONS.txt.includes(newState.ext)) {
-                            newState.text = data;
-                            newState.editingValue = data;
-                        } else if (EXTENSIONS.code.includes(newState.ext)) {
-                            newState.code = data;
-                            newState.editingValue = data;
+                        if (newState.ext && EXTENSIONS.txt.includes(newState.ext)) {
+                            newState.text = fileData;
+                            newState.editingValue = fileData;
+                        } else if (newState.ext && EXTENSIONS.code.includes(newState.ext)) {
+                            newState.code = fileData;
+                            newState.editingValue = fileData;
                         }
                     }
 
+                    // @ts-expect-error I don't know how to fix it
                     this.setState(newState);
                 })
                 .catch(e => window.alert(`Cannot read file: ${e}`));
@@ -174,7 +198,7 @@ class FileViewer extends Component {
         this.props.supportSubscribes && this.props.socket.subscribeFiles(adapter, name, this.onFileChanged);
     }
 
-    onFileChanged = (id, fileName, size) => {
+    onFileChanged = (id: string, fileName: string, size: number | null) => {
         if (!this.state.changed) {
             this.timeout && clearTimeout(this.timeout);
             this.timeout = setTimeout(() => {
@@ -204,7 +228,7 @@ class FileViewer extends Component {
         */
     };
 
-    static getEditFile(ext) {
+    static getEditFile(ext: string | null) {
         switch (ext) {
             case 'json':
                 return 'json';
@@ -222,12 +246,13 @@ class FileViewer extends Component {
     }
 
     getContent() {
-        if (EXTENSIONS.images.includes(this.state.ext)) {
+        if (this.state.ext && EXTENSIONS.images.includes(this.state.ext)) {
             if (this.state.imgError) {
                 return <IconNoIcon className={Utils.clsx(this.props.classes.img, this.props.getClassBackgroundImage())} />;
             }
             return <img
                 onError={e => {
+                    // @ts-ignore-error to check
                     e.target.onerror = null;
                     this.setState({ imgError: true });
                 }}
@@ -280,7 +305,7 @@ class FileViewer extends Component {
         >
             <div className={this.props.classes.dialogTitle}>
                 <DialogTitle id="ar_dialog_file_view_title">{`${this.props.t(this.state.editing ? 'Edit' : 'View')}: ${this.props.href}`}</DialogTitle>
-                {EXTENSIONS.images.includes(this.state.ext) && <div>
+                {this.state.ext && EXTENSIONS.images.includes(this.state.ext) && <div>
                     <IconButton
                         size="large"
                         color="inherit"
@@ -296,14 +321,20 @@ class FileViewer extends Component {
             <DialogActions>
                 {this.state.copyPossible ?
                     <Button
+                        // @ts-expect-error grey is valid color
                         color="grey"
-                        onClick={e => Utils.copyToClipboard(this.state.text || this.state.code, e)}
+                        onClick={e => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            Utils.copyToClipboard(this.state.text || this.state.code || '');
+                        }}
                         startIcon={<CopyIcon />}
                     >
                         {this.props.t('Copy content')}
                     </Button> : null}
                 {this.state.editing ?
                     <Button
+                        // @ts-expect-error grey is valid color
                         color="grey"
                         disabled={this.state.editingValue === this.state.code || this.state.editingValue === this.state.text}
                         variant="contained"
@@ -325,13 +356,4 @@ class FileViewer extends Component {
     }
 }
 
-FileViewer.propTypes = {
-    t: PropTypes.func,
-    onClose: PropTypes.func,
-    href: PropTypes.string.isRequired,
-    supportSubscribes: PropTypes.bool,
-};
-
-/** @type {typeof FileViewer} */
-const _export = withWidth()(withStyles(styles)(FileViewer));
-export default _export;
+export default withWidth()(withStyles(styles)(FileViewer));

@@ -1,12 +1,11 @@
 /*
- * Copyright 2022-2023 Denis Haev (bluefox) <dogafox@gmail.com>
+ * Copyright 2022-2024 Denis Haev (bluefox) <dogafox@gmail.com>
  *
  * MIT License
  *
  */
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
 import {
@@ -22,11 +21,13 @@ import {
     Check as IconOk,
 } from '@mui/icons-material';
 
+import type { Connection } from '@iobroker/socket-client';
+
 import Utils from '../Components/Utils';
 import I18n from '../i18n';
 import FileBrowser from '../Components/FileBrowser';
 
-const styles = () => ({
+const styles: Record<string, any> = {
     headerID: {
         fontWeight: 'bold',
         fontStyle: 'italic',
@@ -55,50 +56,94 @@ const styles = () => ({
         display: 'inline-block',
         textOverflow: 'ellipsis',
     },
-});
+};
 
-/**
- * @typedef {object} DialogSelectFileProps
- * @property {boolean} [dialogName] PropTypes.string, // where to store settings in localStorage * @property {string} [title] The dialog title; default: Please select object ID... (translated)
- * @property {boolean} [multiSelect] Set to true to allow the selection of multiple IDs.
- * @property {string} [imagePrefix] Prefix (default: '.')
- * @property {boolean} [showExpertButton] Show the expert button?
- * @property {ioBroker.Languages} [lang] The language.
- * @property {import('../Connection').default} socket The socket connection.
- * @property {string} [themeName] Theme name.
- * @property {string} [themeType] Theme type.
- * @property {string | string[]} [selected] The selected IDs.
- * @property {string} [ok] The ok button text; default: OK (translated)
- * @property {string} [cancel] The cancel button text; default: Cancel (translated)
- * @property {boolean} [socket] Socket class (required)
- * @property {boolean} [allowUpload] If download of files enabled
- * @property {boolean} [allowDownload] If download of files enabled
- * @property {boolean} [allowCreateFolder] If creation of folders enabled
- * @property {boolean} [allowDelete] If creation of folders enabled
- * @property {boolean} [allowView] if tile view enabled (default true)
- * @property {boolean} [showToolbar] Show toolbar (default true)
- * @property {array} [limitPath] Limit file browser to one specific objectID of type meta and following path (like vis.0/main)
- * @property {array} [filterFiles] like `['png', 'svg', 'bmp', 'jpg', 'jpeg', 'gif']`
- * @property {string} [filterByType] images, code, txt, audio, video
- * @property {bool} [selectOnlyFolders] allow only folder's selection * @property {() => void} onClose Close handler that is always called when the dialog is closed.
- * @property {(selected: string | string[] | undefined) => void} onOk Handler that is called when the user presses OK or by double click.
- * @property {{headerID: string; dialog: string; content: string}} [classes] The styling class names.
- *
- * @extends {React.Component<DialogSelectIDProps>}
- */
-class DialogSelectFile extends React.Component {
-    /**
-     * @param {DialogSelectFileProps} props
-     */
-    constructor(props) {
+interface DialogSelectFileProps {
+    /** where to store settings in localStorage * @property {string} [title] The dialog title; default: Please select object ID... (translated) */
+    dialogName?: string;
+    /** The dialog title; default: Please select object ID... (translated) */
+    title?: string;
+    /** Set to true to allow the selection of multiple IDs. */
+    multiSelect?: boolean;
+    /** Image prefix. Normally, admin has '../..' and the web has '../' */
+    imagePrefix?: string; // Prefix (default: '.')
+    /** @deprectaed Image prefix */
+    prefix?: string;
+    /** Show the expert button? */
+    showExpertButton?: boolean;
+    /** Language */
+    lang?: ioBroker.Languages;
+    /** Socket class */
+    socket: Connection;
+    /** Theme name. */
+    themeName?: string;
+    /** Theme type. */
+    themeType?: 'dark' | 'light';
+    /** The selected IDs. */
+    selected?: string | string[];
+    /** The ok button text; default: OK (translated) */
+    ok?: string;
+    /** The cancel button text; default: Cancel (translated) */
+    cancel?: string;
+    /** If download of files enabled */
+    allowUpload?: boolean;
+    /** If download of files enabled */
+    allowDownload?: boolean;
+    /** If creation of folders enabled */
+    allowCreateFolder?: boolean;
+    /** If creation of folders enabled */
+    allowDelete?: boolean;
+    /** if tile view enabled (default true) */
+    allowView?: boolean;
+    /** Show toolbar (default true) */
+    showToolbar?: boolean;
+    /** Limit file browser to one specific objectID of type meta and the following path (like vis.0/main) */
+    limitPath?: string;
+    /** like `['png', 'svg', 'bmp', 'jpg', 'jpeg', 'gif']` */
+    filterFiles?: string[];
+    /** images, code, txt, audio, video */
+    filterByType?: 'images' | 'code' | 'txt';
+    /** allow only folder's selection */
+    selectOnlyFolders?: boolean;
+    /** Close handler that is always called when the dialog is closed. */
+    onClose: () => void;
+    /** Handler that is called when the user presses OK or by double click. */
+    onOk: (selected: string | string[] | undefined) => void;
+    /** The styling class names. */
+    classes: Record<string, string>;
+    filters: Record<string, string>;
+    /** Allow switch views Table<=>Rows */
+    showViewTypeButton?: boolean;
+     /** If type selector should be shown */
+    showTypeSelector?: boolean;
+     /** If defined, allow selecting only files from this folder */
+    restrictToFolder?: string;
+     /** If restrictToFolder defined, allow selecting files outside of this folder */
+    allowNonRestricted?: boolean;
+    /** force expert mode */
+    expertMode?: boolean;
+    /** Translate function - optional */
+    t?: (text: string, ...args: any[]) => string;
+}
+
+interface DialogSelectFileState {
+    selected: string[];
+}
+
+class DialogSelectFile extends React.Component<DialogSelectFileProps, DialogSelectFileState> {
+    private readonly dialogName: string;
+
+    private readonly filters: Record<string, string>;
+
+    constructor(props: DialogSelectFileProps) {
         super(props);
         this.dialogName = this.props.dialogName || 'default';
         this.dialogName = `SelectFile.${this.dialogName}`;
 
-        this.filters = (window._localStorage || window.localStorage).getItem(this.dialogName) || '{}';
+        const filters: string = ((window as any)._localStorage || window.localStorage).getItem(this.dialogName) || '{}';
 
         try {
-            this.filters = JSON.parse(this.filters);
+            this.filters = JSON.parse(filters);
         } catch (e) {
             this.filters = {};
         }
@@ -183,8 +228,8 @@ class DialogSelectFile extends React.Component {
                     selected={this.props.selected}
                     restrictToFolder={this.props.restrictToFolder}
                     allowNonRestricted={this.props.allowNonRestricted}
-                    onSelect={(selected, isDoubleClick, isFolder) => {
-                        this.setState({ selected }, () =>
+                    onSelect={(selected: string | string[], isDoubleClick?: boolean, isFolder?: boolean) => {
+                        this.setState({ selected: Array.isArray(selected) ? selected : [selected] }, () =>
                             isDoubleClick && (!this.props.selectOnlyFolders || isFolder) && this.handleOk());
                     }}
                     t={this.props.t || I18n.t}
@@ -198,51 +243,27 @@ class DialogSelectFile extends React.Component {
                 />
             </DialogContent>
             <DialogActions>
-                <Button variant="contained" onClick={() => this.handleOk()} startIcon={<IconOk />} disabled={!this.state.selected.length} color="primary">{this.props.ok || I18n.t('ra_Ok')}</Button>
-                <Button color="grey" variant="contained" onClick={() => this.handleCancel()} startIcon={<IconCancel />}>{this.props.cancel || I18n.t('ra_Cancel')}</Button>
+                <Button
+                    variant="contained"
+                    onClick={() => this.handleOk()}
+                    startIcon={<IconOk />}
+                    disabled={!this.state.selected.length}
+                    color="primary"
+                >
+                    {this.props.ok || I18n.t('ra_Ok')}
+                </Button>
+                <Button
+                    // @ts-expect-error grey is allowed color
+                    color="grey"
+                    variant="contained"
+                    onClick={() => this.handleCancel()}
+                    startIcon={<IconCancel />}
+                >
+                    {this.props.cancel || I18n.t('ra_Cancel')}
+                </Button>
             </DialogActions>
         </Dialog>;
     }
 }
 
-DialogSelectFile.propTypes = {
-    imagePrefix: PropTypes.string,
-    dialogName: PropTypes.string, // where to store settings in localStorage
-    selected: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.array, // not implemented
-    ]),
-    classes: PropTypes.object,
-    onClose: PropTypes.func.isRequired,
-    onOk: PropTypes.func.isRequired,
-    ok: PropTypes.string,
-    cancel: PropTypes.string,
-    socket: PropTypes.object.isRequired,
-    allowUpload: PropTypes.bool,
-    allowDownload: PropTypes.bool,
-    allowCreateFolder: PropTypes.bool,
-    allowDelete: PropTypes.bool,
-    allowView: PropTypes.bool, // allow view of files
-    showToolbar: PropTypes.bool,
-    filterFiles: PropTypes.arrayOf(PropTypes.string), // array of extensions ['png', 'svg', 'bmp', 'jpg', 'jpeg', 'gif']
-    filterByType: PropTypes.string, // e.g. images
-    limitPath: PropTypes.string,
-    selectOnlyFolders: PropTypes.bool,
-    showViewTypeButton: PropTypes.bool, // Allow switch views Table<=>Rows
-    showTypeSelector: PropTypes.bool, // If type selector should be shown
-    restrictToFolder: PropTypes.string, // If defined, allow selecting only files from this folder
-    allowNonRestricted: PropTypes.bool, // If restrictToFolder defined, allow selecting files outside of this folder
-
-    title: PropTypes.string,
-    lang: PropTypes.string,
-
-    themeName: PropTypes.string,
-    themeType: PropTypes.string,
-    showExpertButton: PropTypes.bool,
-    expertMode: PropTypes.bool, // force expert mode
-    multiSelect: PropTypes.bool, // not implemented
-};
-
-/** @type {typeof DialogSelectFile} */
-const _export = withStyles(styles)(DialogSelectFile);
-export default _export;
+export default withStyles(styles)(DialogSelectFile);

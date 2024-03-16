@@ -29,8 +29,8 @@ interface DialogErrorProps {
     onClose?: () => void;
     /* Optional style classes */
     classes?: {
-        titleBackground: string;
-        titleColor: string;
+        titleBackground?: string;
+        titleColor?: string;
     };
     /* if the dialog must be fill sized */
     fullWidth?: boolean;
@@ -80,6 +80,4 @@ class DialogError extends Component<DialogErrorProps> {
     }
 }
 
-/** @type {typeof DialogError} */
-const _export = DialogError;
-export default _export;
+export default DialogError;

@@ -21,6 +21,8 @@ export interface FileBrowserProps {
     expertMode?: boolean;
     /** Show the toolbar? (default: false) */
     showToolbar?: boolean;
+    /** If defined, allow selecting only files from this folder and subfolders */
+    limitPath?: string;
     /** Allow upload of new files? (default: false) */
     allowUpload?: boolean;
     /** Allow download of files? (default: false) */
@@ -40,13 +42,17 @@ export interface FileBrowserProps {
     /** Show the buttons to switch the view from table to tile? (default: false) */
     showViewTypeButton?: boolean;
     /** The ID of the selected file. */
-    selected?: string;
+    selected?: string | string[];
     /** The file extensions to show, like ['png', 'svg', 'bmp', 'jpg', 'jpeg', 'gif']. */
     filterFiles?: string[];
     /** The file extension categories to show. */
     filterByType?: 'images' | 'code' | 'txt';
     /** Callback for file selection. */
-    onSelect?: (id: string, isDoubleClick?: boolean) => void;
+    onSelect?: (id: string | string[], isDoubleClick?: boolean, isFolder?: boolean) => void;
+    /** Theme name */
+    themeName?: string;
+    /** Theme type. */
+    themeType?: 'dark' | 'light';
 }
 
 export interface ObjectBrowserTableFilter {

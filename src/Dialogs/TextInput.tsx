@@ -27,7 +27,7 @@ interface TextInputProps {
     labelText?: string;
     /** The text of the cancel button */
     cancelText: string;
-    /** The text of the apply button */
+    /** The text of the "apply" button */
     applyText: string;
     /** The verification callback. Return a non-empty string if there was an error */
     verify?: (text: string) => string;

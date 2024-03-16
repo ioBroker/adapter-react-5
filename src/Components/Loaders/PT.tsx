@@ -1,11 +1,10 @@
 /**
- * Copyright 2021-2023 ioBroker GmbH
+ * Copyright 2021-2024 ioBroker GmbH
  *
  * MIT License
  *
  **/
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect } from 'react';
 // import './PT.css'
 const ptStyles = `
 .logo-background-light, .logo-background-colored {
@@ -112,49 +111,38 @@ const ptStyles = `
 }
 `;
 
-/**
- * @typedef {object} LoaderPTProps
- * @property {number} [size] The size in pixels of this loader.
- * @property {string} [themeType] The chosen theme type.
- * @property {string} [theme] The chosen theme.
- *
- * @extends {React.Component<LoaderPTProps>}
- */
-class LoaderPT extends React.Component {
-    /**
-     * @param {LoaderPTProps} props
-     */
-    constructor(props) {
-        super(props);
-        this.size = this.props.size || 200;
 
+interface LoaderPTProps {
+    /** The size in pixels of this loader. */
+    size?: number;
+    /** The chosen theme type. */
+    themeType?: 'dark' | 'light';
+    /** The chosen theme name. */
+    themeName?: string;
+}
+
+function LoaderPT(props: LoaderPTProps) {
+
+    const size = props.size || 200;
+    useEffect(() => {
         if (!window.document.getElementById('pt-iobroker-component')) {
             const style = window.document.createElement('style');
             style.setAttribute('id', 'pt-iobroker-component');
             style.innerHTML = ptStyles;
             window.document.head.appendChild(style);
         }
-    }
+    }, []);
 
-    render() {
-        const theme = this.props.themeType || this.props.theme || 'light';
-        return <div className={`pt-logo-back logo-background-${theme}`}>
-            <div className="pt-logo-div" style={{ width: this.size, height: this.size }}>
-                <div style={{ width: 200, height: 200 }}>
-                    <div className="pt-loader-blue pt-loader-block" />
-                    <div className="pt-loader-green pt-loader-block" />
-                    <div className="pt-loader-red pt-loader-block" />
-                </div>
+    const themeName = props.themeType || props.themeName || 'light';
+    return <div className={`pt-logo-back logo-background-${themeName}`}>
+        <div className="pt-logo-div" style={{ width: size, height: size }}>
+            <div style={{ width: 200, height: 200 }}>
+                <div className="pt-loader-blue pt-loader-block" />
+                <div className="pt-loader-green pt-loader-block" />
+                <div className="pt-loader-red pt-loader-block" />
             </div>
-        </div>;
-    }
+        </div>
+    </div>;
 }
 
-LoaderPT.propTypes = {
-    size: PropTypes.number,
-    themeType: PropTypes.string,
-};
-
-/** @type {typeof LoaderPT} */
-const _export = LoaderPT;
-export default _export;
+export default LoaderPT;

@@ -103,6 +103,9 @@ export * from './Components/Loaders/Vendor';
 export { default as LoaderPT } from './Components/Loaders/PT';
 export * from './Components/Loaders/PT';
 
+export { default as LoaderMV } from './Components/Loaders/MV';
+export * from './Components/Loaders/MV';
+
 export { JsonConfigComponent } from '@iobroker/json-config';
 export type * from '@iobroker/json-config';
 
