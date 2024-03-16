@@ -14,7 +14,7 @@ import {
 import { FaFileUpload as UploadIcon } from 'react-icons/fa';
 
 import Utils from './Utils';
-import I18n from "../i18n";
+import I18n from '../i18n';
 
 // import 'cropperjs/dist/cropper.css';
 const cropperStyles = `

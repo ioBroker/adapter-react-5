@@ -6,6 +6,9 @@
  **/
 import React, { useEffect } from 'react';
 import { CircularProgress } from '@mui/material';
+
+import { ThemeType, ThemeName } from '../../types';
+
 // import './Vendor.css'
 const vendorStyles = `
 .logo-background-light, .logo-background-colored {
@@ -20,9 +23,13 @@ interface LoaderVendorProps {
     /** The size in pixels of this loader. */
     size?: number;
     /** The chosen theme type. */
-    themeType?: 'dark' | 'light';
+    themeType?: ThemeType;
     /** The chosen theme name. */
-    themeName?: string;
+    themeName?: ThemeName;
+    /** Background color */
+    backgroundColor?: string;
+    /** Background image URL */
+    backgroundImage?: string;
 }
 
 function LoaderVendor(props: LoaderVendorProps) {
@@ -44,6 +51,11 @@ function LoaderVendor(props: LoaderVendorProps) {
             height: '100%',
             width: '10%',
             margin: 'auto',
+            backgroundImage: (props.backgroundImage && props.backgroundImage !== '@@loginBackgroundImage@@') ? props.backgroundImage :
+                (window.loadingBackgroundImage && window.loadingBackgroundImage !== '@@loginBackgroundImage@@' ? `url(${window.loadingBackgroundImage})` : undefined),
+            backgroundColor: (props.backgroundColor && props.backgroundColor !== '@@loginBackgroundColor@@') ? props.backgroundColor :
+                (window.loadingBackgroundColor && window.loadingBackgroundColor !== '@@loginBackgroundColor@@' ? window.loadingBackgroundColor : (props.themeType === 'dark' ? '#000' : '#FFF')),
+            backgroundSize: 'cover',
         }}
     >
         <div style={{ flexGrow: 1 }} />

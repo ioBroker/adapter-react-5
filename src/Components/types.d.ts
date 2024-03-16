@@ -2,59 +2,6 @@ import { Translator, Width } from '../types';
 import Connection from '../Connection';
 import Router from './Router';
 
-export interface FileBrowserProps {
-    /** The key to identify this component. */
-    key?: string;
-    /** Additional styling for this component. */
-    style?: React.CSSProperties;
-    /** The CSS class name. */
-    className?: string;
-    /** Translation function. */
-    t: Translator;
-    /** The selected language. */
-    lang: ioBroker.Languages;
-    /** The socket connection. */
-    socket: Connection;
-    /** Is the component data ready. */
-    ready?: boolean;
-    /** Is expert mode enabled? (default: false) */
-    expertMode?: boolean;
-    /** Show the toolbar? (default: false) */
-    showToolbar?: boolean;
-    /** If defined, allow selecting only files from this folder and subfolders */
-    limitPath?: string;
-    /** Allow upload of new files? (default: false) */
-    allowUpload?: boolean;
-    /** Allow download of files? (default: false) */
-    allowDownload?: boolean;
-    /** Allow creation of new folders? (default: false) */
-    allowCreateFolder?: boolean;
-    /** Allow deleting files? (default: false) */
-    allowDelete?: boolean;
-    /** Allow viewing files? (default: false) */
-    allowView?: boolean;
-    /** Prefix (default: '.') */
-    imagePrefix?: string;
-    /** Show the expert button? */
-    showExpertButton?: boolean;
-    /** Type of view */
-    viewType?: 'Table' | 'Tile';
-    /** Show the buttons to switch the view from table to tile? (default: false) */
-    showViewTypeButton?: boolean;
-    /** The ID of the selected file. */
-    selected?: string | string[];
-    /** The file extensions to show, like ['png', 'svg', 'bmp', 'jpg', 'jpeg', 'gif']. */
-    filterFiles?: string[];
-    /** The file extension categories to show. */
-    filterByType?: 'images' | 'code' | 'txt';
-    /** Callback for file selection. */
-    onSelect?: (id: string | string[], isDoubleClick?: boolean, isFolder?: boolean) => void;
-    /** Theme name */
-    themeName?: string;
-    /** Theme type. */
-    themeType?: 'dark' | 'light';
-}
-
 export interface ObjectBrowserTableFilter {
     id?: string;
     name?: string;

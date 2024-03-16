@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 import {
     Dialog,
@@ -20,9 +19,10 @@ import {
 
 import Icon from './Icon';
 import Utils from './Utils';
+import { Translator } from '../types';
 
 // import devices from '../assets/devices/list.json';
-const devices = [
+const devices: { _id: string; name: ioBroker.StringOrTranslated; icon: string }[] = [
     {
         _id: 'hood',
         name: {
@@ -1018,7 +1018,7 @@ const devices = [
 ];
 
 // import rooms from '../assets/rooms/list.json';
-const rooms = [
+const rooms: { _id: string; name: ioBroker.StringOrTranslated; icon: string }[] = [
     {
         _id: 'storeroom',
         name: {
@@ -1965,14 +1965,41 @@ const rooms = [
     },
 ];
 
-class IconSelector extends Component {
-    constructor(props) {
+interface IconSelectorProps {
+    icons: {
+        icon?: string;
+        src?: string;
+        href?: string;
+        name?: ioBroker.StringOrTranslated;
+        _id?: string;
+    }[];
+    onlyRooms?: boolean;
+    onlyDevices?: boolean;
+    onSelect?: (icon: string) => void, // one of onSelect or onChange are required
+    onChange?: (icon: string) => void,
+    t: Translator;
+    lang: ioBroker.Languages;
+}
+
+interface IconSelectorState {
+    opened: boolean;
+    names: string[];
+    filter: string;
+    icons: string[] | null,
+    loading: boolean;
+    isAnyName: boolean
+}
+
+class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
+    constructor(props: IconSelectorProps) {
         super(props);
         this.state = {
             opened: false,
             names: [],
             filter: '',
             icons: null,
+            loading: false,
+            isAnyName: false,
         };
     }
 
@@ -1981,13 +2008,13 @@ class IconSelector extends Component {
             return;
         }
         this.setState({ loading: true }, () => {
-            const icons = [];
-            const names = [];
+            const icons: string[] = [];
+            const names: string[] = [];
 
             if (!this.props.icons) {
                 let templates = this.props.onlyRooms || (!this.props.onlyRooms && !this.props.onlyDevices) ? rooms : null;
 
-                const promises = [];
+                const promises: Promise<void>[] = [];
                 if (templates) {
                     templates.forEach(item => {
                         if (item.name && typeof item.name === 'object') {
@@ -1996,7 +2023,7 @@ class IconSelector extends Component {
                         item.name = item.name || item._id;
                     });
 
-                    templates = templates.filter((item, i) => !templates.find((_item, _i) => i !== _i && _item.icon === item.icon && _item.name === item.name));
+                    templates = templates.filter((item, i) => !templates?.find((_item, _i) => i !== _i && _item.icon === item.icon && _item.name === item.name));
 
                     templates.forEach((template, i) => {
                         let image;
@@ -2006,11 +2033,12 @@ class IconSelector extends Component {
                             return;
                         }
 
-                        names[i] = template.name;
+                        names[i] = template.name as string;
 
                         promises.push(Utils.getSvg(image)
-                            .then(icon =>
-                                icons[i] = icon));
+                            .then(icon => {
+                                icons[i] = icon;
+                            }));
                     });
                 }
 
@@ -2024,7 +2052,7 @@ class IconSelector extends Component {
                         item.name = item.name || item._id;
                     });
 
-                    templates = templates.filter((item, i) => !templates.find((_item, _i) => i !== _i && _item.icon === item.icon && _item.name === item.name));
+                    templates = templates.filter((item, i) => !templates?.find((_item, _i) => i !== _i && _item.icon === item.icon && _item.name === item.name));
 
                     templates.forEach((template, i) => {
                         let image;
@@ -2034,11 +2062,12 @@ class IconSelector extends Component {
                             return;
                         }
 
-                        names[i + offset] = template.name;
+                        names[i + offset] = template.name as string;
 
                         promises.push(Utils.getSvg(image)
-                            .then(icon =>
-                                icons[i + offset] = icon));
+                            .then(icon => {
+                                icons[i + offset] = icon;
+                            }));
                     });
                 }
                 Promise.all(promises)
@@ -2047,14 +2076,14 @@ class IconSelector extends Component {
                             icons,
                             loading: false,
                             names,
-                            isAnyName: names.find(i => i),
+                            isAnyName: !!names.find(i => i),
                         }));
             } else {
                 const promises = this.props.icons.map((item, i) => {
-                    let href;
+                    let href: string;
                     if (typeof item === 'object') {
-                        href = item.icon || item.src || item.href;
-                        names[i] = typeof item.name === 'object' ? item.name[this.props.lang] || item.name.en || item._id : item.name;
+                        href = item.icon || item.src || item.href || '';
+                        names[i] = typeof item.name === 'object' ? item.name[this.props.lang] || item.name.en || item._id || '' : (item.name || '');
                         if (!names[i]) {
                             const parts = href.split('.');
                             parts.pop();
@@ -2083,7 +2112,7 @@ class IconSelector extends Component {
                             icons,
                             loading: false,
                             names,
-                            isAnyName: names.find(i => i),
+                            isAnyName: !!names.find(i => i),
                         }));
             }
         });
@@ -2096,6 +2125,7 @@ class IconSelector extends Component {
 
         return <>
             <Button
+                // @ts-expect-error grey is valid color
                 color="grey"
                 variant="outlined"
                 title={this.props.t('ra_Select predefined icon')}
@@ -2134,12 +2164,15 @@ class IconSelector extends Component {
                             if (!this.state.filter || (this.state.names[i] && this.state.names[i].toLowerCase().includes(this.state.filter))) {
                                 return <Tooltip title={this.state.names[i] || ''} key={i}>
                                     <IconButton
-                                        onClick={() =>
-                                            this.setState({ opened: false }, () =>
-                                                (this.props.onSelect || this.props.onChange)(icon))}
+                                        onClick={() => this.setState({ opened: false }, () => {
+                                            const onApply: ((icon: string) => void) | undefined = this.props.onSelect || this.props.onChange;
+                                            if (onApply) {
+                                                onApply(icon);
+                                            }
+                                        })}
                                         size="large"
                                     >
-                                        <Icon src={icon} alt={i} style={{ width: 32, height: 32, borderRadius: 5 }} />
+                                        <Icon src={icon} alt={i.toString()} style={{ width: 32, height: 32, borderRadius: 5 }} />
                                     </IconButton>
                                 </Tooltip>;
                             }
@@ -2150,6 +2183,7 @@ class IconSelector extends Component {
                 </DialogContent>
                 <DialogActions>
                     <Button
+                        // @ts-expect-error grey is valid color
                         color="grey"
                         variant="contained"
                         onClick={() => this.setState({ opened: false })}
@@ -2163,15 +2197,4 @@ class IconSelector extends Component {
     }
 }
 
-IconSelector.propTypes = {
-    icons: PropTypes.array,
-    onlyRooms: PropTypes.bool,
-    onlyDevices: PropTypes.bool,
-    onSelect: PropTypes.func, // one of onSelect or onChange are required
-    onChange: PropTypes.func,
-    t: PropTypes.func.isRequired,
-    lang: PropTypes.string.isRequired,
-};
-
-/** @type {typeof IconSelector} */
 export default IconSelector;

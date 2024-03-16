@@ -1,11 +1,17 @@
 import React from 'react';
+import { ThemeType } from '../../types';
+
 interface LogoProps {
-    themeType?: 'dark' | 'light';
+    themeType?: ThemeType;
     size?: number;
+    /** Background color */
+    backgroundColor?: string;
+    /** Background image URL */
+    backgroundImage?: string;
 }
 
 function LoaderMV(props: LogoProps) {
-    const themeName = props.themeType || 'light';
+    const themeType = props.themeType || 'light';
     const size = props.size || 200;
 
     return <div
@@ -15,7 +21,11 @@ function LoaderMV(props: LogoProps) {
             position: 'absolute',
             top: 0,
             left: 0,
-            backgroundColor: themeName === 'dark' ? '#000' : '#FFF',
+            backgroundImage: (props.backgroundImage && props.backgroundImage !== '@@loginBackgroundImage@@') ? props.backgroundImage :
+                (window.loadingBackgroundImage && window.loadingBackgroundImage !== '@@loginBackgroundImage@@' ? `url(${window.loadingBackgroundImage})` : undefined),
+            backgroundColor: (props.backgroundColor && props.backgroundColor !== '@@loginBackgroundColor@@') ? props.backgroundColor :
+                (window.loadingBackgroundColor && window.loadingBackgroundColor !== '@@loginBackgroundColor@@' ? window.loadingBackgroundColor : (themeType === 'dark' ? '#000' : '#FFF')),
+            backgroundSize: 'cover',
         }}
     >
         <div

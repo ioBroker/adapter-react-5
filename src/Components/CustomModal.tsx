@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
 import {
     Dialog, DialogActions, DialogContent,
     DialogTitle, IconButton, TextField, Button,
+    type Theme,
 } from '@mui/material';
 
 import {
@@ -16,7 +16,7 @@ import {
 import Utils from './Utils';
 import I18n from '../i18n';
 
-const styles = theme => ({
+const styles: Record<string, any> = (theme: Theme) => ({
     modalDialog: {
         minWidth: 400,
         maxWidth: 800,
@@ -41,13 +41,55 @@ const styles = theme => ({
     },
 });
 
-const CustomModal = ({
-    open,
-    toggleTranslation, noTranslation, title, fullWidth, help, maxWidth, progress, icon, applyDisabled, applyButton, classes, onClose, children, titleButtonApply, titleButtonClose, onApply, textInput, defaultValue, overflowHidden,
-}) => {
-    const [value, setValue] = useState(defaultValue);
+interface CustomModalProps {
+    icon?: any,
+    open: boolean;
+    onClose: () => void;
+    children: React.JSX.Element | null;
+    titleButtonClose?: string,
+    titleButtonApply?: string,
+    onApply: (result: string) => void;
+    fullWidth?: boolean;
+    maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    applyButton?: boolean;
+    applyDisabled?: boolean;
+    overflowHidden?: boolean;
+    help?: string;
+    noTranslation?: boolean;
+    toggleTranslation?: () => void;
+    title?: string;
+    progress?: boolean;
+    classes: Record<string, string>;
+    textInput?: boolean;
+    defaultValue?: string;
+}
+
+const CustomModal = (props: CustomModalProps) => {
+    const {
+        open,
+        toggleTranslation,
+        noTranslation,
+        title,
+        fullWidth,
+        help,
+        maxWidth,
+        progress,
+        icon,
+        applyDisabled,
+        applyButton,
+        classes,
+        onClose,
+        children,
+        titleButtonApply,
+        titleButtonClose,
+        onApply,
+        textInput,
+        defaultValue,
+        overflowHidden,
+    } = props;
+    const [value, setValue] = useState<string>(defaultValue || '');
     useEffect(() => {
-        setValue(defaultValue);
+        setValue(defaultValue || '');
     }, [defaultValue]);
 
     let Icon = null;
@@ -94,56 +136,27 @@ const CustomModal = ({
             {help ? <div>{help}</div> : null}
         </DialogContent>
         <DialogActions>
-            {applyButton && <Button
+            {applyButton !== false && <Button
                 startIcon={<CheckIcon />}
                 disabled={progress || (applyDisabled && defaultValue === value)}
                 onClick={() => onApply(textInput ? value : '')}
                 variant="contained"
                 color="primary"
             >
-                {I18n.t(titleButtonApply)}
+                {I18n.t(titleButtonApply || 'ra_Ok')}
             </Button>}
             <Button
+                // @ts-expect-error grey is valid color
                 color="grey"
                 onClick={onClose}
                 disabled={progress}
                 variant="contained"
                 startIcon={<CloseIcon />}
             >
-                {I18n.t(titleButtonClose)}
+                {I18n.t(titleButtonClose || 'ra_Cancel')}
             </Button>
         </DialogActions>
     </Dialog>;
-};
-
-CustomModal.defaultProps = {
-    open: false,
-    onApply: () => { },
-    onClose: () => { },
-    applyButton: true,
-    applyDisabled: false,
-    titleButtonClose: 'Cancel',
-    titleButtonApply: 'Ok',
-    overflowHidden: false,
-    help: '',
-};
-
-CustomModal.propTypes = {
-    icon: PropTypes.object,
-    open: PropTypes.bool,
-    onClose: PropTypes.func,
-    children: PropTypes.any,
-    titleButtonClose: PropTypes.string,
-    titleButtonApply: PropTypes.string,
-    onApply: PropTypes.func,
-    fullWidth: PropTypes.bool,
-    maxWidth: PropTypes.string,
-    applyButton: PropTypes.bool,
-    applyDisabled: PropTypes.bool,
-    overflowHidden: PropTypes.bool,
-    help: PropTypes.string,
-    noTranslation: PropTypes.bool,
-    toggleTranslation: PropTypes.func,
 };
 
 export default withStyles(styles)(CustomModal);

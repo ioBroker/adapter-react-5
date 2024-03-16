@@ -74,7 +74,7 @@ import IconNoIcon from '../icons/IconNoIcon';
 import withWidth from './withWidth';
 
 import FileViewer, { EXTENSIONS } from './FileViewer';
-import { Translator } from '../types';
+import { ThemeName, ThemeType, Translator } from '../types';
 
 const ROW_HEIGHT   = 32;
 const BUTTON_WIDTH = 32;
@@ -488,9 +488,9 @@ export interface FileBrowserProps {
     /** Callback for file selection. */
     onSelect?: (id: string | string[], isDoubleClick?: boolean, isFolder?: boolean) => void;
     /** Theme name */
-    themeName?: string;
+    themeName?: ThemeName;
     /** Theme type. */
-    themeType?: 'dark' | 'light';
+    themeType?: ThemeType;
 
     /** Padding in pixels for folder levels */
     levelPadding?: number;

@@ -5,8 +5,8 @@
  *
  **/
 import React, { useEffect } from 'react';
+import { ThemeName, ThemeType } from '../types';
 // import './loader.css'
-
 
 declare global {
     interface Window {
@@ -245,11 +245,15 @@ interface LoaderProps {
     /** The size in pixels of this loader. */
     size?: number;
     /** The chosen theme type. */
-    themeType?: 'dark' | 'light';
+    themeType?: ThemeType;
     /** Theme name*/
-    themeName?: 'dark' | 'light' | 'colored' | 'blue';
+    themeName?: ThemeName;
     /** @deprecated Theme name. use themeName instead */
-    theme?: 'dark' | 'light' | 'colored' | 'blue';
+    theme?: ThemeName;
+    /** Background color */
+    backgroundColor?: string;
+    /** Background image URL */
+    backgroundImage?: string;
 }
 
 function Loader(props: LoaderProps) {
@@ -267,8 +271,10 @@ function Loader(props: LoaderProps) {
     return <div
         className={`logo-back logo-background-${theme}`}
         style={{
-            backgroundImage: window.loadingBackgroundImage && window.loadingBackgroundImage !== '@@loginBackgroundImage@@' ? `url(${window.loadingBackgroundImage})` : undefined,
-            backgroundColor: window.loadingBackgroundColor && window.loadingBackgroundColor !== '@@loginBackgroundColor@@' ? window.loadingBackgroundColor : undefined,
+            backgroundImage: (props.backgroundImage && props.backgroundImage !== '@@loginBackgroundImage@@') ? props.backgroundImage :
+                (window.loadingBackgroundImage && window.loadingBackgroundImage !== '@@loginBackgroundImage@@' ? `url(${window.loadingBackgroundImage})` : undefined),
+            backgroundColor: (props.backgroundColor && props.backgroundColor !== '@@loginBackgroundColor@@') ? props.backgroundColor :
+                (window.loadingBackgroundColor && window.loadingBackgroundColor !== '@@loginBackgroundColor@@' ? window.loadingBackgroundColor : undefined),
             backgroundSize: 'cover',
         }}
     >

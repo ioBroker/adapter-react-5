@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
 import {
     FormControl, InputLabel, MenuItem, Select,
 } from '@mui/material';
+
+import { ThemeType, Translator } from '../types';
 
 import Icon from './Icon';
 import Utils from './Utils';
@@ -21,44 +22,81 @@ const styles = () => ({
     },
 });
 
-class SelectWithIcon extends Component {
-    constructor(props) {
+interface SelectWithIconProps {
+    t: Translator,
+    lang: ioBroker.Languages,
+    themeType: ThemeType,
+    value?: string,
+    onChange: (id: string) => void,
+    disabled?: boolean,
+    list?: ioBroker.Object[] | Record<string, ioBroker.Object>, // one of "list"(Array) or "options"(object) is required
+    options?: Record<string, any>, // one of "list"(Array) or "options"(object) is required
+    different?: string | boolean,
+    label?: string;
+    fullWidth?: boolean,
+    className?: string;
+    style?: React.CSSProperties;
+    removePrefix?: string;
+    allowNone?: boolean,
+    inputProps: any,
+    classes: Record<string, string>;
+    dense?: boolean;
+}
+
+interface TextWithIconItem {
+    name: string;
+    value: string;
+    icon?: string;
+    color?: string;
+}
+
+interface SelectWithIconState {
+    list: TextWithIconItem[];
+}
+
+class SelectWithIcon extends Component<SelectWithIconProps, SelectWithIconState> {
+    private readonly wordDifferent: string | undefined;
+    private timeout: ReturnType<typeof setTimeout> | null = null;
+
+    constructor(props: SelectWithIconProps) {
         super(props);
 
-        if (this.props.different) {
-            this.wordDifferent = this.props.t(this.props.different);
+        if (props.different) {
+            this.wordDifferent = props.t('ra___different__');
         }
 
-        let list;
-        if (Array.isArray(this.props.list || this.props.options)) {
-            list = this.props.list.map(obj => ({
-                name: Utils.getObjectNameFromObj(obj, this.props.lang)
-                    .replace('system.group.', '')
-                    .replace('system.user.', '')
-                    .replace('enum.rooms.', '')
-                    .replace('enum.functions.', ''),
-                value: obj._id,
-                icon: obj.common?.icon,
-                color: obj.common?.color,
-            }));
+        let list: TextWithIconItem[];
+        if (Array.isArray(props.list || props.options)) {
+            list = ((props.list || props.options) as ioBroker.Object[])
+                .map(obj => ({
+                    name: Utils.getObjectNameFromObj(obj, props.lang)
+                        .replace('system.group.', '')
+                        .replace('system.user.', '')
+                        .replace('enum.rooms.', '')
+                        .replace('enum.functions.', ''),
+                    value: obj._id,
+                    icon: obj.common?.icon,
+                    color: obj.common?.color,
+                }));
         } else {
-            list = Object.values(this.props.list || this.props.options).map(obj => ({
-                name: Utils.getObjectNameFromObj(obj, this.props.lang)
-                    .replace('system.group.', '')
-                    .replace('system.user.', '')
-                    .replace('enum.rooms.', '')
-                    .replace('enum.functions.', ''),
-                value: obj._id,
-                icon: obj.common?.icon,
-                color: obj.common?.color,
-            }));
+            list = Object.values((props.list || props.options) as Record<string, ioBroker.Object>)
+                .map(obj => ({
+                    name: Utils.getObjectNameFromObj(obj, props.lang)
+                        .replace('system.group.', '')
+                        .replace('system.user.', '')
+                        .replace('enum.rooms.', '')
+                        .replace('enum.functions.', ''),
+                    value: obj._id,
+                    icon: obj.common?.icon,
+                    color: obj.common?.color,
+                }));
         }
 
-        if (this.props.different && this.props.value === this.props.different) {
-            list.unshift({ value: this.props.different, name: this.wordDifferent });
+        if (props.different && props.value === props.different) {
+            list.unshift({ value: props.different, name: this.wordDifferent || '' });
         }
 
-        if (this.props.allowNone) {
+        if (props.allowNone) {
             list.unshift({ value: '', name: I18n.t('ra_none') });
         }
 
@@ -87,11 +125,10 @@ class SelectWithIcon extends Component {
 
         const item = this.state.list.find(it => it.value === this.props.value || (this.props.removePrefix && it.value.replace(this.props.removePrefix, '') === this.props.value));
 
-        const style = this.props.value === this.props.different ? {} :
-            {
-                color: item?.color || undefined,
-                backgroundColor: Utils.getInvertedColor(item?.color, this.props.themeType),
-            };
+        const style = this.props.value === this.props.different ? {} : {
+            color: item?.color || undefined,
+            backgroundColor: Utils.getInvertedColor(item?.color || '', this.props.themeType),
+        };
 
         if (this.props.dense && this.props.style) {
             Object.assign(style, this.props.style);
@@ -135,7 +172,7 @@ class SelectWithIcon extends Component {
         >
             {this.state.list.map(el => <MenuItem
                 className={this.props.different && el.value === this.props.different ? this.props.classes.different : ''}
-                style={this.props.different && el.value === this.props.different ? {} : { color: el.color || undefined, backgroundColor: Utils.getInvertedColor(el.color, this.props.themeType) }}
+                style={this.props.different && el.value === this.props.different ? {} : { color: el.color || undefined, backgroundColor: Utils.getInvertedColor(el.color || '', this.props.themeType) }}
                 key={el.value}
                 value={el.value}
             >
@@ -154,24 +191,5 @@ class SelectWithIcon extends Component {
         </FormControl>;
     }
 }
-
-SelectWithIcon.propTypes = {
-    t: PropTypes.func.isRequired,
-    lang: PropTypes.string.isRequired,
-    themeType: PropTypes.string,
-    value: PropTypes.string,
-    onChange: PropTypes.func.isRequired,
-    disabled: PropTypes.bool,
-    list: PropTypes.oneOfType([PropTypes.array, PropTypes.object]), // one of "list"(Array) or "options"(object) is required
-    options: PropTypes.oneOfType([PropTypes.array, PropTypes.object]), // one of "list"(Array) or "options"(object) is required
-    different: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-    label: PropTypes.string,
-    fullWidth: PropTypes.bool,
-    className: PropTypes.string,
-    style: PropTypes.object,
-    removePrefix: PropTypes.string,
-    allowNone: PropTypes.bool,
-    inputProps: PropTypes.object,
-};
 
 export default withStyles(styles)(SelectWithIcon);
