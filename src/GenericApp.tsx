@@ -229,6 +229,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
         const themeInstance = this.createTheme();
 
         this.state = {
+            ...(this.state || {}), // keep the existing state
             selectedTab:    ((window as any)._localStorage || window.localStorage).getItem(`${this.adapterName}-adapter`) || '',
             selectedTabNum: -1,
             native:         {},
