@@ -149,6 +149,10 @@
             }
           ]
         },
+        "color": {
+          "description": "Color of the link",
+          "type": "string"
+        },
         "icon": {
           "description": "icon for button",
           "type": "string"
@@ -188,7 +192,6 @@
         "confirm": true,
         "button": true
       },
-      "additionalProperties": false,
       "required": [
         "type",
         "href"
@@ -2918,6 +2921,10 @@
               }
             },
             "then": {
+              "additionalProperties": false,
+              "required": [
+                "type"
+              ],
               "allOf": [
                 {
                   "$ref": "#/definitions/tableItemBaseProps"
@@ -2925,7 +2932,44 @@
                 {
                   "$ref": "#/definitions/staticLinkProps"
                 }
-              ]
+              ],
+              "properties": {
+                "href": true,
+                "text": true,
+                "color": true,
+                "icon": true,
+                "variant": true,
+                "attr": true,
+                "width": true,
+                "title": true,
+                "filter": true,
+                "sort": true,
+                "label": true,
+                "type": true,
+                "defaultSendTo": true,
+                "sm": true,
+                "md": true,
+                "lg": true,
+                "xs": true,
+                "newLine": true,
+                "hidden": true,
+                "hideOnlyControl": true,
+                "disabled": true,
+                "helpLink": true,
+                "help": true,
+                "style": true,
+                "darkStyle": true,
+                "validator": true,
+                "validatorNoSaveOnError": true,
+                "validatorErrorText": true,
+                "noMultiEdit": true,
+                "tooltip": true,
+                "default": true,
+                "defaultFunc": true,
+                "onChange": true,
+                "noTranslation": true,
+                "confirm": true
+              }
             }
           },
           {
