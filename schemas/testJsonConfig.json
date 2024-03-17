@@ -2,6 +2,7 @@
   "$schema": "jsonConfig.json",
   "type": "tabs",
   "i18n": true,
+  "iconPosition": "bottom",
   "items": {
     "mainTab": {
       "type": "panel",
