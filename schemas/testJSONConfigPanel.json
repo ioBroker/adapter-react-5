@@ -2,7 +2,6 @@
   "$schema": "jsonConfig.json",
   "type": "panel",
   "i18n": true,
-  "iconPosition": "bottom",
   "items": {
     "demoPattern": {
       "label": "Pattern",

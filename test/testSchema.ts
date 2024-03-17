@@ -65,6 +65,35 @@ const expectedErrorsPerTest = {
                 "failingKeyword": "then"
             },
             "message": "must match \"then\" schema"
+        },
+        {
+            "instancePath": "",
+            "schemaPath": "#/if",
+            "keyword": "if",
+            "params": {
+                "failingKeyword": "then"
+            },
+            "message": "must match \"then\" schema"
+        }
+    ],
+    'testFailJsonConfigPanel.json': [
+        {
+            "instancePath": "",
+            "schemaPath": "#/else/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+                "additionalProperty": "iconPosition"
+            },
+            "message": "must NOT have additional properties"
+        },
+        {
+            "instancePath": "",
+            "schemaPath": "#/if",
+            "keyword": "if",
+            "params": {
+                "failingKeyword": "else"
+            },
+            "message": "must match \"else\" schema"
         }
     ]
 } as const;
@@ -74,7 +103,7 @@ const expectedErrorsPerTest = {
  * Tests which should be failed
  */
 function failingTests(): void {
-    for (const fileName of ['testFailJsonConfig.json'] as const) {
+    for (const fileName of ['testFailJsonConfig.json', 'testFailJsonConfigPanel.json'] as const) {
         const content = fs.readFileSync(path.join(basePath, fileName), {encoding: 'utf-8'});
         const config = JSON.parse(content);
         const valid = validate(config);
