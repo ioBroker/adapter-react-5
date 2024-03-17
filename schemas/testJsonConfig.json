@@ -566,6 +566,12 @@
           "lg": 12,
           "items": [
             {
+              "type": "header",
+              "attr": "_header",
+              "text": "Headline",
+              "size": 4
+            },
+            {
               "type": "text",
               "attr": "name",
               "label": "Name",
