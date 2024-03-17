@@ -78,6 +78,8 @@ body {
 `;
 
 declare global {
+    /** If config has been changed */
+    var changed: boolean;
 
     interface Window {
         io: any;
@@ -137,7 +139,7 @@ interface GenericAppState {
     common?: Record<string, any>;
 }
 
-class GenericApp extends Router<GenericAppProps, GenericAppState> {
+class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extends GenericAppState = GenericAppState> extends Router<TProps, TState> {
     protected socket: AdminConnection;
 
     protected readonly instance: number;
@@ -172,7 +174,7 @@ class GenericApp extends Router<GenericAppProps, GenericAppState> {
      * @param {import('./types').GenericAppProps} props
      * @param {import('./types').GenericAppSettings | undefined} settings
      */
-    constructor(props: GenericAppProps, settings?: GenericAppSettings) {
+    constructor(props: TProps, settings?: GenericAppSettings) {
         const ConnectionClass: AdminConnection = (props.Connection || settings?.Connection || Connection) as unknown as AdminConnection;
         // const ConnectionClass = props.Connection === 'admin' || settings.Connection = 'admin' ? AdminConnection : (props.Connection || settings.Connection || Connection);
 
@@ -222,8 +224,10 @@ class GenericApp extends Router<GenericAppProps, GenericAppState> {
         location.tab = location.tab || ((window as any)._localStorage || window.localStorage).getItem(`${this.adapterName}-adapter`) || '';
 
         const themeInstance = this.createTheme();
+        const prevState = this.state || {};
 
         this.state = {
+            ...prevState,
             selectedTab:    ((window as any)._localStorage || window.localStorage).getItem(`${this.adapterName}-adapter`) || '',
             selectedTabNum: -1,
             native:         {},
