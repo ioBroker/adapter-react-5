@@ -10,70 +10,73 @@ import { withStyles } from '@mui/styles';
 import SVG from 'react-inlinesvg';
 
 import {
-    IconButton,
-    CircularProgress,
-    MenuItem,
-    Select,
-    FormControl,
-    Input,
-    Grid,
     Badge,
-    Tooltip,
-    Snackbar,
+    Button,
     Checkbox,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Fab,
+    FormControl,
+    FormControlLabel,
+    Grid,
+    IconButton,
+    Input,
     List,
     ListItem,
     ListItemButton,
     ListItemIcon,
     ListItemSecondaryAction,
     ListItemText,
-    DialogTitle,
-    Dialog,
-    DialogContent,
-    DialogContentText,
-    DialogActions,
-    Button,
-    Fab,
+    Menu,
+    MenuItem,
+    Select,
+    Snackbar,
+    Switch,
     TextField,
-    FormControlLabel,
-    Switch, Menu,
+    Tooltip,
 } from '@mui/material';
 
 // Icons
 import {
-    Edit as IconEdit,
-    FindInPage,
+    Add as AddIcon,
+    ArrowRight as ArrowRightIcon,
+    BedroomParent,
+    BorderColor,
+    Build as BuildIcon,
+    CalendarToday as IconSchedule,
+    Check as IconCheck,
+    Close as IconClose,
+    Code as IconScript,
     Construction,
-    Link as IconLink,
-    FormatItalic as IconValueEdit,
+    CreateNewFolder as IconFolder,
     Delete as IconDelete,
+    Description as IconMeta,
+    Edit as IconEdit,
+    Error as IconError,
+    FindInPage,
+    FormatItalic as IconValueEdit,
+    Info as IconInfo,
+    Link as IconLink,
+    ListAlt as IconEnum,
+    LooksOne as LooksOneIcon,
+    PersonOutlined as IconUser,
+    Photo as IconPhoto,
+    Publish as PublishIcon,
+    Refresh as RefreshIcon,
+    RoomService as PressButtonIcon,
+    Router as IconHost,
     Settings as IconConfig,
     SettingsApplications as IconSystem,
-    Photo as IconPhoto,
-    SupervisedUserCircle as IconGroup,
-    CalendarToday as IconSchedule,
-    PersonOutlined as IconUser,
-    Router as IconHost,
-    Wifi as IconConnection,
-    Info as IconInfo,
-    Description as IconMeta,
-    Code as IconScript,
     ShowChart as IconChart,
-    ListAlt as IconEnum,
-    ViewColumn as IconColumns,
-    Close as IconClose,
-    Check as IconCheck,
-    Build as BuildIcon,
-    Publish as PublishIcon,
-    Add as AddIcon,
-    Refresh as RefreshIcon,
-    LooksOne as LooksOneIcon,
-    RoomService as PressButtonIcon,
-    Error as IconError,
-    WifiOff as IconDisconnected,
+    SupervisedUserCircle as IconGroup,
     TextFields as TextFieldsIcon,
-    BorderColor,
-    BedroomParent,
+    ViewColumn as IconColumns,
+    Wifi as IconConnection,
+    WifiOff as IconDisconnected,
 } from '@mui/icons-material';
 
 import IconExpert from '../icons/IconExpert';
@@ -91,6 +94,7 @@ import IconOpen from '../icons/IconOpen';
 import IconClearFilter from '../icons/IconClearFilter';
 
 // own
+import Connection from '../Connection';
 import Icon from './Icon';
 import withWidth from './withWidth';
 import Utils from './Utils';
@@ -533,7 +537,7 @@ const styles = theme => ({
         marginTop: -2,
     },
     cellButtonsButtonWithCustoms: {
-        color: theme.palette.secondary.main,
+        color: theme.palette.mode === 'dark' ? theme.palette.primary.main : theme.palette.secondary.main,
     },
     cellButtonsButtonWithoutCustoms: {
         opacity: 0.2,
@@ -795,6 +799,9 @@ const styles = theme => ({
         marginLeft: theme.spacing(1),
         opacity: 0.7,
         fontSize: 'smaller',
+    },
+    contextMenuWithSubMenu: {
+        display: 'flex',
     },
 });
 
@@ -1356,7 +1363,7 @@ function buildTree(objects, options) {
         do {
             repeat = false;
 
-            // If current level is still OK, and we can add ID to children
+            // If the current level is still OK, and we can add ID to children
             if (!currentPath || id.startsWith(`${currentPath}.`)) {
                 // if more than one level added
                 if (parts.length - currentPathLen > 1) {
@@ -2129,6 +2136,15 @@ class ObjectBrowser extends Component {
             aclEveryone_read_state:   props.t('ra_aclEveryone_read_state'),
             aclEveryone_write_object: props.t('ra_aclEveryone_write_object'),
             aclEveryone_write_state:  props.t('ra_aclEveryone_write_state'),
+
+            create:                   props.t('ra_Create'),
+            createBooleanState:       props.t('ra_create_boolean_state'),
+            createNumberState:        props.t('ra_create_number_state'),
+            createStringState:        props.t('ra_create_string_state'),
+            createState:              props.t('ra_create_state'),
+            createChannel:            props.t('ra_create_channel'),
+            createDevice:             props.t('ra_create_device'),
+            createFolder:             props.t('ra_Create folder'),
         };
 
         this.levelPadding = props.levelPadding || ITEM_LEVEL;
@@ -2159,140 +2175,129 @@ class ObjectBrowser extends Component {
         this.calculateColumnsVisibility();
     }
 
-    loadAllObjects(update) {
+    async loadAllObjects(update) {
         const props = this.props;
-        let objects;
 
-        return new Promise(resolve => {
-            this.setState({ updating: true }, () => resolve());
-        })
-            .then(() =>
-                (this.props.objectsWorker
-                    ? this.props.objectsWorker.getObjects(update)
-                    : props.socket.getObjects(update, true)))
-            .then(_objects => {
-                objects = _objects;
-                if (props.types && props.types[0] !== 'state') {
-                    if (props.length >= 1) {
-                        console.error('more than one type does not supported! Use filterFunc instead');
-                    }
-                    return props.socket.getObjectViewSystem(props.types[0], null, null);
-                }
-                return !objects['system.config']
-                    ? props.socket.getObject('system.config').then(obj => ({ 'system.config': obj }))
-                    : Promise.resolve(null);
-            })
-            .then(moreObjects => {
-                this.systemConfig = objects['system.config'] || moreObjects['system.config'] || {};
+        try {
+            await new Promise(resolve => {
+                this.setState({ updating: true }, () => resolve());
+            });
 
-                if (moreObjects) {
-                    if (moreObjects['system.config']) {
-                        delete moreObjects['system.config'];
+            const objects = this.props.objectsWorker ? (await this.props.objectsWorker.getObjects(update)) : (await props.socket.getObjects(update, true));
+            if (props.types && Connection.isWeb()) {
+                for (let i = 0; i < props.types.length; i++) {
+                    // admin has ALL objects
+                    // web has only state, channel, device, enum, and system.config
+                    if (props.types[i] === 'state' || props.types[i] === 'channel' || props.types[i] === 'device' || props.types[i] === 'enum') {
+                        continue;
                     }
+                    const moreObjects = await props.socket.getObjectViewSystem(props.types[i], null, null);
                     Object.assign(objects, moreObjects);
                 }
+            }
 
-                this.systemConfig.common = this.systemConfig.common || {};
-                this.systemConfig.common.defaultNewAcl = this.systemConfig.common.defaultNewAcl || {};
-                this.systemConfig.common.defaultNewAcl.owner =
-                    this.systemConfig.common.defaultNewAcl.owner || 'system.user.admin';
-                this.systemConfig.common.defaultNewAcl.ownerGroup =
-                    this.systemConfig.common.defaultNewAcl.ownerGroup || 'system.group.administrator';
-                if (typeof this.systemConfig.common.defaultNewAcl.state !== 'number') {
-                    // TODO: may be convert here from string
-                    this.systemConfig.common.defaultNewAcl.state = 0x664;
-                }
-                if (typeof this.systemConfig.common.defaultNewAcl.object !== 'number') {
-                    // TODO: may be convert here from string
-                    this.systemConfig.common.defaultNewAcl.state = 0x664;
-                }
+            this.systemConfig = this.systemConfig || objects['system.config'] || (await props.socket.getObject('system.config'));
 
-                if (typeof props.filterFunc === 'function') {
-                    this.objects = {};
-                    Object.keys(objects).forEach(id => {
-                        try {
-                            if (props.filterFunc(objects[id])) {
-                                this.objects[id] = objects[id];
-                            }
-                        } catch (e) {
-                            console.log(`Error by filtering of "${id}": ${e}`);
-                        }
-                    });
-                } else if (props.types) {
-                    this.objects = {};
-                    Object.keys(objects).forEach(id => {
-                        const type = objects[id] && objects[id].type;
-                        // include "folder" types too
-                        if (
-                            type &&
-                            (type === 'channel' ||
-                                type === 'device' ||
-                                type === 'enum' ||
-                                type === 'folder' ||
-                                type === 'adapter' ||
-                                type === 'instance' ||
-                                props.types.includes(type))
-                        ) {
+            this.systemConfig.common = this.systemConfig.common || {};
+            this.systemConfig.common.defaultNewAcl = this.systemConfig.common.defaultNewAcl || {};
+            this.systemConfig.common.defaultNewAcl.owner =
+                this.systemConfig.common.defaultNewAcl.owner || 'system.user.admin';
+            this.systemConfig.common.defaultNewAcl.ownerGroup =
+                this.systemConfig.common.defaultNewAcl.ownerGroup || 'system.group.administrator';
+            if (typeof this.systemConfig.common.defaultNewAcl.state !== 'number') {
+                // TODO: may be convert here from string
+                this.systemConfig.common.defaultNewAcl.state = 0x664;
+            }
+            if (typeof this.systemConfig.common.defaultNewAcl.object !== 'number') {
+                // TODO: may be convert here from string
+                this.systemConfig.common.defaultNewAcl.state = 0x664;
+            }
+
+            if (typeof props.filterFunc === 'function') {
+                this.objects = {};
+                Object.keys(objects).forEach(id => {
+                    try {
+                        if (props.filterFunc(objects[id])) {
                             this.objects[id] = objects[id];
                         }
-                    });
-                } else {
-                    this.objects = objects;
-                }
+                    } catch (e) {
+                        console.log(`Error by filtering of "${id}": ${e}`);
+                    }
+                });
+            } else if (props.types) {
+                this.objects = {};
+                Object.keys(objects).forEach(id => {
+                    const type = objects[id] && objects[id].type;
+                    // include "folder" types too
+                    if (
+                        type &&
+                        (type === 'channel' ||
+                            type === 'device' ||
+                            type === 'enum' ||
+                            type === 'folder' ||
+                            type === 'adapter' ||
+                            type === 'instance' ||
+                            props.types.includes(type))
+                    ) {
+                        this.objects[id] = objects[id];
+                    }
+                });
+            } else {
+                this.objects = objects;
+            }
 
-                // read default history
-                this.defaultHistory = this.systemConfig.common.defaultHistory;
-                if (this.defaultHistory) {
-                    props.socket
-                        .getState(`system.adapter.${this.defaultHistory}.alive`)
-                        .then(state => {
-                            if (!state || !state.val) {
-                                this.defaultHistory = '';
-                            }
-                        })
-                        .catch(e => window.alert(`Cannot get state: ${e}`));
-                }
+            // read default history
+            this.defaultHistory = this.systemConfig.common.defaultHistory;
+            if (this.defaultHistory) {
+                props.socket
+                    .getState(`system.adapter.${this.defaultHistory}.alive`)
+                    .then(state => {
+                        if (!state || !state.val) {
+                            this.defaultHistory = '';
+                        }
+                    })
+                    .catch(e => window.alert(`Cannot get state: ${e}`));
+            }
 
-                return this.getAdditionalColumns();
-            })
-            .then(columnsForAdmin => {
-                this.calculateColumnsVisibility(null, null, columnsForAdmin);
+            const columnsForAdmin = await this.getAdditionalColumns();
+            this.calculateColumnsVisibility(null, null, columnsForAdmin);
 
-                const { info, root } = buildTree(this.objects, this.props);
-                this.root = root;
-                this.info = info;
+            const { info, root } = buildTree(this.objects, this.props);
+            this.root = root;
+            this.info = info;
 
-                // Show first selected item
-                const node =
-                    this.state.selected && this.state.selected.length && findNode(this.root, this.state.selected[0]);
+            // Show first selected item
+            const node =
+                this.state.selected && this.state.selected.length && findNode(this.root, this.state.selected[0]);
 
-                this.lastAppliedFilter = null;
+            this.lastAppliedFilter = null;
 
-                // If the selected ID is not visible, reset filter
-                if (
-                    node &&
-                    !applyFilter(
-                        node,
-                        this.state.filter,
-                        this.props.lang,
-                        this.objects,
-                        null,
-                        null,
-                        props.customFilter,
-                        props.types,
-                    )
-                ) {
-                    // reset filter
-                    this.setState({ filter: { ...DEFAULT_FILTER }, columnsForAdmin }, () => {
-                        this.setState({ loaded: true, updating: false }, () =>
-                            this.expandAllSelected(() => this.onAfterSelect()));
-                    });
-                } else {
-                    this.setState({ loaded: true, updating: false, columnsForAdmin }, () =>
+            // If the selected ID is not visible, reset filter
+            if (
+                node &&
+                !applyFilter(
+                    node,
+                    this.state.filter,
+                    this.props.lang,
+                    this.objects,
+                    null,
+                    null,
+                    props.customFilter,
+                    props.types,
+                )
+            ) {
+                // reset filter
+                this.setState({ filter: { ...DEFAULT_FILTER }, columnsForAdmin }, () => {
+                    this.setState({ loaded: true, updating: false }, () =>
                         this.expandAllSelected(() => this.onAfterSelect()));
-                }
-            })
-            .catch(e => this.showError(e));
+                });
+            } else {
+                this.setState({ loaded: true, updating: false, columnsForAdmin }, () =>
+                    this.expandAllSelected(() => this.onAfterSelect()));
+            }
+        } catch (e1) {
+            this.showError(e1);
+        }
     }
 
     /**
@@ -2459,7 +2464,10 @@ class ObjectBrowser extends Component {
         // console.log(`CONTEXT MENU: ${this.contextMenu ? Date.now() - this.contextMenu.ts : 'false'}`);
         if (this.contextMenu && Date.now() - this.contextMenu.ts < 2000) {
             e.preventDefault();
-            this.setState({ showContextMenu: this.contextMenu.item });
+            this.setState({ showContextMenu: { item: this.contextMenu.item } });
+        } else if (this.state.showContextMenu) {
+            e.preventDefault();
+            this.setState({ showContextMenu: null });
         }
         this.contextMenu = null;
     };
@@ -4120,7 +4128,11 @@ class ObjectBrowser extends Component {
                         <div>
                             <IconButton
                                 disabled={!allowObjectCreation}
-                                onClick={() => this.setState({ modalNewObj: true })}
+                                onClick={() => this.setState({
+                                    modalNewObj: {
+                                        id: this.state.selected[0] || this.state.selectedNonObject,
+                                    },
+                                })}
                                 size="large"
                             >
                                 <AddIcon />
@@ -6539,6 +6551,17 @@ class ObjectBrowser extends Component {
         />;
     }
 
+    showAddDataPointDialog(id, initialType, initialStateType) {
+        this.setState({
+            showContextMenu: null,
+            modalNewObj: {
+                id,
+                initialType,
+                initialStateType,
+            },
+        });
+    }
+
     /**
      * Renders the right mouse button context menu
      *
@@ -6549,7 +6572,7 @@ class ObjectBrowser extends Component {
         if (!this.state.showContextMenu) {
             return null;
         }
-        const item = this.state.showContextMenu;
+        const item = this.state.showContextMenu.item;
         const id = item.data.id;
         const items = [];
         // const ctrl = isIOS() ? '⌘' : (this.props.lang === 'de' ? 'Strg+' : 'Ctrl+');
@@ -6577,6 +6600,11 @@ class ObjectBrowser extends Component {
 
         const enumEditable = !this.props.notEditable && obj &&
             (this.state.filter.expertMode || obj.type === 'state' || obj.type === 'channel' || obj.type === 'device');
+
+        const createStateVisible = !item.data.obj || item.data.obj.type === 'folder'  || item.data.obj.type === 'channel' || item.data.obj.type === 'device' || item.data.id === '0_userdata.0' || item.data.obj.type === 'meta';
+        const createChannelVisible = !item.data.obj || item.data.obj.type === 'folder' || item.data.obj.type === 'device' || item.data.id === '0_userdata.0' || item.data.obj.type === 'meta';
+        const createDeviceVisible = !item.data.obj || item.data.obj.type === 'folder' || item.data.id === '0_userdata.0' || item.data.obj.type === 'meta';
+        const createFolderVisible = !item.data.obj || item.data.obj.type === 'folder' || item.data.id === '0_userdata.0' || item.data.obj.type === 'meta';
 
         const ITEMS = {
             EDIT: {
@@ -6725,6 +6753,58 @@ class ObjectBrowser extends Component {
                     }
                 },
             },
+            CREATE: {
+                key: '+',
+                visibility: (item.data.id.startsWith('0_userdata.0') || item.data.id.startsWith('javascript.')) &&
+                    (createStateVisible || createChannelVisible || createDeviceVisible || createFolderVisible),
+                icon: <AddIcon fontSize="small" className={this.props.classes.cellButtonsButtonWithCustoms} />,
+                className: this.props.classes.contextMenuWithSubMenu,
+                label: this.texts.create,
+                subMenu: [
+                    {
+                        label: this.texts.createBooleanState,
+                        visibility: createStateVisible,
+                        icon: <IconState fontSize="small" />,
+                        onClick: () => this.showAddDataPointDialog(item.data.id, 'state', 'boolean'),
+                    },
+                    {
+                        label: this.texts.createNumberState,
+                        visibility: createStateVisible,
+                        icon: <IconState fontSize="small" />,
+                        onClick: () => this.showAddDataPointDialog(item.data.id, 'state', 'number'),
+                    },
+                    {
+                        label: this.texts.createStringState,
+                        visibility: createStateVisible,
+                        icon: <IconState fontSize="small" />,
+                        onClick: () => this.showAddDataPointDialog(item.data.id, 'state', 'string'),
+                    },
+                    {
+                        label: this.texts.createState,
+                        visibility: createStateVisible,
+                        icon: <IconState fontSize="small" />,
+                        onClick: () => this.showAddDataPointDialog(item.data.id, 'state'),
+                    },
+                    {
+                        label: this.texts.createChannel,
+                        visibility: createChannelVisible,
+                        icon: <IconChannel fontSize="small" />,
+                        onClick: () => this.showAddDataPointDialog(item.data.id, 'channel'),
+                    },
+                    {
+                        label: this.texts.createDevice,
+                        visibility: createDeviceVisible,
+                        icon: <IconDevice fontSize="small" />,
+                        onClick: () => this.showAddDataPointDialog(item.data.id, 'device'),
+                    },
+                    {
+                        label: this.texts.createFolder,
+                        icon: <IconFolder fontSize="small" />,
+                        visibility: createFolderVisible,
+                        onClick: () => this.showAddDataPointDialog(item.data.id, 'folder'),
+                    },
+                ],
+            },
             DELETE: {
                 key: 'Delete',
                 visibility: this.props.onObjectDelete && (item.children?.length || (obj && !obj.common?.dontDelete)),
@@ -6738,15 +6818,56 @@ class ObjectBrowser extends Component {
 
         Object.keys(ITEMS).forEach(key => {
             if (ITEMS[key].visibility) {
-                items.push(<MenuItem key={key} onClick={ITEMS[key].onClick} className={ITEMS[key].className}>
-                    <ListItemIcon style={ITEMS[key].iconStyle} className={ITEMS[key].listItemIconClass}>
-                        {ITEMS[key].icon}
-                    </ListItemIcon>
-                    <ListItemText>{ITEMS[key].label}</ListItemText>
-                    {ITEMS[key].key ? <div className={this.props.classes.contextMenuKeys}>
-                        {`Alt+${ITEMS[key].key === 'Delete' ? this.props.t('ra_Del') : ITEMS[key].key}`}
-                    </div> : null}
-                </MenuItem>);
+                if (ITEMS[key].subMenu) {
+                    items.push(<MenuItem
+                        key={key}
+                        onClick={e => this.setState({ showContextMenu: { item: this.state.showContextMenu.item, subItem: key, subAnchor: e.target } })}
+                        className={ITEMS[key].className}
+                    >
+                        <ListItemIcon style={ITEMS[key].iconStyle} className={ITEMS[key].listItemIconClass}>
+                            {ITEMS[key].icon}
+                        </ListItemIcon>
+                        <ListItemText>
+                            {ITEMS[key].label}
+                            ...
+                        </ListItemText>
+                        <ListItemSecondaryAction>
+                            <ArrowRightIcon />
+                        </ListItemSecondaryAction>
+                    </MenuItem>);
+                    if (this.state.showContextMenu.subItem === key) {
+                        items.push(<Menu
+                            key="subContextMenu"
+                            open={!0}
+                            anchorEl={this.state.showContextMenu.subAnchor}
+                            onClose={() => {
+                                this.setState({ showContextMenu: { item: this.state.showContextMenu.item } });
+                                this.contextMenu = null;
+                            }}
+                        >
+                            {ITEMS[key].subMenu.map(subItem => (subItem.visibility ? <MenuItem
+                                key={subItem.label}
+                                onClick={subItem.onClick}
+                                className={subItem.className}
+                            >
+                                <ListItemIcon style={subItem.iconStyle} className={subItem.listItemIconClass}>
+                                    {subItem.icon}
+                                </ListItemIcon>
+                                <ListItemText>{subItem.label}</ListItemText>
+                            </MenuItem> : null))}
+                        </Menu>);
+                    }
+                } else {
+                    items.push(<MenuItem key={key} onClick={ITEMS[key].onClick} className={ITEMS[key].className}>
+                        <ListItemIcon style={ITEMS[key].iconStyle} className={ITEMS[key].listItemIconClass}>
+                            {ITEMS[key].icon}
+                        </ListItemIcon>
+                        <ListItemText>{ITEMS[key].label}</ListItemText>
+                        {ITEMS[key].key ? <div className={this.props.classes.contextMenuKeys}>
+                            {`Alt+${ITEMS[key].key === 'Delete' ? this.props.t('ra_Del') : ITEMS[key].key}`}
+                        </div> : null}
+                    </MenuItem>);
+                }
             }
         });
 

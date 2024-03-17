@@ -419,5 +419,7 @@
   "ra_create_state": "Créer un état",
   "ra_create_string_state": "Créer un état de chaîne",
   "ra_create_number_state": "Créer un état de numéro",
-  "ra_create_boolean_state": "Créer un état booléen"
+  "ra_create_boolean_state": "Créer un état booléen",
+  "ra_Select color": "Choisissez la couleur",
+  "ra_Cannot read licenses: %s": "Impossible de lire les licences : %s"
 }

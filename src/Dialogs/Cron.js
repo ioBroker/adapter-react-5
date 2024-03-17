@@ -2,15 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
-import Button from '@mui/material/Button';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Dialog from '@mui/material/Dialog';
-import Radio from '@mui/material/Radio';
+import {
+    Button,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Dialog,
+    Radio,
+} from '@mui/material';
 
-import IconOk from '@mui/icons-material/Check';
-import IconCancel from '@mui/icons-material/Cancel';
+import {
+    Check as IconOk,
+    Cancel as IconCancel,
+} from '@mui/icons-material';
 
 import ComplexCron from '../Components/ComplexCron';
 import SimpleCron from '../Components/SimpleCron';
@@ -50,7 +54,7 @@ class DialogCron extends React.Component {
             cron,
             mode: this.props.simple ? 'simple' :
                 (this.props.complex ? 'complex' :
-                    (typeof cron === 'object' || cron[0] === '{' ?
+                    ((typeof cron === 'object' || cron[0] === '{') && !this.props.noWizard ?
                         'wizard' :
                         (SimpleCron.cron2state(this.props.cron || '* * * * *') ? 'simple' : 'complex'))),
         };
@@ -81,7 +85,7 @@ class DialogCron extends React.Component {
             <DialogTitle id="cron-dialog-title">{this.props.title || I18n.t('ra_Define schedule...')}</DialogTitle>
             <DialogContent style={{ height: '100%', overflow: 'hidden' }}>
                 {(this.props.simple && this.props.complex) || (!this.props.simple && !this.props.complex) ? <div>
-                    {!this.props.simple && !this.props.complex && <>
+                    {!this.props.simple && !this.props.complex && !this.props.noWizard && <>
                         <Radio
                             key="wizard"
                             checked={this.state.mode === 'wizard'}
@@ -172,6 +176,7 @@ DialogCron.propTypes = {
     ok: PropTypes.string,
     simple: PropTypes.bool, // show only simple configuration
     complex: PropTypes.bool, // show only complex configuration
+    noWizard: PropTypes.bool, // do not show wizard
 };
 
 export default withStyles(styles)(DialogCron);

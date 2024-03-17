@@ -419,5 +419,7 @@
   "ra_create_state": "创建状态",
   "ra_create_string_state": "创建字符串状态",
   "ra_create_number_state": "创建号码状态",
-  "ra_create_boolean_state": "创建布尔状态"
+  "ra_create_boolean_state": "创建布尔状态",
+  "ra_Select color": "选择颜色",
+  "ra_Cannot read licenses: %s": "无法读取许可证：%s"
 }

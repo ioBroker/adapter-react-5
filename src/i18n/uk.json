@@ -419,5 +419,7 @@
   "ra_create_state": "Створити состояние",
   "ra_create_string_state": "Створити рядковий стан",
   "ra_create_number_state": "Створити номерний стан",
-  "ra_create_boolean_state": "Створіть логічний стан"
+  "ra_create_boolean_state": "Створіть логічний стан",
+  "ra_Select color": "Виберіть колір",
+  "ra_Cannot read licenses: %s": "Неможливо прочитати ліцензії: %s"
 }

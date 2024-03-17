@@ -1,8 +1,8 @@
-import { Theme as MuiTheme } from "@mui/material/styles";
-import LegacyConnection from "./LegacyConnection";
-import { AdminConnection, Connection } from "@iobroker/socket-client";
+import { Theme as MuiTheme } from '@mui/material/styles';
+import LegacyConnection from './LegacyConnection';
+import { AdminConnection, Connection } from '@iobroker/socket-client';
 
-export type Translator = (key: string, arg1?: any, arg2?: any, arg3?: any) => string;
+export type Translator = (key: string, ...args: any[]) => string;
 
 export interface ConnectionProps {
     /** The socket name. */
@@ -45,6 +45,8 @@ export interface OldObject {
 export type ObjectChangeHandler = (id: string, obj: ioBroker.Object | null | undefined, oldObj: OldObject) => void | Promise<void>;
 
 export interface GenericAppProps {
+    /** Adapter instance number if known, else will be determined from url */
+    instance?: number;
     /** The name of the adapter. */
     adapterName?: string;
     /** Should the bottom buttons be shown (default: true). */
@@ -64,6 +66,9 @@ export interface GenericAppSettings extends GenericAppProps {
     doNotLoadAllObjects?: boolean;
 }
 
+export type ThemeName = 'dark' | 'light' | 'colored' | 'blue' | 'PT' | 'DX';
+export type ThemeType = 'dark' | 'light';
+
 export interface GenericAppState {
     selectedTab: string;
     selectedTabNum: number;
@@ -75,14 +80,15 @@ export interface GenericAppState {
     isConfigurationError: string;
     toast: string;
     theme: Theme;
-    themeName: string;
-    themeType: string;
+    themeName: ThemeName;
+    themeType: ThemeType;
     bottomButtons: boolean;
     width: Width;
 }
 
-export type Width = ('xs' | 'sm' | 'md' | 'lg' | 'xl');
+export type Width = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
 
 export interface Theme extends MuiTheme {
-    name: string;
+    name: ThemeName;
 }

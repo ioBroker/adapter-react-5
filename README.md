@@ -183,16 +183,16 @@ onPrepareSave(settings) {
 ### Connection.js
 This is a non-react class to provide the communication for socket connection with the server. 
 
-### GenericApp.js
+### GenericApp.tsx
 
-### i18n.js
+### i18n.ts
 
-### Theme.js
+### Theme.tsx
 
 ### Dialogs
 Some dialogs are predefined and could be used out of the box.
 
-#### Confirm.js
+#### Confirm.tsx
 <!-- TODO: Provide screenshot here -->
 
 Usage: 
@@ -238,10 +238,10 @@ class ExportImportDialog extends React.Component {
 export default ExportImportDialog;
 ```
 
-#### Error.js
+#### Error.tsx
 <!-- TODO: Provide screenshot here -->
 
-#### Message.js
+#### Message.tsx
 <!-- TODO: Provide screenshot here -->
 ```
 renderMessage() {
@@ -256,7 +256,7 @@ renderMessage() {
 }
 ```
 
-#### SelectID.js
+#### SelectID.tsx
 ![Logo](img/selectID.png)
 ```
 import DialogSelectID from '@iobroker/adapter-react/Dialogs/SelectID';
@@ -318,7 +318,7 @@ function renderCron() {
 
 ### Components
 
-#### Utils.js
+#### Utils.tsx
 ##### getObjectNameFromObj
 `getObjectNameFromObj(obj, settings, options, isDesc)`
 
@@ -342,7 +342,7 @@ return (<img src={icon}/>);
 
 Usage: `
 
-#### Loader.js
+#### Loader.tsx
 ![Logo](img/loader.png)
 
 ```
@@ -357,7 +357,7 @@ render() {
 
 ```
 
-#### Logo.js
+#### Logo.tsx
 ![Logo](img/logo.png)
 
 ```
@@ -375,7 +375,7 @@ render() {
 }
 ```
 
-#### Router.js
+#### Router.tsx
 
 #### ObjectBrowser.js
 It is better to use `Dialog/SelectID`, but if you want:
@@ -384,36 +384,36 @@ It is better to use `Dialog/SelectID`, but if you want:
 
 ```
 <ObjectBrowser
-   foldersFirst={ this.props.foldersFirst }
-   imagePrefix={ this.props.imagePrefix || this.props.prefix } // prefix is for back compatibility
-   defaultFilters={ this.filters }
+   foldersFirst={this.props.foldersFirst}
+   imagePrefix={this.props.imagePrefix || this.props.prefix} // prefix is for back compatibility
+   defaultFilters={this.filters}
    dialogName={this.dialogName}
-   showExpertButton={ this.props.showExpertButton !== undefined ? this.props.showExpertButton : true }
-   style={ {width: '100%', height: '100%'} }
-   columns={ this.props.columns || ['name', 'type', 'role', 'room', 'func', 'val'] }
-   types={ this.props.types || ['state'] }
-   t={ I18n.t }
-   lang={ this.props.lang || I18n.getLanguage() }
-   socket={ this.props.socket }
-   selected={ this.state.selected }
-   multiSelect={ this.props.multiSelect }
-   notEditable={ this.props.notEditable === undefined ? true : this.props.notEditable }
-   name={ this.state.name }
-   themeName={ this.props.themeName }
-   themeType={ this.props.themeType }
-   customFilter={ this.props.customFilter }
-   onFilterChanged={ filterConfig => {
+   showExpertButton={this.props.showExpertButton !== undefined ? this.props.showExpertButton : true}
+   style={{ width: '100%', height: '100%' }}
+   columns={this.props.columns || ['name', 'type', 'role', 'room', 'func', 'val']}
+   types={this.props.types || ['state']}
+   t={I18n.t}
+   lang={this.props.lang || I18n.getLanguage()}
+   socket={this.props.socket}
+   selected={this.state.selected}
+   multiSelect={this.props.multiSelect}
+   notEditable={this.props.notEditable === undefined ? true : this.props.notEditable}
+   name={this.state.name}
+   themeName={this.props.themeName}
+   themeType={this.props.themeType}
+   customFilter={this.props.customFilter}
+   onFilterChanged={filterConfig => {
       this.filters = filterConfig;
       window.localStorage.setItem(this.dialogName, JSON.stringify(filterConfig));
-   } }
-   onSelect={ (selected, name, isDouble) => {
+   }}
+   onSelect={(selected, name, isDouble) => {
       if (JSON.stringify(selected) !== JSON.stringify(this.state.selected)) {
           this.setState({selected, name}, () =>
               isDouble && this.handleOk());
       } else if (isDouble) {
           this.handleOk();
       }
-   } }
+   }}
 />
 ```
 
@@ -456,7 +456,7 @@ class MyComponent extends Component {
               cellStyle: {            // CSS style - // optional
                   maxWidth: '12rem',
                   overflow: 'hidden',
-                  wordBreak: 'break-word'
+                  wordBreak: 'break-word',
               },
               lookup: {               // optional => edit will be automatically "SELECT"
                   'value1': 'text1',
@@ -670,6 +670,65 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### 4.11.2 (2024-03-16)
+* (bluefox) Migrated GenericApp to typescript
+
+### 4.10.4 (2024-03-16)
+* (bluefox) Migrated some components to typescript
+
+### 4.10.1 (2024-03-11)
+* (bluefox) Migrated some components to typescript
+
+### 4.9.11 (2024-03-08)
+* (foxriver76) type GenericApp socket correctly
+
+### 4.9.10 (2024-02-21)
+* (bluefox) translations
+* (bluefox) updated json config
+
+### 4.9.9 (2024-02-16)
+* (foxriver76) also check plugin state of instance to see if Sentry is explicitly disabled
+
+### 4.9.8 (2024-02-13)
+* (bluefox) allowed hiding wizard in cron dialog
+
+### 4.9.7 (2024-02-03)
+* (foxriver76) allow passing down the instance number do avoid determining from url
+
+### 4.9.5 (2024-01-01)
+* (foxriver76) make `copyToClipboard` event parameter optional
+
+### 4.9.4 (2024-01-01)
+* (foxriver76) try to fix `SelectID` scrolling
+
+### 4.9.2 (2023-12-30)
+* (foxriver76) bump version of `@iobroker/json-config`
+
+### 4.9.1 (2023-12-22)
+* (foxriver76) `@iobroker/json-config` moved to real dependencies
+
+### 4.9.0 (2023-12-22)
+* (foxriver76) migrate to `@iobroker/json-config` module to have a single point of truth
+* (bluefox) Allowed using of `filterFunc` as string
+
+### 4.8.1 (2023-12-14)
+* (bluefox) Added Device manager to JSON Config
+
+### 4.7.15 (2023-12-12)
+* (bluefox) Corrected parsing of a text
+
+### 4.7.13 (2023-12-10)
+* (bluefox) Added possibility to define the root style and embedded property
+
+### 4.7.11 (2023-12-06)
+* (bluefox) Extended color picker with "noInputField" option
+
+### 4.7.9 (2023-12-04)
+* (bluefox) Corrected the icon picker
+
+### 4.7.8 (2023-12-04)
+* (foxriver76) port to `@iobroker/types`
+
 ### 4.7.6 (2023-11-29)
 * (bluefox) Added translations
 
@@ -1003,7 +1062,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2019-2023 bluefox <dogafox@gmail.com>
+Copyright (c) 2019-2024 bluefox <dogafox@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
