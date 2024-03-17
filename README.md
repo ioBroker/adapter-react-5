@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Made filters for the file selector dialog optional
+
 ### 4.11.2 (2024-03-16)
 * (bluefox) Migrated GenericApp to typescript
 

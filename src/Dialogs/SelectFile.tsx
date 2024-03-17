@@ -111,7 +111,7 @@ interface DialogSelectFileProps {
     onOk: (selected: string | string[] | undefined) => void;
     /** The styling class names. */
     classes: Record<string, string>;
-    filters: Record<string, string>;
+    filters?: Record<string, string>;
     /** Allow switch views Table<=>Rows */
     showViewTypeButton?: boolean;
      /** If type selector should be shown */
