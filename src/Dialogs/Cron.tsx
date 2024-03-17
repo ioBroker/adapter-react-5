@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 
 import {
@@ -17,14 +16,14 @@ import {
 } from '@mui/icons-material';
 
 import ComplexCron from '../Components/ComplexCron';
-import SimpleCron from '../Components/SimpleCron';
+import SimpleCron, { cron2state } from '../Components/SimpleCron';
 import Schedule from '../Components/Schedule';
 
 import I18n from '../i18n';
 
 // Generate cron expression
 
-const styles = () => ({
+const styles: Record<string, any> = {
     headerID: {
         fontWeight: 'bold',
         fontStyle: 'italic',
@@ -35,10 +34,31 @@ const styles = () => ({
     dialogPaper: {
         height: 'calc(100% - 96px)',
     },
-});
+};
 
-class DialogCron extends React.Component {
-    constructor(props) {
+interface DialogCronProps {
+    onClose: () => void;
+    onOk: (cron: string) => void;
+    title?: string;
+    cron?: string;
+    cancel?: string;
+    ok?: string;
+    /** show only simple configuration */
+    simple?: boolean;
+    /** show only complex configuration */
+    complex?: boolean;
+    /** do not show wizard */
+    noWizard?: boolean;
+    classes: Record<string, string>;
+}
+
+interface DialogCronState {
+    cron: string;
+    mode: 'simple' | 'complex' | 'wizard';
+}
+
+class DialogCron extends React.Component<DialogCronProps, DialogCronState> {
+    constructor(props: DialogCronProps) {
         super(props);
         let cron;
         if (this.props.cron && typeof this.props.cron === 'string' && this.props.cron.replace(/^["']/, '')[0] !== '{') {
@@ -56,7 +76,7 @@ class DialogCron extends React.Component {
                 (this.props.complex ? 'complex' :
                     ((typeof cron === 'object' || cron[0] === '{') && !this.props.noWizard ?
                         'wizard' :
-                        (SimpleCron.cron2state(this.props.cron || '* * * * *') ? 'simple' : 'complex'))),
+                        (cron2state(this.props.cron || '* * * * *') ? 'simple' : 'complex'))),
         };
     }
 
@@ -69,7 +89,7 @@ class DialogCron extends React.Component {
         this.props.onClose();
     }
 
-    setMode(mode) {
+    setMode(mode: 'simple' | 'complex' | 'wizard') {
         this.setState({ mode });
     }
 
@@ -136,7 +156,6 @@ class DialogCron extends React.Component {
                 {this.state.mode === 'wizard' && <Schedule
                     schedule={this.state.cron}
                     onChange={cron => this.setState({ cron })}
-                    language={I18n.getLanguage()}
                 />}
                 {this.state.mode === 'complex' && <ComplexCron
                     cronExpression={this.state.cron}
@@ -156,6 +175,7 @@ class DialogCron extends React.Component {
                 <Button
                     variant="contained"
                     onClick={() => this.handleCancel()}
+                    // @ts-expect-error grey is allowed color
                     color="grey"
                     startIcon={<IconCancel />}
                 >
@@ -165,18 +185,5 @@ class DialogCron extends React.Component {
         </Dialog>;
     }
 }
-
-DialogCron.propTypes = {
-    classes: PropTypes.object,
-    onClose: PropTypes.func.isRequired,
-    onOk: PropTypes.func.isRequired,
-    title: PropTypes.string,
-    cron: PropTypes.string,
-    cancel: PropTypes.string,
-    ok: PropTypes.string,
-    simple: PropTypes.bool, // show only simple configuration
-    complex: PropTypes.bool, // show only complex configuration
-    noWizard: PropTypes.bool, // do not show wizard
-};
 
 export default withStyles(styles)(DialogCron);

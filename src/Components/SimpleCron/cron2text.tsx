@@ -1,10 +1,25 @@
+import { CRON_LOCALE } from './jquery.cron.locale';
+
+interface Schedule {
+    h: number[];
+    m: number[];
+    s: number[];
+    D: number[];
+    M: number[];
+    Y: number[];
+    d?: number[];
+    dc?: number[];
+}
+
+interface Schedules {
+    schedules: Partial<Schedule>[];
+    exceptions: Partial<Schedule>[];
+}
+
 /**
- * Given a cronspec, return the human-readable string.
- * @param {string} cronspec
- * @param withSeconds
- * @param {Object=} locale
+ * Given a cronSpec, return the human-readable string.
  */
-function cronToText(cronspec, withSeconds, locale) {
+function cronToText(cronSpec: string, withSeconds: boolean, locale: CRON_LOCALE): string {
     // Constant array to convert valid names to values
     const NAMES = {
         JAN: 1,
@@ -47,86 +62,92 @@ function cronToText(cronspec, withSeconds, locale) {
         D: [3, 1, 31], // day of month
         M: [4, 1, 12], // month
         Y: [6, 1970, 2099], // year
-        d: [5, 1, 7, 1], // day of week
+        d: [5, 1, 7, 1], // day of the week
     };
 
     /**
      * Returns the value + offset if value is a number, otherwise it
      * attempts to look up the value in the NAMES table and returns
      * that result instead.
-     *
-     * @param {Number,String} value: The value that should be parsed
-     * @param {Number=} offset: Any offset that must be added to the value
-     * @param {Number=} max
-     * @returns {Number|null}
      */
-    function getValue(value) {
-        const offset = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
-        const max = arguments.length <= 2 || arguments[2] === undefined ? 9999 : arguments[2];
-
-        return Number.isNaN(value) ? NAMES[value] || null : Math.min(+value + offset, max);
+    function getValue(
+        /** the value that should be parsed */
+        value: number | string,
+        /** Any offset that must be added to the value */
+        offset: number = 0,
+        max: number = 9999,
+    ): number | null {
+        return Number.isNaN(value) ? (NAMES as Record<string, number>)[value] || null : Math.min(+value + offset, max);
     }
 
     /**
      * Returns a deep clone of a schedule skipping any day of week
      * constraints.
-     *
-     * @param {Object} sched: The schedule that will be cloned
-     * @returns {Object}
      */
-    function cloneSchedule(sched) {
-        const clone = {};
+    function cloneSchedule(
+        /** The schedule that will be cloned */
+        sched: Partial<Schedule>,
+    ): Partial<Schedule> {
+        const clone: Partial<Schedule> = {};
         let field;
 
         for (field in sched) {
             if (field !== 'dc' && field !== 'd') {
-                clone[field] = sched[field].slice(0);
+                (clone as Record<string, number[]>)[field] = (sched as unknown as Record<string, number[]>)[field].slice(0);
             }
         }
 
-        return clone;
+        return clone as Schedule;
     }
 
     /**
      * Adds values to the specified constraint in the current schedule.
-     *
-     * @param {Object} sched: The schedule to add the constraint to
-     * @param {String} name: Name of constraint to add
-     * @param {Number} min: Minimum value for this constraint
-     * @param {Number} max: Maximum value for this constraint
      */
-    function add(sched, name, min, max) {
-        const inc = arguments.length <= 4 || arguments[4] === undefined ? 0 : arguments[4];
-
+    function add(
+        /** The schedule to add the constraint to */
+        sched: Partial<Schedule>,
+        /** The name of the constraint to add */
+        name: string,
+        /** The minimum value for this constraint */
+        min: number,
+        /** The maximum value for this constraint */
+        max: number,
+        /** The increment value for this constraint */
+        inc: number = 0,
+    ) {
         let i = min;
 
-        if (!sched[name]) {
-            sched[name] = [];
+        if (!(sched as unknown as Record<string, number[]>)[name]) {
+            (sched as unknown as Record<string, number[]>)[name] = [];
         }
 
         while (i <= max) {
-            if (sched[name].indexOf(i) < 0) {
-                sched[name].push(i);
+            if ((sched as unknown as Record<string, number[]>)[name].indexOf(i) < 0) {
+                (sched as unknown as Record<string, number[]>)[name].push(i);
             }
             i += inc || 1;
         }
 
-        sched[name].sort((a, b) => a - b);
+        (sched as unknown as Record<string, number[]>)[name].sort((a, b) => a - b);
     }
 
     /**
      * Adds a hash item (of the form x#y or xL) to the schedule.
-     *
-     * @param {Object} schedules: The current schedule array to add to
-     * @param {Object} curSched: The current schedule to add to
-     * @param {Number} value: The value to add (x of x#y or xL)
-     * @param {Number} hash: The hash value to add (y of x#y)
      */
-    function addHash(schedules, curSched, value, hash) {
-        // if there are any existing day of week constraints that
+    function addHash(
+        /** The current set of schedules */
+        schedules: Partial<Schedule>[],
+        /** The current schedule to add to */
+        curSched: Partial<Schedule>,
+        /** The value to add (x of x#y or xL) */
+        value: number,
+        /** The hash value to add (y of x#y) */
+        hash: number,
+    ) {
+        // if there are any existing days of week constraints that
         // aren't equal to the one we're adding, create a new
         // composite schedule
-        if ((curSched.d && !curSched.dc) || (curSched.dc && curSched.dc.indexOf(hash) < 0)) {
+        if ((curSched.d && !curSched.dc) || (curSched.dc && !curSched.dc.includes(hash))) {
             schedules.push(cloneSchedule(curSched));
             curSched = schedules[schedules.length - 1];
         }
@@ -135,15 +156,15 @@ function cronToText(cronspec, withSeconds, locale) {
         add(curSched, 'dc', hash, hash);
     }
 
-    /**
-     *
-     * @param {Object} s: The existing set of schedules
-     * @param {Object} curSched: The current schedule to add to
-     * @param {Number} value
-     */
-    function addWeekday(s, curSched, value) {
-        const except1 = {};
-        const except2 = {};
+    function addWeekday(
+        /** The existing set of schedules */
+        s: Schedules,
+        /** The current schedule to add to */
+        curSched: Partial<Schedule>,
+        value: number,
+    ) {
+        const except1: Partial<Schedule> = {};
+        const except2: Partial<Schedule> = {};
         if (value === 1) {
             // cron doesn't pass month boundaries, so if 1st is a
             // weekend then we need to use 2nd or 3rd instead
@@ -170,15 +191,21 @@ function cronToText(cronspec, withSeconds, locale) {
 
     /**
      * Adds a range item (of the form x-y/z) to the schedule.
-     *
-     * @param {String} item: The cron expression item to add
-     * @param {Object} curSched: The current schedule to add to
-     * @param {String} name: The name to use for this constraint
-     * @param {Number} min: The min value for the constraint
-     * @param {Number} max: The max value for the constraint
-     * @param {Number} offset: The offset to apply to the cron value
      */
-    function addRange(item, curSched, name, min, max, offset) {
+    function addRange(
+        /** The cron expression item to add */
+        item: string,
+        /** The current schedule to add to */
+        curSched: Partial<Schedule>,
+        /** The name to use for this constraint */
+        name: string,
+        /** The min value for the constraint */
+        min: number,
+        /** The max value for the constraint */
+        max: number,
+        /** The offset to apply to the cron value */
+        offset: number,
+    ) {
         // parse range/x
         const incSplit = item.split('/');
         const inc = +incSplit[1];
@@ -187,7 +214,7 @@ function cronToText(cronspec, withSeconds, locale) {
         // parse x-y or * or 0
         if (range !== '*' && range !== '0') {
             const rangeSplit = range.split('-');
-            min = getValue(rangeSplit[0], offset, max);
+            min = getValue(rangeSplit[0], offset, max) || offset;
 
             // fix for issue #13, range may be a single digit
             max = getValue(rangeSplit[1], offset, max) || max;
@@ -198,15 +225,21 @@ function cronToText(cronspec, withSeconds, locale) {
 
     /**
      * Parses a particular item within a cron expression.
-     *
-     * @param {String} item: The cron expression item to parse
-     * @param {Object} s: The existing set of schedules
-     * @param {String} name: The name to use for this constraint
-     * @param {Number} min: The min value for the constraint
-     * @param {Number} max: The max value for the constraint
-     * @param {Number} offset: The offset to apply to the cron value
      */
-    function parse(item, s, name, min, max, offset) {
+    function parse(
+        /** The cron expression item to parse */
+        item: string,
+        /** The existing set of schedules */
+        s: Schedules,
+        /** The name to use for this constraint */
+        name: string,
+        /** The min value for the constraint */
+        min: number,
+        /** The max value for the constraint */
+        max: number,
+        /** The offset to apply to the cron value */
+        offset: number,
+    ) {
         let value;
         let split;
         const schedules = s.schedules;
@@ -228,8 +261,8 @@ function cronToText(cronspec, withSeconds, locale) {
             addHash(schedules, curSched, value, min - 1);
         } else if ((split = item.split('#')).length === 2) {
             // parse x#y
-            value = getValue(split[0], offset, max);
-            addHash(schedules, curSched, value, getValue(split[1]));
+            value = getValue(split[0], offset, max) || offset;
+            addHash(schedules, curSched, value, getValue(split[1]) || 0);
         } else {
             // parse x-y or x-y/z or */z or 0/z
             addRange(item, curSched, name, min, max, offset);
@@ -238,25 +271,28 @@ function cronToText(cronspec, withSeconds, locale) {
 
     /**
      * Returns true if the item is either of the form x#y or xL.
-     *
-     * @param {String} item: The expression item to check
      */
-    function isHash(item) {
-        return item.indexOf('#') > -1 || item.indexOf('L') > 0;
+    function isHash(
+        /** The expression item to check */
+        item: string,
+    ): boolean {
+        return item.includes('#') || item.indexOf('L') > 0;
     }
 
-    function itemSorter(a, b) {
-        return isHash(a) && !isHash(b) ? 1 : a - b;
+    function itemSorter(a: string, b: string): number {
+        return isHash(a) && !isHash(b) ? 1 : (a > b ? 1 : (a < b ? -1 : 0));
     }
 
     /**
      * Parses each of the fields in a cron expression.  The expression must
-     * include the seconds field, the year field is optional.
+     * include the second's field, the year field is optional.
      *
-     * @param {String} expr: The cron expression to parse
      */
-    function parseExpr(expr) {
-        const schedule = { schedules: [{}], exceptions: [] };
+    function parseExpr(
+        /** The cron expression to parse */
+        expr: string,
+    ) {
+        const schedule: Schedules = { schedules: [{}], exceptions: [] };
         const components = expr.replace(/(\s)+/g, ' ').split(' ');
         let field;
         let f;
@@ -264,7 +300,7 @@ function cronToText(cronspec, withSeconds, locale) {
         let items;
 
         for (field in FIELDS) {
-            f = FIELDS[field];
+            f = (FIELDS as Record<string, number[]>)[field];
             component = components[f[0]];
             if (component && component !== '*' && component !== '?') {
                 // need to sort so that any #'s come last, otherwise
@@ -284,29 +320,30 @@ function cronToText(cronspec, withSeconds, locale) {
 
     /**
      * Make cron expression parsable.
-     *
-     * @param {String} expr: The cron expression to prepare
      */
-    function prepareExpr(expr) {
+    function prepareExpr(
+        /** The cron expression to prepare */
+        expr: string,
+    ) {
         const prepared = expr.toUpperCase();
-        return REPLACEMENTS[prepared] || prepared;
+        return (REPLACEMENTS as Record<string, string>)[prepared] || prepared;
     }
 
-    function parseCron(expr, hasSeconds) {
+    function parseCron(expr: string, hasSeconds?: boolean) {
         const e = prepareExpr(expr);
         return parseExpr(hasSeconds ? e : `0 ${e}`);
     }
 
-    const schedule = parseCron(cronspec, withSeconds);
+    const schedule = parseCron(cronSpec, withSeconds);
 
-    function absFloor(number) {
+    function absFloor(number: number): number {
         if (number < 0) {
             return Math.ceil(number);
         }
         return Math.floor(number);
     }
 
-    function toInt(argumentForCoercion) {
+    function toInt(argumentForCoercion: number | string): number {
         const coercedNumber = +argumentForCoercion;
         let value = 0;
 
@@ -317,28 +354,25 @@ function cronToText(cronspec, withSeconds, locale) {
         return value;
     }
 
-    function ordinal(number) {
+    function ordinal(number: number): string {
         const b = number % 10;
         const output = (toInt(number % 100 / 10) === 1) ? locale.ORDINALS.th :
-            (b === 1) ? locale.ORDINALS.st :
-                (b === 2) ? locale.ORDINALS.nd :
-                    (b === 3) ? locale.ORDINALS.rd : locale.ORDINALS.th;
+            b === 1 ? locale.ORDINALS.st :
+                b === 2 ? locale.ORDINALS.nd :
+                    b === 3 ? locale.ORDINALS.rd : locale.ORDINALS.th;
         return number + output;
     }
 
     /**
-     * For an array of numbers, e.g. a list of hours in a schedule,
+     * For an array of numbers, e.g., a list of hours in a schedule,
      * return a string listing out all of the values (complete with
      * "and" plus ordinal text on the last item).
-     * @param {Number[]} numbers
-     * @returns {string}
      */
-    function numberList(numbers) {
+    function numberList(numbers: number[]): string {
         if (numbers.length < 2) {
-            return ordinal(numbers);
+            return ordinal(numbers[0]);
         }
-
-        const lastVal = numbers.pop();
+        const lastVal = numbers.pop() || 0;
         return `${numbers.join(', ')} ${locale.and} ${ordinal(lastVal)}`;
     }
 
@@ -349,7 +383,7 @@ function cronToText(cronspec, withSeconds, locale) {
      * @param {String} type
      * @returns {String}
      */
-    function numberToDateName(value, type) {
+    function numberToDateName(value: number, type: 'dow' | 'mon') {
         if (type === 'dow') {
             return locale.DOW[value - 1];
         }
@@ -366,12 +400,12 @@ function cronToText(cronspec, withSeconds, locale) {
      * @param {String} type
      * @returns {String}
      */
-    function dateList(numbers, type) {
+    function dateList(numbers: number[], type: 'dow' | 'mon') {
         if (numbers.length < 2) {
-            return numberToDateName(`${numbers[0]}`, type);
+            return numberToDateName(numbers[0], type);
         }
 
-        const lastVal = `${numbers.pop()}`;
+        const lastVal = numbers.pop() || 0;
         let outputText = '';
 
         for (let i = 0, value; (value = numbers[i]); i++) {
@@ -384,23 +418,23 @@ function cronToText(cronspec, withSeconds, locale) {
     }
 
     /**
-     * Pad to equivalent of sprintf('%02d').
+     * Pad to the equivalent of sprintf('%02d').
      * @param {Number} x
      * @returns {string}
      */
-    function zeroPad(x) {
-        return x < 10 ? `0${x}` : x;
+    function zeroPad(x: number): string {
+        return x < 10 ? `0${x}` : x.toString();
     }
 
     //----------------
 
     /**
      * Given a schedule, generate a friendly sentence description.
-     * @param {Object} _schedule
-     * @param {boolean} _withSeconds
-     * @returns {string}
      */
-    function scheduleToSentence(_schedule, _withSeconds) {
+    function scheduleToSentence(
+        _schedule: Partial<Schedule>,
+        _withSeconds: boolean,
+    ): string {
         let outputText = `${locale.Every} `;
 
         if (_schedule.h && _schedule.m && _schedule.h.length <= 2 && _schedule.m.length <= 2 && _withSeconds && _schedule.s && _schedule.s.length <= 2) {
@@ -482,7 +516,7 @@ function cronToText(cronspec, withSeconds, locale) {
             } else {
                 outputText += `${numberList(_schedule.s)} ${locale.second}`;
             }
-        } else { // cronspec has "*" for both hour and minute
+        } else { // cronSpec has "*" for both hour and minute
             outputText += locale.minute;
         }
 

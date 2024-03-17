@@ -1,7 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
-
 import {
     Button,
     DialogTitle,
@@ -13,15 +11,15 @@ import {
 import {
     Check as IconOk,
     Cancel as IconCancel,
-    Delete as IconClear,
 } from '@mui/icons-material';
 
-import ComplexCron from '../Components/ComplexCron';
+import SimpleCron from '../Components/SimpleCron';
 
 import I18n from '../i18n';
 
-// Generate cron expression
-const styles = () => ({
+// Generates cron expression
+
+const styles: Record<string, any> ={
     headerID: {
         fontWeight: 'bold',
         fontStyle: 'italic',
@@ -32,11 +30,26 @@ const styles = () => ({
     dialogPaper: {
         height: 'calc(100% - 96px)',
     },
-});
+};
 
-class DialogComplexCron extends React.Component {
-    constructor(props) {
+interface DialogCronProps {
+    onClose: () => void;
+    onOk: (cron: string) => void;
+    title?: string;
+    cron?: string;
+    cancel?: string;
+    ok?: string;
+    classes: Record<string, string>;
+}
+
+interface DialogCronState {
+    cron: string;
+}
+
+class DialogSimpleCron extends React.Component<DialogCronProps, DialogCronState> {
+    constructor(props: DialogCronProps) {
         super(props);
+
         let cron;
         if (this.props.cron && typeof this.props.cron === 'string' && this.props.cron.replace(/^["']/, '')[0] !== '{') {
             cron = this.props.cron.replace(/['"]/g, '').trim();
@@ -61,11 +74,6 @@ class DialogComplexCron extends React.Component {
         this.props.onClose();
     }
 
-    handleClear() {
-        this.props.onOk(false);
-        this.props.onClose();
-    }
-
     render() {
         return <Dialog
             onClose={() => {}}
@@ -75,37 +83,21 @@ class DialogComplexCron extends React.Component {
             open={!0}
             aria-labelledby="cron-dialog-title"
         >
-            <DialogTitle id="cron-dialog-title">{this.props.title || I18n.t('ra_Define schedule...')}</DialogTitle>
+            <DialogTitle id="cron-dialog-title">{this.props.title || I18n.t('ra_Define CRON...')}</DialogTitle>
             <DialogContent style={{ height: '100%', overflow: 'hidden' }}>
-                <ComplexCron
+                <SimpleCron
                     cronExpression={this.state.cron}
                     onChange={cron => this.setState({ cron })}
                     language={I18n.getLanguage()}
                 />
             </DialogContent>
             <DialogActions>
-                {!!this.props.clearButton && <Button
-                    // @ts-expect-error
-                    color="grey"
-                    variant="contained"
-                    onClick={() => this.handleClear()}
-                    startIcon={<IconClear />}
-                >
-                    {this.props.clear || I18n.t('ra_Clear')}
-                </Button>}
+                <Button variant="contained" onClick={() => this.handleOk()} color="primary" startIcon={<IconOk />}>{this.props.ok || I18n.t('ra_Ok')}</Button>
                 <Button
-                    variant="contained"
-                    onClick={() => this.handleOk()}
-                    color="primary"
-                    startIcon={<IconOk />}
-                >
-                    {this.props.ok || I18n.t('ra_Ok')}
-                </Button>
-                <Button
-                    // @ts-expect-error
-                    color="grey"
                     variant="contained"
                     onClick={() => this.handleCancel()}
+                    // @ts-expect-error grey is allowed color
+                    color="grey"
                     startIcon={<IconCancel />}
                 >
                     {this.props.cancel || I18n.t('ra_Cancel')}
@@ -115,15 +107,4 @@ class DialogComplexCron extends React.Component {
     }
 }
 
-DialogComplexCron.propTypes = {
-    classes: PropTypes.object,
-    onClose: PropTypes.func.isRequired,
-    onOk: PropTypes.func.isRequired,
-    title: PropTypes.string,
-    cron: PropTypes.string,
-    cancel: PropTypes.string,
-    ok: PropTypes.string,
-    clearButton: PropTypes.bool,
-};
-
-export default withStyles(styles)(DialogComplexCron);
+export default withStyles(styles)(DialogSimpleCron);
