@@ -217,6 +217,7 @@
           "type": "staticLink",
           "href": "https://github.com/ioBroker/ioBroker.admin/blob/master/README.md#lets-encrypt-certificates",
           "text": "Read about Let's Encrypt certificates",
+          "color": "#fff",
           "style": {
             "fontSize": 16,
             "marginBottom": 20
@@ -405,6 +406,11 @@
           "type": "table",
           "showSecondAddAt": 1,
           "items": [
+            {
+              "type": "staticLink",
+              "href": "https://iobroker.net",
+              "color": "#fff"
+            },
             {
               "type": "datePicker"
             },
