@@ -88,6 +88,9 @@ declare global {
         socketUrl: string;
         oldAlert: any;
         changed: boolean;
+        $iframeDialog: {
+            close?: () => void
+        };
     }
 }
 interface GenericAppProps {
@@ -175,7 +178,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
      * @param {import('./types').GenericAppSettings | undefined} settings
      */
     constructor(props: TProps, settings?: GenericAppSettings) {
-        const ConnectionClass: AdminConnection = (props.Connection || settings?.Connection || Connection) as unknown as AdminConnection;
+        const ConnectionClass = (props.Connection || settings?.Connection || Connection) as unknown as typeof AdminConnection;
         // const ConnectionClass = props.Connection === 'admin' || settings.Connection = 'admin' ? AdminConnection : (props.Connection || settings.Connection || Connection);
 
         if (!window.document.getElementById('generic-app-iobroker-component')) {
@@ -224,10 +227,8 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
         location.tab = location.tab || ((window as any)._localStorage || window.localStorage).getItem(`${this.adapterName}-adapter`) || '';
 
         const themeInstance = this.createTheme();
-        const prevState = this.state || {};
 
         this.state = {
-            ...prevState,
             selectedTab:    ((window as any)._localStorage || window.localStorage).getItem(`${this.adapterName}-adapter`) || '',
             selectedTabNum: -1,
             native:         {},
@@ -247,7 +248,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
             _alert:         false,
             _alertType:     'info',
             _alertMessage:  '',
-        };
+        } satisfies GenericAppState as TState;
 
         // init translations
         const translations: Record<ioBroker.Languages, Record<string, string>> = {
@@ -312,7 +313,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
             }
         };
 
-        // @ts-expect-error I don't know
+        // @ts-expect-error either make props in ConnectionProps required or the constructor needs to accept than as they are (means adapt socket-client)
         this.socket = new ConnectionClass({
             ...(props?.socket || settings?.socket),
             name: this.adapterName,
@@ -349,7 +350,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                             instanceObj?.common &&
                             instanceObj.common.name &&
                             instanceObj.common.version &&
-                            // @ts-expect-error will be extended in js-controller
+                            // @ts-expect-error will be extended in js-controller TODO: this is redundant to state `${this.instanceId}.plugins.sentry.enabled`, remove this in future when admin sets the state correctly
                             !instanceObj.common.disableDataReporting &&
                             window.location.host !== 'localhost:3000';
 
@@ -835,9 +836,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
     static onClose() {
         if (typeof window.parent !== 'undefined' && window.parent) {
             try {
-                // @ts-expect-error No idea how to solve it
                 if (window.parent.$iframeDialog && typeof window.parent.$iframeDialog.close === 'function') {
-                    // @ts-expect-error No idea how to solve it
                     window.parent.$iframeDialog.close();
                 } else {
                     window.parent.postMessage('close', '*');
