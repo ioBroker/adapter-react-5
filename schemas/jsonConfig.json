@@ -1300,6 +1300,7 @@
                         }
                       ]
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -1348,6 +1349,7 @@
                 },
                 {
                   "properties": {
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -1409,6 +1411,7 @@
                       "description": "Optional height",
                       "type": "number"
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -1574,6 +1577,7 @@
                       "description": "Maximum size",
                       "type": "number"
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -1633,6 +1637,7 @@
                     "iconPosition": {
                       "$ref": "#/definitions/iconPositionProp"
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -1711,6 +1716,7 @@
                       "description": "Name of the file",
                       "type": "string"
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -1820,6 +1826,7 @@
                       "description": "Show spinner while request is in progress",
                       "type": "boolean"
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -1893,6 +1900,7 @@
                       "description": "Name of the file",
                       "type": "string"
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -1958,6 +1966,7 @@
                       "type": "number",
                       "default": 1
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -2191,6 +2200,7 @@
                         ]
                       }
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -2482,6 +2492,7 @@
                       "description": "If true, show copy button.",
                       "type": "boolean"
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -2572,6 +2583,7 @@
                         "outlined"
                       ]
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -2627,6 +2639,7 @@
                       "description": "no system.func.",
                       "type": "string"
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -2680,6 +2693,7 @@
                       "description": "no system.room.",
                       "type": "string"
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -2733,6 +2747,7 @@
                       "description": "no system.user.",
                       "type": "string"
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -2797,6 +2812,7 @@
                     "noInternal": {
                       "$ref": "#/definitions/noInternalProp"
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -2855,6 +2871,7 @@
                         "chained"
                       ]
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -3109,6 +3126,7 @@
                       "description": "Link",
                       "type": "string"
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -3161,6 +3179,7 @@
                       "description": "Delimiter for options. If no delimiter, the setting will be stored as array",
                       "type": "string"
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -3330,6 +3349,7 @@
                       "description": "Check version",
                       "type": "boolean"
                     },
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -3366,6 +3386,7 @@
                 },
                 {
                   "properties": {
+                    "attr": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -3402,6 +3423,7 @@
                 }
               ],
               "properties": {
+                "attr": true,
                 "label": true,
                 "type": true,
                 "defaultSendTo": true,
@@ -3497,6 +3519,7 @@
                     "HH:mm:ss"
                   ]
                 },
+                "attr": true,
                 "label": true,
                 "type": true,
                 "defaultSendTo": true,
