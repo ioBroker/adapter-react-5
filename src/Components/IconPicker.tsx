@@ -27,9 +27,15 @@ interface IconPickerProps {
     disabled?: boolean;
     /** The icon change callback. */
     onChange: (icon: string) => void;
-    icons: any[];
-    onlyRooms: boolean;
-    onlyDevices: boolean;
+    icons?: {
+        icon?: string;
+        src?: string;
+        href?: string;
+        name?: ioBroker.StringOrTranslated;
+        _id?: string;
+    }[];
+    onlyRooms?: boolean;
+    onlyDevices?: boolean;
 }
 
 const IconPicker = (props: IconPickerProps) => {

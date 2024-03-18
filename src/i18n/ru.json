@@ -421,5 +421,6 @@
   "ra_create_number_state": "Создать состояние номера",
   "ra_create_boolean_state": "Создать логическое состояние",
   "ra_Select color": "Выберите цвет",
-  "ra_Cannot read licenses: %s": "Невозможно прочитать лицензии: %s"
+  "ra_Cannot read licenses: %s": "Невозможно прочитать лицензии: %s",
+  "ra_Advanced options": "Расширенные настройки"
 }

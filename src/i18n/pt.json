@@ -421,5 +421,6 @@
   "ra_create_number_state": "Criar estado numérico",
   "ra_create_boolean_state": "Criar estado booleano",
   "ra_Select color": "Selecione a cor",
-  "ra_Cannot read licenses: %s": "Não é possível ler licenças: %s"
+  "ra_Cannot read licenses: %s": "Não é possível ler licenças: %s",
+  "ra_Advanced options": "Opções avançadas"
 }

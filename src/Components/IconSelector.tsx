@@ -1966,7 +1966,7 @@ const rooms: { _id: string; name: ioBroker.StringOrTranslated; icon: string }[] 
 ];
 
 interface IconSelectorProps {
-    icons: {
+    icons?: {
         icon?: string;
         src?: string;
         href?: string;

@@ -421,5 +421,6 @@
   "ra_create_number_state": "Nummerstatus maken",
   "ra_create_boolean_state": "Creëer een Booleaanse status",
   "ra_Select color": "Selecteer kleur",
-  "ra_Cannot read licenses: %s": "Kan licenties niet lezen: %s"
+  "ra_Cannot read licenses: %s": "Kan licenties niet lezen: %s",
+  "ra_Advanced options": "Geavanceerde mogelijkheden"
 }

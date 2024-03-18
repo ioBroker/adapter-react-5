@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Corrected types of IconPicker
+
 ### 4.11.3 (2024-03-17)
 * (bluefox) Made filters for the file selector dialog optional
 

@@ -421,5 +421,6 @@
   "ra_create_number_state": "Utwórz stan liczbowy",
   "ra_create_boolean_state": "Utwórz stan logiczny",
   "ra_Select color": "Wybierz kolor",
-  "ra_Cannot read licenses: %s": "Nie można odczytać licencji: %s"
+  "ra_Cannot read licenses: %s": "Nie można odczytać licencji: %s",
+  "ra_Advanced options": "Zaawansowane opcje"
 }
