@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.11.4 (2024-03-18)
 * (bluefox) Corrected types of IconPicker
 
 ### 4.11.3 (2024-03-17)
