@@ -1290,7 +1290,7 @@ class Utils {
      * Get the current theme name (either from local storage or the browser settings).
      */
     static getThemeName(themeName?: ThemeName | null): ThemeName {
-        if ((window as any).vendorPrefix && (window as any).vendorPrefix !== '@@vendorPrefix@@') {
+        if ((window as any).vendorPrefix && (window as any).vendorPrefix !== '@@vendorPrefix@@' && (window as any).vendorPrefix !== 'MV') {
             return (window as any).vendorPrefix;
         }
 
@@ -1314,7 +1314,7 @@ class Utils {
      * Set the theme name and theme type.
      */
     static setThemeName(themeName: ThemeName): void {
-        if ((window as any).vendorPrefix && (window as any).vendorPrefix !== '@@vendorPrefix@@') {
+        if ((window as any).vendorPrefix && (window as any).vendorPrefix !== '@@vendorPrefix@@' && (window as any).vendorPrefix !== 'MV') {
             return; // ignore
         }
         ((window as any)._localStorage || window.localStorage).setItem('App.themeName', themeName);
@@ -1326,7 +1326,7 @@ class Utils {
      * @returns the new theme name.
      */
     static toggleTheme(themeName: ThemeName | null): ThemeName {
-        if ((window as any).vendorPrefix && (window as any).vendorPrefix !== '@@vendorPrefix@@') {
+        if ((window as any).vendorPrefix && (window as any).vendorPrefix !== '@@vendorPrefix@@' && (window as any).vendorPrefix !== 'MV') {
             return (window as any).vendorPrefix;
         }
         themeName = themeName || ((window as any)._localStorage || window.localStorage).getItem('App.themeName') || 'light';
@@ -1350,7 +1350,7 @@ class Utils {
      * @returns list of possible themes
      */
     static getThemeNames(): ThemeName[] {
-        if ((window as any).vendorPrefix && (window as any).vendorPrefix !== '@@vendorPrefix@@') {
+        if ((window as any).vendorPrefix && (window as any).vendorPrefix !== '@@vendorPrefix@@' && (window as any).vendorPrefix !== 'MV') {
             return [(window as any).vendorPrefix];
         }
 

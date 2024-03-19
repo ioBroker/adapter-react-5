@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### 4.11.5 (2024-03-19)
+### **WORK IN PROGRESS**
 * (bluefox) Corrected rendering of LoaderMV
 
 ### 4.11.4 (2024-03-18)
