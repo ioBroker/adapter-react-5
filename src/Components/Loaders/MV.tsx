@@ -56,7 +56,8 @@ function LoaderMV(props: LogoProps) {
                         <line y2="185" x2="250" y1="240" x1="250" strokeWidth="5" stroke="#01BBF5" fill="none"/>
                         <line y2="315" x2="250" y1="260" x1="250" strokeWidth="5" stroke="#01BBF5" fill="none"/>
                     </g>
-                    {[0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345].map(angle => <line transform={`rotate(${angle}, 250, 250)`} y2="250" x2="115"
+                    {[0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345].map(angle =>
+                        <line key={angle} transform={`rotate(${angle}, 250, 250)`} y2="250" x2="115"
                                                    y1="240" x1="135" strokeWidth="5" stroke="#01BBF5"
                                                    fill="none" />)}
                     <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 250 250"
