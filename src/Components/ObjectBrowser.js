@@ -1,5 +1,5 @@
 /**
- * Copyright 2020-2023, Denis Haev <dogafox@gmail.com>
+ * Copyright 2020-2024, Denis Haev <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -2077,6 +2077,7 @@ class ObjectBrowser extends Component {
             columnsEditCustomDialog: null,
             customColumnDialogValueChanged: false,
             showExportDialog: false,
+            showAllExportOptions: false,
             linesEnabled:
                 (window._localStorage || window.localStorage).getItem(`${props.dialogName || 'App'}.lines`) === 'true',
             showDescription:
@@ -3701,49 +3702,52 @@ class ObjectBrowser extends Component {
             <DialogTitle>{this.props.t('ra_Select type of export')}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    {this.props.t('ra_You can export all objects or just the selected branch.')}
-                    <br />
-                    {this.props.t('ra_Selected %s object(s)', this.state.showExportDialog)}
-                    <br />
-                    <FormControlLabel
-                        control={<Checkbox
-                            checked={this.state.noStatesByExportImport}
-                            onChange={e => this.setState({ noStatesByExportImport: e.target.checked })}
-                        />}
-                        label={this.props.t('ra_Do not export values of states')}
-                    />
-                    <br />
-                    {this.props.t('These options can reduce the size of the export file:')}
-                    <FormControlLabel
-                        control={<Checkbox
-                            checked={this.state.beautifyJsonExport}
-                            onChange={e => this.setState({ beautifyJsonExport: e.target.checked })}
-                        />}
-                        label={this.props.t('Beautify JSON output')}
-                    />
-                    <br />
-                    <FormControlLabel
-                        control={<Checkbox
-                            checked={this.state.excludeSystemRepositoriesFromExport}
-                            onChange={e => this.setState({ excludeSystemRepositoriesFromExport: e.target.checked })}
-                        />}
-                        label={this.props.t('Exclude system repositories from export JSON')}
-                    />
-                    <FormControlLabel
-                        control={<Checkbox
-                            checked={this.state.excludeTranslations}
-                            onChange={e => this.setState({ excludeTranslations: e.target.checked })}
-                        />}
-                        label={this.props.t('Exclude translations (except english) from export JSON')}
-                    />
+                    {this.state.filter.expertMode || this.state.showAllExportOptions ?
+                        <>
+                            {this.props.t('ra_You can export all objects or just the selected branch.')}
+                            <br />
+                            {this.props.t('ra_Selected %s object(s)', this.state.showExportDialog)}
+                            <br />
+                            <FormControlLabel
+                                control={<Checkbox
+                                    checked={this.state.noStatesByExportImport}
+                                    onChange={e => this.setState({ noStatesByExportImport: e.target.checked })}
+                                />}
+                                label={this.props.t('ra_Do not export values of states')}
+                            />
+                            <br />
+                            {this.props.t('These options can reduce the size of the export file:')}
+                            <FormControlLabel
+                                control={<Checkbox
+                                    checked={this.state.beautifyJsonExport}
+                                    onChange={e => this.setState({ beautifyJsonExport: e.target.checked })}
+                                />}
+                                label={this.props.t('Beautify JSON output')}
+                            />
+                            <br />
+                            <FormControlLabel
+                                control={<Checkbox
+                                    checked={this.state.excludeSystemRepositoriesFromExport}
+                                    onChange={e => this.setState({ excludeSystemRepositoriesFromExport: e.target.checked })}
+                                />}
+                                label={this.props.t('Exclude system repositories from export JSON')}
+                            />
+                            <FormControlLabel
+                                control={<Checkbox
+                                    checked={this.state.excludeTranslations}
+                                    onChange={e => this.setState({ excludeTranslations: e.target.checked })}
+                                />}
+                                label={this.props.t('Exclude translations (except english) from export JSON')}
+                            />
+                        </> : null}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button
+                {this.state.filter.expertMode || this.state.showAllExportOptions ? <Button
                     color="grey"
                     variant="outlined"
                     onClick={() => this.setState(
-                        { showExportDialog: false },
+                        { showExportDialog: false, showAllExportOptions: false },
                         () => this._exportObjects({
                             isAll: true,
                             noStatesByExportImport: this.state.noStatesByExportImport,
@@ -3758,13 +3762,20 @@ class ObjectBrowser extends Component {
 (
                     {Object.keys(this.objects).length}
 )
-                </Button>
+                </Button> : <Button
+                    color="grey"
+                    variant="outlined"
+                    startIcon={<IconExpert />}
+                    onClick={() => this.setState({ showAllExportOptions: true })}
+                >
+                    {this.props.t('ra_Advanced options')}
+                </Button>}
                 <Button
                     color="primary"
                     variant="contained"
                     autoFocus
                     onClick={() => this.setState(
-                        { showExportDialog: false },
+                        { showExportDialog: false, showAllExportOptions: false },
                         () => this._exportObjects({
                             isAll: false,
                             noStatesByExportImport: this.state.noStatesByExportImport,
@@ -3783,7 +3794,7 @@ class ObjectBrowser extends Component {
                 <Button
                     color="grey"
                     variant="contained"
-                    onClick={() => this.setState({ showExportDialog: false })}
+                    onClick={() => this.setState({ showExportDialog: false, showAllExportOptions: false })}
                     startIcon={<IconClose />}
                 >
                     {this.props.t('ra_Cancel')}

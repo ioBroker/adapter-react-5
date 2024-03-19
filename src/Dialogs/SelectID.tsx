@@ -79,14 +79,13 @@ interface DialogSelectIDProps {
     onClose: () => void;
     /* Handler that is called when the user presses OK. */
     onOk: (selected: string | string[] | undefined, name: string) => void;
-    classes: Record<string, string>;
     /* Function to filter out all unnecessary objects. Can be string or function.
        It cannot be used together with "types".
        Example for function: `obj => obj.common && obj.common.type === 'boolean'` to show only boolean states
        In case of string, it must look like `obj.common && obj.common.type === 'boolean'` */
     filterFunc?: string | ((obj: ioBroker.Object) => boolean);
     /* predefined filter fields, like {"id":"","name":"","room":"","func":"","role":"level","type":"","custom":""} */
-    filters: SelectIDFilters;
+    filters?: SelectIDFilters;
     /* Show elements only of this root ID */
     root?: string;
 }
@@ -117,7 +116,7 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
         }
 
         if (props.filters) {
-            this.filters = { ...this.filters, ...props.filters };
+            this.filters = { ...this.filters, ...(props.filters || {}) };
         }
 
         let selected = this.props.selected || [];
