@@ -61,6 +61,8 @@ interface ImageState {
 class Image extends Component<ImageProps, ImageState> {
     private svg: React.JSX.Element | null;
 
+    static REMOTE_SERVER = window.location.hostname.includes('iobroker.in');
+
     constructor(props: ImageProps) {
         super(props);
         this.state = {
@@ -141,6 +143,19 @@ class Image extends Component<ImageProps, ImageState> {
             if (this.state.imgError || !this.state.src) {
                 return <IconNoIcon className={this.props.className} />;
             }
+            if (Image.REMOTE_SERVER && !this.state.src.startsWith('http://') && !this.state.src.startsWith('https://')) {
+                let src = (this.props.imagePrefix || '') + this.state.src;
+                if (src.startsWith('./')) {
+                    src = src.substring(2);
+                }
+                return <img
+                    className={this.props.className}
+                    src={src}
+                    alt=""
+                    onError={() => (this.props.showError ? this.setState({ imgError: true }) : this.setState({ src: '' }))}
+                />;
+            }
+
             return <img
                 className={this.props.className}
                 src={(this.props.imagePrefix || '') + this.state.src}

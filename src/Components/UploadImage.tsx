@@ -15,6 +15,7 @@ import { FaFileUpload as UploadIcon } from 'react-icons/fa';
 
 import Utils from './Utils';
 import I18n from '../i18n';
+import Icon from './Icon';
 
 // import 'cropperjs/dist/cropper.css';
 const cropperStyles = `
@@ -580,7 +581,7 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
                             <MenuItem onClick={() => this.setState({ anchorEl: null, cropHandler: false })}>{I18n.t('ra_Close')}</MenuItem>
                         </Menu>
                     </div>}
-                    {icon && !cropHandler ? <img src={icon} className={classes.image} alt="icon" /> : null}
+                    {icon && !cropHandler ? <Icon src={icon} className={classes.image} alt="icon" /> : null}
 
                     {icon && crop && cropHandler ? <Cropper
                         ref={this.cropperRef}

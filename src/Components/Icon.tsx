@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactEventHandler } from 'react';
 import SVG from 'react-inlinesvg';
 
 import {
@@ -103,9 +103,12 @@ interface IconProps {
     title?: string;
     /** Styles for utf-8 characters */
     styleUTF8?: React.CSSProperties;
+    onError?: ReactEventHandler<HTMLImageElement>;
     /** Alternative text for image */
     alt?: string;
 }
+
+const REMOTE_SERVER = window.location.hostname.includes('iobroker.in');
 
 const Icon = (props: IconProps) => {
     if (props.src) {
@@ -130,12 +133,31 @@ const Icon = (props: IconProps) => {
                     style={props.style || {}}
                 />;
             }
+            if (REMOTE_SERVER && !props.src.startsWith('http://') && !props.src.startsWith('https://')) {
+                let src = props.src;
+                if (src.startsWith('./')) {
+                    src = src.substring(2);
+                }
+
+                return <img
+                    title={props.title || undefined}
+                    style={props.style || {}}
+                    className={Utils.clsx(props.className, 'iconOwn')}
+                    src={`https://remote-files.iobroker.in${window.location.pathname}${src}`}
+                    alt={props.alt || undefined}
+                    onError={e => {
+                        // analyse error
+                        props.onError && props.onError(e);
+                    }}
+                />;
+            }
             return <img
                 title={props.title || undefined}
                 style={props.style || {}}
                 className={Utils.clsx(props.className, 'iconOwn')}
                 src={props.src}
                 alt={props.alt || undefined}
+                onError={props.onError}
             />;
         }
 

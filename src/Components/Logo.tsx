@@ -8,6 +8,7 @@ import {
 } from '@mui/icons-material';
 
 import I18n from '../i18n';
+import Icon from './Icon';
 
 interface LogoProps {
     /* Adapter common configuration from io-package.json */
@@ -105,7 +106,7 @@ class Logo extends React.Component<LogoProps> {
     render() {
         return <div className={this.props.className} style={this.props.style}>
             {this.props.common.icon ?
-                <img
+                <Icon
                     src={this.props.common.icon}
                     style={{
                         padding: 8,

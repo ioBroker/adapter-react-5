@@ -75,6 +75,7 @@ import withWidth from './withWidth';
 
 import FileViewer, { EXTENSIONS } from './FileViewer';
 import { ThemeName, ThemeType, Translator } from '../types';
+import Icon from "./Icon";
 
 const ROW_HEIGHT   = 32;
 const BUTTON_WIDTH = 32;
@@ -1376,7 +1377,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             {ext && EXTENSIONS.images.includes(ext) ?
                 this.state.fileErrors.includes(item.id) ?
                     <IconNoIcon className={Utils.clsx(this.props.classes[`itemImage${this.state.viewType}`], this.getClassBackgroundImage())} /> :
-                    <img
+                    <Icon
                         onError={e => {
                             // @ts-expect-error it exists
                             e.target.onerror = null;

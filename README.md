@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added support for remote cloud
+
 ### 4.11.6 (2024-03-19)
 * (bluefox) Corrected rendering of LoaderMV
 

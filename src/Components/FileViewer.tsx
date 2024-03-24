@@ -27,6 +27,7 @@ import IconNoIcon from '../icons/IconNoIcon';
 import withWidth from './withWidth';
 import Utils from './Utils';
 import { Translator } from '../types';
+import Icon from './Icon';
 // File viewer in adapter-react does not use ace editor
 // import Editor from './Editor';
 
@@ -250,7 +251,7 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
             if (this.state.imgError) {
                 return <IconNoIcon className={Utils.clsx(this.props.classes.img, this.props.getClassBackgroundImage())} />;
             }
-            return <img
+            return <Icon
                 onError={e => {
                     // @ts-ignore-error to check
                     e.target.onerror = null;
