@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### 4.12.0 (2024-03-24)
+### **WORK IN PROGRESS**
 * (bluefox) Added support for remote cloud
 
 ### 4.11.6 (2024-03-19)

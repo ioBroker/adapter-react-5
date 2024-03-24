@@ -104,6 +104,7 @@ interface IconProps {
     /** Styles for utf-8 characters */
     styleUTF8?: React.CSSProperties;
     onError?: ReactEventHandler<HTMLImageElement>;
+    ref: React.RefObject<HTMLImageElement>;
     /** Alternative text for image */
     alt?: string;
 }
@@ -145,6 +146,7 @@ const Icon = (props: IconProps) => {
                     className={Utils.clsx(props.className, 'iconOwn')}
                     src={`https://remote-files.iobroker.in${window.location.pathname}${src}`}
                     alt={props.alt || undefined}
+                    ref={props.ref}
                     onError={e => {
                         // analyse error
                         props.onError && props.onError(e);
@@ -157,6 +159,7 @@ const Icon = (props: IconProps) => {
                 className={Utils.clsx(props.className, 'iconOwn')}
                 src={props.src}
                 alt={props.alt || undefined}
+                ref={props.ref}
                 onError={props.onError}
             />;
         }
