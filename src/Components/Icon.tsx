@@ -104,7 +104,7 @@ interface IconProps {
     /** Styles for utf-8 characters */
     styleUTF8?: React.CSSProperties;
     onError?: ReactEventHandler<HTMLImageElement>;
-    ref: React.RefObject<HTMLImageElement>;
+    ref?: React.RefObject<HTMLImageElement>;
     /** Alternative text for image */
     alt?: string;
 }
