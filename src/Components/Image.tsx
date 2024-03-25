@@ -61,7 +61,8 @@ interface ImageState {
 class Image extends Component<ImageProps, ImageState> {
     private svg: React.JSX.Element | null;
 
-    static REMOTE_SERVER = window.location.hostname.includes('iobroker.in');
+    static REMOTE_SERVER: boolean = window.location.hostname.includes('iobroker.in');
+    static REMOTE_PREFIX: string = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
 
     constructor(props: ImageProps) {
         super(props);
@@ -146,11 +147,13 @@ class Image extends Component<ImageProps, ImageState> {
             if (Image.REMOTE_SERVER && !this.state.src.startsWith('http://') && !this.state.src.startsWith('https://')) {
                 let src = (this.props.imagePrefix || '') + this.state.src;
                 if (src.startsWith('./')) {
-                    src = src.substring(2);
+                    src = Image.REMOTE_PREFIX + src.substring(2);
+                } else if (!src.startsWith('/')) {
+                    src = Image.REMOTE_PREFIX + src;
                 }
                 return <img
                     className={this.props.className}
-                    src={src}
+                    src={`https://remote-files.iobroker.in${src}`}
                     alt=""
                     onError={() => (this.props.showError ? this.setState({ imgError: true }) : this.setState({ src: '' }))}
                 />;

@@ -110,6 +110,7 @@ interface IconProps {
 }
 
 const REMOTE_SERVER = window.location.hostname.includes('iobroker.in');
+const REMOTE_PREFIX = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
 
 const Icon = (props: IconProps) => {
     if (props.src) {
@@ -137,14 +138,16 @@ const Icon = (props: IconProps) => {
             if (REMOTE_SERVER && !props.src.startsWith('http://') && !props.src.startsWith('https://')) {
                 let src = props.src;
                 if (src.startsWith('./')) {
-                    src = src.substring(2);
+                    src = REMOTE_PREFIX + src.substring(2);
+                } else if (!src.startsWith('/')) {
+                    src = REMOTE_PREFIX + src;
                 }
 
                 return <img
                     title={props.title || undefined}
                     style={props.style || {}}
                     className={Utils.clsx(props.className, 'iconOwn')}
-                    src={`https://remote-files.iobroker.in${window.location.pathname}${src}`}
+                    src={`https://remote-files.iobroker.in${src}`}
                     alt={props.alt || undefined}
                     ref={props.ref}
                     onError={e => {
