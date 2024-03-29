@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Migrated legacy connection to typescript
+
 ### 4.12.2 (2024-03-25)
 * (bluefox) Added support for remote cloud
 
