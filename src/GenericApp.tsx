@@ -84,8 +84,8 @@ declare global {
     interface Window {
         io: any;
         SocketClient: any;
-        adapterName: string;
-        socketUrl: string;
+        adapterName: undefined | string;
+        socketUrl: undefined | string;
         oldAlert: any;
         changed: boolean;
         $iframeDialog: {
@@ -353,7 +353,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                             instanceObj.common.version &&
                             // @ts-expect-error will be extended in js-controller TODO: this is redundant to state `${this.instanceId}.plugins.sentry.enabled`, remove this in future when admin sets the state correctly
                             !instanceObj.common.disableDataReporting &&
-                            window.location.host !== 'localhost:3000';
+                                window.location.host !== 'localhost:3000';
 
                         // activate sentry plugin
                         if (!this.sentryStarted && this.sentryDSN && sentryEnabled) {
