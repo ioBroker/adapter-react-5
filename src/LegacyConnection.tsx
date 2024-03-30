@@ -38,6 +38,11 @@ export const ERRORS = {
     NOT_CONNECTED,
 };
 
+export type BinaryStateChangeHandler = (
+    id: string,
+    base64: string | null,
+) => void;
+
 function fixAdminUI(obj: ioBroker.AdapterObject): ioBroker.AdapterObject {
     // @ts-expect-error it is deprecated, but still could appear
     if (obj?.common && !obj.common.adminUI) {
@@ -232,7 +237,7 @@ class Connection {
     private firstConnect: boolean = true;
     private readonly waitForRestart: boolean = false;
     private connected: boolean = false;
-    private readonly statesSubscribes: Record<string, { reg: RegExp, cbs: (ioBroker.StateChangeHandler | ((id: string, base64: string) => void))[] }> = {};
+    private readonly statesSubscribes: Record<string, { reg: RegExp, cbs: (ioBroker.StateChangeHandler | BinaryStateChangeHandler)[] }> = {};
     private readonly objectsSubscribes: Record<string, { reg: RegExp, cbs: ((id: string, obj: ioBroker.Object | null | undefined, oldObj?: ioBroker.Object | null) => void)[] }> = {};
     private readonly filesSubscribes: Record<string, { regId: RegExp, cbs: ioBroker.FileChangeHandler[], regFilePattern: RegExp }> = {};
     private onConnectionHandlers: ((connected: boolean) => void)[] = [];
@@ -648,9 +653,9 @@ class Connection {
         /** The ioBroker state ID. */
         id: string | string[],
         /** Set to true if the given state is binary and requires Base64 decoding. */
-        binary: boolean | ioBroker.StateChangeHandler | ((id: string, base64: string) => void),
+        binary: boolean | ioBroker.StateChangeHandler | BinaryStateChangeHandler,
         /** The callback. */
-        cb?: ioBroker.StateChangeHandler | ((id: string, base64: string) => void),
+        cb?: ioBroker.StateChangeHandler | BinaryStateChangeHandler,
     ): void {
         if (typeof binary === 'function') {
             cb = binary;
@@ -692,23 +697,26 @@ class Connection {
             }
         }
 
-        if (toSubscribe.length && this.connected) {
+        if (!this.connected) {
+            return;
+        }
+
+        if (toSubscribe.length) {
             // no answer from server required
             this._socket.emit('subscribe', toSubscribe);
         }
 
-        if (typeof cb === 'function' && this.connected) {
-            if (binary) {
-                // todo: if array of ids
-                this.getBinaryState(ids[0])
-                    .then((base64: string) => cb && (cb as (id: string, base64: string) => void)(ids[0], base64))
-                    .catch(e => console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(e)}`));
-            } else {
-                this._socket.emit(Connection.isWeb() ? 'getStates' : 'getForeignStates', id, (err: string | null, states: Record<string, ioBroker.State>) => {
-                    err && console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`);
-                    states && Object.keys(states).forEach(_id => (cb as ioBroker.StateChangeHandler)(_id, states[_id]));
-                });
+        if (binary) {
+            for (let i = 0; i < ids.length; i++) {
+                this.getBinaryState(ids[i])
+                    .then((base64: string) => cb && (cb as BinaryStateChangeHandler)(ids[i], base64))
+                    .catch(e => console.error(`Cannot getBinaryState "${ids[i]}": ${JSON.stringify(e)}`));
             }
+        } else {
+            this._socket.emit(Connection.isWeb() ? 'getStates' : 'getForeignStates', id, (err: string | null, states: Record<string, ioBroker.State>) => {
+                err && console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`);
+                states && Object.keys(states).forEach(_id => (cb as ioBroker.StateChangeHandler)(_id, states[_id]));
+            });
         }
     }
 
@@ -778,7 +786,7 @@ class Connection {
         /** The ioBroker state ID or array of states */
         id: string | string[],
         /** The callback. */
-        cb?: ioBroker.StateChangeHandler | ((id: string, base64: string) => void),
+        cb?: ioBroker.StateChangeHandler | BinaryStateChangeHandler,
     ): void {
         let ids: string[];
         if (!Array.isArray(id)) {
