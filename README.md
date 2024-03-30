@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### 4.13.0 (2024-03-30)
+### **WORK IN PROGRESS**
 * (bluefox) used new connection classes
 
 ### 4.12.3 (2024-03-30)

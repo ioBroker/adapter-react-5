@@ -829,7 +829,7 @@ class Connection {
         id: string | string[],
         /** The callback. */
         cb: ioBroker.ObjectChangeHandler,
-    ): void {
+    ): Promise<void> {
         let ids: string[];
         if (!Array.isArray(id)) {
             ids = [id];
@@ -854,6 +854,8 @@ class Connection {
         if (this.connected && toSubscribe.length) {
             this._socket.emit('subscribeObjects', toSubscribe);
         }
+
+        return Promise.resolve();
     }
 
     /**
