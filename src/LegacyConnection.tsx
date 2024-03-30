@@ -13,6 +13,7 @@ declare global {
         socketUrl: undefined | string;
         registerSocketOnLoad: (func: () => void) => void;
         vendorPrefix: undefined | string;
+        io: any;
     }
 }
 
