@@ -1960,7 +1960,7 @@ class Connection {
         fileName: string,
         /** If it must be a base64 format */
         base64?: boolean,
-    ): Promise<string | { data: string, type: string } > {
+    ): Promise<string | { data: string, type: string }> {
         if (!this.connected) {
             return Promise.reject(NOT_CONNECTED);
         }

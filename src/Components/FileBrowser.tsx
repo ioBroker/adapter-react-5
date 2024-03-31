@@ -223,6 +223,7 @@ const styles: Record<string, any> = (theme: Theme) => ({
         width: 60,
         verticalAlign: 'top',
         textAlign: 'right',
+        whiteSpace: 'nowrap',
     },
     itemAccessTable: {
         // display: 'inline-block',
@@ -239,6 +240,9 @@ const styles: Record<string, any> = (theme: Theme) => ({
         marginTop: 1,
         objectFit: 'contain',
         maxHeight: 30,
+    },
+    itemNoImageTable: {
+        marginTop: 6,
     },
     itemIconTable: {
         display: 'inline-block',
@@ -1376,7 +1380,11 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
         >
             {ext && EXTENSIONS.images.includes(ext) ?
                 this.state.fileErrors.includes(item.id) ?
-                    <IconNoIcon className={Utils.clsx(this.props.classes[`itemImage${this.state.viewType}`], this.getClassBackgroundImage())} /> :
+                    <IconNoIcon className={Utils.clsx(
+                        this.props.classes[`itemImage${this.state.viewType}`],
+                        this.getClassBackgroundImage(),
+                        this.props.classes[`itemNoImage${this.state.viewType}`],
+                    )} /> :
                     <Icon
                         onError={e => {
                             // @ts-expect-error it exists
