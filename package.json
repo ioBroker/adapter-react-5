@@ -48,7 +48,7 @@
     "@iobroker/js-controller-common-db": "^5.0.19",
     "@mui/icons-material": "^5.15.14",
     "@mui/material": "5.14.14",
-    "@mui/styles": "5.14.14",
+    "@mui/styles": "5.15.14",
     "@mui/x-date-pickers": "^7.1.0",
     "@sentry/browser": "^7.109.0",
     "@sentry/integrations": "^7.109.0",
