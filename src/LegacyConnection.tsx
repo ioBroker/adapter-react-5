@@ -534,6 +534,25 @@ class Connection {
     }
 
     /**
+     * Checks if running in ioBroker cloud
+     */
+    static isCloud(): boolean {
+        if (
+            window.location.hostname.includes("amazonaws.com") ||
+            window.location.hostname.includes("iobroker.in")
+        ) {
+            return true;
+        }
+        if (typeof window.socketUrl === "undefined") {
+            return false;
+        }
+        return (
+            window.socketUrl.includes("iobroker.in") ||
+            window.socketUrl.includes("amazonaws")
+        );
+    }
+
+    /**
      * Checks if the socket is connected.
      */
     isConnected(): boolean {
