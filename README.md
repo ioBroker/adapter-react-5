@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### 4.13.4 (2024-04-02)
+### **WORK IN PROGRESS**
 * (bluefox) used new connection classes
 * (bluefox) Improved the `SelectID` dialog
 
