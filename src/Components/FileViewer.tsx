@@ -26,10 +26,14 @@ import type { Connection } from '@iobroker/socket-client';
 import IconNoIcon from '../icons/IconNoIcon';
 import withWidth from './withWidth';
 import Utils from './Utils';
-import { Translator } from '../types';
+import { Translator, ThemeType } from '../types';
 import Icon from './Icon';
 // File viewer in adapter-react does not use ace editor
+// import * as ace from 'ace-builds';
+// import 'ace-builds/src-noconflict/ext-modelist';
 // import Editor from './Editor';
+
+// const modelist = ace.require('ace/ext/modelist');
 
 const styles: Record<string, any> = {
     dialog: {
@@ -59,7 +63,7 @@ const styles: Record<string, any> = {
 export const EXTENSIONS = {
     images: ['png', 'jpg', 'svg', 'jpeg', 'bmp', 'gif', 'apng', 'avif', 'webp'],
     code:   ['js', 'json', 'json5', 'md'],
-    txt:    ['log', 'txt', 'html', 'css', 'xml'],
+    txt:    ['log', 'txt', 'html', 'css', 'xml', 'ics'],
     audio:  ['mp3', 'wav', 'ogg', 'acc'],
     video:  ['mp4', 'mov', 'avi'],
 };
@@ -77,10 +81,6 @@ function bufferToBase64(buffer: Buffer, isFull?: boolean) {
 interface FileViewerProps {
     /** Translation function */
     t: Translator;
-    /** The selected language. */
-    lang?: ioBroker.Languages;
-    /**  Is expert mode enabled? (default: false) */
-    expertMode?: boolean;
     /** Callback when the viewer is closed. */
     onClose: () => void;
     /** The URL (file path) to the file to be displayed. */
@@ -88,6 +88,7 @@ interface FileViewerProps {
     formatEditFile?: string;
     socket: Connection;
     setStateBackgroundImage: () => void;
+    themeType: ThemeType;
     getClassBackgroundImage: () => string | null;
     classes: Record<string, string>;
     /** Flag is the js-controller support subscribe on file */
@@ -242,7 +243,8 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
             case 'txt':
                 return 'html';
             default:
-                return 'json';
+                // e.g. ace/mode/text
+                return 'text';
         }
     }
 
@@ -264,22 +266,11 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
         }
         if (this.state.code !== null || this.state.text !== null || this.state.editing) {
             // File viewer in adapter-react does not support write
-            // return <AceEditor
+            // return <Editor
             //     mode={FileViewer.getEditFile(this.props.formatEditFile)}
-            //     width="100%"
-            //     height="100%"
-            //     theme={this.props.themeName === 'dark' ? 'clouds_midnight' : 'chrome'}
+            //     themeType={this.props.themeType}
             //     value={this.state.editingValue || this.state.code || this.state.text}
-            //     onChange={newValue => this.setState({ editingValue: newValue, changed: true })}
-            //     name="UNIQUE_ID_OF_DIV"
-            //     readOnly={!this.state.editing}
-            //     fontSize={14}
-            //     setOptions={{
-            //         enableBasicAutocompletion: true,
-            //         enableLiveAutocompletion: true,
-            //         enableSnippets: true,
-            //     }}
-            //     editorProps={{ $blockScrolling: true }}
+            //     onChange={this.state.editing ? newValue => this.setState({ editingValue: newValue, changed: true }) : undefined}
             // />;
             return <TextField
                 variant="standard"

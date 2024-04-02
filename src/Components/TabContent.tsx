@@ -6,7 +6,7 @@ import { Grid } from '@mui/material';
 
 import Utils from './Utils';
 
-const styles = {
+const styles: Record<string, any> = {
     root: {
         height: '100%',
         overflow: 'hidden',
@@ -19,10 +19,7 @@ const styles = {
 interface TabContentProps {
     /* Set to 'auto' to show the overflow. */
     overflow?: string;
-    classes: {
-        root: string;
-        overflowAuto: string;
-    };
+    classes: Record<string, string>;
     children: React.ReactNode;
 }
 
@@ -39,6 +36,4 @@ class TabContent extends React.Component<TabContentProps> {
     }
 }
 
-/** @type {typeof TabContent} */
-const _export = withStyles(styles)(TabContent);
-export default _export;
+export default withStyles(styles)(TabContent);

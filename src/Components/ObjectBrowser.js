@@ -2220,6 +2220,20 @@ class ObjectBrowser extends Component {
                     try {
                         if (props.filterFunc(objects[id])) {
                             this.objects[id] = objects[id];
+                        } else {
+                            const type = objects[id] && objects[id].type;
+                            // include "folder" types too for icons and names of nodes
+                            if (type &&
+                                (
+                                    type === 'channel' ||
+                                    type === 'device' ||
+                                    type === 'folder' ||
+                                    type === 'adapter' ||
+                                    type === 'instance'
+                                )
+                            ) {
+                                this.objects[id] = objects[id];
+                            }
                         }
                     } catch (e) {
                         console.log(`Error by filtering of "${id}": ${e}`);
@@ -3048,14 +3062,23 @@ class ObjectBrowser extends Component {
      * Processes a single element in regard to certain filters, columns for admin and updates object dict
      * @param id The id of the object
      * @param obj The object itself
-     * @returns {{filtered: boolean, newState: null}} Returns an object containing the new state (if any) and whether the object was filtered.
+     * @returns {{filtered: boolean, newInnerState: null}} Returns an object containing the new state (if any) and whether the object was filtered.
      */
     processOnObjectChangeElement(id, obj) {
         console.log(`> objectChange ${id}`);
-        let newState = null;
+        let newInnerState = null;
+        const type = obj && obj.type;
 
-        if (obj && typeof this.props.filterFunc === 'function' && !this.props.filterFunc(obj)) {
-            return { newState, filtered: true };
+        if (obj &&
+            typeof this.props.filterFunc === 'function' &&
+            !this.props.filterFunc(obj) &&
+            type !== 'channel' &&
+            type !== 'device' &&
+            type !== 'folder' &&
+            type !== 'adapter' &&
+            type !== 'instance'
+        ) {
+            return { newInnerState, filtered: true };
         }
 
         if (id.startsWith('system.adapter.') && obj && obj.type === 'adapter') {
@@ -3064,7 +3087,7 @@ class ObjectBrowser extends Component {
             this.parseObjectForAdmins(columnsForAdmin, obj);
 
             if (JSON.stringify(this.state.columnsForAdmin) !== JSON.stringify(columnsForAdmin)) {
-                newState = { columnsForAdmin };
+                newInnerState = { columnsForAdmin };
             }
         }
         this.objects = this.objects || [];
@@ -3073,7 +3096,7 @@ class ObjectBrowser extends Component {
         } else if (this.objects[id]) {
             delete this.objects[id];
         }
-        return { newState, filtered: false };
+        return { newInnerState, filtered: false };
     }
 
     /**
@@ -3698,7 +3721,10 @@ class ObjectBrowser extends Component {
         if (this.state.showExportDialog === false) {
             return null;
         }
-        return <Dialog open={!0}>
+        return <Dialog
+            open={!0}
+            maxWidth="lg"
+        >
             <DialogTitle>{this.props.t('ra_Select type of export')}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
@@ -3759,9 +3785,9 @@ class ObjectBrowser extends Component {
                 >
                     {this.props.t('ra_All objects')}
                     {' '}
-(
+                    (
                     {Object.keys(this.objects).length}
-)
+                    )
                 </Button> : <Button
                     color="grey"
                     variant="outlined"
@@ -3787,9 +3813,9 @@ class ObjectBrowser extends Component {
                 >
                     {this.props.t('ra_Only selected')}
                     {' '}
-(
+                    (
                     {this.state.showExportDialog}
-)
+                    )
                 </Button>
                 <Button
                     color="grey"
@@ -4317,7 +4343,7 @@ class ObjectBrowser extends Component {
                     arrayTooltipText.push(
                         <span key={value + i}>
                             {this.texts[`acl${el.group}_${el.title}_${value}`]}
-,
+                            ,
                             <span
                                 className={
                                     value === 'object'
@@ -4678,7 +4704,7 @@ class ObjectBrowser extends Component {
                 >
                     (
                     {info.valText.s}
-)
+                    )
                 </span> : null,
                 <IconCopy
                     className={Utils.clsx(
@@ -5218,7 +5244,7 @@ class ObjectBrowser extends Component {
                 if (item.data.icon.length < 3) {
                     iconItem = <span className={Utils.clsx(classes.cellIdIconOwn, 'iconOwn')}>{item.data.icon}</span>; // utf-8 char
                 } else {
-                    iconItem = <img className={Utils.clsx(classes.cellIdIconOwn, 'iconOwn')} src={item.data.icon} alt="" />;
+                    iconItem = <Icon className={Utils.clsx(classes.cellIdIconOwn, 'iconOwn')} src={item.data.icon} alt="" />;
                 }
             } else {
                 iconItem = item.data.icon;

@@ -66,16 +66,16 @@ import Utils from './Utils';
 import TextInputDialog from '../Dialogs/TextInput';
 
 // Custom Icons
-import ExpertIcon from '../icons/IconExpert';
+import IconExpert from '../icons/IconExpert';
 import IconClosed from '../icons/IconClosed';
 import IconOpen from '../icons/IconOpen';
 import IconNoIcon from '../icons/IconNoIcon';
+import Icon from './Icon';
 
 import withWidth from './withWidth';
+import { ThemeName, ThemeType, Translator } from '../types';
 
 import FileViewer, { EXTENSIONS } from './FileViewer';
-import { ThemeName, ThemeType, Translator } from '../types';
-import Icon from "./Icon";
 
 const ROW_HEIGHT   = 32;
 const BUTTON_WIDTH = 32;
@@ -913,7 +913,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                 return new Promise((resolve, reject) => {
                     Promise.all(newFoldersNotNull[folderId].filter(item => item.folder).map(item =>
                         this.browseFolder(item.id, newFoldersNotNull, true)
-                            .catch(() => { })))
+                            .catch(() => undefined)))
                         .then(() => resolve(newFoldersNotNull))
                         .catch(error => reject(error));
                 });
@@ -980,7 +980,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                     return Promise.all(_folders.filter(item => item.folder)
                         .map(item =>
                             this.browseFolder(item.id, newFoldersNotNull, true)
-                                .catch(() => { })))
+                                .catch(() => undefined)))
                         .then(() => newFoldersNotNull);
                 }
             } catch (e) {
@@ -1427,6 +1427,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                     :
                     <div className={this.props.classes[`itemDeleteButton${this.state.viewType}`]} />}
             </Hidden>
+            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
             {this.state.viewType === TABLE && this.props.allowDownload ? <a
                 className={Utils.clsx('MuiButtonBase-root', 'MuiIconButton-root', 'MuiIconButton-sizeLarge', this.props.classes.itemDownloadButtonTable)}
                 tabIndex={0}
@@ -1560,7 +1561,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                 onClick={() => this.setState({ expertMode: !this.state.expertMode })}
                 size="small"
             >
-                <ExpertIcon />
+                <IconExpert />
             </IconButton> : null}
             {this.props.showViewTypeButton ? <IconButton
                 edge="start"
