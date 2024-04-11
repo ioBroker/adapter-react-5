@@ -417,7 +417,7 @@ It is better to use `Dialog/SelectID`, but if you want:
 />
 ```
 
-#### TreeTable.js
+#### TreeTable.ts
 ![Logo](img/tableTree.png)
 
 ```
@@ -670,6 +670,10 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Migrated TreeTable to typescript
+* (bluefox) corrected the object subscription
+
 ### 4.13.5 (2024-04-02)
 * (bluefox) used new connection classes
 * (bluefox) Improved the `SelectID` dialog

@@ -706,13 +706,13 @@ class Connection {
                 if (!reg.includes('*')) {
                     reg += '$';
                 }
-                this.statesSubscribes[_id] = { reg: new RegExp(reg), cbs: [] };
-                this.statesSubscribes[_id].cbs.push(cb);
+                this.statesSubscribes[_id] = { reg: new RegExp(reg), cbs: [cb] };
                 if (_id !== this.ignoreState) {
                     toSubscribe.push(_id);
                 }
             } else {
-                !this.statesSubscribes[_id].cbs.includes(cb) && this.statesSubscribes[_id].cbs.push(cb);
+                !this.statesSubscribes[_id].cbs.includes(cb) &&
+                    this.statesSubscribes[_id].cbs.push(cb);
             }
         }
 
@@ -863,11 +863,11 @@ class Connection {
                 if (!reg.includes('*')) {
                     reg += '$';
                 }
-                this.objectsSubscribes[_id] = { reg: new RegExp(reg), cbs: [] };
-                this.objectsSubscribes[_id].cbs.push(cb);
+                this.objectsSubscribes[_id] = { reg: new RegExp(reg), cbs: [cb] };
                 toSubscribe.push(_id);
             } else {
-                !this.objectsSubscribes[_id].cbs.includes(cb) && this.objectsSubscribes[_id].cbs.push(cb);
+                !this.objectsSubscribes[_id].cbs.includes(cb) &&
+                    this.objectsSubscribes[_id].cbs.push(cb);
             }
         }
         if (this.connected && toSubscribe.length) {
@@ -978,7 +978,7 @@ class Connection {
                 toSubscribe.push(pattern);
             } else {
                 !this.filesSubscribes[key].cbs.includes(cb) &&
-                this.filesSubscribes[key].cbs.push(cb);
+                    this.filesSubscribes[key].cbs.push(cb);
             }
         }
         if (this.connected && toSubscribe.length) {
