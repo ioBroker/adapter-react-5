@@ -163,7 +163,7 @@ function convertArrayIntoMinus(value: number | number [], max: number): string {
     return newParts.join(',');
 }
 
-type CronNames = 'seconds' | 'minutes' | 'hours' | 'dates' | 'months' | 'dows';
+type CronNames = 'seconds' | 'minutes' | 'hours' | 'dates' | 'months' | 'dow';
 
 interface CronProps {
     seconds: string | false | null;
@@ -171,7 +171,7 @@ interface CronProps {
     hours: string | null;
     dates: string | null;
     months: string | null;
-    dows: string | null;
+    dow: string | null;
 }
 
 interface ComplexCronProps {
@@ -192,7 +192,7 @@ interface ComplexCronState {
     hours?: string;
     dates?: string;
     months?: string;
-    dows?: string;
+    dow?: string;
     modes: CronProps;
 }
 
@@ -216,7 +216,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                 hours: null,
                 dates: null,
                 months: null,
-                dows: null,
+                dow: null,
             },
         };
         Object.assign(this.state, state);
@@ -237,7 +237,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                 hours: cronParts[2] || '*',
                 dates: cronParts[3] || '*',
                 months: cronParts[4] || '*',
-                dows: cronParts[5] || '*',
+                dow: cronParts[5] || '*',
             }
         } else {
             options = {
@@ -246,14 +246,14 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                 hours: cronParts[1] || '*',
                 dates: cronParts[2] || '*',
                 months: cronParts[3] || '*',
-                dows: cronParts[4] || '*',
+                dow: cronParts[4] || '*',
             };
         }
         return options;
     }
 
     static state2cron(state: ComplexCronState | CronProps): string {
-        let text = `${state.minutes} ${state.hours} ${state.dates} ${state.months} ${state.dows}`;
+        let text = `${state.minutes} ${state.hours} ${state.dates} ${state.months} ${state.dow}`;
         if (state.seconds !== false) {
             text = `${state.seconds} ${text}`;
         }
@@ -448,8 +448,8 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
             } else if (attr === 'months') {
                 this.setState({ months: value, modes }, () =>
                     this.recalcCron());
-            } else if (attr === 'dows') {
-                this.setState({ dows: value, modes }, () =>
+            } else if (attr === 'dow') {
+                this.setState({ dow: value, modes }, () =>
                     this.recalcCron());
             } else {
                 this.setState({ modes }, () =>
@@ -471,8 +471,8 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
             } else if (attr === 'months') {
                 this.setState({ months: value }, () =>
                     this.recalcCron());
-            } else if (attr === 'dows') {
-                this.setState({ dows: value }, () =>
+            } else if (attr === 'dow') {
+                this.setState({ dow: value }, () =>
                     this.recalcCron());
             }
         }
@@ -503,7 +503,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                     <Tab id="hours" label={I18n.t('sc_hours')} />
                     <Tab id="dates" label={I18n.t('sc_dates')} />
                     <Tab id="months" label={I18n.t('sc_months')} />
-                    <Tab id="dows" label={I18n.t('sc_dows')} />
+                    <Tab id="dow" label={I18n.t('sc_dows')} />
                 </Tabs>
             </AppBar>
             {tab === 0 && <div className={this.props.classes.tabContent}>{this.getPeriodsTab('seconds', 60)}</div>}
@@ -511,7 +511,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
             {tab === 2 && <div className={this.props.classes.tabContent}>{this.getPeriodsTab('hours', 24)}</div>}
             {tab === 3 && <div className={this.props.classes.tabContent}>{this.getPeriodsTab('dates', 31)}</div>}
             {tab === 4 && <div className={this.props.classes.tabContent}>{this.getPeriodsTab('months', 12)}</div>}
-            {tab === 5 && <div className={this.props.classes.tabContent}>{this.getPeriodsTab('dows', 7)}</div>}
+            {tab === 5 && <div className={this.props.classes.tabContent}>{this.getPeriodsTab('dow', 7)}</div>}
         </div>;
     }
 }

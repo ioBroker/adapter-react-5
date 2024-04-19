@@ -114,7 +114,7 @@ interface CronStructure {
     dow: string;
 }
 
-export function cron2state(cron: string): Partial<SimpleCronState> | null {
+export function cron2state(cron: string, force?: boolean): Partial<SimpleCronState> | null {
     cron = cron.replace(/['"]/g, '').trim();
     const cronParts = cron.split(' ');
     let options: CronStructure;
@@ -145,7 +145,8 @@ export function cron2state(cron: string): Partial<SimpleCronState> | null {
         options.minutes === '*' &&
         options.hours === '*' &&
         options.date === '*' &&
-        options.months === '*'
+        options.months === '*' &&
+        (options.dow === '*' || force)
     ) {
         state = {
             mode: 'interval',
@@ -155,11 +156,13 @@ export function cron2state(cron: string): Partial<SimpleCronState> | null {
             },
         };
     } // * * * * * *
+
     if (options.seconds === '*' &&
         options.minutes === '*' &&
         options.hours === '*' &&
         options.date === '*' &&
-        options.months === '*'
+        options.months === '*' &&
+        (options.dow === '*' || force)
     ) {
         state = {
             mode: 'interval',
@@ -168,11 +171,13 @@ export function cron2state(cron: string): Partial<SimpleCronState> | null {
                 unit: PERIODIC_TYPES.seconds,
             },
         };
-    } else if (options.seconds === null &&
+    } else if (
+        options.seconds === null &&
         options.minutes.includes('/') &&
         options.hours === '*' &&
         options.date === '*' &&
-        options.months === '*'
+        options.months === '*' &&
+        (options.dow === '*' || force)
     ) {
         // */n * * * *
         state = {
@@ -182,12 +187,14 @@ export function cron2state(cron: string): Partial<SimpleCronState> | null {
                 unit: PERIODIC_TYPES.minutes,
             },
         };
-    } else if (options.seconds !== null &&
+    } else if (
+        options.seconds !== null &&
         options.seconds.includes('/') &&
         options.minutes === '*' &&
         options.hours === '*' &&
         options.date === '*' &&
-        options.months === '*'
+        options.months === '*' &&
+        (options.dow === '*' || force)
     ) {
         // */n * * * * *
         state = {
@@ -197,12 +204,14 @@ export function cron2state(cron: string): Partial<SimpleCronState> | null {
                 unit: PERIODIC_TYPES.seconds,
             },
         };
-    } else if (options.seconds !== null &&
+    } else if (
+        options.seconds !== null &&
         options.seconds.includes('/') &&
         options.minutes === '*' &&
         options.hours.includes('-') &&
         options.date === '*' &&
-        options.months === '*'
+        options.months === '*' &&
+        (options.dow === '*' || force)
     ) {
         // */n * 1-24 * * 1-7 or  */n * 1-24 * * *
         state = {
@@ -215,11 +224,13 @@ export function cron2state(cron: string): Partial<SimpleCronState> | null {
                 weekdays: SimpleCron.text2weekdays(options.dow),
             },
         };
-    } else if (options.seconds === null &&
+    } else if (
+        options.seconds === null &&
         options.minutes.includes('/') &&
         options.hours.includes('-') &&
         options.date === '*' &&
-        options.months === '*'
+        options.months === '*' &&
+        (options.dow === '*' || force)
     ) {
         // */n 1-24 * * 1-7 or  */n 1-24 * * *
         state = {
@@ -232,11 +243,13 @@ export function cron2state(cron: string): Partial<SimpleCronState> | null {
                 weekdays: SimpleCron.text2weekdays(options.dow),
             },
         };
-    } else if (options.seconds === null &&
+    } else if (
+        options.seconds === null &&
         parseInt(options.minutes, 10).toString() === options.minutes &&
         parseInt(options.hours, 10).toString() === options.hours &&
         options.date === '*' &&
-        options.months === '*'
+        options.months === '*' &&
+        (options.dow === '*' || force)
     ) {
         // m h * * 1-7 or m h * * *
         state = {
@@ -246,12 +259,13 @@ export function cron2state(cron: string): Partial<SimpleCronState> | null {
                 weekdays: SimpleCron.text2weekdays(options.dow),
             },
         };
-    } else if (options.seconds === null &&
+    } else if (
+        options.seconds === null &&
         parseInt(options.minutes, 10).toString() === options.minutes &&
         parseInt(options.hours, 10).toString() === options.hours &&
         parseInt(options.date, 10).toString() === options.date &&
         parseInt(options.months, 10).toString() === options.months &&
-        options.dow === '*'
+        (options.dow === '*' || force)
     ) {
         // m h d M *
         state = {
@@ -273,7 +287,7 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
         if (cron[0] === '{') {
             cron = '';
         }
-        const state = cron2state(cron || '* * * * *') || DEFAULT_STATE;
+        const state = cron2state(cron || '* * * * *', true) || DEFAULT_STATE;
 
         this.state = {
             extended: false,

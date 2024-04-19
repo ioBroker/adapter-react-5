@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Corrected CRON selector
+
 ### 4.13.7 (2024-04-19)
 * (bluefox) Migrated ColorPicker to typescript
 
