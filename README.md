@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Migrated ColorPicker to typescript
+
 ### 4.13.6 (2024-04-11)
 * (bluefox) Migrated TreeTable to typescript
 * (bluefox) corrected the object subscription

@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2023 Denis Haev (bluefox) <dogafox@gmail.com>
+ * Copyright 2018-2024 Denis Haev (bluefox) <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { ChromePicker } from 'react-color';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { ChromePicker, type RGBColor } from 'react-color';
 import { withStyles } from '@mui/styles';
 
 import {
     TextField, Menu, IconButton, Button,
+    type Theme,
 } from '@mui/material';
 
 import {
@@ -31,7 +31,7 @@ import I18n from '../i18n';
 
 import Utils from './Utils';
 
-const styles = theme => ({
+const styles: Record<string, any> = (theme: Theme) => ({
     color: {
         width: 36,
         height: 14,
@@ -98,35 +98,43 @@ const styles = theme => ({
     },
 });
 
-/**
- * @typedef {object} Rgb
- * @property {number} r The red component of the color (0-255).
- * @property {number} g The green component of the color (0-255).
- * @property {number} b The blue component of the color (0-255).
- * @property {number} a The alpha component of the color (0-255).
- *
- * @typedef {string | Rgb | { rgb: Rgb }} Color Definition of a color.
- *
- * @typedef {object} ColorPickerProps
- * @property {boolean} [disabled] Set to true to disable the color picker.
- * @property {Color} [value] The currently selected color.
- * @property {(rgba: string) => void} [onChange] The color change callback.
- * @property {string} [name] The name.
- * @property {React.CSSProperties} [style] Additional styling for this component.
- * @property {string} [className] The CSS class name.
- * @property {boolean} [openAbove] Open the color picker above the field?
- *
- * @extends {React.Component<ColorPickerProps>}
- */
-class ColorPicker extends React.Component {
-    /**
-     * @param {Readonly<ColorPickerProps>} props
-     */
-    constructor(props) {
+interface ColorPickerProps {
+    /** Set to true to disable the color picker. */
+    disabled?: boolean;
+    /** The currently selected color. */
+    value?: string;
+    /** @deprecated The currently selected color use value */
+    color?: string;
+    /** The color change callback. */
+    onChange: (rgba: string) => void;
+    /** Label of the color picker. */
+    label?: string;
+    /** @deprecated TLabel of the color picker use label */
+    name?: string;
+    /** Additional styling for this component. */
+    style?: React.CSSProperties;
+    /** The CSS class name. */
+    className?: string;
+    /** Open the color picker above the field? */
+    openAbove?: boolean;
+    customPalette?: string[];
+    noInputField?: boolean;
+    barWidth?: number;
+    classes: Record<string, string>;
+}
+
+interface ColorPickerState {
+    displayColorPicker: boolean;
+    color: string | RGBColor;
+    anchorEl: HTMLDivElement | null;
+}
+
+class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
+    constructor(props: ColorPickerProps) {
         super(props);
         this.state = {
             displayColorPicker: false,
-            color: this.props.value || this.props.color,
+            color: this.props.value || this.props.color || '',
             anchorEl: null,
         };
     }
@@ -134,7 +142,7 @@ class ColorPicker extends React.Component {
     /**
      * @private
      */
-    handleClick = e => {
+    handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
         this.setState({ displayColorPicker: !this.state.displayColorPicker, anchorEl: this.state.displayColorPicker ? null : e.currentTarget });
     };
 
@@ -147,45 +155,47 @@ class ColorPicker extends React.Component {
 
     /**
      * Convert the given color to hex ('#rrggbb') or rgba ('rgba(r,g,b,a)') format.
-     * @param {Color} [color]
-     * @param {boolean} [isHex] The returning string should be in hex format
-     * @returns {string} the hex or rgba representation of the given color.
+     * @returns the hex or rgba representation of the given color.
      */
-    static getColor(color, isHex) {
+    static getColor(
+        color: string | { rgb: RGBColor } | RGBColor,
+        /** The returning string should be in hex format */
+        isHex?: boolean,
+    ): string {
         if (color && typeof color === 'object') {
-            if (color.rgb) {
+            const oColor = color as { rgb: RGBColor };
+            if (oColor.rgb) {
                 if (isHex) {
-                    return `#${color.rgb.r.toString(16).padStart(2, '0')}${color.rgb.g.toString(16).padStart(2, '0')}${color.rgb.b.toString(16).padStart(2, '0')}`;
+                    return `#${oColor.rgb.r.toString(16).padStart(2, '0')}${oColor.rgb.g.toString(16).padStart(2, '0')}${oColor.rgb.b.toString(16).padStart(2, '0')}`;
                 }
-                return `rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a})`;
+                return `rgba(${oColor.rgb.r},${oColor.rgb.g},${oColor.rgb.b},${oColor.rgb.a})`;
             }
+            const rColor = color as RGBColor;
             if (isHex) {
-                return `#${color.r.toString(16).padStart(2, '0')}${color.g.toString(16).padStart(2, '0')}${color.b.toString(16).padStart(2, '0')}`;
+                return `#${rColor.r.toString(16).padStart(2, '0')}${rColor.g.toString(16).padStart(2, '0')}${rColor.b.toString(16).padStart(2, '0')}`;
             }
-            return `rgba(${color.r},${color.g},${color.b},${color.a})`;
+            return `rgba(${rColor.r},${rColor.g},${rColor.b},${rColor.a})`;
         }
-        return isHex ? ColorPicker.rgb2hex(color || '') : color || '';
+        return isHex ? ColorPicker.rgb2hex(color as string || '') : color as string || '';
     }
 
     /**
      * Convert rgb() or rgba() format to hex format #rrggbb.
-     * @param {string} rgb
-     * @returns {string}
      */
-    static rgb2hex(rgb) {
+    static rgb2hex(rgb: string): string {
         const m = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
 
-        const r = parseInt(m[1], 10).toString(16).padStart(2, '0');
-        const g = parseInt(m[2], 10).toString(16).padStart(2, '0');
-        const b = parseInt(m[3], 10).toString(16).padStart(2, '0');
+        if (m) {
+            const r = parseInt(m[1], 10).toString(16).padStart(2, '0');
+            const g = parseInt(m[2], 10).toString(16).padStart(2, '0');
+            const b = parseInt(m[3], 10).toString(16).padStart(2, '0');
 
-        return m && m.length === 4 ? `#${r}${g}${b}` : rgb;
+            return m?.length === 4 ? `#${r}${g}${b}` : rgb;
+        }
+        return rgb;
     }
 
-    /**
-     * @private
-     */
-    handleChange = color => {
+    private handleChange = (color: string | RGBColor) => {
         this.setState({ color }, () =>
             this.props.onChange && this.props.onChange(ColorPicker.getColor(color)));
     };
@@ -195,8 +205,8 @@ class ColorPicker extends React.Component {
      * @param _prevProps
      * @param prevState
      */
-    componentDidUpdate(_prevProps, prevState) {
-        const color = ColorPicker.getColor(this.props.color || this.props.value);
+    componentDidUpdate(_prevProps: ColorPickerProps, prevState: ColorPickerState) {
+        const color = ColorPicker.getColor(this.props.color || this.props.value || '');
 
         if (color !== prevState.color) {
             this.setState({ color });
@@ -207,7 +217,7 @@ class ColorPicker extends React.Component {
         if (!this.props.customPalette) {
             return null;
         }
-        return <div style={{ width: '100%', display: 'flex', flexWrap: 'flex' }}>
+        return <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap' }}>
             {this.props.customPalette.map(color => <Button
                 className={this.props.classes.button}
                 key={color}
@@ -264,7 +274,7 @@ class ColorPicker extends React.Component {
                 <div
                     className={this.props.classes.color}
                     style={{
-                        background: color,
+                        background: ColorPicker.getColor(color),
                         width: this.props.noInputField ? (this.props.barWidth || 16) : (this.props.barWidth || undefined),
                     }}
                 />
@@ -277,31 +287,26 @@ class ColorPicker extends React.Component {
             >
                 <ChromePicker
                     className={this.props.classes.picker}
-                    color={this.state.color || ''}
-                    onChangeComplete={_color => this.handleChange(_color)}
-                    styles={{ picker: { background: '#112233' } }}
+                    color={this.state.color || undefined}
+                    onChangeComplete={_color => this.handleChange(_color.rgb)}
+                    styles={{
+                        default: {
+                            picker: {
+                                backgroundColor: '#112233',
+                            },
+                        }
+                    }}
                 />
-                {color && this.props.noInputField ? <IconButton className={this.props.classes.closeButton} onClick={() => this.handleChange('')}><IconDelete /></IconButton> : null}
-                <IconButton className={this.props.classes.closeButton} onClick={() => this.handleClose()}><IconClose /></IconButton>
+                {color && this.props.noInputField ? <IconButton className={this.props.classes.closeButton} onClick={() => this.handleChange('')}>
+                    <IconDelete />
+                </IconButton> : null}
+                <IconButton className={this.props.classes.closeButton} onClick={() => this.handleClose()}>
+                    <IconClose />
+                </IconButton>
                 {this.renderCustomPalette()}
             </Menu> : null}
         </div>;
     }
 }
 
-ColorPicker.propTypes = {
-    disabled: PropTypes.bool,
-    value: PropTypes.string,
-    onChange: PropTypes.func.isRequired,
-    label: PropTypes.string,
-    name: PropTypes.string, // same as label
-    style: PropTypes.object,
-    className: PropTypes.string,
-    customPalette: PropTypes.array,
-    noInputField: PropTypes.bool,
-    barWidth: PropTypes.number,
-};
-
-/** @type {typeof ColorPicker} */
-const _export = withStyles(styles)(ColorPicker);
-export default _export;
+export default withStyles(styles)(ColorPicker);

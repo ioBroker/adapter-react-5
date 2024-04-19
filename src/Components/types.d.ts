@@ -26,7 +26,7 @@ export interface ObjectBrowserCustomFilter {
     };
 }
 
-export type ObjectBrowserType = 'state' | 'instance' | 'channel';
+export type ObjectBrowserType = 'state' | 'instance' | 'channel' | 'device' | 'chart';
 
 export interface ObjectBrowserProps {
     /** The title of the dialog. */

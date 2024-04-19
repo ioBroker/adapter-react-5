@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { withStyles } from '@mui/styles';
 
 import {
@@ -17,7 +16,7 @@ import {
 import I18n from '../i18n';
 import convertCronToText from './SimpleCron/cronText';
 
-const styles = () => ({
+const styles: Record<string, any> = {
     mainDiv: {
         width: '100%',
         height: '100%',
@@ -48,7 +47,7 @@ const styles = () => ({
     appBar: {
         color: 'white',
     },
-});
+};
 
 const WEEKDAYS = [
     'Sunday',
@@ -76,8 +75,8 @@ const MONTHS = [
 ];
 
 // 5-7,9-11 => [5,6,7,9,10,11]
-function convertMinusIntoArray(value, max) {
-    let result = [];
+function convertMinusIntoArray(value: string | false | undefined, max: number): number[] {
+    let result: number[] = [];
 
     if (value === '*') {
         if (max === 24 || max === 60 || max === 7) {
@@ -108,7 +107,6 @@ function convertMinusIntoArray(value, max) {
             result.push(parseInt(parts[p], 10));
         }
     }
-    result = result.map(a => parseInt(a, 10));
 
     result.sort();
 
@@ -123,7 +121,7 @@ function convertMinusIntoArray(value, max) {
 }
 
 // [5,6,7,9,10,11] => 5-7,9-11
-function convertArrayIntoMinus(value, max) {
+function convertArrayIntoMinus(value: number | number [], max: number): string {
     if (typeof value !== 'object') {
         value = [value];
     }
@@ -134,14 +132,14 @@ function convertArrayIntoMinus(value, max) {
     if (!value.length) {
         return '-';
     }
-    value = value.map(a => parseInt(a, 10));
+    value = value.map(a => parseInt(a as any as string, 10));
 
     value.sort((a, b) => a - b);
 
     let start = value[0];
     let end = value[0];
     for (let p = 1; p < value.length; p++) {
-        if (value[p] - 1 !== parseInt(value[p - 1], 10)) {
+        if (value[p] - 1 !== parseInt(value[p - 1] as any as string, 10)) {
             if (start === end) {
                 newParts.push(start);
             } else if (end - 1 === start) {
@@ -150,10 +148,8 @@ function convertArrayIntoMinus(value, max) {
                 newParts.push(`${start}-${end}`);
             }
             start = value[p];
-            end = value[p];
-        } else {
-            end = value[p];
         }
+        end = value[p];
     }
 
     if (start === end) {
@@ -167,10 +163,44 @@ function convertArrayIntoMinus(value, max) {
     return newParts.join(',');
 }
 
-class ComplexCron extends React.Component {
-    constructor(props) {
+type CronNames = 'seconds' | 'minutes' | 'hours' | 'dates' | 'months' | 'dows';
+
+interface CronProps {
+    seconds: string | false | null;
+    minutes: string | null;
+    hours: string | null;
+    dates: string | null;
+    months: string | null;
+    dows: string | null;
+}
+
+interface ComplexCronProps {
+    cronExpression: string;
+    onChange: (cron: string) => void;
+    language: ioBroker.Languages;
+    classes: Record<string, any>;
+}
+
+type CronModes = 'every' | 'everyN' | 'specific';
+
+interface ComplexCronState {
+    extended: boolean;
+    tab: number;
+    cron: string;
+    seconds?: string | false;
+    minutes?: string;
+    hours?: string;
+    dates?: string;
+    months?: string;
+    dows?: string;
+    modes: CronProps;
+}
+
+class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
+    constructor(props: ComplexCronProps) {
         super(props);
-        let cron = typeof this.props.cronExpression === 'string' ? this.props.cronExpression.replace(/^["']/, '').replace(/["']\n?$/, '') : '';
+        let cron = typeof this.props.cronExpression === 'string' ?
+            this.props.cronExpression.replace(/^["']/, '').replace(/["']\n?$/, '') : '';
         if (cron[0] === '{') {
             cron = '';
         }
@@ -195,30 +225,34 @@ class ComplexCron extends React.Component {
         }
     }
 
-    static cron2state(cron) {
+    static cron2state(cron: string): CronProps {
         cron = cron.replace(/['"]/g, '').trim();
         const cronParts = cron.split(' ').map(p => p.trim());
-        const options = {};
+        let options: CronProps;
 
         if (cronParts.length === 6) {
-            options.seconds = cronParts[0] || '*';
-            options.minutes = cronParts[1] || '*';
-            options.hours = cronParts[2] || '*';
-            options.dates = cronParts[3] || '*';
-            options.months = cronParts[4] || '*';
-            options.dows = cronParts[5] || '*';
+            options = {
+                seconds: cronParts[0] || '*',
+                minutes: cronParts[1] || '*',
+                hours: cronParts[2] || '*',
+                dates: cronParts[3] || '*',
+                months: cronParts[4] || '*',
+                dows: cronParts[5] || '*',
+            }
         } else {
-            options.seconds = false;
-            options.minutes = cronParts[0] || '*';
-            options.hours = cronParts[1] || '*';
-            options.dates = cronParts[2] || '*';
-            options.months = cronParts[3] || '*';
-            options.dows = cronParts[4] || '*';
+            options = {
+                seconds: false,
+                minutes: cronParts[0] || '*',
+                hours: cronParts[1] || '*',
+                dates: cronParts[2] || '*',
+                months: cronParts[3] || '*',
+                dows: cronParts[4] || '*',
+            };
         }
         return options;
     }
 
-    static state2cron(state) {
+    static state2cron(state: ComplexCronState | CronProps): string {
         let text = `${state.minutes} ${state.hours} ${state.dates} ${state.months} ${state.dows}`;
         if (state.seconds !== false) {
             text = `${state.seconds} ${text}`;
@@ -234,21 +268,21 @@ class ComplexCron extends React.Component {
         }
     }
 
-    onChange(cron) {
+    onChange(cron: string) {
         if (cron !== this.state.cron) {
             this.setState({ cron });
             this.props.onChange && this.props.onChange(cron);
         }
     }
 
-    onToggle(i, type, max) {
+    onToggle(i: boolean | number, type: CronNames, max: number) {
         if (i === true) {
-            this.setState({ [type]: '*' }, () => this.recalcCron());
+            this.setCronAttr(type, '*');
         } else if (i === false) {
             if (max === 60 || max === 24) {
-                this.setState({ [type]: '0' }, () => this.recalcCron());
+                this.setCronAttr(type, '0');
             } else {
-                this.setState({ [type]: '1' }, () => this.recalcCron());
+                this.setCronAttr(type, '1');
             }
         } else {
             const nums = convertMinusIntoArray(this.state[type], max);
@@ -259,11 +293,11 @@ class ComplexCron extends React.Component {
                 nums.push(i);
                 nums.sort();
             }
-            this.setState({ [type]: convertArrayIntoMinus(nums, max) }, () => this.recalcCron());
+            this.setCronAttr(type, convertArrayIntoMinus(nums, max));
         }
     }
 
-    getDigitsSelector(type, max) {
+    getDigitsSelector(type: CronNames, max: number) {
         let values = [];
         if (max === 7) {
             values = [1, 2, 3, 4, 5, 6, 0];
@@ -322,24 +356,26 @@ class ComplexCron extends React.Component {
         ];
     }
 
-    getPeriodsTab(type, max) {
+    getPeriodsTab(type: CronNames, max: number): React.JSX.Element | null {
         let value = this.state[type];
         let every = value === '*';
-        let everyN = value.toString().includes('/');
+        let everyN = value === undefined || value === null ? false : value.toString().includes('/');
         let select;
         if (this.state.modes[type] === null) {
             select = every ? 'every' : (everyN ? 'everyN' : 'specific');
             const modes = JSON.parse(JSON.stringify(this.state.modes));
             modes[type] = select;
-            return setTimeout(() => this.setState({ modes }, () => this.recalcCron()), 100);
+            setTimeout(() => this.setState({ modes }, () => this.recalcCron()), 100);
+            return null;
         }
 
         every = this.state.modes[type] === 'every';
         everyN = this.state.modes[type] === 'everyN';
         select = this.state.modes[type];
 
-        if (everyN) {
-            value = parseInt(value.replace('*/', ''), 10) || 1;
+        let valueNumber = 1;
+        if (everyN && value) {
+            valueNumber = parseInt(value.replace('*/', ''), 10) || 1;
         }
 
         return <div>
@@ -352,17 +388,16 @@ class ComplexCron extends React.Component {
                     const modes = JSON.parse(JSON.stringify(this.state.modes));
                     modes[type] = e.target.value;
                     if (e.target.value === 'every') {
-                        this.setState({ [type]: '*', modes }, () => this.recalcCron());
+                        this.setCronAttr(type, '*', modes);
                     } else if (e.target.value === 'everyN') {
-                        const num = parseInt(this.state[type].toString().replace('*/', ''), 10) || 1;
-                        this.setState({ [type]: `*/${num}`, modes }, () => this.recalcCron());
+                        const num = parseInt((this.state[type] || '').toString().replace('*/', ''), 10) || 1;
+                        this.setCronAttr(type, `*/${num}`, modes);
                     } else if (e.target.value === 'specific') {
-                        let num = parseInt(this.state[type].split(',')[0], 10) || 0;
-                        console.log(num);
+                        let num = parseInt((this.state[type] || '').toString().split(',')[0], 10) || 0;
                         if (!num && (type === 'months' || type === 'dates')) {
                             num = 1;
                         }
-                        this.setState({ [type]: convertArrayIntoMinus(num, max), modes }, () => this.recalcCron());
+                        this.setCronAttr(type, convertArrayIntoMinus(num, max), modes);
                     }
                 }}
             >
@@ -375,10 +410,10 @@ class ComplexCron extends React.Component {
                 variant="standard"
                 key="interval"
                 label={I18n.t(`sc_${type}`)}
-                value={value}
-                min={1}
-                max={max}
+                value={valueNumber}
+                inputProps={{ min: 1, max: max }}
                 onChange={e => {
+                    // @ts-expect-error is allowed
                     this.setState({ [type]: `*/${e.target.value}` }, () => this.recalcCron());
                 }}
                 InputLabelProps={{ shrink: true }}
@@ -389,11 +424,58 @@ class ComplexCron extends React.Component {
         </div>;
     }
 
-    static convertCronToText(cron, lang) {
+    static convertCronToText(cron: string, lang: ioBroker.Languages): string {
         if (cron.split(' ').includes('-')) {
             return I18n.t('ra_Invalid CRON');
         }
         return convertCronToText(cron, lang);
+    }
+
+    setCronAttr(attr: CronNames, value: string, modes?: CronProps) {
+        if (modes) {
+            if (attr === 'seconds') {
+                this.setState({ seconds: value, modes }, () =>
+                    this.recalcCron());
+            } else if (attr === 'minutes') {
+                this.setState({ minutes: value, modes }, () =>
+                    this.recalcCron());
+            } else if (attr === 'hours') {
+                this.setState({ hours: value, modes }, () =>
+                    this.recalcCron());
+            } else if (attr === 'dates') {
+                this.setState({ hours: value, modes }, () =>
+                    this.recalcCron());
+            } else if (attr === 'months') {
+                this.setState({ months: value, modes }, () =>
+                    this.recalcCron());
+            } else if (attr === 'dows') {
+                this.setState({ dows: value, modes }, () =>
+                    this.recalcCron());
+            } else {
+                this.setState({ modes }, () =>
+                    this.recalcCron());
+            }
+        } else {
+            if (attr === 'seconds') {
+                this.setState({ seconds: value }, () =>
+                    this.recalcCron());
+            } else if (attr === 'minutes') {
+                this.setState({ minutes: value }, () =>
+                    this.recalcCron());
+            } else if (attr === 'hours') {
+                this.setState({ hours: value }, () =>
+                    this.recalcCron());
+            } else if (attr === 'dates') {
+                this.setState({ hours: value }, () =>
+                    this.recalcCron());
+            } else if (attr === 'months') {
+                this.setState({ months: value }, () =>
+                    this.recalcCron());
+            } else if (attr === 'dows') {
+                this.setState({ dows: value }, () =>
+                    this.recalcCron());
+            }
+        }
     }
 
     render() {
@@ -403,7 +485,7 @@ class ComplexCron extends React.Component {
             <div style={{ paddingLeft: 8, width: '100%', height: 60 }}>{ComplexCron.convertCronToText(this.state.cron, this.props.language || 'en')}</div>
             <FormControlLabel
                 control={<Checkbox
-                    checked={this.state.seconds}
+                    checked={!!this.state.seconds}
                     onChange={e => this.setState({ seconds: e.target.checked ? '*' : false }, () => this.recalcCron())}
                 />}
                 label={I18n.t('ra_use seconds')}
@@ -433,11 +515,5 @@ class ComplexCron extends React.Component {
         </div>;
     }
 }
-
-ComplexCron.propTypes = {
-    cronExpression: PropTypes.string,
-    onChange: PropTypes.func.isRequired,
-    language: PropTypes.string,
-};
 
 export default withStyles(styles)(ComplexCron);
