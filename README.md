@@ -180,7 +180,7 @@ onPrepareSave(settings) {
 
 ## Components
 
-### Connection.js
+### Connection.tsx
 This is a non-react class to provide the communication for socket connection with the server. 
 
 ### GenericApp.tsx
@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Updated socket-client package
+
 ### 4.13.8 (2024-04-19)
 * (bluefox) Corrected CRON selector
 
@@ -920,7 +923,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 * (bluefox) Added support of custom palette for color picker
 
 ### 4.0.2 (2022-12-01)
-* (bluefox) use `@iobroker/socket-client` instead of `Connection.js`
+* (bluefox) use `@iobroker/socket-client` instead of `Connection.tsx`
 
 ### 3.5.3 (2022-11-30)
 * (bluefox) Improved `renderTextWithA` function to support `<b>` and `<i>` tags

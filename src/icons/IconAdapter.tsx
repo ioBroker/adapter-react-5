@@ -1,8 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+
+import type IconProps from './IconProps';
 
 // Icon copied from https://github.com/FortAwesome/Font-Awesome/blob/0d1f27efb836eb2ab994ba37221849ed64a73e5c/svgs/regular/
-const IconAdapter = props => <svg
+const IconAdapter = (props: IconProps) => <svg
     onClick={e => props.onClick && props.onClick(e)}
     viewBox="0 0 512 512"
     width={props.width || 20}
@@ -17,10 +18,4 @@ const IconAdapter = props => <svg
     />
 </svg>;
 
-IconAdapter.propTypes = {
-    onClick: PropTypes.func,
-    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    className: PropTypes.string,
-};
 export default IconAdapter;
