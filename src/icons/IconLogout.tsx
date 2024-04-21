@@ -1,22 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import type IconProps from './IconProps';
 
-/**
- * @typedef {object} IconLogoutProps
- * @property {number} [width] The width in pixels of the icon.
- * @property {number} [height] The height in pixels of the icon.
- * @property {(e: React.MouseEvent) => void} [onClick] Click handler.
- * @property {string} [className] The class name for the SVG element.
- *
- * @extends {React.Component<ExpertIconProps>}
- */
-const IconLogout = props => <svg
+const IconLogout = (props: IconProps) => <svg
+    xmlns="http://www.w3.org/2000/svg"
     onClick={e => props.onClick && props.onClick(e)}
     viewBox="0 0 512 512"
-    width={props.width || 20}
-    height={props.height || props.width || 20}
-    xmlns="http://www.w3.org/2000/svg"
+    width={props.width || (props.fontSize === 'small' ? 16 : 20)}
+    height={props.height || props.width || (props.fontSize === 'small' ? 16 : 20)}
     className={props.className}
+    style={props.style}
 >
     <path
         fill="currentColor"
@@ -34,12 +26,5 @@ const IconLogout = props => <svg
         v-21.333H362.68c11.797,0,21.333-9.557,21.333-21.333V320C384.013,308.224,374.477,298.667,362.68,298.667z"
     />
 </svg>;
-
-IconLogout.propTypes = {
-    onClick: PropTypes.func,
-    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    className: PropTypes.string,
-};
 
 export default IconLogout;

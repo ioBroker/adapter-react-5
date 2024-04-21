@@ -1,14 +1,13 @@
 import React from 'react';
-
 import type IconProps from './IconProps';
 
 // Icon copied from https://github.com/FortAwesome/Font-Awesome/blob/0d1f27efb836eb2ab994ba37221849ed64a73e5c/svgs/regular/
 const IconAlias = (props: IconProps) => <svg
+    xmlns="http://www.w3.org/2000/svg"
     onClick={e => props.onClick && props.onClick(e)}
     viewBox="0 0 512 512"
-    width={props.width || 20}
-    height={props.height || props.width || 20}
-    xmlns="http://www.w3.org/2000/svg"
+    width={props.width || (props.fontSize === 'small' ? 16 : 20)}
+    height={props.height || props.width || (props.fontSize === 'small' ? 16 : 20)}
     className={props.className}
     style={props.style}
 >

@@ -2,7 +2,7 @@ import React from 'react';
 import type IconProps from './IconProps';
 
 // Icon copied from https://github.com/FortAwesome/Font-Awesome/blob/0d1f27efb836eb2ab994ba37221849ed64a73e5c/svgs/regular/
-const IconAdapter = (props: IconProps) => <svg
+const IconInstance = (props: IconProps) => <svg
     xmlns="http://www.w3.org/2000/svg"
     onClick={e => props.onClick && props.onClick(e)}
     viewBox="0 0 512 512"
@@ -17,4 +17,4 @@ const IconAdapter = (props: IconProps) => <svg
     />
 </svg>;
 
-export default IconAdapter;
+export default IconInstance;

@@ -11,4 +11,5 @@ export default interface IconProps {
     className?: string;
     /** Styles for the SVG element. */
     style?: React.CSSProperties;
+    fontSize?: 'small';
 }
