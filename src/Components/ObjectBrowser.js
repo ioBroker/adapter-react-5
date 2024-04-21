@@ -1664,9 +1664,11 @@ function formatValue(options) {
         }
     } else {
         if (type === 'number') {
-            v = Math.round(v * 100_000_000) / 100_000_000; // remove 4.00000000000000001
-            if (isFloatComma) {
-                v = v.toString().replace('.', ',');
+            if (!Number.isInteger(v)) {
+                v = Math.round(v * 100_000_000) / 100_000_000; // remove 4.00000000000000001
+                if (isFloatComma) {
+                    v = v.toString().replace('.', ',');
+                }
             }
         } else if (type === 'object') {
             v = JSON.stringify(v);
@@ -4995,7 +4997,7 @@ class ObjectBrowser extends Component {
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        onKeyUp={e => e.keyCode === 13 && this.onColumnsEditCustomDialogClose(true)}
+                                        onKeyUp={e => e.key === 'Enter' && this.onColumnsEditCustomDialogClose(true)}
                                         defaultChecked={this.customColumnDialog.value === 'true'}
                                         onChange={e => {
                                             this.customColumnDialog.value = e.target.checked.toString();
@@ -5014,7 +5016,7 @@ class ObjectBrowser extends Component {
                                 variant="standard"
                                 defaultValue={this.customColumnDialog.value}
                                 fullWidth
-                                onKeyUp={e => e.keyCode === 13 && this.onColumnsEditCustomDialogClose(true)}
+                                onKeyUp={e => e.key === 'Enter' && this.onColumnsEditCustomDialogClose(true)}
                                 label={`${this.state.columnsEditCustomDialog.it.name} (${this.state.columnsEditCustomDialog.it.pathText})`}
                                 onChange={e => {
                                     this.customColumnDialog.value = e.target.value;
