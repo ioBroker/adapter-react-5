@@ -1,7 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import type IconProps from './IconProps';
 
-const IconFx = props => <svg onClick={e => props.onClick && props.onClick(e)} style={props.style || {}} viewBox="0 0 95 95" width={props.width || 20} height={props.height || props.width || 20} xmlns="http://www.w3.org/2000/svg" className={props.className}>
+const IconFx = (props: IconProps) => <svg
+    xmlns="http://www.w3.org/2000/svg"
+    onClick={e => props.onClick && props.onClick(e)}
+    viewBox="0 0 95 95"
+    width={props.width || (props.fontSize === 'small' ? 16 : 20)}
+    height={props.height || props.width || (props.fontSize === 'small' ? 16 : 20)}
+    className={props.className}
+    style={props.style}
+>
     <path
         fill="currentColor"
         d="M93.779,63.676c-0.981-1.082-2.24-1.653-3.639-1.653c-1.145,0-3.953,0.396-5.318,4.062
@@ -24,12 +32,5 @@ const IconFx = props => <svg onClick={e => props.onClick && props.onClick(e)} st
         c2.926-2.164,3.54-4.545,3.54-6.166C95.174,65.965,94.691,64.679,93.779,63.676z"
     />
 </svg>;
-
-IconFx.propTypes = {
-    onClick: PropTypes.func,
-    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    className: PropTypes.string,
-};
 
 export default IconFx;

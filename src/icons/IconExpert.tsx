@@ -5,8 +5,8 @@ import type IconProps from './IconProps';
 const ExpertIcon = (props: IconProps) => <svg
     onClick={e => props.onClick && props.onClick(e)}
     viewBox="0 0 486.70625 486"
-    width={props.width || 20}
-    height={props.height || props.width || 20}
+    width={props.width || (props.fontSize === 'small' ? 16 : 20)}
+    height={props.height || props.width || (props.fontSize === 'small' ? 16 : 20)}
     xmlns="http://www.w3.org/2000/svg"
     className={props.className}
     style={props.style}

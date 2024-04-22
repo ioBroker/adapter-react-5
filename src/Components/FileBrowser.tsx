@@ -1069,8 +1069,8 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
         return newFoldersNotNull;
     }
 
-    toggleFolder(item: FolderOrFileItem, e: React.MouseEvent<HTMLDivElement>) {
-        e && e.stopPropagation();
+    toggleFolder(item: FolderOrFileItem, e: React.MouseEvent<Element>) {
+        e?.stopPropagation();
         const expanded = [...this.state.expanded];
         const pos = expanded.indexOf(item.id);
         if (pos === -1) {
@@ -1225,7 +1225,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                     this.props.classes[`itemFolderIcon${this.state.viewType}`],
                     isSpecialData && this.props.classes.specialFolder,
                 )}
-                onClick={this.state.viewType === TABLE ? (e: React.MouseEvent<HTMLDivElement>) => this.toggleFolder(item, e) : undefined}
+                onClick={this.state.viewType === TABLE ? (e: React.MouseEvent<Element>) => this.toggleFolder(item, e) : undefined}
             />
 
             <div
