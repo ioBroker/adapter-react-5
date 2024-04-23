@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.13.11 (2024-04-23)
 * (bluefox) Corrected the size of icons
 
 ### 4.13.10 (2024-04-22)
