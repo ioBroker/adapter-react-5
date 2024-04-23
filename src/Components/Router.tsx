@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-interface Router<P = {}, S = {}> extends React.Component<P, S> {}
+interface Router<P = {}, S = {}> extends Component<P, S> {}
 
-class Router<P, S> extends React.Component<P, S> {
+class Router<P, S> extends Component<P, S> {
     protected onHashChangedBound: () => void;
 
     constructor(props: P) {

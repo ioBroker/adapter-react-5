@@ -1,7 +1,7 @@
 export { default as Theme } from './Theme';
 export * from './Theme';
 
-// export { default as GenericApp } from './GenericApp';
+export { default as GenericApp } from './GenericApp';
 // export * from './GenericApp';
 
 export { default as i18n } from './i18n';
