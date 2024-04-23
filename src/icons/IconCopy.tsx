@@ -4,6 +4,7 @@ import type IconProps from './IconProps';
 const IconCopy = (props: IconProps) => <svg
     xmlns="http://www.w3.org/2000/svg"
     onClick={e => props.onClick && props.onClick(e)}
+    viewBox="0 0 512 512"
     width={props.width || (props.fontSize === 'small' ? 16 : 20)}
     height={props.height || props.width || (props.fontSize === 'small' ? 16 : 20)}
     className={props.className}
