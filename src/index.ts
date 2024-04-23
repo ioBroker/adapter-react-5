@@ -4,7 +4,7 @@ export * from './Theme';
 export { default as GenericApp } from './GenericApp';
 // export * from './GenericApp';
 
-export { default as i18n } from './i18n';
+export { default as i18n } from './i18n'; // deprecated
 export { default as I18n } from './i18n';
 export * from './i18n';
 
