@@ -1314,7 +1314,8 @@ class Utils {
      * Set the theme name and theme type.
      */
     static setThemeName(themeName: ThemeName): void {
-        if ((window as any).vendorPrefix && (window as any).vendorPrefix !== '@@vendorPrefix@@' && (window as any).vendorPrefix !== 'MV') {
+        const vendorPrefix = (window as any).vendorPrefix;
+        if (vendorPrefix && vendorPrefix !== '@@vendorPrefix@@' && vendorPrefix !== 'MV') {
             return; // ignore
         }
         ((window as any)._localStorage || window.localStorage).setItem('App.themeName', themeName);
