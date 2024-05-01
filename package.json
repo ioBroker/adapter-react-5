@@ -42,7 +42,7 @@
     "@emotion/styled": "^11.11.5",
     "@iobroker/dm-utils": "^0.1.9",
     "@iobroker/json-config": "^6.17.6",
-    "@iobroker/socket-client": "^2.4.7",
+    "@iobroker/socket-client": "^2.4.8",
     "@iobroker/types": "^5.0.19",
     "@iobroker/js-controller-common": "^5.0.19",
     "@iobroker/js-controller-common-db": "^5.0.19",
