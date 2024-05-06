@@ -1,5 +1,5 @@
-import { type HostInfo } from '@iobroker/js-controller-common/tools';
-import { type FilteredNotificationInformation } from '@iobroker/js-controller-common-db/build/lib/common/notificationHandler';
+import { type HostInfo } from '@iobroker/js-controller-common/build/esm/lib/common/tools';
+import { type FilteredNotificationInformation } from '@iobroker/js-controller-common-db/build/esm/lib/common/notificationHandler';
 
 /**
  * Copyright 2020-2024, Denis Haev (bluefox) <dogafox@gmail.com>

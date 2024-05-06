@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) All files are migrated to Typescript
+
 ### 4.13.11 (2024-04-23)
 * (bluefox) Corrected the size of icons
 
