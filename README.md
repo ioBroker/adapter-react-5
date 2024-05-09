@@ -670,7 +670,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.13.13 (2024-05-09)
 * (bluefox) Updated ioBroker types
 
 ### 4.13.12 (2024-05-06)
