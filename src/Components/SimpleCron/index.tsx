@@ -305,7 +305,7 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
                 period: 1,
                 unit: PERIODIC_TYPES.minutes,
                 timeFrom: 0,
-                timeTo: 24,
+                timeTo: 23,
                 weekdays: [0, 1, 2, 3, 4, 5, 6],
             },
             specific: {
