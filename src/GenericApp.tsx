@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2023 Denis Haev (bluefox) <dogafox@gmail.com>
+ * Copyright 2018-2024 Denis Haev (bluefox) <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -7,7 +7,6 @@
 import React from 'react';
 import { PROGRESS, Connection, AdminConnection } from '@iobroker/socket-client';
 import * as Sentry from '@sentry/browser';
-import * as SentryIntegrations from '@sentry/integrations';
 
 import { Snackbar, IconButton, type Theme } from '@mui/material';
 
@@ -23,7 +22,7 @@ import ConfirmDialog from './Dialogs/Confirm';
 import I18n from './i18n';
 import DialogError from './Dialogs/Error';
 import LegacyConnection from './LegacyConnection';
-import {ConnectionProps, ThemeName, ThemeType, Width} from './types';
+import { ConnectionProps, ThemeName, ThemeType, Width } from './types';
 
 // import './index.css';
 const cssStyle = `
@@ -363,7 +362,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                                 dsn: this.sentryDSN,
                                 release: `iobroker.${instanceObj.common.name}@${instanceObj.common.version}`,
                                 integrations: [
-                                    new SentryIntegrations.Dedupe(),
+                                    Sentry.dedupeIntegration(),
                                 ],
                             });
 
@@ -378,8 +377,8 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                             waitPromise = this.socket.getObject('system.meta.uuid')
                                 .then(uuidObj => {
                                     if (uuidObj && uuidObj.native && uuidObj.native.uuid) {
-                                        Sentry.configureScope(scope =>
-                                            scope.setUser({ id: uuidObj.native.uuid }));
+                                        const scope = Sentry.getCurrentScope();
+                                        scope.setUser({ id: uuidObj.native.uuid });
                                     }
                                 });
                         }
@@ -850,9 +849,8 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     /**
      * Renders the error dialog.
-     * @returns {JSX.Element | null} The JSX element.
      */
-    renderError() {
+    renderError(): React.JSX.Element | null {
         if (!this.state.errorText) {
             return null;
         }
@@ -894,9 +892,8 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     /**
      * Renders the save and close buttons.
-     * @returns {JSX.Element | undefined} The JSX element.
      */
-    renderSaveCloseButtons() {
+    renderSaveCloseButtons(): React.JSX.Element | null {
         if (!this.state.confirmClose && !this.state.bottomButtons) {
             return null;
         }
@@ -993,15 +990,14 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
      * Sets the toast to be shown.
      * @param {string} toast
      */
-    showToast(toast: string | React.JSX.Element) {
+    showToast(toast: string | React.JSX.Element): void {
         this.setState({ toast });
     }
 
     /**
      * Renders helper dialogs
-     * @returns {JSX.Element} The JSX element.
      */
-    renderHelperDialogs() {
+    renderHelperDialogs(): React.JSX.Element {
         return <>
             {this.renderError()}
             {this.renderToast()}
@@ -1012,9 +1008,8 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     /**
      * Renders this component.
-     * @returns {JSX.Element} The JSX element.
      */
-    render() {
+    render(): React.JSX.Element {
         if (!this.state.loaded) {
             return <Loader themeType={this.state.themeType} />;
         }
