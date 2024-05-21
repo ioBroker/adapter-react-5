@@ -92,6 +92,7 @@ declare global {
         };
     }
 }
+
 interface GenericAppProps {
     /** Adapter instance number if known, else will be determined from url */
     instance?: number;
@@ -109,6 +110,7 @@ interface GenericAppProps {
     Connection?: LegacyConnection | Connection | AdminConnection;
     /** sentry DNS */
     sentryDSN?: string;
+    /** Callback if user changes the theme. Call it to trigger change */
     onThemeChange?: (newThemeName: ThemeName) => void;
     classes?: Record<string, string>;
 }

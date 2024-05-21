@@ -1,6 +1,6 @@
 import { Theme as MuiTheme } from '@mui/material/styles';
-import LegacyConnection from './LegacyConnection';
 import { AdminConnection, Connection } from '@iobroker/socket-client';
+import LegacyConnection from './LegacyConnection';
 
 export type Translator = (key: string, ...args: any[]) => string;
 
@@ -59,6 +59,11 @@ export interface GenericAppProps {
     socket?: ConnectionProps;
     /** Desired connection object */
     Connection?: LegacyConnection | Connection | AdminConnection;
+    /** sentry DNS */
+    sentryDSN?: string;
+    /** Callback if user changes the theme. Call it to trigger change */
+    onThemeChange?: (newThemeName: ThemeName) => void;
+    classes?: Record<string, string>;
 }
 
 export interface GenericAppSettings extends GenericAppProps {

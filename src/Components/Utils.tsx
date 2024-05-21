@@ -151,7 +151,7 @@ class Utils {
             text = Utils.CapitalWords(text);
         }
 
-        return text.trim();
+        return text?.trim() || '';
     }
 
     /**
