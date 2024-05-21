@@ -463,10 +463,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
         }
     };
 
-    /**
-     * @private
-     */
-    onResize = () => {
+    private onResize = () => {
         this.resizeTimer && clearTimeout(this.resizeTimer);
         this.resizeTimer = setTimeout(() => {
             this.resizeTimer = null;
@@ -788,9 +785,8 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     /**
      * Closes the dialog.
-     * @private
      */
-    static onClose() {
+    private static onClose() {
         if (typeof window.parent !== 'undefined' && window.parent) {
             try {
                 if (window.parent.$iframeDialog && typeof window.parent.$iframeDialog.close === 'function') {
@@ -882,10 +878,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
         </>;
     }
 
-    /**
-     * @private
-     */
-    _updateNativeValue(obj: Record<string, any>, attrs: string | string[], value: any): boolean {
+    private _updateNativeValue(obj: Record<string, any>, attrs: string | string[], value: any): boolean {
         if (typeof attrs !== 'object') {
             attrs = attrs.split('.');
         }
@@ -919,7 +912,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
      * @param value The new value.
      * @param cb Callback which will be called upon completion.
      */
-    updateNativeValue(attr: string, value: any, cb: () => void) {
+    updateNativeValue(attr: string, value: any, cb?: () => void) {
         const native = JSON.parse(JSON.stringify(this.state.native));
         if (this._updateNativeValue(native, attr, value)) {
             const changed = this.getIsChanged(native);
