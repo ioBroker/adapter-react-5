@@ -8,7 +8,7 @@ import React from 'react';
 import { PROGRESS, Connection, AdminConnection } from '@iobroker/socket-client';
 import * as Sentry from '@sentry/browser';
 
-import { Snackbar, IconButton, type Theme } from '@mui/material';
+import { Snackbar, IconButton } from '@mui/material';
 
 import { Close as IconClose } from '@mui/icons-material';
 
@@ -21,8 +21,15 @@ import SaveCloseButtons from './Components/SaveCloseButtons';
 import ConfirmDialog from './Dialogs/Confirm';
 import I18n from './i18n';
 import DialogError from './Dialogs/Error';
-import LegacyConnection from './LegacyConnection';
-import { ConnectionProps, ThemeName, ThemeType, Width } from './types';
+import {
+    GenericAppProps,
+    GenericAppState,
+    GenericAppSettings,
+    ThemeName,
+    ThemeType,
+    Theme,
+    Width,
+} from './types';
 
 // import './index.css';
 const cssStyle = `
@@ -93,56 +100,6 @@ declare global {
     }
 }
 
-interface GenericAppProps {
-    /** Adapter instance number if known, else will be determined from url */
-    instance?: number;
-    /** The name of the adapter. */
-    adapterName?: string;
-    /** Should the bottom buttons be shown (default: true). */
-    bottomButtons?: boolean;
-    /** Additional translations. */
-    translations?: { [lang in ioBroker.Languages]?: Record<string, string>; };
-    /** Fields that should be encrypted/decrypted. */
-    encryptedFields?: string[];
-    /** Socket.io configuration. */
-    socket?: ConnectionProps;
-    /** Desired connection object */
-    Connection?: LegacyConnection | Connection | AdminConnection;
-    /** sentry DNS */
-    sentryDSN?: string;
-    /** Callback if user changes the theme. Call it to trigger change */
-    onThemeChange?: (newThemeName: ThemeName) => void;
-    classes?: Record<string, string>;
-}
-
-interface GenericAppSettings extends GenericAppProps {
-    /** Don't load all objects on start-up. */
-    doNotLoadAllObjects?: boolean;
-}
-
-interface GenericAppState {
-    loaded: boolean;
-    themeType: ThemeType;
-    themeName: ThemeName;
-    theme: Theme;
-    expertMode: boolean;
-    selectedTab: string;
-    selectedTabNum: number | undefined;
-    native: Record<string, any>;
-    errorText: string | React.JSX.Element;
-    changed: boolean;
-    connected: boolean;
-    isConfigurationError: string;
-    toast: string | React.JSX.Element;
-    bottomButtons: boolean;
-    width: Width;
-    confirmClose: boolean;
-    _alert: boolean;
-    _alertType: 'info' | 'warning' | 'error' | 'success';
-    _alertMessage: string | React.JSX.Element;
-    common?: Record<string, any>;
-}
-
 class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extends GenericAppState = GenericAppState> extends Router<TProps, TState> {
     protected socket: AdminConnection;
 
@@ -162,7 +119,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     private _secret: string | undefined;
 
-    protected _systemConfig: Record<string, any> | undefined;
+    protected _systemConfig: ioBroker.SystemConfigCommon | undefined;
 
     private savedNative: Record<string, any>;
 
@@ -174,10 +131,6 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     private resizeTimer: ReturnType<typeof setTimeout> | null= null;
 
-    /**
-     * @param {import('./types').GenericAppProps} props
-     * @param {import('./types').GenericAppSettings | undefined} settings
-     */
     constructor(props: TProps, settings?: GenericAppSettings) {
         const ConnectionClass = (props.Connection || settings?.Connection || Connection) as unknown as typeof AdminConnection;
         // const ConnectionClass = props.Connection === 'admin' || settings.Connection = 'admin' ? AdminConnection : (props.Connection || settings.Connection || Connection);
@@ -337,7 +290,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                     .then(() => this.getSystemConfig())
                     .then(obj => {
                         this._secret = (typeof obj !== 'undefined' && obj.native && obj.native.secret) || 'Zgfr56gFe87jJOM';
-                        this._systemConfig = obj?.common || {};
+                        this._systemConfig = obj?.common || ({} as ioBroker.SystemConfigCommon);
                         return this.socket.getObject(this.instanceId);
                     })
                     .then(async (obj) => {
@@ -451,18 +404,19 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
         />;
     }
 
-    onSystemConfigChanged = (id: string, obj: ioBroker.Object | null | undefined) => {
+    onSystemConfigChanged = (id: string, obj: ioBroker.AnyObject | null | undefined) => {
         if (obj && id === 'system.config') {
-            if (this.socket.systemLang !== obj?.common.language) {
-                this.socket.systemLang = obj?.common.language || 'en';
+            if (this.socket.systemLang !== (obj as ioBroker.SystemConfigObject)?.common.language) {
+                this.socket.systemLang = (obj as ioBroker.SystemConfigObject)?.common.language || 'en';
                 I18n.setLanguage(this.socket.systemLang);
             }
 
+            // @ts-expect-error will be fixed in js-controller
             if (this._systemConfig?.expertMode !== !!obj?.common?.expertMode) {
-                this._systemConfig = obj?.common || {};
+                this._systemConfig = (obj as ioBroker.SystemConfigObject)?.common || ({} as ioBroker.SystemConfigCommon);
                 this.setState({ expertMode: this.getExpertMode() });
             } else {
-                this._systemConfig = obj?.common || {};
+                this._systemConfig = (obj as ioBroker.SystemConfigObject)?.common || ({} as ioBroker.SystemConfigCommon);
             }
         }
     };
@@ -617,6 +571,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
      * @returns {boolean}
      */
     getExpertMode() {
+        // @ts-expect-error will be fixed in js-controller
         return window.sessionStorage.getItem('App.expertMode') === 'true' || !!this._systemConfig?.expertMode;
     }
 

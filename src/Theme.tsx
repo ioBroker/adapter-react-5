@@ -1,10 +1,11 @@
-import {createTheme, alpha, PaletteOptions} from '@mui/material/styles';
+import React from 'react';
+import { createTheme, alpha, PaletteOptions as PaletteOptionsMui } from '@mui/material/styles';
 import { type CSSProperties } from '@mui/styles/withStyles';
 import { orange, grey } from '@mui/material/colors';
 
-import { type Theme, type ThemeName } from './types';
-import { SimplePaletteColorOptions } from "@mui/material/styles/createPalette";
-import { ThemeOptions } from "@mui/material/styles/createTheme";
+import { SimplePaletteColorOptions } from '@mui/material/styles/createPalette';
+import { ThemeOptions as ThemeOptionsMui } from '@mui/material/styles/createTheme';
+import {type Theme, type ThemeName, ThemeType} from './types';
 
 const step = (16 - 5) / 23 / 100;
 
@@ -141,12 +142,66 @@ function getElevations(
 //     },
 // });
 
+interface PaletteOptions extends PaletteOptionsMui {
+    mode: ThemeType;
+    expert: string;
+    grey?: {
+        main?: string;
+        dark?: string;
+        50?: string;
+        100?: string;
+        200?: string;
+        300?: string;
+        400?: string;
+        500?: string;
+        600?: string;
+        700?: string;
+        800?: string;
+        900?: string;
+        A100?: string;
+        A200?: string;
+        A400?: string;
+        A700?: string;
+    };
+}
+
+interface ThemeOptions extends ThemeOptionsMui {
+    name: ThemeName;
+    palette?: PaletteOptions;
+    toolbar?: React.CSSProperties;
+    saveToolbar?: {
+        background: string;
+        button: React.CSSProperties;
+    }
+}
+
 /**
  * The theme creation factory function.
  */
 const CustomTheme = (type: ThemeName): Theme => {
     let options: ThemeOptions;
+    let overrides: Record<string, any>;
+
     if (type === 'dark') {
+        overrides = {
+            MuiAppBar: {
+                colorDefault: {
+                    backgroundColor: '#272727',
+                },
+            },
+            MuiLink: {
+                root: {
+                    textTransform: 'uppercase',
+                    transition: 'color .3s ease',
+                    color: orange[200],
+                    '&:hover': {
+                        color: orange[100],
+                    },
+                },
+            },
+            MuiPaper: getElevations('#121212', '#fff'),
+        };
+
         options = {
             name: type,
             palette: {
@@ -161,33 +216,32 @@ const CustomTheme = (type: ThemeName): Theme => {
                 secondary: {
                     main: '#436a93',
                 },
-                // @ts-expect-error Custom field
                 expert: '#14bb00',
                 text: {
                     primary: '#ffffff',
                     secondary: '#ffffff',
                 },
             },
-            overrides: {
-                MuiAppBar: {
-                    colorDefault: {
-                        backgroundColor: '#272727',
-                    },
-                },
-                MuiLink: {
-                    root: {
-                        textTransform: 'uppercase',
-                        transition: 'color .3s ease',
-                        color: orange[200],
-                        '&:hover': {
-                            color: orange[100],
-                        },
-                    },
-                },
-                MuiPaper: getElevations('#121212', '#fff'),
-            },
         };
     } else if (type === 'blue') {
+        overrides = {
+            MuiAppBar: {
+                colorDefault: {
+                    backgroundColor: '#3399CC',
+                },
+            },
+            MuiLink: {
+                root: {
+                    textTransform: 'uppercase',
+                        transition: 'color .3s ease',
+                        color: orange[400],
+                        '&:hover': {
+                        color: orange[300],
+                    },
+                },
+            },
+        };
+
         options = {
             name: type,
             palette: {
@@ -202,33 +256,34 @@ const CustomTheme = (type: ThemeName): Theme => {
                 secondary: {
                     main: '#436a93',
                 },
-                // @ts-expect-error Custom field
                 expert: '#14bb00',
                 text: {
                     primary: '#ffffff',
                     secondary: '#ffffff',
                 },
             },
-            overrides: {
-                MuiAppBar: {
-                    colorDefault: {
-                        backgroundColor: '#2a3135',
-                    },
-                },
-                MuiLink: {
-                    root: {
-                        textTransform: 'uppercase',
-                        transition: 'color .3s ease',
-                        color: orange[200],
-                        '&:hover': {
-                            color: orange[100],
-                        },
-                    },
-                },
-                MuiPaper: getElevations('#151d21', '#fff'),
-            },
+
         };
     } else if (type === 'colored') {
+        overrides = {
+            MuiAppBar: {
+                colorDefault: {
+                    backgroundColor: '#2a3135',
+                },
+            },
+            MuiLink: {
+                root: {
+                    textTransform: 'uppercase',
+                    transition: 'color .3s ease',
+                    color: orange[200],
+                    '&:hover': {
+                        color: orange[100],
+                    },
+                },
+            },
+            MuiPaper: getElevations('#151d21', '#fff'),
+        };
+
         options = {
             name: type,
             palette: {
@@ -239,28 +294,29 @@ const CustomTheme = (type: ThemeName): Theme => {
                 secondary: {
                     main: '#164477',
                 },
-                // @ts-expect-error Custom field
                 expert: '#96fc96',
             },
-            overrides: {
-                MuiAppBar: {
-                    colorDefault: {
-                        backgroundColor: '#3399CC',
-                    },
+
+        };
+    } else if (type === 'PT') {
+        overrides = {
+            MuiAppBar: {
+                colorDefault: {
+                    backgroundColor: '#0F99DE',
                 },
-                MuiLink: {
-                    root: {
-                        textTransform: 'uppercase',
+            },
+            MuiLink: {
+                root: {
+                    textTransform: 'uppercase',
                         transition: 'color .3s ease',
                         color: orange[400],
                         '&:hover': {
-                            color: orange[300],
-                        },
+                        color: orange[300],
                     },
                 },
             },
         };
-    } else if (type === 'PT') {
+
         options = {
             name: type,
             palette: {
@@ -271,28 +327,29 @@ const CustomTheme = (type: ThemeName): Theme => {
                 secondary: {
                     main: '#88A536',
                 },
-                // @ts-expect-error Custom field
                 expert: '#BD1B24',
             },
-            overrides: {
-                MuiAppBar: {
-                    colorDefault: {
-                        backgroundColor: '#0F99DE',
-                    },
+
+        };
+    } else if (type === 'DX') {
+        overrides = {
+            MuiAppBar: {
+                colorDefault: {
+                    backgroundColor: '#a9a9a9',
                 },
-                MuiLink: {
-                    root: {
-                        textTransform: 'uppercase',
+            },
+            MuiLink: {
+                root: {
+                    textTransform: 'uppercase',
                         transition: 'color .3s ease',
                         color: orange[400],
                         '&:hover': {
-                            color: orange[300],
-                        },
+                        color: orange[300],
                     },
                 },
             },
         };
-    } else if (type === 'DX') {
+
         options = {
             name: type,
             palette: {
@@ -303,7 +360,6 @@ const CustomTheme = (type: ThemeName): Theme => {
                 secondary: {
                     main: '#a9a9a9',
                 },
-                // @ts-expect-error Custom field
                 expert: '#BD1B24',
                 text: {
                     primary: '#007AFE',
@@ -311,25 +367,22 @@ const CustomTheme = (type: ThemeName): Theme => {
                     disabled: '#007AFEAA',
                 },
             },
-            overrides: {
-                MuiAppBar: {
-                    colorDefault: {
-                        backgroundColor: '#a9a9a9',
-                    },
-                },
-                MuiLink: {
-                    root: {
-                        textTransform: 'uppercase',
+
+        };
+    } else {
+        overrides = {
+            MuiLink: {
+                root: {
+                    textTransform: 'uppercase',
                         transition: 'color .3s ease',
                         color: orange[400],
                         '&:hover': {
-                            color: orange[300],
-                        },
+                        color: orange[300],
                     },
                 },
             },
         };
-    } else {
+
         options = {
             name: type,
             palette: {
@@ -343,30 +396,15 @@ const CustomTheme = (type: ThemeName): Theme => {
                 secondary: {
                     main: '#164477',
                 },
-                // @ts-ignore
                 expert: '#14bb00',
-            },
-            overrides: {
-                MuiLink: {
-                    root: {
-                        textTransform: 'uppercase',
-                        transition: 'color .3s ease',
-                        color: orange[400],
-                        '&:hover': {
-                            color: orange[300],
-                        },
-                    },
-                },
             },
         };
     }
 
-    // @ts-expect-error Custom field
     options.toolbar = {
         height: 48,
     };
 
-    // @ts-expect-error Custom field
     options.saveToolbar = {
         background: (options.palette?.primary as SimplePaletteColorOptions)?.main,
         button: {
@@ -377,7 +415,6 @@ const CustomTheme = (type: ThemeName): Theme => {
 
     if (options.palette) {
         options.palette.grey = {
-            // @ts-expect-error Custom field
             main: grey[300],
             dark: grey[400],
         };
@@ -389,6 +426,7 @@ const CustomTheme = (type: ThemeName): Theme => {
 
     return createTheme(theme, {
         components: {
+            ...overrides,
             MuiButton: {
                 variants: [
                     {

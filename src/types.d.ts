@@ -1,4 +1,5 @@
-import { Theme as MuiTheme } from '@mui/material/styles';
+import React from 'react';
+import { Theme as MuiTheme, Palette as MuiPalette } from '@mui/material/styles';
 import { AdminConnection, Connection } from '@iobroker/socket-client';
 import LegacyConnection from './LegacyConnection';
 
@@ -44,6 +45,9 @@ export interface OldObject {
 
 export type ObjectChangeHandler = (id: string, obj: ioBroker.Object | null | undefined, oldObj: OldObject) => void | Promise<void>;
 
+export type ThemeName = 'dark' | 'light' | 'colored' | 'blue' | 'PT' | 'DX';
+export type ThemeType = 'dark' | 'light';
+
 export interface GenericAppProps {
     /** Adapter instance number if known, else will be determined from url */
     instance?: number;
@@ -71,29 +75,60 @@ export interface GenericAppSettings extends GenericAppProps {
     doNotLoadAllObjects?: boolean;
 }
 
-export type ThemeName = 'dark' | 'light' | 'colored' | 'blue' | 'PT' | 'DX';
-export type ThemeType = 'dark' | 'light';
-
 export interface GenericAppState {
+    loaded: boolean;
+    themeType: ThemeType;
+    themeName: ThemeName;
+    theme: Theme;
+    expertMode: boolean;
     selectedTab: string;
-    selectedTabNum: number;
-    native: ioBroker.AdapterConfig;
-    errorText: string | JSX.Element;
+    selectedTabNum: number | undefined;
+    native: Record<string, any>;
+    errorText: string | React.JSX.Element;
     changed: boolean;
     connected: boolean;
-    loaded: boolean;
     isConfigurationError: string;
-    toast: string;
-    theme: Theme;
-    themeName: ThemeName;
-    themeType: ThemeType;
+    toast: string | React.JSX.Element;
     bottomButtons: boolean;
     width: Width;
+    confirmClose: boolean;
+    _alert: boolean;
+    _alertType: 'info' | 'warning' | 'error' | 'success';
+    _alertMessage: string | React.JSX.Element;
+    common?: Record<string, any>;
 }
 
 export type Width = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
+interface Palette extends MuiPalette {
+    mode: ThemeType;
+    expert: string;
+    grey: {
+        main: string;
+        dark: string;
+        50: string;
+        100: string;
+        200: string;
+        300: string;
+        400: string;
+        500: string;
+        600: string;
+        700: string;
+        800: string;
+        900: string;
+        A100: string;
+        A200: string;
+        A400: string;
+        A700: string;
+    }
+}
 
 export interface Theme extends MuiTheme {
     name: ThemeName;
+    palette: Palette;
+    toolbar: React.CSSProperties;
+    saveToolbar: {
+        background: string;
+        button: React.CSSProperties;
+    }
 }
