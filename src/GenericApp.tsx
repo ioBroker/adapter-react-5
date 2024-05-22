@@ -121,9 +121,9 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     protected _systemConfig: ioBroker.SystemConfigCommon | undefined;
 
-    private savedNative: Record<string, any>;
+    private readonly savedNative: Record<string, any>;
 
-    private common: ioBroker.InstanceCommon | null = null;
+    protected common: ioBroker.InstanceCommon | null = null;
 
     private sentryStarted: boolean = false;
 
@@ -786,7 +786,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
     /**
      * Closes the dialog.
      */
-    private static onClose() {
+    static onClose() {
         if (typeof window.parent !== 'undefined' && window.parent) {
             try {
                 if (window.parent.$iframeDialog && typeof window.parent.$iframeDialog.close === 'function') {
