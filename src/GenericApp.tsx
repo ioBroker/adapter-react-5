@@ -121,7 +121,8 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     protected _systemConfig: ioBroker.SystemConfigCommon | undefined;
 
-    private readonly savedNative: Record<string, any>;
+    // it is not readonly
+    private savedNative: Record<string, any>;
 
     protected common: ioBroker.InstanceCommon | null = null;
 
