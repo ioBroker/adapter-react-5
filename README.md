@@ -670,9 +670,10 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### 4.13.18 (2024-05-21)
+### **WORK IN PROGRESS**
 * (bluefox) Better types added
 * (bluefox) updated theme definitions
+* (bluefox) corrected dates in cron dialog
 
 ### 4.13.14 (2024-05-19)
 * (bluefox) Updated packages

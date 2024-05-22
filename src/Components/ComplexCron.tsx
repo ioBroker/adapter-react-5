@@ -443,7 +443,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                 this.setState({ hours: value, modes }, () =>
                     this.recalcCron());
             } else if (attr === 'dates') {
-                this.setState({ hours: value, modes }, () =>
+                this.setState({ dates: value, modes }, () =>
                     this.recalcCron());
             } else if (attr === 'months') {
                 this.setState({ months: value, modes }, () =>
@@ -466,7 +466,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                 this.setState({ hours: value }, () =>
                     this.recalcCron());
             } else if (attr === 'dates') {
-                this.setState({ hours: value }, () =>
+                this.setState({ dates: value }, () =>
                     this.recalcCron());
             } else if (attr === 'months') {
                 this.setState({ months: value }, () =>
