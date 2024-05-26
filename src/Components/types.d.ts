@@ -14,15 +14,15 @@ export interface ObjectBrowserTableFilter {
 export type ObjectBrowserColumn = 'name' | 'type' | 'role' | 'room' | 'func' | 'val' | 'buttons';
 
 export interface ObjectBrowserCustomFilter {
-    type?: string | string[];
-    common?: {
-        type?: string | string[];
-        role?: string | string[];
+    readonly type?: string | string[];
+    readonly common?: {
+        readonly type?: string | string[];
+        readonly role?: string | string[];
         // If "_" - no custom set
         // If "_dataSources" - only data sources (history, sql, influxdb, ...)
         // Else "telegram." or something like this
         // `true` - If common.custom not empty
-        custom?: '_' | '_dataSources' | true | string;
+        readonly custom?: '_' | '_dataSources' | true | string;
     };
 }
 
