@@ -295,7 +295,8 @@
           "md": 8,
           "lg": 4,
           "type": "text",
-          "label": "Own motto"
+          "label": "Own motto",
+          "noClearButton": true
         },
         "loginBackgroundImage": {
           "newLine": true,
@@ -547,6 +548,7 @@
             },
             {
               "type": "text",
+              "noClearButton": true,
               "attr": "ip",
               "width": 100,
               "title": "IP",

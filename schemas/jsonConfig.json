@@ -218,6 +218,10 @@
           "type": "boolean",
           "description": "Shows text as read only field"
         },
+        "noClearButton": {
+          "type": "boolean",
+          "description": "Do not show a clear button"
+        },
         "placeholder": {
           "description": "Placeholder (for text control)",
           "type": "string"
@@ -2409,6 +2413,10 @@
                 "readOnly": {
                   "type": "boolean",
                   "description": "Shows text as read only field"
+                },
+                "noClearButton": {
+                  "type": "boolean",
+                  "description": "Do not show a clear button"
                 },
                 "label": true,
                 "type": true,
