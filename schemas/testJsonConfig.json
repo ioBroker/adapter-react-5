@@ -16,7 +16,8 @@
           "timeSteps": {
             "minutes":  1,
             "hours": 1
-          }
+          },
+          "tooltip": "test"
         },
         "datePicker": {
           "type": "datePicker"
@@ -416,6 +417,7 @@
             },
             {
               "type": "timePicker",
+              "tooltip": "test",
               "format": "HH:mm:ss",
               "views": ["hours", "minutes"],
               "returnFormat": "HH:mm:ss",

@@ -945,6 +945,7 @@
         "style": true,
         "darkStyle": true,
         "noMultiEdit": true,
+        "tooltip": true,
         "noTranslation": true
       },
       "additionalProperties": false,
