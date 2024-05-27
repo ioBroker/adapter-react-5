@@ -524,6 +524,11 @@
               "width": 50
             },
             {
+              "type": "password",
+              "width": 10,
+              "attr": "pw1"
+            },
+            {
               "type": "selectSendTo",
               "alsoDependsOn": ["sendTo"],
               "command": "test",

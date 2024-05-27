@@ -1833,7 +1833,9 @@
                     "attr": true,
                     "label": true,
                     "type": true,
+                    "width": true,
                     "defaultSendTo": true,
+                    "title": true,
                     "sm": true,
                     "md": true,
                     "lg": true,
@@ -1878,10 +1880,55 @@
               "allOf": [
                 {
                   "$ref": "#/definitions/tableItemBaseProps"
-                },
-                {
-                  "$ref": "#/definitions/passwordProps"
                 }
+              ],
+              "properties": {
+                "encrypted": {
+                  "description": "Is value encrypted or not (of course only for texts)",
+                  "type": "boolean"
+                },
+                "repeat": {
+                  "description": "Password must be compared with password",
+                  "type": "boolean"
+                },
+                "visible": {
+                  "description": "True if allow to view the password by toggling the view button",
+                  "type": "boolean"
+                },
+                "attr": true,
+                "width": true,
+                "sort": true,
+                "title": true,
+                "filter": true,
+                "label": true,
+                "type": true,
+                "defaultSendTo": true,
+                "sm": true,
+                "md": true,
+                "lg": true,
+                "xs": true,
+                "newLine": true,
+                "hidden": true,
+                "hideOnlyControl": true,
+                "disabled": true,
+                "helpLink": true,
+                "help": true,
+                "style": true,
+                "darkStyle": true,
+                "validator": true,
+                "validatorNoSaveOnError": true,
+                "validatorErrorText": true,
+                "noMultiEdit": true,
+                "tooltip": true,
+                "default": true,
+                "defaultFunc": true,
+                "onChange": true,
+                "noTranslation": true,
+                "confirm": true
+              },
+              "additionalProperties": false,
+              "required": [
+                "type"
               ]
             }
           },
@@ -4476,6 +4523,9 @@
                       },
                       "label": true,
                       "type": true,
+                      "title": true,
+                      "filter": true,
+                      "sort": true,
                       "defaultSendTo": true,
                       "sm": true,
                       "md": true,
@@ -5893,7 +5943,8 @@
             "$ref": "#/definitions/iconPositionProp"
           }
         }
-      }]
+      }
+    ]
   },
   "else": {
     "type": "object",
