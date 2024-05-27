@@ -195,6 +195,7 @@
         },
         "instance": {
           "type": "instance",
+          "allowDeactivate": true,
           "adapter": "admin",
           "long": true
         }

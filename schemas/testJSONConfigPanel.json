@@ -50,6 +50,7 @@
       "newLine": true,
       "sm": 6,
       "type": "instance",
+      "allowDeactivate": true,
       "adapter": "history",
       "label": "History"
     },
