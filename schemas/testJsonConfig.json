@@ -6,6 +6,8 @@
   "items": {
     "mainTab": {
       "type": "panel",
+      "style": {},
+      "innerStyle": {},
       "label": "Main settings",
       "items": {
         "timePicker": {

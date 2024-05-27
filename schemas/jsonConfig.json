@@ -4395,6 +4395,7 @@
                       "help": true,
                       "style": true,
                       "darkStyle": true,
+                      "innerStyle": true,
                       "validator": true,
                       "validatorNoSaveOnError": true,
                       "validatorErrorText": true,
@@ -5754,6 +5755,10 @@
                 "darkStyle": {
                   "description": "css style for dark mode",
                   "type": "string"
+                },
+                "innerStyle": {
+                  "description": "css style in react notation: 'radiusBorder' and not 'radius-border'",
+                  "type": "object"
                 },
                 "validator": {
                   "description": "JS function: true no error, false - error",
