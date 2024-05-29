@@ -1,5 +1,5 @@
-import { type HostInfo } from '@iobroker/js-controller-common/build/esm/lib/common/tools';
-import { type FilteredNotificationInformation } from '@iobroker/js-controller-common-db/build/esm/lib/common/notificationHandler';
+import { type HostInfo } from '@iobroker/js-controller-common-db/build/esm/lib/common/tools';
+import { type FilteredNotificationInformation } from '@iobroker/js-controller-common/build/esm/lib/common/notificationHandler';
 
 /**
  * Copyright 2020-2024, Denis Haev (bluefox) <dogafox@gmail.com>
@@ -181,38 +181,39 @@ interface RenameGroupObject extends ioBroker.GroupObject {
 
 interface Promises {
     installedCompact?: {
-        [host: string]: Promise<Record<string, ioBroker.AdapterObject>>;
-    };
+        [host: string]: Promise<Record<string, ioBroker.AdapterObject>> | null;
+    } | null;
     installed?: {
-        [host: string]: Promise<Record<string, ioBroker.AdapterObject>>;
-    };
-    systemConfig?: Promise<ioBroker.Object>;
-    hosts?: Promise<ioBroker.HostObject[]>;
-    users?: Promise<ioBroker.UserObject[]>;
-    compactAdapters?: Promise<Record<string, ioBroker.AdapterObject>>;
-    repoCompact?: Promise<any>;
-    version?: Promise<{ version: string; serverName: string }>;
-    groups?: Promise<ioBroker.GroupObject[]>;
-    repo?: Promise<Record<string, ioBroker.AdapterObject>>;
-    cert?: Promise<{ name: string; type: 'public' | 'private' | 'chained' | '' }[]>;
-    webName?: Promise<string>;
-    compactInstances?: Promise<Record<string, ioBroker.InstanceObject>>;
-    getCompactSystemRepositories?: Promise<ioBroker.Object>;
-    systemConfigCommon?: Promise<ioBroker.Object>;
-    hostsCompact?: Promise<ioBroker.HostObject[]>;
+        [host: string]: Promise<Record<string, ioBroker.AdapterObject>> | null;
+    } | null;
+    systemConfig?: Promise<ioBroker.Object> | null;
+    hosts?: Promise<ioBroker.HostObject[]> | null;
+    users?: Promise<ioBroker.UserObject[]> | null;
+    compactAdapters?: Promise<Record<string, ioBroker.AdapterObject>> | null;
+    repoCompact?: Promise<any> | null;
+    version?: Promise<{ version: string; serverName: string }> | null;
+    groups?: Promise<ioBroker.GroupObject[]> | null;
+    repo?: Promise<Record<string, ioBroker.AdapterObject>> | null;
+    cert?: Promise<{ name: string; type: 'public' | 'private' | 'chained' | '' }[]> | null;
+    webName?: Promise<string> | null;
+    compactInstances?: Promise<Record<string, ioBroker.InstanceObject>> | null;
+    getCompactSystemRepositories?: Promise<ioBroker.Object> | null;
+    systemConfigCommon?: Promise<ioBroker.Object> | null;
+    hostsCompact?: Promise<ioBroker.HostObject[]> | null;
     uuid?: Promise<string | undefined>;
-    [feature: `supportedFeatures_${string}`]: Promise<boolean>;
-    [type: `instances_${string}`]: Promise<any>;
-    [_enum: `enums_${string}`]: Promise<any>;
-    [adapter: `adapter_${string}`]: Promise<any>;
-    [host: `IPs_${string}`]: Promise<string[]>;
-    [host: `hostInfo_${string}`]: Promise<HostInfo>;
-    [host: `hostInfoShort_${string}`]: Promise<HostInfo> ;
-    [host: `rIPs_${string}`]: Promise<{ name: string, address: string, family: 'ipv4' | 'ipv6' }[]>;
-    currentInstance?: Promise<string>;
+    [feature: `supportedFeatures_${string}`]: Promise<boolean> | null;
+    [type: `instances_${string}`]: Promise<any> | null;
+    [_enum: `enums_${string}`]: Promise<any> | null;
+    [adapter: `adapter_${string}`]: Promise<any> | null;
+    [host: `IPs_${string}`]: Promise<string[]> | null;
+    [host: `hostInfo_${string}`]: Promise<HostInfo> | null;
+    [host: `hostInfoShort_${string}`]: Promise<HostInfo> | null;
+    [host: `rIPs_${string}`]: Promise<{ name: string, address: string, family: 'ipv4' | 'ipv6' }[]> | null;
+    currentInstance?: Promise<string> | null;
 }
 
 class Connection {
+    // Do not define it as null, else we must check for null everywhere
     private _socket: SocketClient;
 
     private _authTimer: ReturnType<typeof setTimeout> | null | undefined;
@@ -1724,7 +1725,7 @@ class Connection {
         update?: boolean,
     ): Promise<Record<string, ioBroker.EnumObject>> {
         if (!update && this._promises[`enums_${_enum || 'all'}`]) {
-            return this._promises[`enums_${_enum || 'all'}`];
+            return this._promises[`enums_${_enum || 'all'}`] as Promise<Record<string, ioBroker.EnumObject>>;
         }
 
         if (!this.connected) {
@@ -1753,7 +1754,7 @@ class Connection {
                 });
             });
 
-        return this._promises[`enums_${_enum || 'all'}`];
+        return this._promises[`enums_${_enum || 'all'}`] as Promise<Record<string, ioBroker.EnumObject>>;
     }
 
     /**
@@ -2179,7 +2180,7 @@ class Connection {
         }
 
         if (!update && this._promises[`hostInfo_${host}`]) {
-            return this._promises[`hostInfo_${host}`];
+            return this._promises[`hostInfo_${host}`] as Promise<HostInfo>;
         }
 
         if (!this.connected) {
@@ -2209,15 +2210,11 @@ class Connection {
             });
         });
 
-        return this._promises[`hostInfo_${host}`];
+        return this._promises[`hostInfo_${host}`] as Promise<HostInfo>;
     }
 
     /**
      * Get the host information (short version).
-     * @param {string} host
-     * @param {boolean} [update] Force update.
-     * @param {number} [timeoutMs] optional read timeout.
-     * @returns {Promise<any>}
      */
     getHostInfoShort(
         host: string,
@@ -2233,7 +2230,7 @@ class Connection {
             host += `system.host.${host}`;
         }
         if (!update && this._promises[`hostInfoShort_${host}`]) {
-            return this._promises[`hostInfoShort_${host}`];
+            return this._promises[`hostInfoShort_${host}`] as Promise<HostInfo>;
         }
 
         if (!this.connected) {
@@ -2263,16 +2260,11 @@ class Connection {
             });
         });
 
-        return this._promises[`hostInfoShort_${host}`];
+        return this._promises[`hostInfoShort_${host}`] as Promise<HostInfo>;
     }
 
     /**
      * Get the repository.
-     * @param {string} host
-     * @param {any} [args]
-     * @param {boolean} [update] Force update.
-     * @param {number} [timeoutMs] timeout in ms.
-     * @returns {Promise<any>}
      */
     getRepository(
         host: string,
@@ -2340,7 +2332,7 @@ class Connection {
         this._promises.installed = this._promises.installed || {};
 
         if (!update && this._promises.installed[host]) {
-            return this._promises.installed[host];
+            return this._promises.installed[host] as Promise<Record<string, ioBroker.AdapterObject>>;
         }
 
         if (!this.connected) {
@@ -2374,7 +2366,7 @@ class Connection {
             });
         });
 
-        return this._promises.installed[host];
+        return this._promises.installed[host] as Promise<Record<string, ioBroker.AdapterObject>>;
     }
 
     /**
@@ -2469,7 +2461,7 @@ class Connection {
         update?: boolean,
     ): Promise<boolean> {
         if (!update && this._promises[`supportedFeatures_${feature}`]) {
-            return this._promises[`supportedFeatures_${feature}`];
+            return this._promises[`supportedFeatures_${feature}`] as Promise<boolean>;
         }
 
         if (!this.connected) {
@@ -2481,7 +2473,7 @@ class Connection {
                 err ? reject(err) : resolve(supported);
             }));
 
-        return this._promises[`supportedFeatures_${feature}`];
+        return this._promises[`supportedFeatures_${feature}`] as Promise<boolean>;
     }
 
     /**
@@ -2732,7 +2724,6 @@ class Connection {
 
     /**
      * Get the IP addresses of the given host.
-     * @returns {Promise<string[]>}
      */
     getIpAddresses(
         host: string,
@@ -2747,12 +2738,12 @@ class Connection {
         }
 
         if (!update && this._promises[`IPs_${host}`]) {
-            return this._promises[`IPs_${host}`];
+            return this._promises[`IPs_${host}`] as Promise<string[]>;
         }
         this._promises[`IPs_${host}`] = this.getObject(host)
             .then(obj => obj && obj.common ? obj.common.address || [] : []);
 
-        return this._promises[`IPs_${host}`];
+        return this._promises[`IPs_${host}`] as Promise<string[]>;
     }
 
     /**
@@ -3128,8 +3119,10 @@ class Connection {
         delete this._promises[`instances_${adapter}`];
     }
 
-    // Returns very optimized information for adapters to minimize a connection load.
-    // Reads only version of installed adapter
+    /**
+     * Returns very optimized information for adapters to minimize a connection load.
+     * Reads only version of installed adapter
+     */
     getCompactInstalled(
         host: string,
         update?: boolean,
@@ -3176,7 +3169,7 @@ class Connection {
             });
         });
 
-        return this._promises.installedCompact[host];
+        return this._promises.installedCompact[host] as Promise<Record<string, ioBroker.AdapterObject>>;
     }
 
     // returns very optimized information for adapters to minimize a connection load.
