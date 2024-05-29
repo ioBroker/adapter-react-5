@@ -19,7 +19,7 @@ import {
 
 import Icon from './Icon';
 import Utils from './Utils';
-import { Translator } from '../types';
+import { Translate } from '../types';
 
 // import devices from '../assets/devices/list.json';
 const devices: { _id: string; name: ioBroker.StringOrTranslated; icon: string }[] = [
@@ -1977,7 +1977,7 @@ interface IconSelectorProps {
     onlyDevices?: boolean;
     onSelect?: (icon: string) => void, // one of onSelect or onChange are required
     onChange?: (icon: string) => void,
-    t: Translator;
+    t: Translate;
     lang: ioBroker.Languages;
 }
 

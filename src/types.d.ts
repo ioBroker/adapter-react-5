@@ -3,7 +3,7 @@ import { Theme as MuiTheme, Palette as MuiPalette } from '@mui/material/styles';
 import { AdminConnection, Connection } from '@iobroker/socket-client';
 import LegacyConnection from './LegacyConnection';
 
-export type Translator = (key: string, ...args: any[]) => string;
+export type Translate = (key: string, ...args: (string | number | boolean)[]) => string;
 
 export interface ConnectionProps {
     /** The socket name. */

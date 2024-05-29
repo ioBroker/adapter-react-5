@@ -58,6 +58,7 @@ module.exports = {
         }
         return webpackConfig;
     },
+
     overrideDevServerConfig: ({devServerConfig}) => {
         devServerConfig.headers = {
             'Access-Control-Allow-Origin': '*',

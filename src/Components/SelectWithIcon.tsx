@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import { InputProps } from '@mui/material/Input';
 
-import { ThemeType, Translator } from '../types';
+import { ThemeType, Translate } from '../types';
 
 import Icon from './Icon';
 import Utils from './Utils';
@@ -24,7 +24,7 @@ const styles: Record<string, any> = {
 };
 
 interface SelectWithIconProps {
-    t: Translator,
+    t: Translate,
     lang: ioBroker.Languages,
     themeType: ThemeType,
     value?: string,

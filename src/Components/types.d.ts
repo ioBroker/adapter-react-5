@@ -1,4 +1,4 @@
-import { Translator, Width } from '../types';
+import { Translate, Width } from '../types';
 import Connection from '../Connection';
 import Router from './Router';
 
@@ -52,7 +52,7 @@ export interface ObjectBrowserProps {
     /** Theme name. */
     themeName?: string;
     /** Translation function. */
-    t: Translator;
+    t: Translate;
     /** The selected language. */
     lang: ioBroker.Languages;
     /** Allow to select multiple objects? (default: false) */

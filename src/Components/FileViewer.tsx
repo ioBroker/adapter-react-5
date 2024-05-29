@@ -26,7 +26,7 @@ import type { Connection } from '@iobroker/socket-client';
 import IconNoIcon from '../icons/IconNoIcon';
 import withWidth from './withWidth';
 import Utils from './Utils';
-import { Translator, ThemeType } from '../types';
+import { Translate, ThemeType } from '../types';
 import Icon from './Icon';
 // File viewer in adapter-react does not use ace editor
 // import * as ace from 'ace-builds';
@@ -80,7 +80,7 @@ function bufferToBase64(buffer: Buffer, isFull?: boolean) {
 
 interface FileViewerProps {
     /** Translation function */
-    t: Translator;
+    t: Translate;
     /** Callback when the viewer is closed. */
     onClose: () => void;
     /** The URL (file path) to the file to be displayed. */

@@ -73,7 +73,7 @@ import IconNoIcon from '../icons/IconNoIcon';
 import Icon from './Icon';
 
 import withWidth from './withWidth';
-import { ThemeName, ThemeType, Translator } from '../types';
+import { ThemeName, ThemeType, Translate } from '../types';
 
 import FileViewer, { EXTENSIONS } from './FileViewer';
 
@@ -440,7 +440,7 @@ export interface FileBrowserProps {
     /** The CSS class name. */
     className?: string;
     /** Translation function. */
-    t: Translator;
+    t: Translate;
     /** The selected language. */
     lang: ioBroker.Languages;
     /** The socket connection. */
