@@ -79,7 +79,7 @@ export interface GenericAppState {
     loaded: boolean;
     themeType: ThemeType;
     themeName: ThemeName;
-    theme: Theme;
+    theme: IobTheme;
     expertMode: boolean;
     selectedTab: string;
     selectedTabNum: number | undefined;
@@ -123,7 +123,7 @@ interface Palette extends MuiPalette {
     }
 }
 
-export interface Theme extends MuiTheme {
+export interface IobTheme extends MuiTheme {
     name: ThemeName;
     palette: Palette;
     toolbar: React.CSSProperties;

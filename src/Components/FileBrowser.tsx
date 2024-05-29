@@ -28,7 +28,6 @@ import {
     Button,
     Input,
     Breadcrumbs,
-    type Theme,
 } from '@mui/material';
 
 // MUI Icons
@@ -73,7 +72,7 @@ import IconNoIcon from '../icons/IconNoIcon';
 import Icon from './Icon';
 
 import withWidth from './withWidth';
-import { ThemeName, ThemeType, Translate } from '../types';
+import { ThemeName, ThemeType, Translate, IobTheme } from '../types';
 
 import FileViewer, { EXTENSIONS } from './FileViewer';
 
@@ -93,7 +92,7 @@ const FILE_TYPE_ICONS = {
     video: TypeIconVideo,
 };
 
-const styles: Record<string, any> = (theme: Theme) => ({
+const styles: Record<string, any> = (theme: IobTheme) => ({
     dialog: {
         height: `calc(100% - ${theme.mixins.toolbar.minHeight}px)`,
     },
@@ -2147,7 +2146,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                 aria-labelledby="ar_dialog_file_delete_title"
             >
                 <DialogTitle id="ar_dialog_file_delete_title">
-                    {this.props.t('ra_Confirm deletion of %s', this.state.deleteItem.split('/').pop())}
+                    {this.props.t('ra_Confirm deletion of %s', this.state.deleteItem.split('/').pop() as string)}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>{this.props.t('ra_Are you sure?')}</DialogContentText>

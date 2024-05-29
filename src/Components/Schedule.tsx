@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import { withStyles } from '@mui/styles';
-// import MaskedInput from 'react-text-mask';
-
-import type { Theme } from '@mui/system/createTheme/createTheme';
+import { withStyles, type Styles } from '@mui/styles';
 
 import {
     Input,
@@ -16,8 +13,9 @@ import {
 } from '@mui/material';
 
 import I18n from '../i18n';
+import { IobTheme } from '../types';
 
-const styles = (theme: Theme) => ({
+const styles: Styles<IobTheme, any> = theme => ({
     hr: {
         border: 0,
         borderTop: '1px solid gray',

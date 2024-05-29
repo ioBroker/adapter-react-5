@@ -5,7 +5,7 @@ import { orange, grey } from '@mui/material/colors';
 
 import { SimplePaletteColorOptions } from '@mui/material/styles/createPalette';
 import { ThemeOptions as ThemeOptionsMui } from '@mui/material/styles/createTheme';
-import {type Theme, type ThemeName, ThemeType} from './types';
+import { type IobTheme, type ThemeName, ThemeType } from './types';
 
 const step = (16 - 5) / 23 / 100;
 
@@ -178,7 +178,7 @@ interface ThemeOptions extends ThemeOptionsMui {
 /**
  * The theme creation factory function.
  */
-const CustomTheme = (type: ThemeName): Theme => {
+const CustomTheme = (type: ThemeName): IobTheme => {
     let options: ThemeOptions;
     let overrides: Record<string, any>;
 
@@ -420,7 +420,7 @@ const CustomTheme = (type: ThemeName): Theme => {
         };
     }
 
-    const theme: Theme = createTheme(options) as Theme;
+    const theme: IobTheme = createTheme(options) as IobTheme;
 
     const palette: PaletteOptions = (theme.palette as PaletteOptions);
 
@@ -473,7 +473,7 @@ const CustomTheme = (type: ThemeName): Theme => {
                 ],
             },
         },
-    }) as Theme;
+    }) as IobTheme;
 };
 
 export default CustomTheme;

@@ -1,6 +1,7 @@
 import cronToText from './cron2text';
 import JQUERY_CRON_LOCALE, {CRON_LOCALE} from './jquery.cron.locale';
 
+// TODO: other languages
 function correctCasus(text: string /* , seconds */): string {
     text = text.replace('Каждую(ый) минуту',    'Каждую минуту');
     text = text.replace('Каждую(ый) минут(у)',  'Каждую минуту');

@@ -670,9 +670,10 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### 4.14.1 (2024-05-29)
+### **WORK IN PROGRESS**
 * (bluefox) Types are now exported
 * (bluefox) Translator renamed to Translate
+* (bluefox) Breaking: Theme renamed to IobTheme because of the naming conflict
 
 ### 4.13.24 (2024-05-25)
 * (bluefox) Updated packages

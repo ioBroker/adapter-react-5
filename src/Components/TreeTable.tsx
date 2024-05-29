@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 import { HexColorPicker as ColorPicker } from 'react-colorful';
 
@@ -18,7 +17,6 @@ import {
     TextField,
     Checkbox,
     Dialog,
-    type Theme,
 } from '@mui/material';
 
 import {
@@ -37,6 +35,7 @@ import type Connection from '../Connection';
 
 import DialogSelectID from '../Dialogs/SelectID';
 import Utils from './Utils';
+import { IobTheme } from '../types';
 
 function getAttr(
     obj: Record<string, any>,
@@ -81,7 +80,7 @@ function setAttr(
     return setAttr(obj[name], attr, value);
 }
 
-const styles: Record<string, any> = (theme: Theme) => ({
+const styles: Record<string, any> = (theme: IobTheme) => ({
     tableContainer: {
         width: '100%',
         height: '100%',
@@ -343,42 +342,43 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         }
 
         if (col.lookup) {
-            return this.renderCellEditSelect(item, col, val);
+            return this.renderCellEditSelect(col, val);
         } if (col.editComponent) {
-            return this.renderCellEditCustom(item, col, val);
+            return this.renderCellEditCustom(col, val, item);
         }
         if (col.type === 'boolean' || (!col.type && typeof val === 'boolean')) {
-            return this.renderCellEditBoolean(item, col, val);
+            return this.renderCellEditBoolean(col, val);
         }
         if (col.type === 'color') {
-            return this.renderCellEditColor(item, col, val);
+            return this.renderCellEditColor(col, val);
         }
         if (col.type === 'oid') {
-            return this.renderCellEditObjectID(item, col, val);
+            return this.renderCellEditObjectID(col, val);
         }
         if (col.type === 'numeric') {
-            return this.renderCellEditNumber(item, col, val);
+            return this.renderCellEditNumber(col, val);
         }
 
-        return this.renderCellEditString(item, col, val);
+        return this.renderCellEditString(col, val);
+    }
+
+    onChange(col: Column, oldValue: string | number | boolean, newValue: string | number | boolean) {
+        const editData = this.state.editData ? { ...this.state.editData } : {};
+        if (newValue === oldValue) {
+            delete editData[col.field];
+        } else {
+            editData[col.field] = newValue;
+        }
+        this.setState({ editData });
     }
 
     renderCellEditSelect(
-        item: Record<string, any>,
         col: Column,
         val: string | number,
     ) {
         return <Select
             variant="standard"
-            onChange={e => {
-                const editData = this.state.editData ? { ...this.state.editData } : {};
-                if (e.target.value === val) {
-                    delete editData[col.field];
-                } else {
-                    editData[col.field] = e.target.value;
-                }
-                this.setState({ editData });
-            }}
+            onChange={e => this.onChange(col, val, e.target.value)}
             value={(this.state.editData && this.state.editData[col.field]) || val}
         >
             {col.lookup && Object.keys(col.lookup)
@@ -387,7 +387,6 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
     }
 
     renderCellEditString(
-        item: Record<string, any>,
         col: Column,
         val: string,
     ) {
@@ -396,20 +395,11 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             className={this.props.classes.fieldEdit}
             fullWidth
             value={this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val}
-            onChange={e => {
-                const editData = this.state.editData ? { ...this.state.editData } : {};
-                if (e.target.value === val) {
-                    delete editData[col.field];
-                } else {
-                    editData[col.field] = e.target.value;
-                }
-                this.setState({ editData });
-            }}
+            onChange={e => this.onChange(col, val, e.target.value)}
         />;
     }
 
     renderCellEditNumber(
-        item: Record<string, any>,
         col: Column,
         val: number,
     ) {
@@ -419,22 +409,14 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             type="number"
             fullWidth
             value={this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val}
-            onChange={e => {
-                const editData = this.state.editData ? { ...this.state.editData } : {};
-                if ((e.target.value as any as number) === val) {
-                    delete editData[col.field];
-                } else {
-                    editData[col.field] = e.target.value;
-                }
-                this.setState({ editData });
-            }}
+            onChange={e => this.onChange(col, val, e.target.value)}
         />;
     }
 
     renderCellEditCustom(
-        item: Record<string, any>,
         col: Column,
         val: any,
+        item: Record<string, any>,
     ) {
         const EditComponent = col.editComponent;
 
@@ -448,34 +430,17 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         return <EditComponent
             value={val}
             rowData={item}
-            onChange={(newVal: any) => {
-                const editData = this.state.editData ? { ...this.state.editData } : {};
-                if (newVal === val) {
-                    delete editData[col.field];
-                } else {
-                    editData[col.field] = newVal;
-                }
-                this.setState({ editData });
-            }}
+            onChange={(newVal: any) => this.onChange(col, val, newVal as string | number)}
         />;
     }
 
     renderCellEditBoolean(
-        item: Record<string, any>,
         col: Column,
         val: boolean,
     ) {
         return <Checkbox
             checked={this.state.editData && this.state.editData[col.field] !== undefined ? !!this.state.editData[col.field] : !!val}
-            onChange={e => {
-                const editData = this.state.editData ? { ...this.state.editData } : {};
-                if (e.target.checked === !!val) {
-                    delete editData[col.field];
-                } else {
-                    editData[col.field] = e.target.checked;
-                }
-                this.setState({ editData });
-            }}
+            onChange={e => this.onChange(col, !!val, e.target.checked)}
             inputProps={{ 'aria-label': 'checkbox' }}
         />;
     }
@@ -499,7 +464,6 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
     }
 
     renderCellEditColor(
-        item: Record<string, any>,
         col: Column,
         val: string,
     ) {
@@ -511,30 +475,13 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                 className={this.props.classes.fieldEditWithButton}
                 value={_val}
                 inputProps={{ style: { backgroundColor: _val, color: Utils.isUseBright(_val) ? '#FFF' : '#000' } }}
-                onChange={e => {
-                    const editData = this.state.editData ? { ...this.state.editData } : {};
-                    if (e.target.value === val) {
-                        delete editData[col.field];
-                    } else {
-                        editData[col.field] = e.target.value;
-                    }
-                    this.setState({ editData });
-                }}
+                onChange={e => this.onChange(col, !!val, e.target.value)}
             />
 
             <IconButton
                 className={this.props.classes.fieldButton}
                 onClick={() => {
-                    this.selectCallback = newColor => {
-                        const editData = this.state.editData ? { ...this.state.editData } : {};
-                        if (newColor === val) {
-                            delete editData[col.field];
-                        } else {
-                            editData[col.field] = newColor;
-                        }
-                        this.setState({ editData });
-                    };
-
+                    this.selectCallback = newColor => this.onChange(col, val, newColor);
                     this.setState({ showSelectColor: true, selectIdValue: val });
                 }}
                 size="large"
@@ -566,7 +513,6 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
     }
 
     renderCellEditObjectID(
-        item: Record<string, any>,
         col: Column,
         val: string,
     ) {
@@ -576,30 +522,13 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                 fullWidth
                 className={this.props.classes.fieldEditWithButton}
                 value={this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val}
-                onChange={e => {
-                    const editData = this.state.editData ? { ...this.state.editData } : {};
-                    if (e.target.value === val) {
-                        delete editData[col.field];
-                    } else {
-                        editData[col.field] = e.target.value;
-                    }
-                    this.setState({ editData });
-                }}
+                onChange={e => this.onChange(col, val, e.target.value)}
             />
 
             <IconButton
                 className={this.props.classes.fieldButton}
                 onClick={() => {
-                    this.selectCallback = selected => {
-                        const editData = this.state.editData ? { ...this.state.editData } : {};
-                        if (selected === val) {
-                            delete editData[col.field];
-                        } else {
-                            editData[col.field] = selected;
-                        }
-                        this.setState({ editData });
-                    };
-
+                    this.selectCallback = selected => this.onChange(col, val, selected);
                     this.setState({ showSelectId: true, selectIdValue: val });
                 }}
                 size="large"

@@ -6,16 +6,14 @@ interface TabHeaderProps {
     children: React.ReactNode;
 }
 
-class TabHeader extends React.Component<TabHeaderProps> {
-    render() {
-        return <Grid
-            item
-            container
-            alignItems="center"
-        >
-            {this.props.children}
-        </Grid>;
-    }
+function TabHeader(props: TabHeaderProps) {
+    return <Grid
+        item
+        container
+        alignItems="center"
+    >
+        {props.children}
+    </Grid>;
 }
 
 export default TabHeader;

@@ -7,7 +7,7 @@
 import React from 'react';
 import copy from './CopyToClipboard';
 import I18n from '../i18n';
-import {ThemeName, ThemeType} from "../types";
+import { ThemeName, ThemeType } from '../types';
 
 const NAMESPACE    = 'material';
 const days         = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];

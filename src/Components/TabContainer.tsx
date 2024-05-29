@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { withStyles } from '@mui/styles';
 
 import { Grid, Paper } from '@mui/material';
 
 import Utils from './Utils';
 
-const styles = {
+const styles: Record<string, any> = {
     root: {
         width: '100%',
         height: '100%',
@@ -26,34 +26,26 @@ interface TabContainerProps {
     className?: string;
     onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
     tabIndex?: number;
-    classes: {
-        root: string;
-        overflowHidden: string;
-        container: string;
-    };
+    classes: Record<string, string>;
     children: React.ReactNode;
 }
 
-class TabContainer extends Component<TabContainerProps> {
-    render() {
-        const { classes } = this.props;
-
-        return <Paper
-            elevation={!Number.isNaN(this.props.elevation) ? this.props.elevation : 1}
-            className={Utils.clsx(classes.root, { [classes.overflowHidden]: this.props.overflow !== 'visible' }, this.props.className)}
-            onKeyDown={this.props.onKeyDown}
-            tabIndex={this.props.tabIndex}
+function TabContainer(props: TabContainerProps) {
+    return <Paper
+        elevation={!Number.isNaN(props.elevation) ? props.elevation : 1}
+        className={Utils.clsx(props.classes.root, { [props.classes.overflowHidden]: props.overflow !== 'visible' }, props.className)}
+        onKeyDown={props.onKeyDown}
+        tabIndex={props.tabIndex}
+    >
+        <Grid
+            container
+            direction="column"
+            wrap="nowrap"
+            className={props.classes.container}
         >
-            <Grid
-                container
-                direction="column"
-                wrap="nowrap"
-                className={classes.container}
-            >
-                {this.props.children}
-            </Grid>
-        </Paper>;
-    }
+            {props.children}
+        </Grid>
+    </Paper>;
 }
 
 /** @type {typeof TabContainer} */

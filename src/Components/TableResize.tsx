@@ -64,7 +64,7 @@ interface TableResizeProps {
 }
 
 class TableResize extends Component<TableResizeProps> {
-    private resizerRefTable: React.RefObject<HTMLTableElement>;
+    private readonly resizerRefTable: React.RefObject<HTMLTableElement>;
     private resizerActiveIndex: number | null;
     private resizerActiveDiv: HTMLDivElement | null;
     private resizerCurrentWidths: (number | 'auto')[];

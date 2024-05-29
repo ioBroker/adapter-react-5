@@ -4,7 +4,6 @@ import { withStyles } from '@mui/styles';
 import {
     Dialog, DialogActions, DialogContent,
     DialogTitle, IconButton, TextField, Button,
-    type Theme,
 } from '@mui/material';
 
 import {
@@ -15,8 +14,9 @@ import {
 
 import Utils from './Utils';
 import I18n from '../i18n';
+import { IobTheme } from '../types';
 
-const styles: Record<string, any> = (theme: Theme) => ({
+const styles: Record<string, any> = (theme: IobTheme) => ({
     modalDialog: {
         minWidth: 400,
         maxWidth: 800,

@@ -10,18 +10,19 @@ import {
 } from '@mui/icons-material';
 
 import I18n from '../i18n';
+import { IobTheme } from '../types';
 
-const styles = () => ({
+const styles: Record<string, any> = {
     buttonIcon: {
         marginRight: 8,
     },
-});
+};
 
 interface SaveCloseButtonsProps {
     /* Are the buttons without text */
     noTextOnButtons?: boolean;
     /* Theme object (from this.state.theme) */
-    theme: any;
+    theme: IobTheme;
     /* bottom position 0 or 38 for iFrame */
     isIFrame?: boolean;
     /* is used in new React */
@@ -34,9 +35,7 @@ interface SaveCloseButtonsProps {
     paddingLeft?: number;
     changed: boolean;
     error?: boolean;
-    classes: {
-        buttonIcon: string;
-    };
+    classes: Record<string, string>;
 }
 
 /**
@@ -122,6 +121,4 @@ class SaveCloseButtons extends React.Component<SaveCloseButtonsProps> {
     }
 }
 
-/** @type {typeof SaveCloseButtons} */
-const _export = withStyles(styles)(SaveCloseButtons);
-export default _export;
+export default withStyles(styles)(SaveCloseButtons);

@@ -13,7 +13,7 @@ import { Snackbar, IconButton } from '@mui/material';
 import { Close as IconClose } from '@mui/icons-material';
 
 import printPrompt from './Prompt';
-import theme from './Theme';
+import Theme from './Theme';
 import Loader from './Components/Loader';
 import Router from './Components/Router';
 import Utils from './Components/Utils';
@@ -27,7 +27,7 @@ import {
     GenericAppSettings,
     ThemeName,
     ThemeType,
-    Theme,
+    IobTheme,
     Width,
 } from './types';
 
@@ -501,21 +501,21 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
      * Get a theme
      * @param name Theme name
      */
-    createTheme(name?: ThemeName | null | undefined): Theme {
-        return theme(Utils.getThemeName(name));
+    createTheme(name?: ThemeName | null | undefined): IobTheme {
+        return Theme(Utils.getThemeName(name));
     }
 
     /**
      * Get the theme name
      */
-    getThemeName(currentTheme: Theme): ThemeName {
-        return (currentTheme as (Theme & { name: ThemeName })).name;
+    getThemeName(currentTheme: IobTheme): ThemeName {
+        return currentTheme.name;
     }
 
     /**
      * Get the theme type
      */
-    getThemeType(currentTheme: Theme): ThemeType {
+    getThemeType(currentTheme: IobTheme): ThemeType {
         return currentTheme.palette.mode;
     }
 

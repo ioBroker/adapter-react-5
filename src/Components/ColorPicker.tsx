@@ -19,7 +19,6 @@ import { withStyles } from '@mui/styles';
 
 import {
     TextField, Menu, IconButton, Button,
-    type Theme,
 } from '@mui/material';
 
 import {
@@ -30,8 +29,9 @@ import {
 import I18n from '../i18n';
 
 import Utils from './Utils';
+import { IobTheme } from '../types';
 
-const styles: Record<string, any> = (theme: Theme) => ({
+const styles: Record<string, any> = (theme: IobTheme) => ({
     color: {
         width: 36,
         height: 14,

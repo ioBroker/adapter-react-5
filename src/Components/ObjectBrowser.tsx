@@ -36,7 +36,6 @@ import {
     Snackbar,
     Switch,
     TextField,
-    type Theme,
     Tooltip,
 } from '@mui/material';
 
@@ -97,6 +96,7 @@ import type Router from './Router';
 import type {
     ThemeType,
     ThemeName,
+    IobTheme,
 } from '../types';
 import Connection from '../Connection';
 import Icon from './Icon';
@@ -274,7 +274,7 @@ interface GetValueStyleOptions {
     isButton?: boolean;
 }
 
-const styles: Record<string, any> = (theme: Theme) => ({
+const styles: Record<string, any> = (theme: IobTheme) => ({
     toolbar: {
         minHeight: 38, // Theme.toolbar.height,
         //        boxShadow: '0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12)'
@@ -2216,7 +2216,7 @@ interface ObjectBrowserProps {
     themeType: ThemeType;
     /** will be filled by withWidth */
     width?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-    theme: Theme;
+    theme: IobTheme;
     t: (word: string, ...args: any[]) => string;
     lang: ioBroker.Languages;
     multiSelect?: boolean;
@@ -2339,6 +2339,7 @@ interface ObjectBrowserState {
 }
 
 class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
+    // do not define the type as null to save the performance, so we must check it every time
     private info: TreeInfo;
 
     private localStorage: Storage = (window as any)._localStorage as Storage || window.localStorage;
