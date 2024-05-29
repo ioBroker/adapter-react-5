@@ -160,7 +160,7 @@ class DialogConfirm extends Component<DialogConfirmProps, DialogConfirmState> {
                     id={`ar_dialog_confirm_cancel_${this.props.dialogName || ''}`}
                     variant="contained"
                     onClick={() => this.handleCancel()}
-                    // @ts-expect-error
+                    // @ts-expect-error grey is valid color
                     color="grey"
                     startIcon={<IconClose />}
                 >

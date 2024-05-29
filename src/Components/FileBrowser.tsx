@@ -83,7 +83,7 @@ const TILE_WIDTH   = 64;
 
 const NOT_FOUND = 'Not found';
 
-const FILE_TYPE_ICONS = {
+const FILE_TYPE_ICONS: Record<string, React.FC<{ fontSize: 'small' }>> = {
     all: FileIcon,
     images: TypeIconImages,
     code: JSIcon,
@@ -1612,8 +1612,8 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
 
     renderToolbar() {
         const IconType: any = this.props.showTypeSelector
-            ? (FILE_TYPE_ICONS as Record<string, any>)[this.state.filterByType || 'all'] ||
-              (FILE_TYPE_ICONS as Record<string, any>).all
+            ? FILE_TYPE_ICONS[this.state.filterByType || 'all'] ||
+              FILE_TYPE_ICONS.all
             : null;
 
         const isInFolder = this.findFirstFolder(this.state.selected);
@@ -1751,7 +1751,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                 onClose={() => this.setState({ showTypesMenu: null })}
             >
                 {Object.keys(FILE_TYPE_ICONS).map(type => {
-                    const MyIcon: any = (FILE_TYPE_ICONS as Record<string, any>)[type];
+                    const MyIcon: React.FC<{ fontSize: 'small' }> = FILE_TYPE_ICONS[type];
                     return <MenuItem
                         key={type}
                         selected={this.state.filterByType === type}
@@ -1771,7 +1771,6 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                         }}
                     >
                         <ListItemIcon>
-                            {/* @ts-expect-ignore I don't know */}
                             <MyIcon fontSize="small" />
                         </ListItemIcon>
                         <ListItemText>{this.props.t(`ra_fileType_${type}`)}</ListItemText>
@@ -2124,8 +2123,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
 
                         newState.folders = folders;
 
-                        // @ts-expect-error fix later
-                        this.setState(newState, () =>
+                        this.setState(newState as FileBrowserState, () =>
                             setTimeout(() => {
                                 (this.browseFolders([...this.state.expanded], folders) as Promise<Folders>)
                                     .then(_folders => this.setState({ folders: _folders }))

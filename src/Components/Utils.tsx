@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2023 Denis Haev <dogafox@gmail.com>
+ * Copyright 2018-2024 Denis Haev <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -12,7 +12,7 @@ import { ThemeName, ThemeType } from '../types';
 const NAMESPACE    = 'material';
 const days         = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 const months       = ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const QUALITY_BITS = {
+const QUALITY_BITS: Record<ioBroker.STATE_QUALITY[keyof ioBroker.STATE_QUALITY], string> = {
     0x00: '0x00 - good',
 
     0x01: '0x01 - general problem',
@@ -34,7 +34,7 @@ const QUALITY_BITS = {
     0x44: '0x44 - device reports error',
     0x84: '0x84 - sensor reports error',
 };
-const SIGNATURES = {
+const SIGNATURES: Record<string, string> = {
     JVBERi0: 'pdf',
     R0lGODdh: 'gif',
     R0lGODlh: 'gif',
@@ -50,11 +50,14 @@ interface GetObjectNameOptions {
     language?: ioBroker.Languages;
 }
 
-type SmartName = null | (ioBroker.StringOrTranslated & {
+type SmartName = null
+    | false
+    | string
+    | ({ [lang in ioBroker.Languages]?: string } & {
     /** Which kind of device it is */
     smartType?: string | null;
     /** Which value to set when the ON command is issued */
-    byOn?: string | null;
+    byON?: string | null;
 });
 
 declare namespace clsx {
@@ -327,7 +330,6 @@ class Utils {
         }
 
         if (common) {
-            // @ts-ignore todo: after new types released
             settings.color = settings.color || common.color;
             settings.icon  = settings.icon || common.icon;
             settings.name  = settings.name || common.name;
@@ -368,7 +370,6 @@ class Utils {
             const s = obj.common.custom[NAMESPACE][options.user || 'admin'];
             if (s.useCommon) {
                 if (s.color !== undefined) {
-                    // @ts-ignore todo: after new types released
                     obj.common.color = s.color;
                     delete s.color;
                 }
@@ -653,7 +654,7 @@ class Utils {
             const m = now.match(/(\d{1,4})[-./](\d{1,2})[-./](\d{1,4})/);
             if (m) {
                 const a = [parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3], 10)];
-                // we now have 3 numbers. Let's try to detect where is year, where is day and where is month
+                // We now have 3 numbers. Let's try to detect where is year, where is day and where is month
                 const year = a.find(y => y > 31);
                 if (year !== undefined) {
                     a.splice(a.indexOf(year), 1);
@@ -753,18 +754,14 @@ class Utils {
         if (!id) {
             if (!noCommon) {
                 if (!(states as ioBroker.StateObject).common) {
-                    // @ts-ignore
                     return (states as ioBroker.StateCommon).smartName;
                 }
                 if (states && !(states as ioBroker.StateObject).common) {
-                    // @ts-ignore
                     return (states as ioBroker.StateCommon).smartName;
                 }
-                // @ts-ignore
                 return (states as ioBroker.StateObject).common.smartName;
             }
             if (states && !(states as ioBroker.StateObject).common) {
-                // @ts-ignore
                 return (states as ioBroker.StateCommon).smartName;
             }
             const obj = states as ioBroker.StateObject;
@@ -772,7 +769,6 @@ class Utils {
                 obj.common.custom[instanceId].smartName : undefined;
         }
         if (!noCommon) {
-            // @ts-ignore
             return (states as Record<string, ioBroker.StateObject>)[id].common.smartName;
         }
         const obj = (states as Record<string, ioBroker.StateObject>)[id];
@@ -791,20 +787,16 @@ class Utils {
     ): SmartName | undefined {
         if (!noCommon) {
             if (!obj.common) {
-                // @ts-ignore
-                return obj.smartName;
+                return (obj as any as ioBroker.StateCommon).smartName;
             }
             if (obj && !obj.common) {
-                // @ts-ignore
-                return obj.smartName;
+                return (obj as any as ioBroker.StateCommon).smartName;
             }
 
-            // @ts-ignore
             return obj.common.smartName;
         }
         if (obj && !obj.common) {
-            // @ts-ignore
-            return obj.smartName;
+            return (obj as any as ioBroker.StateCommon).smartName;
         }
 
         return obj?.common?.custom && obj.common.custom[instanceId] ?
@@ -841,7 +833,6 @@ class Utils {
                 obj.common.custom[instanceId] = null;
             }
         } else {
-            // @ts-ignore
             obj.common.smartName = null;
         }
     }
@@ -907,7 +898,6 @@ class Utils {
                 obj.common.custom[instanceId].smartName.byON = byON;
             } else {
                 obj.common.smartName = obj.common.smartName || {};
-                // @ts-ignore
                 obj.common.smartName.byON = byON;
             }
         }
@@ -956,7 +946,7 @@ class Utils {
                             delete obj.common.custom[instanceId].uk;
                             delete obj.common.custom[instanceId]['zh-cn'];
                         }
-                        // @ts-ignore
+                        // @ts-expect-error
                     } else if (obj.common.smartName && (obj.common.smartName as SmartName).byON !== undefined) {
                         delete obj.common.smartName.en;
                         delete obj.common.smartName.de;
@@ -970,7 +960,6 @@ class Utils {
                         delete obj.common.smartName.uk;
                         delete obj.common.smartName['zh-cn'];
                     } else {
-                        // @ts-ignore
                         obj.common.smartName = null;
                     }
                 }
@@ -991,7 +980,6 @@ class Utils {
             obj.common.custom[instanceId] = obj.common.custom[instanceId] || {};
             obj.common.custom[instanceId].smartName = false;
         } else {
-            // @ts-ignore
             obj.common.smartName = false;
         }
     }
@@ -1583,14 +1571,12 @@ class Utils {
 
     /**
      * Convert quality code into text
-     * @param {number} quality code
-     * @returns {array<string>} lines that decode quality
+     * @returns lines that decode quality
      */
-    static quality2text(quality: number): string[] {
+    static quality2text(quality: ioBroker.STATE_QUALITY[keyof ioBroker.STATE_QUALITY]): string[] {
         // eslint-disable-next-line no-bitwise
         const custom = quality & 0xFFFF0000;
-        // @ts-ignore
-        const text = QUALITY_BITS[quality];
+        const text: string = QUALITY_BITS[quality];
         let result;
         if (text) {
             result = [text];
@@ -1684,7 +1670,6 @@ class Utils {
      */
     static detectMimeType(base64: string): string | null {
         const signature = Object.keys(SIGNATURES).find(s => base64.startsWith(s));
-        // @ts-ignore
         return signature ? SIGNATURES[signature] : null;
     }
 

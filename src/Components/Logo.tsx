@@ -50,7 +50,7 @@ class Logo extends React.Component<LogoProps> {
         if (f) {
             const r = new window.FileReader();
             r.onload = () => {
-                // @ts-ignore
+                // @ts-expect-error I don't know how to fix this
                 const contents = target.result as string;
                 try {
                     const json = JSON.parse(contents);

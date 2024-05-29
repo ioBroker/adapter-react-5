@@ -266,7 +266,7 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
                 </Button>
                 <Button
                     id={`ar_dialog_selectid_cancel_${this.props.dialogName || ''}`}
-                    // @ts-expect-error
+                    // @ts-expect-error grey is valid color
                     color="grey"
                     variant="contained"
                     onClick={() => this.handleCancel()}

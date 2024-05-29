@@ -100,7 +100,7 @@ class DialogComplexCron extends React.Component<DialogCronProps, DialogCronState
             </DialogContent>
             <DialogActions>
                 {!!this.props.clearButton && <Button
-                    // @ts-expect-error
+                    // @ts-expect-error grey is valid color
                     color="grey"
                     variant="contained"
                     onClick={() => this.handleClear()}
@@ -117,7 +117,7 @@ class DialogComplexCron extends React.Component<DialogCronProps, DialogCronState
                     {this.props.ok || I18n.t('ra_Ok')}
                 </Button>
                 <Button
-                    // @ts-expect-error
+                    // @ts-expect-error grey is valid color
                     color="grey"
                     variant="contained"
                     onClick={() => this.handleCancel()}

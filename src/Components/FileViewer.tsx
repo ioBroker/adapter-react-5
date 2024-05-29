@@ -173,8 +173,7 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
                         }
                     }
 
-                    // @ts-expect-error I don't know how to fix it
-                    this.setState(newState);
+                    this.setState(newState as FileViewerState);
                 })
                 .catch(e => window.alert(`Cannot read file: ${e}`));
         }
@@ -255,8 +254,7 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
             }
             return <Icon
                 onError={e => {
-                    // @ts-ignore-error to check
-                    e.target.onerror = null;
+                    (e.target as HTMLImageElement).onerror = null;
                     this.setState({ imgError: true });
                 }}
                 className={Utils.clsx(this.props.classes.img, this.props.getClassBackgroundImage())}

@@ -175,7 +175,7 @@ class DialogCron extends React.Component<DialogCronProps, DialogCronState> {
                 <Button
                     variant="contained"
                     onClick={() => this.handleCancel()}
-                    // @ts-expect-error grey is allowed color
+                    // @ts-expect-error grey is valid color
                     color="grey"
                     startIcon={<IconCancel />}
                 >

@@ -670,6 +670,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added better typing
+
 ### 5.0.0 (2024-05-29)
 * (bluefox) Types are now exported
 * (bluefox) Translator renamed to Translate
