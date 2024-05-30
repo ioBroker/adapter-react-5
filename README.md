@@ -662,6 +662,12 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 - Replace all `socket.log.error('text')` to `socket.log('text', 'error')`
 - Add to App.js `import { AdminConnection } from '@iobroker/adapter-react-v5';` and `super(props, { Connection: AdminConnection });` if run in admin
 
+## Migration from adapter-react-v5@4.x to adapter-react-v5@5.x
+- `Theme` is renamed to IobTheme. It is an object with classes inside. `Theme` is still inside and it same as mui `createTheme`.
+- adapter-react-v5 has all types exported. So you can use `import { type IobTheme, Theme } from '@iobroker/adapter-react-v5';` and `const theme: IobTheme = Theme('light');`
+- Json-Config is now an external package and must be included as dependency separately.
+- Use type `Translate` for `t(word: string, ...args: any[]) => string`
+
 ## Warning
 `react-inlinesvg@4.0.5` cannot be used. Use `react-inlinesvg@4.0.3` instead.  
 <!--
@@ -672,6 +678,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 ## Changelog
 ### 5.0.1 (2024-05-29)
 * (bluefox) Added better typing
+* (bluefox) Json-Config is now a separate package and must be installed additionally 
 
 ### 5.0.0 (2024-05-29)
 * (bluefox) Types are now exported

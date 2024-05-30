@@ -306,7 +306,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                             instanceObj?.common &&
                             instanceObj.common.name &&
                             instanceObj.common.version &&
-                            // @ts-expect-error will be extended in js-controller TODO: this is redundant to state `${this.instanceId}.plugins.sentry.enabled`, remove this in future when admin sets the state correctly
+                            // @ts-expect-error will be extended in js-controller TODO: (BF: 2024.05.30) this is redundant to state `${this.instanceId}.plugins.sentry.enabled`, remove this in future when admin sets the state correctly
                             !instanceObj.common.disableDataReporting &&
                                 window.location.host !== 'localhost:3000';
 
@@ -412,8 +412,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                 I18n.setLanguage(this.socket.systemLang);
             }
 
-            // @ts-expect-error will be fixed in js-controller
-            if (this._systemConfig?.expertMode !== !!obj?.common?.expertMode) {
+            if (this._systemConfig?.expertMode !== !!(obj as ioBroker.SystemConfigObject)?.common?.expertMode) {
                 this._systemConfig = (obj as ioBroker.SystemConfigObject)?.common || ({} as ioBroker.SystemConfigCommon);
                 this.setState({ expertMode: this.getExpertMode() });
             } else {
@@ -566,10 +565,8 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     /**
      * Get current expert mode
-     * @returns {boolean}
      */
-    getExpertMode() {
-        // @ts-expect-error will be fixed in js-controller
+    getExpertMode(): boolean {
         return window.sessionStorage.getItem('App.expertMode') === 'true' || !!this._systemConfig?.expertMode;
     }
 
