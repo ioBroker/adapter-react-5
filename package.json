@@ -41,7 +41,7 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@iobroker/socket-client": "^2.4.14",
-    "@iobroker/types": "^6.0.1-alpha.0-20240530-b38e01746",
+    "@iobroker/types": "^6.0.1-alpha.0-20240531-b57a29404",
     "@iobroker/js-controller-common": "^6.0.1-alpha.0-20240530-b38e01746",
     "@iobroker/js-controller-common-db": "^6.0.1-alpha.0-20240530-b38e01746",
     "@mui/icons-material": "^5.15.19",
