@@ -43,7 +43,7 @@
     "@iobroker/socket-client": "^2.4.14",
     "@iobroker/types": "^6.0.1-alpha.0-20240530-b38e01746",
     "@iobroker/js-controller-common": "^6.0.1-alpha.0-20240531-b57a29404",
-    "@iobroker/js-controller-common-db": "^6.0.1-alpha.0-20240530-b38e01746",
+    "@iobroker/js-controller-common-db": "^6.0.1-alpha.0-20240603-3deca26fa",
     "@mui/icons-material": "^5.15.19",
     "@mui/material": "5.14.14",
     "@mui/styles": "5.14.14",
