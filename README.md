@@ -676,7 +676,7 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 5.0.3 (2024-06-06)
 * (bluefox) Added better typing
 
 ### 5.0.2 (2024-05-30)
