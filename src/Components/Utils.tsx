@@ -1040,7 +1040,7 @@ class Utils {
      * @param themeType theme type
      * @param invert dark theme has light color in control or light theme has light color in control
      */
-    static getInvertedColor(color: string, themeType?: string, invert?: boolean): string | undefined {
+    static getInvertedColor(color: string, themeType?: ThemeType, invert?: boolean): string | undefined {
         if (!color) {
             return undefined;
         }

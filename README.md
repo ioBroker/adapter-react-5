@@ -676,6 +676,9 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added better typing
+
 ### 5.0.2 (2024-05-30)
 * (bluefox) Added better typing
 * (bluefox) Json-Config is now a separate package and must be installed additionally
