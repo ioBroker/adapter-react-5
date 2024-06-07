@@ -40,7 +40,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
-    "@iobroker/socket-client": "^2.4.17",
+    "@iobroker/socket-client": "^2.4.18",
     "@iobroker/types": "^6.0.1-alpha.0-20240603-8378eb65c",
     "@iobroker/js-controller-common": "^6.0.1-alpha.0-20240603-8378eb65c",
     "@iobroker/js-controller-common-db": "^6.0.1-alpha.0-20240603-8378eb65c",
