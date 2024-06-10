@@ -3,7 +3,7 @@
  *
  * MIT License
  *
- ***/
+ * */
 
 declare global {
     interface Window {
@@ -23,7 +23,7 @@ type I18nDictionary = {
     [lang in ioBroker.Languages]?: I18nOneLanguageDictionary;
 };
 
-type I18nWordsWithPrefix = I18nDictionary & { prefix?: string; };
+type I18nWordsWithPrefix = I18nDictionary & { prefix?: string };
 
 /**
  * Translation string management.
@@ -104,12 +104,10 @@ class I18n {
                             const languageDictionary: I18nOneLanguageDictionary | undefined = I18n.translations[_lang];
                             if (!languageDictionary) {
                                 console.warn(`Used unknown language: ${_lang}`);
-                            } else {
-                                if (!languageDictionary[word]) {
-                                    languageDictionary[word] = _word[_lang];
-                                } else if (languageDictionary[word] !== _word[_lang]) {
-                                    console.warn(`Translation for word "${word}" in "${_lang}" was ignored: existing = "${languageDictionary[word]}", new = ${_word[_lang]}`);
-                                }
+                            } else if (!languageDictionary[word]) {
+                                languageDictionary[word] = _word[_lang];
+                            } else if (languageDictionary[word] !== _word[_lang]) {
+                                console.warn(`Translation for word "${word}" in "${_lang}" was ignored: existing = "${languageDictionary[word]}", new = ${_word[_lang]}`);
                             }
                         });
                     });

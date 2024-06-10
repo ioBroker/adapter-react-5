@@ -112,7 +112,7 @@ interface IconProps {
 const REMOTE_SERVER = window.location.hostname.includes('iobroker.in');
 const REMOTE_PREFIX = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
 
-const Icon = (props: IconProps) => {
+export default function Icon(props: IconProps) {
     if (props.src) {
         if (typeof props.src === 'string') {
             if (props.src.length < 3) {
@@ -171,5 +171,3 @@ const Icon = (props: IconProps) => {
     }
     return null;
 }
-
-export default Icon;

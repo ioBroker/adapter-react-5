@@ -76,7 +76,7 @@ const MONTHS = [
 
 // 5-7,9-11 => [5,6,7,9,10,11]
 function convertMinusIntoArray(value: string | false | undefined, max: number): number[] {
-    let result: number[] = [];
+    const result: number[] = [];
 
     if (value === '*') {
         if (max === 24 || max === 60 || max === 7) {
@@ -181,7 +181,7 @@ interface ComplexCronProps {
     classes: Record<string, any>;
 }
 
-type CronModes = 'every' | 'everyN' | 'specific';
+// type CronModes = 'every' | 'everyN' | 'specific';
 
 interface ComplexCronState {
     extended: boolean;
@@ -238,7 +238,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                 dates: cronParts[3] || '*',
                 months: cronParts[4] || '*',
                 dow: cronParts[5] || '*',
-            }
+            };
         } else {
             options = {
                 seconds: false,
@@ -265,13 +265,6 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
         if (cron !== this.state.cron) {
             this.setState({ cron }, () =>
                 this.props.onChange && this.props.onChange(this.state.cron));
-        }
-    }
-
-    onChange(cron: string) {
-        if (cron !== this.state.cron) {
-            this.setState({ cron });
-            this.props.onChange && this.props.onChange(cron);
         }
     }
 
@@ -357,7 +350,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
     }
 
     getPeriodsTab(type: CronNames, max: number): React.JSX.Element | null {
-        let value = this.state[type];
+        const value = this.state[type];
         let every = value === '*';
         let everyN = value === undefined || value === null ? false : value.toString().includes('/');
         let select;
@@ -411,7 +404,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                 key="interval"
                 label={I18n.t(`sc_${type}`)}
                 value={valueNumber}
-                inputProps={{ min: 1, max: max }}
+                inputProps={{ min: 1, max }}
                 onChange={e => {
                     // @ts-expect-error is allowed
                     this.setState({ [type]: `*/${e.target.value}` }, () => this.recalcCron());
@@ -455,26 +448,24 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                 this.setState({ modes }, () =>
                     this.recalcCron());
             }
-        } else {
-            if (attr === 'seconds') {
-                this.setState({ seconds: value }, () =>
-                    this.recalcCron());
-            } else if (attr === 'minutes') {
-                this.setState({ minutes: value }, () =>
-                    this.recalcCron());
-            } else if (attr === 'hours') {
-                this.setState({ hours: value }, () =>
-                    this.recalcCron());
-            } else if (attr === 'dates') {
-                this.setState({ dates: value }, () =>
-                    this.recalcCron());
-            } else if (attr === 'months') {
-                this.setState({ months: value }, () =>
-                    this.recalcCron());
-            } else if (attr === 'dow') {
-                this.setState({ dow: value }, () =>
-                    this.recalcCron());
-            }
+        } else if (attr === 'seconds') {
+            this.setState({ seconds: value }, () =>
+                this.recalcCron());
+        } else if (attr === 'minutes') {
+            this.setState({ minutes: value }, () =>
+                this.recalcCron());
+        } else if (attr === 'hours') {
+            this.setState({ hours: value }, () =>
+                this.recalcCron());
+        } else if (attr === 'dates') {
+            this.setState({ dates: value }, () =>
+                this.recalcCron());
+        } else if (attr === 'months') {
+            this.setState({ months: value }, () =>
+                this.recalcCron());
+        } else if (attr === 'dow') {
+            this.setState({ dow: value }, () =>
+                this.recalcCron());
         }
     }
 

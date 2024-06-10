@@ -116,7 +116,7 @@ interface ColorPickerProps {
     /** The CSS class name. */
     className?: string;
     /** Open the color picker above the field? */
-    openAbove?: boolean;
+    // openAbove?: boolean;
     customPalette?: string[];
     noInputField?: boolean;
     barWidth?: number;
@@ -294,7 +294,7 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
                             picker: {
                                 backgroundColor: '#112233',
                             },
-                        }
+                        },
                     }}
                 />
                 {color && this.props.noInputField ? <IconButton className={this.props.classes.closeButton} onClick={() => this.handleChange('')}>

@@ -3,7 +3,7 @@
  *
  * MIT License
  *
- **/
+ * */
 import React, { useEffect } from 'react';
 
 import { ThemeType, ThemeName } from '../../types';
@@ -113,7 +113,6 @@ const ptStyles = `
     }
 }
 `;
-
 
 interface LoaderPTProps {
     /** The size in pixels of this loader. */

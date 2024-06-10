@@ -3,7 +3,7 @@
  *
  * MIT License
  *
- **/
+ * */
 import React from 'react';
 import { PROGRESS, Connection, AdminConnection } from '@iobroker/socket-client';
 import * as Sentry from '@sentry/browser';
@@ -30,6 +30,24 @@ import {
     IobTheme,
     Width,
 } from './types';
+
+declare global {
+    /** If config has been changed */
+    // eslint-disable-next-line no-var
+    var changed: boolean;
+
+    interface Window {
+        io: any;
+        SocketClient: any;
+        adapterName: undefined | string;
+        socketUrl: undefined | string;
+        oldAlert: any;
+        changed: boolean;
+        $iframeDialog: {
+            close?: () => void;
+        };
+    }
+}
 
 // import './index.css';
 const cssStyle = `
@@ -83,23 +101,6 @@ body {
 }
 `;
 
-declare global {
-    /** If config has been changed */
-    var changed: boolean;
-
-    interface Window {
-        io: any;
-        SocketClient: any;
-        adapterName: undefined | string;
-        socketUrl: undefined | string;
-        oldAlert: any;
-        changed: boolean;
-        $iframeDialog: {
-            close?: () => void
-        };
-    }
-}
-
 class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extends GenericAppState = GenericAppState> extends Router<TProps, TState> {
     protected socket: AdminConnection;
 
@@ -130,7 +131,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     private sentryInited: boolean = false;
 
-    private resizeTimer: ReturnType<typeof setTimeout> | null= null;
+    private resizeTimer: ReturnType<typeof setTimeout> | null = null;
 
     constructor(props: TProps, settings?: GenericAppSettings) {
         const ConnectionClass = (props.Connection || settings?.Connection || Connection) as unknown as typeof AdminConnection;
@@ -225,13 +226,13 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
         if (settings && settings.translations) {
             Object.keys(settings.translations).forEach(lang => {
                 if (settings.translations) {
-                    translations[lang as ioBroker.Languages] = Object.assign(translations[lang as ioBroker.Languages], settings.translations[lang as ioBroker.Languages] || {})
+                    translations[lang as ioBroker.Languages] = Object.assign(translations[lang as ioBroker.Languages], settings.translations[lang as ioBroker.Languages] || {});
                 }
             });
         } else if (props.translations) {
             Object.keys(props.translations).forEach(lang => {
                 if (props.translations) {
-                    translations[lang as ioBroker.Languages] = Object.assign(translations[lang as ioBroker.Languages], props.translations[lang as ioBroker.Languages] || {})
+                    translations[lang as ioBroker.Languages] = Object.assign(translations[lang as ioBroker.Languages], props.translations[lang as ioBroker.Languages] || {});
                 }
             });
         }
@@ -294,11 +295,11 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                         this._systemConfig = obj?.common || ({} as ioBroker.SystemConfigCommon);
                         return this.socket.getObject(this.instanceId);
                     })
-                    .then(async (obj) => {
+                    .then(async obj => {
                         let waitPromise;
                         const instanceObj: ioBroker.InstanceObject | null | undefined = obj as ioBroker.InstanceObject | null | undefined;
 
-                        const sentryPluginEnabled = (await this.socket.getState(`${this.instanceId}.plugins.sentry.enabled`))?.val
+                        const sentryPluginEnabled = (await this.socket.getState(`${this.instanceId}.plugins.sentry.enabled`))?.val;
 
                         const sentryEnabled =
                             sentryPluginEnabled !== false &&
@@ -322,7 +323,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                                 ],
                             });
 
-                            console.log('Sentry initialized')
+                            console.log('Sentry initialized');
                         }
 
                         // read UUID and init sentry with it.
@@ -458,6 +459,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
             } else if (message.data === 'updateExpertMode') {
                 this.onToggleExpertMode && this.onToggleExpertMode(this.getExpertMode());
             } else if (message.data !== 'chartReady') { // if not "echart ready" message
+                // eslint-disable-next-line no-console
                 console.debug(`Received unknown message: "${JSON.stringify(message.data)}". May be it will be processed later`);
             }
         }
@@ -518,7 +520,6 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
         return currentTheme.palette.mode;
     }
 
-
     onThemeChanged(newThemeName: string) {
 
     }
@@ -529,8 +530,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     /**
      * Changes the current theme
-     * @param newThemeName Theme name
-     **/
+     * */
     toggleTheme(newThemeName?: ThemeName) {
         const themeName = this.state.themeName;
 
@@ -584,6 +584,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
         let result = '';
         if (this._secret) {
             for (let i = 0; i < value.length; i++) {
+                // eslint-disable-next-line no-bitwise
                 result += String.fromCharCode(this._secret[i % this._secret.length].charCodeAt(0) ^ value.charCodeAt(i));
             }
         }
@@ -597,6 +598,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
         let result = '';
         if (this._secret) {
             for (let i = 0; i < value.length; i++) {
+                // eslint-disable-next-line no-bitwise
                 result += String.fromCharCode(this._secret[i % this._secret.length].charCodeAt(0) ^ value.charCodeAt(i));
             }
         }
@@ -677,13 +679,13 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
     async getIpAddresses(host: string): Promise<{ name: string; address: string; family: 'ipv4' | 'ipv6' }[]> {
         const ips = await this.socket.getHostByIp(host || this.common?.host || '');
         // translate names
-        const ip4_0 = ips.find(ip => ip.address === '0.0.0.0');
-        if (ip4_0) {
-            ip4_0.name = `[IPv4] 0.0.0.0 - ${I18n.t('ra_Listen on all IPs')}`
+        const ip4 = ips.find(ip => ip.address === '0.0.0.0');
+        if (ip4) {
+            ip4.name = `[IPv4] 0.0.0.0 - ${I18n.t('ra_Listen on all IPs')}`;
         }
-        const ip6_0 = ips.find(ip => ip.address === '::');
-        if (ip6_0) {
-            ip6_0.name = `[IPv4] :: - ${I18n.t('ra_Listen on all IPs')}`
+        const ip6 = ips.find(ip => ip.address === '::');
+        if (ip6) {
+            ip6.name = `[IPv4] :: - ${I18n.t('ra_Listen on all IPs')}`;
         }
         return ips;
     }

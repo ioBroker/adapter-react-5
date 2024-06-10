@@ -42,12 +42,12 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
 });
 
 interface CustomModalProps {
-    icon?: any,
+    icon?: any;
     open: boolean;
     onClose: () => void;
     children: React.JSX.Element | null;
-    titleButtonClose?: string,
-    titleButtonApply?: string,
+    titleButtonClose?: string;
+    titleButtonApply?: string;
     onApply: (result: string) => void;
     fullWidth?: boolean;
     maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -146,7 +146,6 @@ const CustomModal = (props: CustomModalProps) => {
                 {I18n.t(titleButtonApply || 'ra_Ok')}
             </Button>}
             <Button
-                // @ts-expect-error grey is valid color
                 color="grey"
                 onClick={onClose}
                 disabled={progress}

@@ -3,7 +3,7 @@
  *
  * MIT License
  *
- **/
+ * */
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React, { Component } from 'react';
 
@@ -27,21 +27,10 @@ interface DialogErrorProps {
     text: string | React.JSX.Element;
     /* Close handler. */
     onClose?: () => void;
-    /* Optional style classes */
-    classes?: {
-        titleBackground?: string;
-        titleColor?: string;
-    };
     /* if the dialog must be fill sized */
     fullWidth?: boolean;
 }
 
-/**
- * @property title The dialog title; default: Error (translated)
- * @property text The dialog text.
- * @property onClose Close handler.
- * @property classes The styling class names.
- */
 class DialogError extends Component<DialogErrorProps> {
     handleOk() {
         this.props.onClose && this.props.onClose();

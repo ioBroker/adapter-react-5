@@ -72,7 +72,10 @@ import IconNoIcon from '../icons/IconNoIcon';
 import Icon from './Icon';
 
 import withWidth from './withWidth';
-import { ThemeName, ThemeType, Translate, IobTheme } from '../types';
+import {
+    ThemeName, ThemeType,
+    Translate, IobTheme,
+} from '../types';
 
 import FileViewer, { EXTENSIONS } from './FileViewer';
 
@@ -782,7 +785,6 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
         newFoldersNotNull: Folders,
         cb: (folders: Folders) => void,
     ): void {
-
         if (!foldersList?.length) {
             cb(newFoldersNotNull);
         } else {
@@ -1256,23 +1258,23 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                 <div className={this.props.classes[`itemDownloadEmpty${this.state.viewType}`]} /> : null}
 
             {this.state.viewType === TABLE &&
-            this.props.allowDelete &&
-            this.state.folders[item.id] &&
-            this.state.folders[item.id].length ? <IconButton
-                aria-label="delete"
-                onClick={e => {
-                    e.stopPropagation();
-                    if (this.suppressDeleteConfirm > Date.now()) {
-                        this.deleteItem(item.id);
-                    } else {
-                        this.setState({ deleteItem: item.id });
-                    }
-                }}
-                className={this.props.classes[`itemDeleteButton${this.state.viewType}`]}
-                size="large"
-            >
-                <DeleteIcon fontSize="small" />
-            </IconButton> :
+                this.props.allowDelete &&
+                this.state.folders[item.id] &&
+                this.state.folders[item.id].length ? <IconButton
+                    aria-label="delete"
+                    onClick={e => {
+                        e.stopPropagation();
+                        if (this.suppressDeleteConfirm > Date.now()) {
+                            this.deleteItem(item.id);
+                        } else {
+                            this.setState({ deleteItem: item.id });
+                        }
+                    }}
+                    className={this.props.classes[`itemDeleteButton${this.state.viewType}`]}
+                    size="large"
+                >
+                    <DeleteIcon fontSize="small" />
+                </IconButton> :
                 this.state.viewType === TABLE && this.props.allowDelete ?
                     <div className={this.props.classes[`itemDeleteButton${this.state.viewType}`]} /> : null}
         </div>;
@@ -1518,24 +1520,25 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             this.props.allowDelete &&
             item.id !== 'vis.0/' &&
             item.id !== 'vis-2.0/' &&
-            item.id !== USER_DATA ? <IconButton
-                aria-label="delete"
-                onClick={e => {
-                    e.stopPropagation();
-                    if (this.suppressDeleteConfirm > Date.now()) {
-                        this.deleteItem(item.id);
-                    } else {
-                        this.setState({ deleteItem: item.id });
-                    }
-                }}
-                className={this.props.classes[`itemDeleteButton${this.state.viewType}`]}
-                size="large"
-            >
-                <DeleteIcon fontSize="small" />
-            </IconButton>
-            :
-            (this.state.viewType === TABLE && this.props.allowDelete ?
-                <div className={this.props.classes[`itemDeleteButton${this.state.viewType}`]} /> : null)}
+            item.id !== USER_DATA ?
+                <IconButton
+                    aria-label="delete"
+                    onClick={e => {
+                        e.stopPropagation();
+                        if (this.suppressDeleteConfirm > Date.now()) {
+                            this.deleteItem(item.id);
+                        } else {
+                            this.setState({ deleteItem: item.id });
+                        }
+                    }}
+                    className={this.props.classes[`itemDeleteButton${this.state.viewType}`]}
+                    size="large"
+                >
+                    <DeleteIcon fontSize="small" />
+                </IconButton>
+                :
+                (this.state.viewType === TABLE && this.props.allowDelete ?
+                    <div className={this.props.classes[`itemDeleteButton${this.state.viewType}`]} /> : null)}
         </div>;
     }
 
@@ -2126,7 +2129,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                         this.setState(newState as FileBrowserState, () =>
                             setTimeout(() => {
                                 (this.browseFolders([...this.state.expanded], folders) as Promise<Folders>)
-                                    .then(_folders => this.setState({ folders: _folders }))
+                                    .then(_folders => this.setState({ folders: _folders }));
                             }, 200));
                     } else {
                         // @ts-expect-error fix later
@@ -2151,7 +2154,6 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        // @ts-expect-error grey is valid color
                         color="grey"
                         variant="contained"
                         onClick={() => {
@@ -2172,7 +2174,6 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                     <Button
                         variant="contained"
                         onClick={() => this.setState({ deleteItem: '' })}
-                        // @ts-expect-error grey is valid color
                         color="grey"
                     >
                         {this.props.t('ra_Cancel')}

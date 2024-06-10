@@ -26,7 +26,7 @@ import type { Connection } from '@iobroker/socket-client';
 import IconNoIcon from '../icons/IconNoIcon';
 import withWidth from './withWidth';
 import Utils from './Utils';
-import { Translate, ThemeType } from '../types';
+import { Translate } from '../types';
 import Icon from './Icon';
 // File viewer in adapter-react does not use ace editor
 // import * as ace from 'ace-builds';
@@ -85,10 +85,10 @@ interface FileViewerProps {
     onClose: () => void;
     /** The URL (file path) to the file to be displayed. */
     href: string;
-    formatEditFile?: string;
+    // formatEditFile?: string;
     socket: Connection;
     setStateBackgroundImage: () => void;
-    themeType: ThemeType;
+    // themeType: ThemeType;
     getClassBackgroundImage: () => string | null;
     classes: Record<string, string>;
     /** Flag is the js-controller support subscribe on file */
@@ -136,10 +136,10 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
             const name = parts.splice(1).join('/');
 
             this.props.socket.readFile(adapter, name)
-                .then((data: { data: Buffer; type: string } | { file: string; mimeType: string; }) => {
+                .then((data: { data: Buffer; type: string } | { file: string; mimeType: string }) => {
                     let fileData: string = '';
-                    if ((data as { file: string; mimeType: string; }).file !== undefined) {
-                        fileData = (data as { file: string; mimeType: string; }).file;
+                    if ((data as { file: string; mimeType: string }).file !== undefined) {
+                        fileData = (data as { file: string; mimeType: string }).file;
                     }
 
                     const newState: Partial<FileViewerState> = { copyPossible: this.state.copyPossible, ext: this.state.ext };
@@ -215,6 +215,7 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
         }
     };
 
+    // eslint-disable-next-line class-methods-use-this
     writeFile64 = () => {
         /*
         // File viewer in adapter-react does not support write
@@ -274,7 +275,6 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
                 variant="standard"
                 className={this.props.classes.textarea}
                 multiline
-                inputProps={{ readOnly: !this.state.editing }}
                 value={this.state.editingValue || this.state.code || this.state.text}
                 // onChange={newValue => this.setState({ editingValue: newValue, changed: true })}
                 InputProps={{ readOnly: !this.state.editing }}
@@ -311,7 +311,6 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
             <DialogActions>
                 {this.state.copyPossible ?
                     <Button
-                        // @ts-expect-error grey is valid color
                         color="grey"
                         onClick={e => {
                             e.stopPropagation();
@@ -324,7 +323,6 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
                     </Button> : null}
                 {this.state.editing ?
                     <Button
-                        // @ts-expect-error grey is valid color
                         color="grey"
                         disabled={this.state.editingValue === this.state.code || this.state.editingValue === this.state.text}
                         variant="contained"

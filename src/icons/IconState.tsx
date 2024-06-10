@@ -1,7 +1,6 @@
 import React from 'react';
 import type IconProps from './IconProps';
 
-
 const IconState = (props: IconProps) => <svg
     xmlns="http://www.w3.org/2000/svg"
     onClick={e => props.onClick && props.onClick(e)}

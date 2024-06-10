@@ -3,7 +3,7 @@
  *
  * MIT License
  *
- **/
+ * */
 import React, { useEffect } from 'react';
 import { ThemeName, ThemeType } from '../types';
 // import './loader.css'
@@ -12,7 +12,7 @@ declare global {
     interface Window {
         loadingBackgroundImage: undefined | string;
         loadingBackgroundColor: undefined | string;
-        loadingHideLogo: undefined | 'true'
+        loadingHideLogo: undefined | 'true';
     }
 }
 
@@ -246,7 +246,7 @@ interface LoaderProps {
     size?: number;
     /** The chosen theme type. */
     themeType?: ThemeType;
-    /** Theme name*/
+    /** Theme name */
     themeName?: ThemeName;
     /** @deprecated Theme name. use themeName instead */
     theme?: ThemeName;

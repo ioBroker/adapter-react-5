@@ -75,6 +75,41 @@ export interface GenericAppSettings extends GenericAppProps {
     doNotLoadAllObjects?: boolean;
 }
 
+interface Palette extends MuiPalette {
+    mode: ThemeType;
+    expert: string;
+    grey: {
+        main: string;
+        dark: string;
+        50: string;
+        100: string;
+        200: string;
+        300: string;
+        400: string;
+        500: string;
+        600: string;
+        700: string;
+        800: string;
+        900: string;
+        A100: string;
+        A200: string;
+        A400: string;
+        A700: string;
+    };
+}
+
+export interface IobTheme extends MuiTheme {
+    name: ThemeName;
+    palette: Palette;
+    toolbar: React.CSSProperties;
+    saveToolbar: {
+        background: string;
+        button: React.CSSProperties;
+    };
+}
+
+export type Width = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
 export interface GenericAppState {
     loaded: boolean;
     themeType: ThemeType;
@@ -96,39 +131,4 @@ export interface GenericAppState {
     _alertType: 'info' | 'warning' | 'error' | 'success';
     _alertMessage: string | React.JSX.Element;
     common?: Record<string, any>;
-}
-
-export type Width = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-
-interface Palette extends MuiPalette {
-    mode: ThemeType;
-    expert: string;
-    grey: {
-        main: string;
-        dark: string;
-        50: string;
-        100: string;
-        200: string;
-        300: string;
-        400: string;
-        500: string;
-        600: string;
-        700: string;
-        800: string;
-        900: string;
-        A100: string;
-        A200: string;
-        A400: string;
-        A700: string;
-    }
-}
-
-export interface IobTheme extends MuiTheme {
-    name: ThemeName;
-    palette: Palette;
-    toolbar: React.CSSProperties;
-    saveToolbar: {
-        background: string;
-        button: React.CSSProperties;
-    }
 }

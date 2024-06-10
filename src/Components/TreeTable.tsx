@@ -211,7 +211,7 @@ function stableSort(
     array: Record<string, any>[],
     comparator: (a: Record<string, any>, b: Record<string, any>) => number,
 ): Record<string, any>[] {
-    const stabilizedThis: { e: Record<string, any>, i: number }[] =
+    const stabilizedThis: { e: Record<string, any>; i: number }[] =
         array.map((el, index) => ({ e: el, i: index }));
 
     stabilizedThis.sort((a, b) => {
@@ -227,7 +227,7 @@ function stableSort(
 
 interface Column {
     cellStyle?: Record<string, any>;
-    editComponent?: React.ComponentType<{ value: any, rowData: Record<string, any>, onChange: (newValue: any) => void }>;
+    editComponent?: React.ComponentType<{ value: any; rowData: Record<string, any>; onChange: (newValue: any) => void }>;
     field: string;
     headerStyle?: Record<string, any>;
     hidden?: boolean;
@@ -501,7 +501,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                 socket={this.props.socket as Connection}
                 selected={this.state.selectIdValue as string}
                 onClose={() => this.setState({ showSelectId: false })}
-                onOk={(selected /* , name*/) => {
+                onOk={(selected /* , name */) => {
                     this.setState({ showSelectId: false, selectIdValue: null });
                     this.selectCallback && this.selectCallback(selected as string);
                     this.selectCallback = null;
@@ -538,7 +538,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         </div>;
     }
 
-    renderCellNonEdit(
+    static renderCellNonEdit(
         item: Record<string, any>,
         col: Column,
     ) {
@@ -580,7 +580,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             style={col.cellStyle}
             component="th"
         >
-            {this.renderCellNonEdit(item, col)}
+            {TreeTable.renderCellNonEdit(item, col)}
         </TableCell>;
     }
 
@@ -806,7 +806,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
     }
 
     render() {
-        const col = this.props.columns.find(col => col.field === this.state.orderBy);
+        const col = this.props.columns.find(_col => _col.field === this.state.orderBy);
         if (col) {
             const lookup = col.lookup;
             const table = stableSort(this.props.data, getComparator(this.state.order, this.state.orderBy, lookup));
@@ -830,6 +830,8 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                 {this.renderSelectColorDialog()}
             </div>;
         }
+
+        return null;
     }
 }
 /*

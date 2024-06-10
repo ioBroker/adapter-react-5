@@ -73,7 +73,7 @@ function format(message: string): string {
     return message.replace(/#{\s*key\s*}/g, copyKey);
 }
 
-function copy(text: string, options?: { debug?: boolean; format?: string; message?: string; }) {
+function copy(text: string, options?: { debug?: boolean; format?: string; message?: string }) {
     let reselectPrevious;
     let range;
     let selection;
@@ -100,11 +100,8 @@ function copy(text: string, options?: { debug?: boolean; format?: string; messag
         // used to preserve spaces and line breaks
         mark.style.whiteSpace = 'pre';
         // do not inherit user-select (it may be `none`)
-        // @ts-ignore
         mark.style.webkitUserSelect = 'text';
-        // @ts-ignore
         mark.style.MozUserSelect = 'text';
-        // @ts-ignore
         mark.style.msUserSelect = 'text';
         mark.style.userSelect = 'text';
         mark.addEventListener('copy', e => {
@@ -115,7 +112,6 @@ function copy(text: string, options?: { debug?: boolean; format?: string; messag
                     debug && console.warn('unable to use e.clipboardData');
                     debug && console.warn('trying IE specific stuff');
                     (window as any).clipboardData?.clearData();
-                    // @ts-ignore
                     const _format = clipboardToIE11Formatting[options.format] || clipboardToIE11Formatting.default;
                     (window as any).clipboardData?.setData(_format, text);
                 } else { // all other browsers

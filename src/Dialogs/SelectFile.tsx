@@ -253,7 +253,6 @@ class DialogSelectFile extends React.Component<DialogSelectFileProps, DialogSele
                     {this.props.ok || I18n.t('ra_Ok')}
                 </Button>
                 <Button
-                    // @ts-expect-error grey is valid color
                     color="grey"
                     variant="contained"
                     onClick={() => this.handleCancel()}

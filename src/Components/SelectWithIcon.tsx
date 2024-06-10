@@ -24,22 +24,22 @@ const styles: Record<string, any> = {
 };
 
 interface SelectWithIconProps {
-    t: Translate,
-    lang: ioBroker.Languages,
-    themeType: ThemeType,
-    value?: string,
-    onChange: (id: string) => void,
-    disabled?: boolean,
-    list?: ioBroker.Object[] | Record<string, ioBroker.Object>, // one of "list"(Array) or "options"(object) is required
-    options?: Record<string, any>, // one of "list"(Array) or "options"(object) is required
-    different?: string | boolean,
+    t: Translate;
+    lang: ioBroker.Languages;
+    themeType: ThemeType;
+    value?: string;
+    onChange: (id: string) => void;
+    disabled?: boolean;
+    list?: ioBroker.Object[] | Record<string, ioBroker.Object>; // one of "list"(Array) or "options"(object) is required
+    options?: Record<string, any>; // one of "list"(Array) or "options"(object) is required
+    different?: string | boolean;
     label?: string;
-    fullWidth?: boolean,
+    fullWidth?: boolean;
     className?: string;
     style?: React.CSSProperties;
     removePrefix?: string;
-    allowNone?: boolean,
-    inputProps?: InputProps['inputProps'],
+    allowNone?: boolean;
+    inputProps?: InputProps['inputProps'];
     classes: Record<string, string>;
     dense?: boolean;
 }
@@ -57,6 +57,7 @@ interface SelectWithIconState {
 
 class SelectWithIcon extends Component<SelectWithIconProps, SelectWithIconState> {
     private readonly wordDifferent: string | undefined;
+
     private timeout: ReturnType<typeof setTimeout> | null = null;
 
     constructor(props: SelectWithIconProps) {
@@ -161,7 +162,7 @@ class SelectWithIcon extends Component<SelectWithIconProps, SelectWithIconState>
                         }
                     }
                     if (pos !== null) {
-                        const list = Utils.clone(this.state.list);
+                        const list: TextWithIconItem[] = Utils.clone(this.state.list) as TextWithIconItem[];
                         list.splice(pos, 1);
                         this.setState({ list }, () => this.props.onChange(el.target.value));
                         return;

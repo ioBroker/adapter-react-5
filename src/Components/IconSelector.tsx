@@ -1975,8 +1975,8 @@ interface IconSelectorProps {
     }[];
     onlyRooms?: boolean;
     onlyDevices?: boolean;
-    onSelect?: (icon: string) => void, // one of onSelect or onChange are required
-    onChange?: (icon: string) => void,
+    onSelect?: (icon: string) => void; // one of onSelect or onChange are required
+    onChange?: (icon: string) => void;
     t: Translate;
     lang: ioBroker.Languages;
 }
@@ -1985,9 +1985,9 @@ interface IconSelectorState {
     opened: boolean;
     names: string[];
     filter: string;
-    icons: string[] | null,
+    icons: string[] | null;
     loading: boolean;
-    isAnyName: boolean
+    isAnyName: boolean;
 }
 
 class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
@@ -2125,7 +2125,6 @@ class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
 
         return <>
             <Button
-                // @ts-expect-error grey is valid color
                 color="grey"
                 variant="outlined"
                 title={this.props.t('ra_Select predefined icon')}
@@ -2165,7 +2164,7 @@ class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
                                 return <Tooltip title={this.state.names[i] || ''} key={i}>
                                     <IconButton
                                         onClick={() => this.setState({ opened: false }, () => {
-                                            const onApply: ((icon: string) => void) | undefined = this.props.onSelect || this.props.onChange;
+                                            const onApply: ((_icon: string) => void) | undefined = this.props.onSelect || this.props.onChange;
                                             if (onApply) {
                                                 onApply(icon);
                                             }
@@ -2183,7 +2182,6 @@ class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        // @ts-expect-error grey is valid color
                         color="grey"
                         variant="contained"
                         onClick={() => this.setState({ opened: false })}

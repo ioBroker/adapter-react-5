@@ -45,7 +45,7 @@ class Logo extends React.Component<LogoProps> {
         if (!files || !files.length) {
             return;
         }
-        let f = files[0];
+        const f = files[0];
 
         if (f) {
             const r = new window.FileReader();
@@ -71,7 +71,7 @@ class Logo extends React.Component<LogoProps> {
         } else {
             alert('Failed to open JSON File');
         }
-    }
+    };
 
     download() {
         const result = {

@@ -55,7 +55,7 @@ interface TextWithIconItem {
 }
 
 const TextWithIcon = (props: TextWithIconProps) => {
-    let value = props.value;
+    const value = props.value;
     let item: TextWithIconItem;
     const prefix = props.removePrefix || '';
 

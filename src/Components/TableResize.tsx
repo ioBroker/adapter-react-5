@@ -3,7 +3,7 @@
  *
  * MIT License
  *
- **/
+ * */
 import React, { Component } from 'react';
 import { withStyles } from '@mui/styles';
 
@@ -65,18 +65,26 @@ interface TableResizeProps {
 
 class TableResize extends Component<TableResizeProps> {
     private readonly resizerRefTable: React.RefObject<HTMLTableElement>;
+
     private resizerActiveIndex: number | null;
+
     private resizerActiveDiv: HTMLDivElement | null;
+
     private resizerCurrentWidths: (number | 'auto')[];
 
-    private widthFilled: boolean = false
-    private installTimeout: ReturnType<typeof setTimeout> | null = null;
-    private resizerMin: number = 0;
-    private resizerMinNext: number = 0;
-    private resizerPosition: number = 0;
-    private resizerOldWidth: number = 0;
-    private resizerOldWidthNext: number = 0;
+    private widthFilled: boolean = false;
 
+    private installTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    private resizerMin: number = 0;
+
+    private resizerMinNext: number = 0;
+
+    private resizerPosition: number = 0;
+
+    private resizerOldWidth: number = 0;
+
+    private resizerOldWidthNext: number = 0;
 
     constructor(props: TableResizeProps) {
         super(props);

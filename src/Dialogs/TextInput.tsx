@@ -93,7 +93,6 @@ function TextInput(props: TextInputProps) {
                 {props.applyText || I18n.t('ra_Ok')}
             </Button>
             <Button
-                // @ts-expect-error grey is valid color
                 color="grey"
                 variant="contained"
                 onClick={() => props.onClose(null)}

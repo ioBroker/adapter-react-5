@@ -62,6 +62,7 @@ class Image extends Component<ImageProps, ImageState> {
     private svg: React.JSX.Element | null;
 
     static REMOTE_SERVER: boolean = window.location.hostname.includes('iobroker.in');
+
     static REMOTE_PREFIX: string = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
 
     constructor(props: ImageProps) {
@@ -103,7 +104,7 @@ class Image extends Component<ImageProps, ImageState> {
         return changed ? newState : null;
     }
 
-     getSvgFromData(src: string): React.JSX.Element | null {
+    getSvgFromData(src: string): React.JSX.Element | null {
         const len = 'data:image/svg+xml;base64,';
         if (!src.startsWith(len)) {
             return null;
@@ -121,6 +122,7 @@ class Image extends Component<ImageProps, ImageState> {
                 className={this.props.className}
                 style={this.state.color ? { color: this.state.color } : {}}
                 {...svgProps}
+                // eslint-disable-next-line react/no-danger
                 dangerouslySetInnerHTML={{ __html: inner }}
             />;
         } catch (e) {
@@ -133,7 +135,7 @@ class Image extends Component<ImageProps, ImageState> {
         if (this.state.svg) {
             if (!this.state.created) {
                 setTimeout(() => {
-                    this.svg = this.state.src ? this.getSvgFromData(this.state.src) : null
+                    this.svg = this.state.src ? this.getSvgFromData(this.state.src) : null;
                     this.setState({ created: true });
                 }, 50);
             }

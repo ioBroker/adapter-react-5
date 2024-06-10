@@ -19,7 +19,7 @@ import I18n from '../i18n';
 
 // Generates cron expression
 
-const styles: Record<string, any> ={
+const styles: Record<string, any> = {
     headerID: {
         fontWeight: 'bold',
         fontStyle: 'italic',
@@ -96,7 +96,6 @@ class DialogSimpleCron extends React.Component<DialogCronProps, DialogCronState>
                 <Button
                     variant="contained"
                     onClick={() => this.handleCancel()}
-                    // @ts-expect-error grey is valid color
                     color="grey"
                     startIcon={<IconCancel />}
                 >

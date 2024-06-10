@@ -25,7 +25,7 @@ class Router<P, S> extends Component<P, S> {
     /**
      * Gets the location object.
      */
-    static getLocation(): { tab: string; dialog: string; id: string; arg: string; } {
+    static getLocation(): { tab: string; dialog: string; id: string; arg: string } {
         let hash = window.location.hash;
         hash = hash.replace(/^#/, '');
         const parts = hash.split('/').map(item => {

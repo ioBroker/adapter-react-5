@@ -38,30 +38,21 @@ interface SaveCloseButtonsProps {
     classes: Record<string, string>;
 }
 
-/**
- * @typedef {object} SaveCloseButtonsProps
- * @property {boolean} noTextOnButtons Are the buttons without text
- * @property {any} theme Theme object (from this.state.theme)
- * @property {boolean} isIFrame bottom position 0 or 38 for iFrame
- * @property {boolean} newReact is used in new react
- * @property {function} onSave on Save handler
- * @property {function} onClose on Close handler
- *
- * @extends {React.Component<SaveCloseButtonsProps>}
- */
 class SaveCloseButtons extends React.Component<SaveCloseButtonsProps> {
-    private isIFrame: boolean;
-    /**
-     * @param {SaveCloseButtonsProps} props
-     */
+    private readonly isIFrame: boolean;
+
     constructor(props: SaveCloseButtonsProps) {
         super(props);
         const newReact = props.newReact === undefined ? true : props.newReact;
 
-        try {
-            this.isIFrame = !newReact && window.self !== window.top;
-        } catch (e) {
-            this.isIFrame = !newReact;
+        if (props.isIFrame !== undefined) {
+            this.isIFrame = props.isIFrame;
+        } else {
+            try {
+                this.isIFrame = !newReact && window.self !== window.top;
+            } catch (e) {
+                this.isIFrame = !newReact;
+            }
         }
     }
 

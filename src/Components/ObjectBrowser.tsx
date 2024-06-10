@@ -107,6 +107,12 @@ import TabContainer from './TabContainer';
 import TabContent from './TabContent';
 import TabHeader from './TabHeader';
 
+declare module '@mui/material/Button' {
+    interface ButtonPropsColorOverrides {
+        grey: true;
+    }
+}
+
 declare global {
     interface Window {
         sparkline: {
@@ -215,7 +221,6 @@ export interface TreeItemData {
     // language in what the rooms and functions where translated
     lang?: ioBroker.Languages;
     state?: {
-        valFullRx?: React.JSX.Element[] | null;
         valTextRx?: React.JSX.Element[] | null;
         style?: React.CSSProperties;
     };
@@ -249,6 +254,7 @@ interface FormatValueOptions {
     texts: Record<string, string>;
     dateFormat: string;
     isFloatComma: boolean;
+    full?: boolean;
 }
 
 export interface TreeItem {
@@ -624,6 +630,10 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
         // overflow: 'hidden',
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',
+    },
+    cellValueTooltipImage: {
+        width: 100,
+        height: 'auto',
     },
     cellValueTooltipBoth: {
         width: 220,
@@ -1851,12 +1861,14 @@ function formatValue(
         /** no break */
         nbr?: boolean;
     }[];
+    fileViewer: 'image' | 'text' | 'json' | 'html' | 'pdf' | 'audio' | 'video';
 } {
     const {
         dateFormat, state, isFloatComma, texts, obj,
     } = options;
     const states = Utils.getStates(obj);
     const isCommon = obj.common;
+    let fileViewer: 'image' | 'text' | 'json' | 'html' | 'pdf' | 'audio' | 'video';
 
     let v: any =
         // @ts-expect-error deprecated from js-controller 6
@@ -1892,7 +1904,7 @@ function formatValue(
                 // '2000-01-01T00:00:00' => 946681200000
                 v *= 1_000; // maybe the time is in seconds (UNIX time)
             }
-            // null and undefined could not be here. See `let v = (isCommon && isCommon.type === 'file') ....` above
+            // "null" and undefined could not be here. See `let v = (isCommon && isCommon.type === 'file') ....` above
             v = v ? new Date(v).toString() : v;
         }
     } else {
@@ -1907,12 +1919,15 @@ function formatValue(
             v = JSON.stringify(v);
         } else if (type !== 'string') {
             v = v.toString();
+        } else if (v.startsWith('data:image/')) {
+            fileViewer = 'image';
         }
 
         if (typeof v !== 'string') {
             v = v.toString();
         }
     }
+
     const valText: {
         /** value as string */
         v: string;
@@ -1934,47 +1949,51 @@ function formatValue(
     if (isCommon?.unit) {
         valText.u = isCommon.unit;
     }
-    const valFull: {
+    let valFull: {
         /** label */
         t: string;
         /** value */
         v: string;
         nbr?: boolean;
-    }[] = [{ t: texts.value, v }];
+    }[];
+    if (options.full) {
+        valFull = [{ t: texts.value, v }];
 
-    if (state) {
-        if (state.ack !== undefined && state.ack !== null) {
-            valFull.push({ t: texts.ack, v: state.ack.toString() });
-        }
-        if (state.ts) {
-            valFull.push({ t: texts.ts, v: state.ts ? Utils.formatDate(new Date(state.ts), dateFormat) : '' });
-        }
-        if (state.lc) {
-            valFull.push({ t: texts.lc, v: state.lc ? Utils.formatDate(new Date(state.lc), dateFormat) : '' });
-        }
-        if (state.from) {
-            let from = state.from.toString();
-            if (from.startsWith('system.adapter.')) {
-                from = from.substring(15);
+        if (state) {
+            if (state.ack !== undefined && state.ack !== null) {
+                valFull.push({ t: texts.ack, v: state.ack.toString() });
             }
-            valFull.push({ t: texts.from, v: from });
-        }
-        if (state.user) {
-            let user = state.user.toString();
-            if (user.startsWith('system.user.')) {
-                user = user.substring(12);
+            if (state.ts) {
+                valFull.push({ t: texts.ts, v: state.ts ? Utils.formatDate(new Date(state.ts), dateFormat) : '' });
             }
-            valFull.push({ t: texts.user, v: user });
+            if (state.lc) {
+                valFull.push({ t: texts.lc, v: state.lc ? Utils.formatDate(new Date(state.lc), dateFormat) : '' });
+            }
+            if (state.from) {
+                let from = state.from.toString();
+                if (from.startsWith('system.adapter.')) {
+                    from = from.substring(15);
+                }
+                valFull.push({ t: texts.from, v: from });
+            }
+            if (state.user) {
+                let user = state.user.toString();
+                if (user.startsWith('system.user.')) {
+                    user = user.substring(12);
+                }
+                valFull.push({ t: texts.user, v: user });
+            }
+            if (state.c) {
+                valFull.push({ t: texts.c, v: state.c });
+            }
+            valFull.push({ t: texts.quality, v: Utils.quality2text(state.q || 0).join(', '), nbr: true });
         }
-        if (state.c) {
-            valFull.push({ t: texts.c, v: state.c });
-        }
-        valFull.push({ t: texts.quality, v: Utils.quality2text(state.q || 0).join(', '), nbr: true });
     }
 
     return {
         valText,
         valFull,
+        fileViewer,
     };
 }
 
@@ -2167,7 +2186,7 @@ const SCREEN_WIDTHS: ScreenWidth = {
 
 let objectsAlreadyLoaded = false;
 
-interface ObjectBrowserFilter {
+export interface ObjectBrowserFilter {
     id?: string;
     name?: string;
     room?: string;
@@ -2230,8 +2249,8 @@ interface ObjectCustomDialogProps {
     objects: Record<string, ioBroker.Object>;
     socket: Connection;
     theme: IobTheme;
-    themeName: string;
-    themeType: string;
+    themeName: ThemeName;
+    themeType: ThemeType;
     customsInstances: string[];
     objectIDs: string[];
     onClose: () => void;
@@ -2259,10 +2278,10 @@ interface ObjectBrowserValueProps {
         val: ioBroker.StateValue;
         ack: boolean;
         q: ioBroker.STATE_QUALITY[keyof ioBroker.STATE_QUALITY];
-        expire: number | undefined,
+        expire: number | undefined;
     }) => void;
     /** Configured theme */
-    themeType: string;
+    themeType: ThemeType;
     socket: Connection;
     defaultHistory: string;
     dateFormat: string;
@@ -2278,7 +2297,7 @@ interface ObjectBrowserEditObjectProps {
     obj: ioBroker.AnyObject;
     roleArray: string[];
     expertMode: boolean;
-    themeType: string;
+    themeType: ThemeType;
     aliasTab: boolean;
     onClose: (obj?: ioBroker.AnyObject) => void;
     dialogName?: string;
@@ -2334,10 +2353,10 @@ interface ObjectBrowserProps {
     objectEditOfAccessControl?: boolean; // Access Control
     /** modal add object */
     // eslint-disable-next-line no-use-before-define
-    modalNewObject?: (oBrowser: ObjectBrowser) => React.JSX.Element;
+    modalNewObject?: (oBrowser: ObjectBrowserClass) => React.JSX.Element;
     /** modal Edit Of Access Control */
     // eslint-disable-next-line no-use-before-define
-    modalEditOfAccessControl: (oBrowser: ObjectBrowser, data: TreeItemData) => React.JSX.Element;
+    modalEditOfAccessControl: (oBrowser: ObjectBrowserClass, data: TreeItemData) => React.JSX.Element;
     onObjectDelete?: (id: string, hasChildren: boolean, objectExists: boolean, childrenCount: number) => void;
     /** optional filter
      *   `{common: {custom: true}}` - show only objects with some custom settings
@@ -2434,9 +2453,10 @@ interface ObjectBrowserState {
     modalEditOfAccess?: boolean;
     modalEditOfAccessObjData?: TreeItemData;
     updateOpened?: boolean;
+    tooltipInfo: null | { el: React.JSX.Element[]; id: string };
 }
 
-class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
+export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrowserState> {
     // do not define the type as null to save the performance, so we must check it every time
     private info: TreeInfo;
 
@@ -2522,7 +2542,7 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
 
     private systemConfig: ioBroker.SystemConfigObject;
 
-    private objects: Record<string, ioBroker.Object>;
+    public objects: Record<string, ioBroker.Object>;
 
     private defaultHistory: string = '';
 
@@ -2707,6 +2727,7 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
             beautifyJsonExport: true,
             excludeSystemRepositoriesFromExport: true,
             excludeTranslations: false,
+            tooltipInfo: null,
         };
 
         this.texts = {
@@ -2965,7 +2986,7 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
         /** id to test */
         id: string,
     ): boolean {
-        return !!ObjectBrowser.#NON_EXPERT_NAMESPACES.find(saveNamespace => id.startsWith(saveNamespace));
+        return !!ObjectBrowserClass.#NON_EXPERT_NAMESPACES.find(saveNamespace => id.startsWith(saveNamespace));
     }
 
     private expandAllSelected(cb?: () => void): void {
@@ -4021,7 +4042,7 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
     private onCollapseVisible() {
         if (this.state.depth > 0) {
             const depth = this.state.depth - 1;
-            const expanded = ObjectBrowser.collapseDepth(depth, this.state.expanded);
+            const expanded = ObjectBrowserClass.collapseDepth(depth, this.state.expanded);
             this.localStorage.setItem(`${this.props.dialogName || 'App'}.objectExpanded`, JSON.stringify(expanded));
             this.setState({ depth, expanded });
         }
@@ -4289,7 +4310,6 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
             </DialogContent>
             <DialogActions>
                 {this.state.filter.expertMode || this.state.showAllExportOptions ? <Button
-                    // @ts-expect-error grey is valid color
                     color="grey"
                     variant="outlined"
                     onClick={() => this.setState({ showExportDialog: false, showAllExportOptions: false }, () =>
@@ -4306,7 +4326,6 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
                     {Object.keys(this.objects).length}
                     )
                 </Button> : <Button
-                    // @ts-expect-error grey is valid color
                     color="grey"
                     variant="outlined"
                     startIcon={<IconExpert />}
@@ -4334,7 +4353,6 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
                     )
                 </Button>
                 <Button
-                    // @ts-expect-error grey is valid color
                     color="grey"
                     variant="contained"
                     onClick={() => this.setState({ showExportDialog: false, showAllExportOptions: false })}
@@ -4928,7 +4946,7 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
                 ? this.systemConfig.common.defaultNewAcl.state
                 : this.systemConfig.common.defaultNewAcl.object);
 
-        const showEdit = this.state.filter.expertMode || ObjectBrowser.isNonExpertId(item.data.id);
+        const showEdit = this.state.filter.expertMode || ObjectBrowserClass.isNonExpertId(item.data.id);
 
         return [
             this.state.filter.expertMode && this.props.objectEditOfAccessControl ? <Tooltip
@@ -5080,6 +5098,66 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
         }
     }
 
+    private getTooltipInfo(id: string, cb?: () => void) {
+        const obj = this.objects[id];
+        const state = this.states[id];
+        const classes = this.props.classes;
+
+        const { valFull, fileViewer } = formatValue({
+            state,
+            obj: obj as ioBroker.StateObject,
+            texts: this.texts,
+            dateFormat: this.props.dateFormat || this.systemConfig.common.dateFormat,
+            isFloatComma: this.props.isFloatComma === undefined ? this.systemConfig.common.isFloatComma : this.props.isFloatComma,
+            full: true,
+        });
+        const valFullRx: React.JSX.Element[] = [];
+        valFull.forEach(_item => {
+            if (_item.t === this.texts.quality && state.q) {
+                valFullRx.push(<div className={classes.cellValueTooltipBoth} key={_item.t}>
+                    {_item.t}
+                    :&nbsp;
+                    {_item.v}
+                </div>);
+                // <div className={classes.cellValueTooltipValue} key={item.t + '_v'}>{item.v}</div>,
+                !_item.nbr && valFullRx.push(<br key={`${_item.t}_br`} />);
+            } else {
+                valFullRx.push(<div className={classes.cellValueTooltipTitle} key={_item.t}>
+                    {_item.t}
+                    :&nbsp;
+                </div>);
+                valFullRx.push(<div className={classes.cellValueTooltipValue} key={`${_item.t}_v`}>
+                    {_item.v}
+                </div>);
+                !_item.nbr && valFullRx.push(<br key={`${_item.t}_br`} />);
+            }
+        });
+
+        if (fileViewer === 'image') {
+            valFullRx.push(<img
+                className={classes.cellValueTooltipImage}
+                src={state.val as string}
+                alt={id}
+            />);
+        } else if (
+            this.defaultHistory &&
+            this.objects[id]?.common?.custom &&
+            this.objects[id].common.custom[this.defaultHistory]
+        ) {
+            valFullRx.push(<svg
+                key="sparkline"
+                className="sparkline"
+                data-id={id}
+                style={{ fill: '#3d85de' }}
+                width="200"
+                height="30"
+                strokeWidth="3"
+            />);
+        }
+
+        this.setState({ tooltipInfo: { el: valFullRx, id } }, () => cb && cb());
+    }
+
     private renderColumnValue(
         id: string,
         item: TreeItem,
@@ -5108,53 +5186,15 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
 
         let info = item.data.state;
         if (!info) {
-            const { valFull, valText } = formatValue({
+            const { valText } = formatValue({
                 state,
                 obj: obj as ioBroker.StateObject,
                 texts: this.texts,
                 dateFormat: this.props.dateFormat || this.systemConfig.common.dateFormat,
                 isFloatComma: this.props.isFloatComma === undefined ? this.systemConfig.common.isFloatComma : this.props.isFloatComma,
             });
-            const valFullRx: React.JSX.Element[] = [];
             const valTextRx: React.JSX.Element[] = [];
-            item.data.state = { valFullRx, valTextRx };
-
-            valFull.forEach(_item => {
-                if (_item.t === this.texts.quality && state.q) {
-                    valFullRx.push(<div className={classes.cellValueTooltipBoth} key={_item.t}>
-                        {_item.t}
-                        :&nbsp;
-                        {_item.v}
-                    </div>);
-                    // <div className={classes.cellValueTooltipValue} key={item.t + '_v'}>{item.v}</div>,
-                    !_item.nbr && valFullRx.push(<br key={`${_item.t}_br`} />);
-                } else {
-                    valFullRx.push(<div className={classes.cellValueTooltipTitle} key={_item.t}>
-                        {_item.t}
-                        :&nbsp;
-                    </div>);
-                    valFullRx.push(<div className={classes.cellValueTooltipValue} key={`${_item.t}_v`}>
-                        {_item.v}
-                    </div>);
-                    !_item.nbr && valFullRx.push(<br key={`${_item.t}_br`} />);
-                }
-            });
-
-            if (
-                this.defaultHistory &&
-                this.objects[id]?.common?.custom &&
-                this.objects[id].common.custom[this.defaultHistory]
-            ) {
-                valFullRx.push(<svg
-                    key="sparkline"
-                    className="sparkline"
-                    data-id={id}
-                    style={{ fill: '#3d85de' }}
-                    width="200"
-                    height="30"
-                    strokeWidth="3"
-                />);
-            }
+            item.data.state = { valTextRx };
 
             const copyText = valText.v || '';
             valTextRx.push(<span className={classes.newValue} key={`${valText.v.toString()}valText`}>
@@ -5197,12 +5237,13 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
 
         return <Tooltip
             key="value"
-            title={info.valFullRx}
+            title={this.state.tooltipInfo?.el || 'Calculating...'}
             classes={{
                 tooltip: this.props.classes.cellValueTooltip,
                 popper: this.props.classes.cellValueTooltipBox,
             }}
-            onOpen={() => this.readHistory(id)}
+            onOpen={() => this.getTooltipInfo(id, () => this.readHistory(id))}
+            onClose={() => this.state.tooltipInfo?.id === id && this.setState({ tooltipInfo: null })}
         >
             <div style={info.style} className={classes.cellValueText}>
                 {val}
@@ -5421,7 +5462,7 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
             this.props.socket
                 .getObject(this.state.columnsEditCustomDialog?.obj?._id || '')
                 .then(obj => {
-                    if (obj && ObjectBrowser.setCustomValue(obj, this.state.columnsEditCustomDialog?.it as AdapterColumn, value)) {
+                    if (obj && ObjectBrowserClass.setCustomValue(obj, this.state.columnsEditCustomDialog?.it as AdapterColumn, value)) {
                         return this.props.socket.setObject(obj._id, obj);
                     }
                     throw new Error(this.props.t('ra_Cannot update attribute, because not found in the object'));
@@ -5439,7 +5480,7 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
             return null;
         }
         if (!this.customColumnDialog) {
-            const value = ObjectBrowser.getCustomValue(
+            const value = ObjectBrowserClass.getCustomValue(
                 this.state.columnsEditCustomDialog.obj,
                 this.state.columnsEditCustomDialog.it,
             );
@@ -5527,7 +5568,6 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
                     {this.props.t('ra_Update')}
                 </Button>
                 <Button
-                    // @ts-expect-error grey is valid color
                     color="grey"
                     variant="contained"
                     onClick={() => this.onColumnsEditCustomDialogClose()}
@@ -5655,7 +5695,7 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
         it: AdapterColumn,
         item: TreeItem,
     ): React.JSX.Element | null {
-        const text = ObjectBrowser.getCustomValue(obj, it);
+        const text = ObjectBrowserClass.getCustomValue(obj, it);
         if (text !== null && text !== undefined) {
             if (it.edit && !this.props.notEditable && (!it.objTypes || it.objTypes.includes(obj.type))) {
                 return <div
@@ -6636,7 +6676,7 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
         }
 
         if (event.code === 'Delete' && this.root && selectedId) {
-            const item = this.getItemFromRoot(this.root, selectedId);
+            const item = ObjectBrowserClass.getItemFromRoot(this.root, selectedId);
             if (item) {
                 const { obj } = item.data;
                 if (obj && !obj.common?.dontDelete) {
@@ -6649,7 +6689,7 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
     /**
      * Find the id from the root
      */
-    private getItemFromRoot(
+    private static getItemFromRoot(
         /** The current root */
         root: TreeItem,
         /** the object id to find */
@@ -6920,7 +6960,7 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
         val: ioBroker.StateValue;
         ack: boolean;
         q: ioBroker.STATE_QUALITY[keyof ioBroker.STATE_QUALITY];
-        expire: number | undefined,
+        expire: number | undefined;
     }) {
         this.props.socket
             .setState(this.edit.id, {
@@ -7107,7 +7147,7 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
                 visibility:
                     !!(this.props.objectBrowserEditObject &&
                     obj &&
-                    (this.state.filter.expertMode || ObjectBrowser.isNonExpertId(id))),
+                    (this.state.filter.expertMode || ObjectBrowserClass.isNonExpertId(id))),
                 icon: <IconEdit fontSize="small" className={this.props.classes.contextMenuEdit} />,
                 label: this.texts.editObject,
                 onClick: () =>
@@ -7549,4 +7589,4 @@ class ObjectBrowser extends Component<ObjectBrowserProps, ObjectBrowserState> {
     }
 }
 
-export default withWidth()(withStyles(styles)(ObjectBrowser));
+export default withWidth()(withStyles(styles)(ObjectBrowserClass));

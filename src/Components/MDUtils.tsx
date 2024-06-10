@@ -3,7 +3,7 @@
  *
  * MIT License
  *
- **/
+ * */
 import React from 'react';
 import copy from './CopyToClipboard';
 
@@ -18,6 +18,9 @@ class MDUtils {
     }
 
     static openLink(url: string, target?: string) {
+        // replace IPv6 Address with [ipv6]:port
+        url = url.replace(/\/\/([0-9a-f]*:[0-9a-f]*:[0-9a-f]*:[0-9a-f]*:[0-9a-f]*:[0-9a-f]*)(:\d+)?\//i, '//[$1]$2/');
+
         if (target === 'this') {
             window.location.href = url;
         } else {

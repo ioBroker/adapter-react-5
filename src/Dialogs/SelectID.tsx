@@ -3,7 +3,7 @@
  *
  * MIT License
  *
- **/
+ * */
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React, { Component } from 'react';
 
@@ -23,7 +23,7 @@ import {
 import type Connection from '../Connection';
 
 import I18n from '../i18n';
-import ObjectBrowser from '../Components/ObjectBrowser';
+import ObjectBrowser, { ObjectBrowserFilter } from '../Components/ObjectBrowser';
 import { ObjectBrowserColumn, ObjectBrowserCustomFilter, ObjectBrowserType } from '../Components/types';
 
 interface SelectIDFilters {
@@ -98,7 +98,7 @@ interface DialogSelectIDState {
 class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState> {
     private readonly dialogName: string;
 
-    private filters: Record<string, any>;
+    private filters: ObjectBrowserFilter;
 
     private readonly filterFunc?: (obj: ioBroker.Object) => boolean;
 
@@ -128,6 +128,7 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
         if (props.filterFunc) {
             if (typeof props.filterFunc === 'string') {
                 try {
+                    // eslint-disable-next-line no-new-func
                     this.filterFunc = new Function('obj', props.filterFunc) as (obj: ioBroker.Object) => boolean;
                 } catch (e) {
                     console.error(`Cannot parse filter function: "obj => ${props.filterFunc}"`);
@@ -191,7 +192,7 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
                     width: '100%',
                     maxWidth: '100%',
                     maxHeight: 'calc(100% - 16px)',
-                }
+                },
             }}
             fullWidth
             open={!0}
@@ -237,13 +238,19 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
                     themeName={this.props.themeName}
                     themeType={this.props.themeType}
                     customFilter={this.props.customFilter}
-                    onFilterChanged={filterConfig => {
+                    onFilterChanged={(filterConfig: ObjectBrowserFilter) => {
                         this.filters = filterConfig;
                         ((window as any)._localStorage || window.localStorage).setItem(this.dialogName, JSON.stringify(filterConfig));
                     }}
-                    onSelect={(selected, name, isDouble) => {
+                    onSelect={(_selected: string | string[], name: string, isDouble?: boolean) => {
+                        let selected: string[];
+                        if (!Array.isArray(_selected)) {
+                            selected = [_selected];
+                        } else {
+                            selected = _selected;
+                        }
                         if (JSON.stringify(selected) !== JSON.stringify(this.state.selected)) {
-                            this.setState({selected, name}, () => isDouble && this.handleOk());
+                            this.setState({ selected, name }, () => isDouble && this.handleOk());
                         } else if (isDouble) {
                             this.handleOk();
                         }
@@ -266,7 +273,6 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
                 </Button>
                 <Button
                     id={`ar_dialog_selectid_cancel_${this.props.dialogName || ''}`}
-                    // @ts-expect-error grey is valid color
                     color="grey"
                     variant="contained"
                     onClick={() => this.handleCancel()}

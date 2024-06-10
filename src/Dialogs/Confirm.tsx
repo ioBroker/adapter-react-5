@@ -3,7 +3,7 @@
  *
  * MIT License
  *
- **/
+ * */
 
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React, { Component } from 'react';
@@ -17,7 +17,7 @@ import {
     DialogContentText,
     DialogTitle,
     FormControlLabel,
-    Checkbox
+    Checkbox,
 } from '@mui/material';
 
 import {
@@ -160,7 +160,6 @@ class DialogConfirm extends Component<DialogConfirmProps, DialogConfirmState> {
                     id={`ar_dialog_confirm_cancel_${this.props.dialogName || ''}`}
                     variant="contained"
                     onClick={() => this.handleCancel()}
-                    // @ts-expect-error grey is valid color
                     color="grey"
                     startIcon={<IconClose />}
                 >

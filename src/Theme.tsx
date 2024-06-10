@@ -12,8 +12,8 @@ const step = (16 - 5) / 23 / 100;
 /**
  * Convert hex color in the format '#rrggbb' or '#rgb' to an RGB object.
  */
-function toInt(hex: string): { r: number, g: number, b: number } {
-    const rgb: { r: number, g: number, b: number } = {
+function toInt(hex: string): { r: number; g: number; b: number } {
+    const rgb: { r: number; g: number; b: number } = {
         r: 0,
         g: 0,
         b: 0,
@@ -39,7 +39,7 @@ function toInt(hex: string): { r: number, g: number, b: number } {
 /**
  * Convert an RGB object to a hex color string in the format '#rrggbb'.
  */
-function toHex(int: { r: number, g: number, b: number }): string {
+function toHex(int: { r: number; g: number; b: number }): string {
     return `#${Math.round(int.r).toString(16)}${Math.round(int.g).toString(16)}${Math.round(int.b).toString(16)}`;
 }
 
@@ -52,8 +52,8 @@ function getElevation(
     /** elevation as an integer starting with 1 */
     elevation: number,
 ): string {
-    const rgb: { r: number, g: number, b: number } = toInt(color);
-    const overlay: { r: number, g: number, b: number } = toInt(overlayColor);
+    const rgb: { r: number; g: number; b: number } = toInt(color);
+    const overlay: { r: number; g: number; b: number } = toInt(overlayColor);
 
     rgb.r += overlay.r * (0.05 + step * (elevation - 1));
     rgb.g += overlay.g * (0.05 + step * (elevation - 1));
@@ -172,7 +172,7 @@ interface ThemeOptions extends ThemeOptionsMui {
     saveToolbar?: {
         background: string;
         button: React.CSSProperties;
-    }
+    };
 }
 
 /**
@@ -233,9 +233,9 @@ const CustomTheme = (type: ThemeName): IobTheme => {
             MuiLink: {
                 root: {
                     textTransform: 'uppercase',
-                        transition: 'color .3s ease',
-                        color: orange[400],
-                        '&:hover': {
+                    transition: 'color .3s ease',
+                    color: orange[400],
+                    '&:hover': {
                         color: orange[300],
                     },
                 },
@@ -308,9 +308,9 @@ const CustomTheme = (type: ThemeName): IobTheme => {
             MuiLink: {
                 root: {
                     textTransform: 'uppercase',
-                        transition: 'color .3s ease',
-                        color: orange[400],
-                        '&:hover': {
+                    transition: 'color .3s ease',
+                    color: orange[400],
+                    '&:hover': {
                         color: orange[300],
                     },
                 },
@@ -341,9 +341,9 @@ const CustomTheme = (type: ThemeName): IobTheme => {
             MuiLink: {
                 root: {
                     textTransform: 'uppercase',
-                        transition: 'color .3s ease',
-                        color: orange[400],
-                        '&:hover': {
+                    transition: 'color .3s ease',
+                    color: orange[400],
+                    '&:hover': {
                         color: orange[300],
                     },
                 },
@@ -374,9 +374,9 @@ const CustomTheme = (type: ThemeName): IobTheme => {
             MuiLink: {
                 root: {
                     textTransform: 'uppercase',
-                        transition: 'color .3s ease',
-                        color: orange[400],
-                        '&:hover': {
+                    transition: 'color .3s ease',
+                    color: orange[400],
+                    '&:hover': {
                         color: orange[300],
                     },
                 },

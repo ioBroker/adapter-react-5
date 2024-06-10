@@ -264,15 +264,20 @@ interface ScheduleState {
 
 class Schedule extends Component<ScheduleProps, ScheduleState> {
     private readonly refFrom: React.RefObject<HTMLInputElement>;
+
     private readonly refTo: React.RefObject<HTMLInputElement>;
+
     private readonly refOnce: React.RefObject<HTMLInputElement>;
+
     private timerOnce: ReturnType<typeof setTimeout> | null = null;
+
     private timerFrom: ReturnType<typeof setTimeout> | null = null;
+
     private timerTo: ReturnType<typeof setTimeout> | null = null;
 
     constructor(props: ScheduleProps) {
         super(props);
-        let schedule: ScheduleConfig | undefined = undefined;
+        let schedule: ScheduleConfig | undefined;
         if (this.props.schedule && typeof this.props.schedule === 'string' && this.props.schedule[0] === '{') {
             try {
                 schedule = JSON.parse(this.props.schedule);
@@ -521,13 +526,13 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
             desc.push(I18n.t(
                 'sch_desc_onDate',
                 schedule.period.yearDate.toString(),
-                schedule.period.yearMonth ? I18n.t(MONTHS[schedule.period.yearMonth - 1]) : I18n.t('sch_desc_everyMonth')
+                schedule.period.yearMonth ? I18n.t(MONTHS[schedule.period.yearMonth - 1]) : I18n.t('sch_desc_everyMonth'),
             ));
         }
 
         // time
         if (schedule.time.exactTime) {
-            if (ASTRO.indexOf(schedule.time.start) !== -1) {
+            if (ASTRO.includes(schedule.time.start)) {
                 // at sunset
                 desc.push(I18n.t('sch_desc_atTime', I18n.t(`sch_astro_${schedule.time.start}`)));
             } else {

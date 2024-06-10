@@ -3,7 +3,7 @@
  *
  * MIT License
  *
- **/
+ * */
 import React, { useEffect } from 'react';
 import { CircularProgress } from '@mui/material';
 
@@ -59,7 +59,7 @@ function LoaderVendor(props: LoaderVendorProps) {
         }}
     >
         <div style={{ flexGrow: 1 }} />
-        <CircularProgress color="secondary" size={200} thickness={5} />
+        <CircularProgress color="secondary" size={props.size || 200} thickness={5} />
         <div style={{ flexGrow: 1 }} />
     </div>;
 }

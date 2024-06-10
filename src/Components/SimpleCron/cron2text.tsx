@@ -251,7 +251,8 @@ function cronToText(cronSpec: string, withSeconds: boolean, locale: CRON_LOCALE)
         }
 
         // parse x
-        if ((value = getValue(item, offset, max)) !== null) {
+        value = getValue(item, offset, max);
+        if (value !== null) {
             add(curSched, name, value, value);
         } else if ((value = getValue(item.replace('W', ''), offset, max)) !== null) {
             // parse xW
@@ -356,7 +357,7 @@ function cronToText(cronSpec: string, withSeconds: boolean, locale: CRON_LOCALE)
 
     function ordinal(number: number): string {
         const b = number % 10;
-        const output = (toInt(number % 100 / 10) === 1) ? locale.ORDINALS.th :
+        const output = (toInt((number % 100) / 10) === 1) ? locale.ORDINALS.th :
             b === 1 ? locale.ORDINALS.st :
                 b === 2 ? locale.ORDINALS.nd :
                     b === 3 ? locale.ORDINALS.rd : locale.ORDINALS.th;
@@ -408,7 +409,8 @@ function cronToText(cronSpec: string, withSeconds: boolean, locale: CRON_LOCALE)
         const lastVal = numbers.pop() || 0;
         let outputText = '';
 
-        for (let i = 0, value; (value = numbers[i]); i++) {
+        for (let i = 0, value; numbers[i]; i++) {
+            value = numbers[i];
             if (outputText.length > 0) {
                 outputText += ', ';
             }

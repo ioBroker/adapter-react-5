@@ -1,5 +1,5 @@
 import cronToText from './cron2text';
-import JQUERY_CRON_LOCALE, {CRON_LOCALE} from './jquery.cron.locale';
+import JQUERY_CRON_LOCALE, { CRON_LOCALE } from './jquery.cron.locale';
 
 // TODO: other languages
 function correctCasus(text: string /* , seconds */): string {
@@ -53,7 +53,7 @@ function convertCronToText(
     const withSeconds = cron.split(' ').length === 6;
     const locale: CRON_LOCALE = (lang && (JQUERY_CRON_LOCALE as Record<string, CRON_LOCALE>)[lang]) || JQUERY_CRON_LOCALE.en;
     const text = cronToText(cron, withSeconds, locale);
-    return correctCasus(text /*, withSeconds*/);
+    return correctCasus(text /* , withSeconds */);
 }
 
 export default convertCronToText;
