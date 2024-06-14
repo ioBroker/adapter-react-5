@@ -667,6 +667,25 @@ socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
 - adapter-react-v5 has all types exported. So you can use `import { type IobTheme, Theme } from '@iobroker/adapter-react-v5';` and `const theme: IobTheme = Theme('light');`
 - Json-Config is now an external package and must be included as dependency separately.
 - Use type `Translate` for `t(word: string, ...args: any[]) => string`
+- All components for admin JsonConfig must be changed:
+  Before `adapter-react-v5@5.x`:
+
+```
+import { ConfigGeneric, I18n } from '@iobroker/adapter-react-v5';
+class JsonComponent extends ConfigGeneric {
+...
+}
+```
+
+With `adapter-react-v5@5.x`:
+
+```
+import { I18n } from '@iobroker/adapter-react-v5';
+import { ConfigGeneric } from '@iobroker/json-config';
+class JsonComponent extends ConfigGeneric {
+...
+}
+```
 
 ## Warning
 `react-inlinesvg@4.0.5` cannot be used. Use `react-inlinesvg@4.0.3` instead.  
