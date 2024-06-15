@@ -695,7 +695,7 @@ class JsonComponent extends ConfigGeneric {
 -->
 
 ## Changelog
-### 5.0.7 (2024-06-15)
+### **WORK IN PROGRESS**
 * (bluefox) Added `modulefederation.admin.config.js` for module federation
 
 ### 5.0.5 (2024-06-10)

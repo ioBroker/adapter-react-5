@@ -28,5 +28,7 @@ module.exports = {
         'react',
         'react-ace',
         'react-dom',
+        'react-dropzone',
+        'semver'
     ]),
 };
