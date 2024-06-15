@@ -18,7 +18,7 @@ const getModuleFederationConfigPath = (additionalPaths = []) => {
 };
 
 module.exports = {
-    overrideWebpackConfig: ({webpackConfig, pluginOptions}) => {
+    overrideWebpackConfig: ({ webpackConfig, pluginOptions }) => {
         const moduleFederationConfigPath = getModuleFederationConfigPath();
 
         if (moduleFederationConfigPath) {
@@ -59,7 +59,7 @@ module.exports = {
         return webpackConfig;
     },
 
-    overrideDevServerConfig: ({devServerConfig}) => {
+    overrideDevServerConfig: ({ devServerConfig }) => {
         devServerConfig.headers = {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': '*',
