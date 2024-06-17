@@ -2,7 +2,6 @@ import React, { Component, createRef } from 'react';
 import Dropzone from 'react-dropzone';
 import { Cropper, ReactCropperElement } from 'react-cropper';
 
-import { withStyles } from '@mui/styles';
 import {
     Menu, MenuItem, Tooltip, IconButton,
 } from '@mui/material';
@@ -13,7 +12,6 @@ import {
 } from '@mui/icons-material';
 import { FaFileUpload as UploadIcon } from 'react-icons/fa';
 
-import Utils from './Utils';
 import I18n from '../i18n';
 import Icon from './Icon';
 
@@ -325,7 +323,7 @@ const cropperStyles = `
 }
 `;
 
-const styles: Record<string, any> = {
+const styles: Record<string, React.CSSProperties> = {
     dropZone: {
         width: '100%',
         height: 100,
@@ -408,7 +406,6 @@ const styles: Record<string, any> = {
 };
 
 interface UploadImageProps {
-    classes: Record<string, string>;
     maxSize?: number;
     disabled?: boolean;
     crop?: boolean;
@@ -486,7 +483,7 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
 
     render() {
         const {
-            disabled, classes, icon, removeIconFunc, error, crop, onChange,
+            disabled, icon, removeIconFunc, error, crop, onChange,
         } = this.props;
         const maxSize = this.props.maxSize || 10 * 1024;
         const accept = this.props.accept || { 'image/*': [] };
@@ -509,28 +506,27 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
             }}
         >
             {({ getRootProps, getInputProps }) => <div
-                className={Utils.clsx(
-                    classes.uploadDiv,
-                    uploadFile === 'dragging' && classes.uploadDivDragging,
-                    classes.dropZone,
-                    disabled && classes.disabledOpacity,
-                    !icon && classes.dropZoneEmpty,
+                style={Object.assign(
+                    {},
+                    styles.uploadDiv,
+                    uploadFile === 'dragging' ? styles.uploadDivDragging : {},
+                    styles.dropZone,
+                    disabled ? styles.disabledOpacity : {},
+                    !icon ? styles.dropZoneEmpty : {},
                 )}
                 {...getRootProps()}
             >
                 <input {...getInputProps()} />
-                <div className={Utils.clsx(classes.uploadCenterDiv, error && classes.error)}>
-                    {!icon ? <div className={classes.uploadCenterTextAndIcon}>
-                        <UploadIcon className={classes.uploadCenterIcon} />
-                        <div className={classes.uploadCenterText}>
-                            {
-                                uploadFile === 'dragging' ? I18n.t('ra_Drop file here') :
-                                    I18n.t('ra_Place your files here or click here to open the browse dialog')
-                            }
+                <div style={Object.assign({}, styles.uploadCenterDiv, error ? styles.error : {})}>
+                    {!icon ? <div style={styles.uploadCenterTextAndIcon}>
+                        <UploadIcon style={styles.uploadCenterIcon} />
+                        <div style={styles.uploadCenterText}>
+                            {uploadFile === 'dragging' ? I18n.t('ra_Drop file here') :
+                                I18n.t('ra_Place your files here or click here to open the browse dialog')}
                         </div>
                     </div>
                         :
-                        removeIconFunc && !cropHandler && <div className={classes.buttonRemoveWrapper}>
+                        removeIconFunc && !cropHandler && <div style={styles.buttonRemoveWrapper}>
                             <Tooltip title={I18n.t('ra_Clear')}>
                                 <IconButton
                                     size="large"
@@ -543,7 +539,7 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
                                 </IconButton>
                             </Tooltip>
                         </div>}
-                    {icon && crop && <div className={classes.buttonCropWrapper}>
+                    {icon && crop && <div style={styles.buttonCropWrapper}>
                         <Tooltip title={I18n.t('ra_Crop')}>
                             <IconButton
                                 size="large"
@@ -581,11 +577,11 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
                             <MenuItem onClick={() => this.setState({ anchorEl: null, cropHandler: false })}>{I18n.t('ra_Close')}</MenuItem>
                         </Menu>
                     </div>}
-                    {icon && !cropHandler ? <Icon src={icon} className={classes.image} alt="icon" /> : null}
+                    {icon && !cropHandler ? <Icon src={icon} style={styles.image} alt="icon" /> : null}
 
                     {icon && crop && cropHandler ? <Cropper
                         ref={this.cropperRef}
-                        className={classes.image}
+                        style={styles.image}
                         src={icon}
                         initialAspectRatio={1}
                         viewMode={1}
@@ -601,4 +597,4 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
     }
 }
 
-export default withStyles(styles)(UploadImage);
+export default UploadImage;

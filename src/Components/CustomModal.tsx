@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { withStyles } from '@mui/styles';
 
 import {
     Dialog, DialogActions, DialogContent,
@@ -12,11 +11,10 @@ import {
     Language as LanguageIcon,
 } from '@mui/icons-material';
 
-import Utils from './Utils';
 import I18n from '../i18n';
 import { IobTheme } from '../types';
 
-const styles: Record<string, any> = (theme: IobTheme) => ({
+const styles: Record<string, any> = {
     modalDialog: {
         minWidth: 400,
         maxWidth: 800,
@@ -33,13 +31,13 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
     },
     languageButton: {
         position: 'absolute',
-        right: theme.spacing(1),
-        top: theme.spacing(1),
+        right: (theme: IobTheme) => theme.spacing(1),
+        top: (theme: IobTheme) => theme.spacing(1),
     },
     languageButtonActive: {
-        color: theme.palette.primary.main,
+        color: (theme: IobTheme) => theme.palette.primary.main,
     },
-});
+};
 
 interface CustomModalProps {
     icon?: any;
@@ -59,7 +57,6 @@ interface CustomModalProps {
     toggleTranslation?: () => void;
     title?: string;
     progress?: boolean;
-    classes: Record<string, string>;
     textInput?: boolean;
     defaultValue?: string;
 }
@@ -77,7 +74,6 @@ const CustomModal = (props: CustomModalProps) => {
         icon,
         applyDisabled,
         applyButton,
-        classes,
         onClose,
         children,
         titleButtonApply,
@@ -87,7 +83,9 @@ const CustomModal = (props: CustomModalProps) => {
         defaultValue,
         overflowHidden,
     } = props;
+
     const [value, setValue] = useState<string>(defaultValue || '');
+
     useEffect(() => {
         setValue(defaultValue || '');
     }, [defaultValue]);
@@ -104,21 +102,24 @@ const CustomModal = (props: CustomModalProps) => {
         fullWidth={!!fullWidth}
         disableEscapeKeyDown={false}
         onClose={onClose}
-        classes={{ paper: classes.modalDialog /* paper: classes.background */ }}
+        sx={{ '& .MuiDialog-paper': styles.modalDialog }}
     >
         {title && <DialogTitle>
-            {icon ? <Icon className={classes.titleIcon} /> : null}
+            {icon ? <Icon sx={styles.titleIcon} /> : null}
             {title}
             {I18n.getLanguage() !== 'en' && toggleTranslation ? <IconButton
                 size="large"
-                className={Utils.clsx(classes.languageButton, noTranslation && classes.languageButtonActive)}
+                sx={Object.assign({}, styles.languageButton, noTranslation ? styles.languageButtonActive : {})}
                 onClick={() => toggleTranslation()}
                 title={I18n.t('Disable/Enable translation')}
             >
                 <LanguageIcon />
             </IconButton> : null}
         </DialogTitle>}
-        <DialogContent className={Utils.clsx(overflowHidden ? classes.overflowHidden : null, classes.content)} style={{ paddingTop: 8 }}>
+        <DialogContent
+            sx={Object.assign({}, styles.content, overflowHidden ? styles.overflowHidden : {})}
+            style={{ paddingTop: 8 }}
+        >
             {textInput && <TextField
                 // className={className}
                 autoComplete="off"
@@ -158,4 +159,4 @@ const CustomModal = (props: CustomModalProps) => {
     </Dialog>;
 };
 
-export default withStyles(styles)(CustomModal);
+export default CustomModal;

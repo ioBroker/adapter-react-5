@@ -1,6 +1,5 @@
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
-import { withStyles } from '@mui/styles';
 
 import { Fab, Toolbar } from '@mui/material';
 
@@ -12,7 +11,7 @@ import {
 import I18n from '../i18n';
 import { IobTheme } from '../types';
 
-const styles: Record<string, any> = {
+const styles: Record<string, React.CSSProperties> = {
     buttonIcon: {
         marginRight: 8,
     },
@@ -35,7 +34,6 @@ interface SaveCloseButtonsProps {
     paddingLeft?: number;
     changed: boolean;
     error?: boolean;
-    classes: Record<string, string>;
 }
 
 class SaveCloseButtons extends React.Component<SaveCloseButtonsProps> {
@@ -89,7 +87,7 @@ class SaveCloseButtons extends React.Component<SaveCloseButtonsProps> {
                 onClick={() => this.props.onSave(false)}
                 style={buttonStyle}
             >
-                <IconSave className={!noTextOnButtons ? this.props.classes.buttonIcon : ''} />
+                <IconSave style={!noTextOnButtons ? styles.buttonIcon : undefined} />
                 {!noTextOnButtons && I18n.t('ra_Save')}
             </Fab>
             <Fab
@@ -99,17 +97,17 @@ class SaveCloseButtons extends React.Component<SaveCloseButtonsProps> {
                 onClick={() => this.props.onSave(true)}
                 style={{ ...buttonStyle, ...{ marginLeft: 10 } }}
             >
-                <IconSave className={!noTextOnButtons ? this.props.classes.buttonIcon : ''} />
+                <IconSave style={!noTextOnButtons ? styles.buttonIcon : undefined} />
                 {!noTextOnButtons ? I18n.t('ra_Save and close') : '+'}
                 {noTextOnButtons && <IconClose />}
             </Fab>
             <div style={{ flexGrow: 1 }} />
             <Fab variant="extended" aria-label="Close" onClick={() => this.props.onClose()} style={buttonStyle}>
-                <IconClose className={!noTextOnButtons ? this.props.classes.buttonIcon : ''} />
+                <IconClose style={!noTextOnButtons ?styles.buttonIcon : undefined} />
                 {!noTextOnButtons && I18n.t('ra_Close')}
             </Fab>
         </Toolbar>;
     }
 }
 
-export default withStyles(styles)(SaveCloseButtons);
+export default SaveCloseButtons;

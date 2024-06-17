@@ -6,7 +6,6 @@
  */
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
-import { withStyles } from '@mui/styles';
 
 import {
     Button,
@@ -27,7 +26,7 @@ import Utils from '../Components/Utils';
 import I18n from '../i18n';
 import FileBrowser from '../Components/FileBrowser';
 
-const styles: Record<string, any> = {
+const styles: Record<string, React.CSSProperties> = {
     headerID: {
         fontWeight: 'bold',
         fontStyle: 'italic',
@@ -110,7 +109,6 @@ interface DialogSelectFileProps {
     /** Handler that is called when the user presses OK or by double click. */
     onOk: (selected: string | string[] | undefined) => void;
     /** The styling class names. */
-    classes: Record<string, string>;
     filters?: Record<string, string>;
     /** Allow switch views Table<=>Rows */
     showViewTypeButton?: boolean;
@@ -183,7 +181,7 @@ class DialogSelectFile extends React.Component<DialogSelectFileProps, DialogSele
                         {I18n.t('ra_Selected')}
                         &nbsp;
                     </span>,
-                    <span key="id" className={this.props.classes.headerID}>
+                    <span key="id" style={styles.headerID}>
                         {this.state.selected}
                     </span>,
                 ];
@@ -193,7 +191,7 @@ class DialogSelectFile extends React.Component<DialogSelectFileProps, DialogSele
                         {I18n.t('ra_Selected')}
                         &nbsp;
                     </span>,
-                    <span key="id" className={this.props.classes.headerID}>
+                    <span key="id" style={styles.headerID}>
                         {I18n.t('%s items', this.state.selected.length)}
                     </span>,
                 ];
@@ -205,13 +203,13 @@ class DialogSelectFile extends React.Component<DialogSelectFileProps, DialogSele
         return <Dialog
             onClose={() => {}}
             maxWidth={false}
-            classes={{ paper: Utils.clsx(this.props.classes.dialog, this.props.classes.dialogMobile) }}
+            sx={{ '& .MuiDialog-paper': Object.assign({}, styles.dialog, styles.dialogMobile) }}
             fullWidth
             open={!0}
             aria-labelledby="ar_dialog_selectfile_title"
         >
-            <DialogTitle id="ar_dialog_selectfile_title" classes={{ root: this.props.classes.titleRoot }}>{title}</DialogTitle>
-            <DialogContent className={Utils.clsx(this.props.classes.content, this.props.classes.contentMobile)}>
+            <DialogTitle id="ar_dialog_selectfile_title" sx={{ '& .MuiDialogTitle-root': styles.titleRoot }}>{title}</DialogTitle>
+            <DialogContent sx={Object.assign({}, styles.content, styles.contentMobile)}>
                 <FileBrowser
                     ready
                     imagePrefix={this.props.imagePrefix || this.props.prefix || '../'} // prefix is for back compatibility
@@ -265,4 +263,4 @@ class DialogSelectFile extends React.Component<DialogSelectFileProps, DialogSele
     }
 }
 
-export default withStyles(styles)(DialogSelectFile);
+export default DialogSelectFile;

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import { withStyles } from '@mui/styles';
 import { HexColorPicker as ColorPicker } from 'react-colorful';
 
 import {
@@ -80,7 +79,7 @@ function setAttr(
     return setAttr(obj[name], attr, value);
 }
 
-const styles: Record<string, any> = (theme: IobTheme) => ({
+const styles: Record<string, any> = {
     tableContainer: {
         width: '100%',
         height: '100%',
@@ -114,8 +113,8 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
     },
     cellHeader: {
         fontWeight: 'bold',
-        background: theme.palette.mode === 'dark' ? '#888' : '#888',
-        color: theme.palette.mode === 'dark' ? '#EEE' : '#111',
+        background: (theme: IobTheme) => theme.palette.mode === 'dark' ? '#888' : '#888',
+        color: (theme: IobTheme) => theme.palette.mode === 'dark' ? '#EEE' : '#111',
         height: 48,
         wordBreak: 'break-word',
         whiteSpace: 'pre',
@@ -177,7 +176,7 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
     glow: {
         animation: 'glow 0.2s 2 alternate',
     },
-});
+};
 
 function descendingComparator(
     a: Record<string, any>,
@@ -227,7 +226,7 @@ function stableSort(
 
 interface Column {
     cellStyle?: Record<string, any>;
-    editComponent?: React.ComponentType<{ value: any; rowData: Record<string, any>; onChange: (newValue: any) => void }>;
+    editComponent?: React.FC<{ value: any; rowData: Record<string, any>; onChange: (newValue: any) => void }>;
     field: string;
     headerStyle?: Record<string, any>;
     hidden?: boolean;
@@ -258,7 +257,6 @@ interface TreeTableProps {
     /** Shift in pixels for every level */
     levelShift?: number;
     adapterName: string;
-    classes: Record<string, string>;
 }
 
 interface TreeTableState {
@@ -392,7 +390,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
     ) {
         return <TextField
             variant="standard"
-            className={this.props.classes.fieldEdit}
+            sx={styles.fieldEdit}
             fullWidth
             value={this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val}
             onChange={e => this.onChange(col, val, e.target.value)}
@@ -405,7 +403,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
     ) {
         return <TextField
             variant="standard"
-            className={this.props.classes.fieldEdit}
+            sx={styles.fieldEdit}
             type="number"
             fullWidth
             value={this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val}
@@ -427,11 +425,11 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             item[col.field] = val;
         }
 
-        return <EditComponent
+        return EditComponent ? <EditComponent
             value={val}
             rowData={item}
             onChange={(newVal: any) => this.onChange(col, val, newVal as string | number)}
-        />;
+        /> : null;
     }
 
     renderCellEditBoolean(
@@ -447,7 +445,10 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
 
     renderSelectColorDialog() {
         return <Dialog
-            classes={{ root: this.props.classes.colorDialog, paper: this.props.classes.colorDialog }}
+            sx={{
+                '& .MuiDialog-root': styles.root,
+                '& .MuiDialog-paper': styles.paper,
+            }}
             onClose={() => {
                 this.selectCallback = null;
                 this.setState({ showSelectColor: false });
@@ -468,18 +469,18 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         val: string,
     ) {
         const _val = this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val;
-        return <div className={this.props.classes.fieldEdit}>
+        return <div style={styles.fieldEdit}>
             <TextField
                 variant="standard"
                 fullWidth
-                className={this.props.classes.fieldEditWithButton}
+                sx={styles.fieldEditWithButton}
                 value={_val}
                 inputProps={{ style: { backgroundColor: _val, color: Utils.isUseBright(_val) ? '#FFF' : '#000' } }}
                 onChange={e => this.onChange(col, !!val, e.target.value)}
             />
 
             <IconButton
-                className={this.props.classes.fieldButton}
+                sx={styles.fieldButton}
                 onClick={() => {
                     this.selectCallback = newColor => this.onChange(col, val, newColor);
                     this.setState({ showSelectColor: true, selectIdValue: val });
@@ -516,17 +517,17 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         col: Column,
         val: string,
     ) {
-        return <div className={this.props.classes.fieldEdit}>
+        return <div style={styles.fieldEdit}>
             <TextField
                 variant="standard"
                 fullWidth
-                className={this.props.classes.fieldEditWithButton}
+                sx={styles.fieldEditWithButton}
                 value={this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val}
                 onChange={e => this.onChange(col, val, e.target.value)}
             />
 
             <IconButton
-                className={this.props.classes.fieldButton}
+                sx={styles.fieldButton}
                 onClick={() => {
                     this.selectCallback = selected => this.onChange(col, val, selected);
                     this.setState({ showSelectId: true, selectIdValue: val });
@@ -567,7 +568,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         if (this.state.editMode === i && col.editable !== 'never' && col.editable !== false) {
             return <TableCell
                 key={col.field}
-                className={Utils.clsx(this.props.classes.cell, level && this.props.classes.cellSecondary)}
+                sx={Object.assign({}, styles.cell, level ? styles.cellSecondary : {})}
                 style={col.cellStyle}
                 component="th"
             >
@@ -576,7 +577,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         }
         return <TableCell
             key={col.field}
-            className={Utils.clsx(this.props.classes.cell, level && this.props.classes.cellSecondary)}
+            sx={Object.assign({}, styles.cell, level ? styles.cellSecondary : {})}
             style={col.cellStyle}
             component="th"
         >
@@ -592,12 +593,12 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         if (col.subField) {
             const sub  = getAttr(item, col.subField, col.subLookup);
             return <div>
-                <div className={this.props.classes.mainText}>{main}</div>
-                <div className={this.props.classes.subText} style={col.subStyle || {}}>{sub}</div>
+                <div style={styles.mainText}>{main}</div>
+                <div style={Object.assign({}, styles.subText, col.subStyle || {})}>{sub}</div>
             </div>;
         }
         return <div>
-            <div className={this.props.classes.mainText}>{main}</div>
+            <div style={styles.mainText}>{main}</div>
         </div>;
     }
 
@@ -624,18 +625,21 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
 
         const row = <TableRow
             key={item.id}
-            className={Utils.clsx(
-                `table-row-${(item.id || '').toString().replace(/[.$]/g, '_')}`,
-                this.state.update && this.state.update.includes(item.id) && this.props.classes.glow,
-                this.props.classes.row,
-                level  && this.props.classes.rowSecondary,
-                !level && children.length && this.props.classes.rowMainWithChildren,
-                !level && !children.length && this.props.classes.rowMainWithoutChildren,
-                this.state.editMode !== false && this.state.editMode !== i && this.props.classes.rowNoEdit,
-                this.state.deleteMode !== false && this.state.deleteMode !== i && this.props.classes.rowNoEdit,
+            className={`table-row-${(item.id || '').toString().replace(/[.$]/g, '_')}`}
+            sx={Object.assign(
+                {},
+                (this.state.update && this.state.update.includes(item.id) && styles.glow) || {},
+                styles.row,
+                level ? styles.rowSecondary : {},
+                !level && children.length ? styles.rowMainWithChildren : {},
+                !level && !children.length ? styles.rowMainWithoutChildren : {},
+                this.state.editMode !== false && this.state.editMode !== i ? styles.rowNoEdit : {},
+                this.state.deleteMode !== false && this.state.deleteMode !== i ? styles.rowNoEdit : {},
             )}
         >
-            <TableCell className={Utils.clsx(this.props.classes.cell, this.props.classes.cellExpand, level && this.props.classes.cellSecondary)}>
+            <TableCell
+                sx={Object.assign({}, styles.cell, styles.cellExpand, level ? styles.cellSecondary : {})}
+            >
                 {children.length ? <IconButton
                     onClick={() => {
                         const _opened = [...this.state.opened];
@@ -658,7 +662,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             </TableCell>
             <TableCell
                 scope="row"
-                className={Utils.clsx(this.props.classes.cell, level && this.props.classes.cellSecondary)}
+                sx={Object.assign({}, styles.cell, level ? styles.cellSecondary : {})}
                 style={{ ...this.props.columns[0].cellStyle, ...{ paddingLeft: levelShift * level } }}
             >
                 {this.props.columns[0].subField ?
@@ -670,7 +674,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             {this.props.columns.map((col, ii) =>
                 (!ii && !col.hidden ? null : this.renderCell(item, col, level, i)))}
 
-            {this.props.onUpdate ? <TableCell className={Utils.clsx(this.props.classes.cell, this.props.classes.cellButton)}>
+            {this.props.onUpdate ? <TableCell sx={Object.assign({}, styles.cell, styles.cellButton)}>
                 {this.state.editMode === i || this.state.deleteMode === i ?
                     <IconButton
                         disabled={this.state.editMode !== false && (!this.state.editData || !Object.keys(this.state.editData).length)}
@@ -699,7 +703,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             </TableCell> : null}
 
             {this.props.onDelete && !this.props.onUpdate ?
-                <TableCell className={Utils.clsx(this.props.classes.cell, this.props.classes.cellButton)}>
+                <TableCell sx={Object.assign({}, styles.cell, styles.cellButton)}>
                     {this.state.deleteMode === i ?
                         <IconButton
                             disabled={this.state.editMode !== false && (!this.state.editData || !Object.keys(this.state.editData).length)}
@@ -712,7 +716,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                         null}
                 </TableCell> : null}
 
-            {this.props.onUpdate || this.props.onDelete ? <TableCell className={Utils.clsx(this.props.classes.cell, this.props.classes.cellButton)}>
+            {this.props.onUpdate || this.props.onDelete ? <TableCell sx={Object.assign({}, styles.cell, styles.cellButton)}>
                 {this.state.editMode === i || this.state.deleteMode === i ?
                     <IconButton
                         onClick={() => this.setState({ editMode: false, deleteMode: false })}
@@ -750,11 +754,11 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             <TableRow key="headerRow">
                 <TableCell
                     component="th"
-                    className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes.cellExpand)}
+                    sx={Object.assign({}, styles.cell, styles.cellHeader, styles.cellExpand)}
                 />
                 <TableCell
                     component="th"
-                    className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes[`width_${this.props.columns[0].field.replace(/\./g, '_')}`])}
+                    sx={Object.assign({}, styles.cell, styles.cellHeader, styles[`width_${this.props.columns[0].field.replace(/\./g, '_')}`])}
                     style={this.props.columns[0].headerStyle || this.props.columns[0].cellStyle}
                     sortDirection={this.props.noSort ? false : (this.state.orderBy === this.props.columns[0].field ? this.state.order : false)}
                 >
@@ -765,7 +769,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                     >
                         {this.props.columns[0].title || this.props.columns[0].field}
                         {this.state.orderBy === this.props.columns[0].field ?
-                            <span className={this.props.classes.visuallyHidden}>
+                            <span style={styles.visuallyHidden}>
                                 {this.state.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                             </span> : null}
                     </TableSortLabel>}
@@ -773,7 +777,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                 {this.props.columns.map((col, i) =>
                     (!i && !col.hidden ? null : <TableCell
                         key={col.field}
-                        className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes[`width_${col.field.replace(/\./g, '_')}`])}
+                        sx={Object.assign({}, styles.cell, styles.cellHeader, styles[`width_${col.field.replace(/\./g, '_')}`])}
                         style={col.headerStyle || col.cellStyle}
                         component="th"
                     >
@@ -784,12 +788,12 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                         >
                             {col.title || col.field}
                             {this.state.orderBy === col.field ?
-                                <span className={this.props.classes.visuallyHidden}>
+                                <span style={styles.visuallyHidden}>
                                     {this.state.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                 </span> : null}
                         </TableSortLabel> }
                     </TableCell>))}
-                {this.props.onUpdate ? <TableCell component="th" className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes.cellButton)}>
+                {this.props.onUpdate ? <TableCell component="th" sx={Object.assign({}, styles.cell, styles.cellHeader, styles.cellButton)}>
                     {!this.props.noAdd ? <Fab
                         color="primary"
                         size="small"
@@ -800,7 +804,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                     </Fab> : null }
                 </TableCell> : null}
                 {this.props.onDelete || this.props.onUpdate ?
-                    <TableCell component="th" className={Utils.clsx(this.props.classes.cell, this.props.classes.cellHeader, this.props.classes.cellButton)} /> : null}
+                    <TableCell component="th" sx={Object.assign({}, styles.cell, styles.cellHeader, styles.cellButton)} /> : null}
             </TableRow>
         </TableHead>;
     }
@@ -819,8 +823,8 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                 }, 500);
             }
 
-            return <div className={Utils.clsx(this.props.classes.tableContainer, this.props.className)}>
-                <Table className={this.props.classes.table} aria-label="simple table" size="small" stickyHeader>
+            return <div style={styles.tableContainer} className={this.props.className}>
+                <Table sx={styles.table} aria-label="simple table" size="small" stickyHeader>
                     {this.renderHead()}
                     <TableBody>
                         {table.map(it => this.renderLine(it))}
@@ -898,7 +902,7 @@ const styles = theme => ({
 });
 // renderTable
 renderTable() {
-    return <div className={this.props.classes.tableDiv}>
+    return <div sx={styles.tableDiv}>
         <TreeTable
             columns={this.columns}
             data={lines}
@@ -909,4 +913,4 @@ renderTable() {
 }
  */
 
-export default withStyles(styles)(TreeTable);
+export default TreeTable;

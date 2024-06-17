@@ -7,7 +7,7 @@
 import React from 'react';
 import copy from './CopyToClipboard';
 import I18n from '../i18n';
-import { ThemeName, ThemeType } from '../types';
+import { IobTheme, ThemeName, ThemeType } from '../types';
 
 const NAMESPACE    = 'material';
 const days         = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -1764,6 +1764,35 @@ class Utils {
     static isValidDate(date: any): boolean {
         // eslint-disable-next-line no-restricted-globals
         return date instanceof Date && !isNaN(date as any as number);
+    }
+
+    static getStyle(theme: IobTheme, ...args: any): Record<string, any> {
+        const result: Record<string, any> = {};
+
+        for (let a = 0; a < args.length; a++) {
+            if (typeof args[a] === 'function') {
+                Object.assign(result, args[a](theme));
+            } else if (args[a] && typeof args[a] === 'object') {
+                Object.keys(args[a]).forEach((attr: string) => {
+                    if (typeof args[a][attr] === 'function') {
+                        result[attr] = args[a][attr](theme);
+                    } else if (typeof args[a][attr] === 'object') {
+                        const obj = args[a][attr];
+                        Object.keys(obj).forEach((attr1: string) => {
+                            if (typeof obj[attr1] === 'function') {
+                                result[attr][attr1] = obj(theme);
+                            } else if (obj[attr1] || obj[attr1] === 0) {
+                                result[attr][attr1] = obj[attr1];
+                            }
+                        });
+                    } else if (args[a][attr] || args[a][attr] === 0) {
+                        result[attr] = args[a][attr];
+                    }
+                });
+            }
+        }
+
+        return result;
     }
 }
 

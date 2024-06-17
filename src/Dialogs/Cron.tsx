@@ -1,5 +1,4 @@
 import React from 'react';
-import { withStyles } from '@mui/styles';
 
 import {
     Button,
@@ -23,14 +22,7 @@ import I18n from '../i18n';
 
 // Generate cron expression
 
-const styles: Record<string, any> = {
-    headerID: {
-        fontWeight: 'bold',
-        fontStyle: 'italic',
-    },
-    radio: {
-        display: 'inline-block',
-    },
+const styles: Record<string, React.CSSProperties> = {
     dialogPaper: {
         height: 'calc(100% - 96px)',
     },
@@ -49,7 +41,6 @@ interface DialogCronProps {
     complex?: boolean;
     /** do not show wizard */
     noWizard?: boolean;
-    classes: Record<string, string>;
 }
 
 interface DialogCronState {
@@ -98,7 +89,7 @@ class DialogCron extends React.Component<DialogCronProps, DialogCronState> {
             onClose={() => {}}
             maxWidth="md"
             fullWidth
-            classes={{ paper: this.props.classes.dialogPaper }}
+            sx={{ '& .MuiDialog-paper': styles.dialogPaper }}
             open={!0}
             aria-labelledby="cron-dialog-title"
         >
@@ -155,7 +146,7 @@ class DialogCron extends React.Component<DialogCronProps, DialogCronState> {
                 />}
                 {this.state.mode === 'wizard' && <Schedule
                     schedule={this.state.cron}
-                    onChange={cron => this.setState({ cron })}
+                    onChange={(cron: string) => this.setState({ cron })}
                 />}
                 {this.state.mode === 'complex' && <ComplexCron
                     cronExpression={this.state.cron}
@@ -185,4 +176,4 @@ class DialogCron extends React.Component<DialogCronProps, DialogCronState> {
     }
 }
 
-export default withStyles(styles)(DialogCron);
+export default DialogCron;

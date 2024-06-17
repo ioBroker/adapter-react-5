@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withStyles } from '@mui/styles';
 
 import {
     FormControl, InputLabel, MenuItem, Select,
@@ -12,7 +11,7 @@ import Icon from './Icon';
 import Utils from './Utils';
 import I18n from '../i18n';
 
-const styles: Record<string, any> = {
+const styles: Record<string, React.CSSProperties> = {
     different: {
         opacity: 0.5,
     },
@@ -40,7 +39,6 @@ interface SelectWithIconProps {
     removePrefix?: string;
     allowNone?: boolean;
     inputProps?: InputProps['inputProps'];
-    classes: Record<string, string>;
     dense?: boolean;
 }
 
@@ -142,14 +140,14 @@ class SelectWithIcon extends Component<SelectWithIconProps, SelectWithIconState>
             value={this.props.value}
             inputProps={this.props.inputProps}
             renderValue={(/* value */) => <span>
-                {item?.icon ? <Icon src={item?.icon} className={this.props.classes.icon} /> : null}
+                {item?.icon ? <Icon src={item?.icon} style={styles.icon} /> : null}
                 {item?.name}
             </span>}
+            sx={{
+                '& .MuiSelect-root': this.props.value === this.props.different ? styles.different : {},
+            }}
             classes={{
-                root: Utils.clsx(
-                    this.props.value === this.props.different ? this.props.classes.different : '',
-                    this.props.dense ? this.props.className : '',
-                ),
+                root: this.props.dense ? this.props.className : '',
             }}
             style={style}
             onChange={el => {
@@ -173,12 +171,12 @@ class SelectWithIcon extends Component<SelectWithIconProps, SelectWithIconState>
             }}
         >
             {this.state.list.map(el => <MenuItem
-                className={this.props.different && el.value === this.props.different ? this.props.classes.different : ''}
+                sx={this.props.different && el.value === this.props.different ? styles.different : {}}
                 style={this.props.different && el.value === this.props.different ? {} : { color: el.color || undefined, backgroundColor: Utils.getInvertedColor(el.color || '', this.props.themeType) }}
                 key={el.value}
                 value={el.value}
             >
-                {el.icon ? <Icon src={el.icon} className={this.props.classes.icon} /> : null}
+                {el.icon ? <Icon src={el.icon} style={styles.icon} /> : null}
                 {el.name}
             </MenuItem>)}
         </Select>;
@@ -194,4 +192,4 @@ class SelectWithIcon extends Component<SelectWithIconProps, SelectWithIconState>
     }
 }
 
-export default withStyles(styles)(SelectWithIcon);
+export default SelectWithIcon;

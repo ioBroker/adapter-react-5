@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { makeStyles } from '@mui/styles';
 
 import {
     InputLabel,
@@ -14,10 +13,49 @@ import Icon from './Icon';
 import I18n from '../i18n';
 import Utils from './Utils';
 
+const styles: Record<string, React.CSSProperties> = {
+    formContainer : {
+        display: 'flex',
+        justifyContent: 'left',
+        alignItems: 'center',
+    },
+    formControl : {
+        display: 'flex',
+        padding: 24,
+        flexGrow: 1000,
+    },
+    divContainer: {
+        width: 32 + 24,
+        height: 32,
+        whiteSpace: 'nowrap',
+        lineHeight: '32px',
+        marginRight: 8,
+    },
+    dragField: {
+        textAlign: 'center',
+        display: 'table',
+        minHeight: 90,
+        width: 'calc(100% - 60px)',
+        border: '2px dashed #777',
+        borderRadius: 10,
+        padding: 4,
+    },
+    formIcon : {
+        margin: 10,
+        opacity: 0.6,
+    },
+    text: {
+        display: 'table-cell',
+        verticalAlign: 'middle',
+    },
+};
+
 interface IconPickerProps {
+    previewStyle?: React.CSSProperties;
     previewClassName?: string;
     /** Custom icon element. */
-    icon?: React.ComponentType<any>;
+    icon?: React.FC<{ style?: React.CSSProperties }>;
+    customStyles?: Record<string, React.CSSProperties>;
     customClasses?: Record<string, string>;
     /** The label. */
     label?: string;
@@ -41,45 +79,6 @@ interface IconPickerProps {
 const IconPicker = (props: IconPickerProps) => {
     const IconCustom = props.icon;
 
-    const useStyles = makeStyles(() => ({
-        formContainer : {
-            display: 'flex',
-            justifyContent: 'left',
-            alignItems: 'center',
-        },
-        formControl : {
-            display: 'flex',
-            padding: 24,
-            flexGrow: 1000,
-        },
-        divContainer: {
-            width: 32 + 24,
-            height: 32,
-            whiteSpace: 'nowrap',
-            lineHeight: '32px',
-            marginRight: 8,
-        },
-        dragField: {
-            textAlign: 'center',
-            display: 'table',
-            minHeight: 90,
-            width: 'calc(100% - 60px)',
-            border: '2px dashed #777',
-            borderRadius: 10,
-            padding: 4,
-        },
-        formIcon : {
-            margin: 10,
-            opacity: 0.6,
-        },
-        text: {
-            display: 'table-cell',
-            verticalAlign: 'middle',
-        },
-    }));
-
-    const classes = useStyles();
-
     const onDrop = useCallback((acceptedFiles: File[]) => {
         const reader = new FileReader();
 
@@ -93,16 +92,24 @@ const IconPicker = (props: IconPickerProps) => {
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-    return <div className={classes.formContainer}>
-        {IconCustom ? <IconCustom className={classes.formIcon} /> : null}
-        <FormControl variant="standard" className={classes.formControl} style={{ padding: 3 }}>
-            <InputLabel shrink classes={{ root: props.customClasses?.label }}>
+    return <div style={styles.formContainer}>
+        {IconCustom ? <IconCustom style={styles.formIcon} /> : null}
+        <FormControl variant="standard" sx={styles.formControl} style={{ padding: 3 }}>
+            <InputLabel
+                shrink
+                sx={props.customStyles?.label ? { '& .MuiInputLabel-root': props.customStyles.label } : undefined}
+                classes={{ root: props.customClasses?.label }}
+            >
                 {props.label}
             </InputLabel>
-            <div className={classes.formContainer}>
+            <div style={styles.formContainer}>
                 {props.value ?
-                    <div className={classes.divContainer}>
-                        <Icon className={Utils.clsx(props.previewClassName, props.customClasses?.icon)} src={props.value} />
+                    <div style={styles.divContainer}>
+                        <Icon
+                            style={{ ...props.previewStyle, ...(props.customStyles?.icon || undefined) }}
+                            src={props.value}
+                            className={Utils.clsx(props.previewClassName, props.customClasses?.icon)}
+                        />
                         {!props.disabled && <IconButton
                             style={{ verticalAlign: 'top' }}
                             title={I18n.t('ra_Clear icon')}
@@ -124,15 +131,12 @@ const IconPicker = (props: IconPickerProps) => {
 
                 {!props.disabled && <div
                     {...getRootProps()}
-                    className={classes.dragField}
-                    style={isDragActive ? { backgroundColor: 'rgba(0, 255, 0, 0.1)' } : { cursor: 'pointer' }}
+                    style={Object.assign({}, styles.dragField, isDragActive ? { backgroundColor: 'rgba(0, 255, 0, 0.1)' } : { cursor: 'pointer' })}
                 >
                     <input {...getInputProps()} />
-                    {
-                        isDragActive ?
-                            <span className={classes.text}>{I18n.t('ra_Drop the files here...')}</span> :
-                            <span className={classes.text}>{I18n.t('ra_Drag \'n\' drop some files here, or click to select files')}</span>
-                    }
+                    {isDragActive ?
+                        <span style={styles.text}>{I18n.t('ra_Drop the files here...')}</span> :
+                        <span style={styles.text}>{I18n.t('ra_Drag \'n\' drop some files here, or click to select files')}</span>}
                 </div>}
             </div>
         </FormControl>

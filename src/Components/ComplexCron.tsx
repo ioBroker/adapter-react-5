@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withStyles } from '@mui/styles';
 
 import {
     Checkbox,
@@ -10,13 +9,13 @@ import {
     AppBar,
     Tabs,
     Tab,
-    TextField,
+    TextField, Box,
 } from '@mui/material';
 
 import I18n from '../i18n';
 import convertCronToText from './SimpleCron/cronText';
 
-const styles: Record<string, any> = {
+const styles: Record<string, React.CSSProperties> = {
     mainDiv: {
         width: '100%',
         height: '100%',
@@ -178,7 +177,6 @@ interface ComplexCronProps {
     cronExpression: string;
     onChange: (cron: string) => void;
     language: ioBroker.Languages;
-    classes: Record<string, any>;
 }
 
 // type CronModes = 'every' | 'everyN' | 'specific';
@@ -310,7 +308,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
             <Button
                 key="removeall"
                 variant="outlined"
-                className={this.props.classes.numberButton}
+                sx={styles.numberButton}
                 // style={{paddingBottom: 20}}
                 color="primary"
                 onClick={() => this.onToggle(false, type, max)}
@@ -321,7 +319,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                 key="addall"
                 variant="contained"
                 // style={{paddingBottom: 20}}
-                className={this.props.classes.numberButton}
+                sx={styles.numberButton}
                 color="secondary"
                 onClick={() => this.onToggle(true, type, max)}
             >
@@ -338,7 +336,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                     <Button
                         key={`_${i}`}
                         variant={parts.indexOf(i) !== -1 ? 'contained' : 'outlined'}
-                        className={this.props.classes.numberButton}
+                        sx={styles.numberButton}
                         color={parts.indexOf(i) !== -1 ? 'secondary' : 'primary'}
                         onClick={() => this.onToggle(i, type, max)}
                     >
@@ -374,7 +372,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
         return <div>
             <Select
                 variant="standard"
-                className={this.props.classes.periodSelect}
+                sx={styles.periodSelect}
                 style={{ verticalAlign: 'bottom' }}
                 value={select}
                 onChange={e => {
@@ -471,7 +469,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
 
     render() {
         const tab = this.state.seconds !== false ? this.state.tab : this.state.tab + 1;
-        return <div className={this.props.classes.mainDiv}>
+        return <Box component="div" sx={styles.mainDiv}>
             <div style={{ paddingLeft: 8, width: '100%' }}><TextField variant="standard" style={{ width: '100%' }} value={this.state.cron} disabled /></div>
             <div style={{ paddingLeft: 8, width: '100%', height: 60 }}>{ComplexCron.convertCronToText(this.state.cron, this.props.language || 'en')}</div>
             <FormControlLabel
@@ -481,10 +479,10 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                 />}
                 label={I18n.t('ra_use seconds')}
             />
-            <AppBar position="static" classes={{ root: this.props.classes.appBar }} color="secondary">
+            <AppBar position="static" sx={{ '&.MuiAppBar-root': styles.appBar }} color="secondary">
                 <Tabs
                     value={this.state.tab}
-                    className={this.props.classes.appBar}
+                    sx={styles.appBar}
                     color="secondary"
                     onChange={(active, _tab) =>
                         this.setState({ tab: _tab })}
@@ -497,14 +495,14 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                     <Tab id="dow" label={I18n.t('sc_dows')} />
                 </Tabs>
             </AppBar>
-            {tab === 0 && <div className={this.props.classes.tabContent}>{this.getPeriodsTab('seconds', 60)}</div>}
-            {tab === 1 && <div className={this.props.classes.tabContent}>{this.getPeriodsTab('minutes', 60)}</div>}
-            {tab === 2 && <div className={this.props.classes.tabContent}>{this.getPeriodsTab('hours', 24)}</div>}
-            {tab === 3 && <div className={this.props.classes.tabContent}>{this.getPeriodsTab('dates', 31)}</div>}
-            {tab === 4 && <div className={this.props.classes.tabContent}>{this.getPeriodsTab('months', 12)}</div>}
-            {tab === 5 && <div className={this.props.classes.tabContent}>{this.getPeriodsTab('dow', 7)}</div>}
-        </div>;
+            {tab === 0 && <Box component="div" sx={styles.tabContent}>{this.getPeriodsTab('seconds', 60)}</Box>}
+            {tab === 1 && <Box component="div" sx={styles.tabContent}>{this.getPeriodsTab('minutes', 60)}</Box>}
+            {tab === 2 && <Box component="div" sx={styles.tabContent}>{this.getPeriodsTab('hours', 24)}</Box>}
+            {tab === 3 && <Box component="div" sx={styles.tabContent}>{this.getPeriodsTab('dates', 31)}</Box>}
+            {tab === 4 && <Box component="div" sx={styles.tabContent}>{this.getPeriodsTab('months', 12)}</Box>}
+            {tab === 5 && <Box component="div" sx={styles.tabContent}>{this.getPeriodsTab('dow', 7)}</Box>}
+        </Box>;
     }
 }
 
-export default withStyles(styles)(ComplexCron);
+export default ComplexCron;

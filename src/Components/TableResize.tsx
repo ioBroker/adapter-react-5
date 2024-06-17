@@ -5,50 +5,11 @@
  *
  * */
 import React, { Component } from 'react';
-import { withStyles } from '@mui/styles';
 
 import {
     Table,
     Skeleton,
 } from '@mui/material';
-
-const styles: Record<string, any> = {
-    table: {
-        display: 'grid',
-        '& tr': {
-            display: 'contents',
-        },
-        '& thead': {
-            display: 'contents',
-        },
-        '& tbody': {
-            display: 'contents',
-        },
-        '& th': { // resizer
-            position: 'sticky',
-            userSelect: 'none',
-        },
-        '& .resize-handle': { // resizer
-            display: 'block',
-            position: 'absolute',
-            cursor: 'col-resize',
-            width: 7,
-            right: 0,
-            top: 2,
-            bottom: 2,
-            zIndex: 1,
-            borderRight: '2px dotted #888',
-            '&:hover': {
-                borderColor: '#ccc',
-                borderRightStyle: 'solid',
-            },
-            '&.active': {
-                borderColor: '#517ea5',
-                borderRightStyle: 'solid',
-            },
-        },
-    },
-};
 
 interface TableResizeProps {
     name?: string;
@@ -293,4 +254,4 @@ class TableResize extends Component<TableResizeProps> {
     }
 }
 
-export default withStyles(styles)(TableResize);
+export default TableResize;

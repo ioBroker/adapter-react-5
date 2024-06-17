@@ -15,10 +15,11 @@
  */
 import React, { Component } from 'react';
 import { ChromePicker, type RGBColor } from 'react-color';
-import { withStyles } from '@mui/styles';
 
 import {
-    TextField, Menu, IconButton, Button,
+    TextField, Menu,
+    IconButton, Button,
+    Box,
 } from '@mui/material';
 
 import {
@@ -28,10 +29,9 @@ import {
 
 import I18n from '../i18n';
 
-import Utils from './Utils';
 import { IobTheme } from '../types';
 
-const styles: Record<string, any> = (theme: IobTheme) => ({
+const styles: Record<string, any> = {
     color: {
         width: 36,
         height: 14,
@@ -45,7 +45,7 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
     swatch: {
         marginTop: 16,
         padding: 5,
-        background: theme.palette.background.paper,
+        background: 'background.paper',
         borderRadius: 1,
         boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
         display: 'inline-block',
@@ -66,10 +66,10 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
         padding: 0,
     },
     closeButton: {
-        backgroundColor: `${theme.palette.background.paper} !important`,
+        backgroundColor: (theme: IobTheme) => `${theme.palette.background.paper} !important`,
         borderRadius: '0 0 25% 25%',
         '&:hover': {
-            backgroundColor: `${theme.palette.secondary.main} !important`,
+            backgroundColor: (theme: IobTheme) => `${theme.palette.secondary.main} !important`,
         },
     },
     cover: {
@@ -84,7 +84,7 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
         marginBottom: 0,
     },
     picker: {
-        background: `${theme.palette.background.paper} !important`,
+        background: (theme: IobTheme) => `${theme.palette.background.paper} !important`,
     },
     iconButton: {
         width: 16,
@@ -96,7 +96,7 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
         minWidth: 32,
         minHeight: 32,
     },
-});
+};
 
 interface ColorPickerProps {
     /** Set to true to disable the color picker. */
@@ -120,7 +120,6 @@ interface ColorPickerProps {
     customPalette?: string[];
     noInputField?: boolean;
     barWidth?: number;
-    classes: Record<string, string>;
 }
 
 interface ColorPickerState {
@@ -143,7 +142,10 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
      * @private
      */
     handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        this.setState({ displayColorPicker: !this.state.displayColorPicker, anchorEl: this.state.displayColorPicker ? null : e.currentTarget });
+        this.setState({
+            displayColorPicker: !this.state.displayColorPicker,
+            anchorEl: this.state.displayColorPicker ? null : e.currentTarget,
+        });
     };
 
     /**
@@ -219,14 +221,18 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
         }
         return <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap' }}>
             {this.props.customPalette.map(color => <Button
-                className={this.props.classes.button}
+                sx={styles.button}
                 key={color}
                 onClick={() => {
                     this.handleChange(color);
                     setTimeout(() => this.handleClose(), 300);
                 }}
             >
-                <div className={this.props.classes.iconButton} style={{ background: color }} />
+                <Box
+                    component="div"
+                    sx={styles.iconButton}
+                    style={{ background: color }}
+                />
             </Button>)}
         </div>;
     }
@@ -236,7 +242,8 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
         style.position = 'relative';
         const { color } = this.state;
 
-        return <div
+        return <Box
+            component="div"
             style={style}
             className={this.props.className || ''}
         >
@@ -244,24 +251,28 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
                 disabled={this.props.disabled}
                 variant="standard"
                 id="ar_color_picker_name"
-                style={color ? { width: 'calc(100% - 80px)' } : { width: 'calc(100% - 56px)', marginRight: 8 }}
                 label={this.props.label || this.props.name || 'color'}
                 value={color || ''}
                 margin="dense"
-                classes={{ root: this.props.classes.textDense }}
+                sx={{
+                    '& .MuiFormControl-root': styles.textDense,
+                    width: color ? 'calc(100% - 80px)' : 'calc(100% - 56px)',
+                    marginRight: color ? undefined: 8,
+                }}
                 onChange={e => this.handleChange(e.target.value)}
             />}
             {!this.props.noInputField && color ? <IconButton
                 disabled={this.props.disabled}
                 onClick={() => this.handleChange('')}
                 size="small"
-                className={this.props.classes.delButton}
+                sx={styles.delButton}
                 style={color ? {} : { opacity: 0, cursor: 'default' }}
             >
                 <IconDelete />
             </IconButton> : null}
-            <div
-                className={Utils.clsx(this.props.classes.swatch, this.props.disabled && this.props.classes.swatchDisabled)}
+            <Box
+                component="div"
+                sx={Object.assign({}, styles.swatch, this.props.disabled ? styles.swatchDisabled : {})}
                 onClick={e => !this.props.disabled && this.handleClick(e)}
                 title={I18n.t('ra_Select color')}
                 style={{
@@ -271,22 +282,24 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
                     marginTop: this.props.noInputField ? 0 : undefined,
                 }}
             >
-                <div
-                    className={this.props.classes.color}
+                <Box
+                    component="div"
+                    sx={styles.color}
                     style={{
                         background: ColorPicker.getColor(color),
                         width: this.props.noInputField ? (this.props.barWidth || 16) : (this.props.barWidth || undefined),
                     }}
                 />
-            </div>
+            </Box>
             {this.state.displayColorPicker && !this.props.disabled ? <Menu
-                classes={{ paper: this.props.classes.popover, list: this.props.classes.popoverList }}
+                classes={{ paper: styles.popover, list: styles.popoverList }}
                 anchorEl={this.state.anchorEl}
                 open={!0}
                 onClose={() => this.handleClose()}
             >
                 <ChromePicker
-                    className={this.props.classes.picker}
+                    // todo
+                    // sx={styles.picker}
                     color={this.state.color || undefined}
                     onChangeComplete={_color => this.handleChange(_color.rgb)}
                     styles={{
@@ -297,16 +310,16 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
                         },
                     }}
                 />
-                {color && this.props.noInputField ? <IconButton className={this.props.classes.closeButton} onClick={() => this.handleChange('')}>
+                {color && this.props.noInputField ? <IconButton sx={styles.closeButton} onClick={() => this.handleChange('')}>
                     <IconDelete />
                 </IconButton> : null}
-                <IconButton className={this.props.classes.closeButton} onClick={() => this.handleClose()}>
+                <IconButton sx={styles.closeButton} onClick={() => this.handleClose()}>
                     <IconClose />
                 </IconButton>
                 {this.renderCustomPalette()}
             </Menu> : null}
-        </div>;
+        </Box>;
     }
 }
 
-export default withStyles(styles)(ColorPicker);
+export default ColorPicker;

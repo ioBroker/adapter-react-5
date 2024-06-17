@@ -26,7 +26,7 @@ import I18n from '../i18n';
 import ObjectBrowser, { ObjectBrowserFilter } from '../Components/ObjectBrowser';
 import { ObjectBrowserColumn, ObjectBrowserCustomFilter, ObjectBrowserType } from '../Components/types';
 
-interface SelectIDFilters {
+export interface SelectIDFilters {
     id?: string;
     name?: string;
     room?: string;

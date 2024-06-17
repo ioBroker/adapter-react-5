@@ -5,7 +5,6 @@
  *
  * */
 import React, { Component } from 'react';
-import { withStyles } from '@mui/styles';
 import Dropzone from 'react-dropzone';
 
 import {
@@ -27,7 +26,7 @@ import {
     DialogActions,
     Button,
     Input,
-    Breadcrumbs,
+    Breadcrumbs, Box,
 } from '@mui/material';
 
 // MUI Icons
@@ -95,9 +94,9 @@ const FILE_TYPE_ICONS: Record<string, React.FC<{ fontSize: 'small' }>> = {
     video: TypeIconVideo,
 };
 
-const styles: Record<string, any> = (theme: IobTheme) => ({
+const styles: Record<string, any> = {
     dialog: {
-        height: `calc(100% - ${theme.mixins.toolbar.minHeight}px)`,
+        height: (theme: IobTheme) => `calc(100% - ${theme.mixins.toolbar.minHeight}px)`,
     },
     root: {
         width: '100%',
@@ -106,10 +105,10 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
         position: 'relative',
     },
     filesDiv: {
-        width: `calc(100% - ${theme.spacing(2)})`,
+        width: (theme: IobTheme) => `calc(100% - ${theme.spacing(2)})`,
         overflowX: 'hidden',
         overflowY: 'auto',
-        padding: theme.spacing(1),
+        padding: (theme: IobTheme) => theme.spacing(1),
     },
     filesDivHint: {
         position: 'absolute',
@@ -120,10 +119,10 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
         fontSize: 12,
     },
     filesDivTable: {
-        height: `calc(100% - ${48 + parseInt(theme.spacing(1), 10)}px)`,
+        height: (theme: IobTheme) => `calc(100% - ${48 + parseInt(theme.spacing(1), 10)}px)`,
     },
     filesDivTile: {
-        height: `calc(100% - ${48 * 2 + parseInt(theme.spacing(1), 10)}px)`,
+        height: (theme: IobTheme) => `calc(100% - ${48 * 2 + parseInt(theme.spacing(1), 10)}px)`,
         display: 'flex',
         alignContent: 'flex-start',
         alignItems: 'stretch',
@@ -143,8 +142,8 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
         transition: 'opacity 1s',
         margin: 4,
         '&:hover': {
-            background: theme.palette.secondary.light,
-            color: Utils.invertColor(theme.palette.secondary.main, true),
+            background: (theme: IobTheme) => theme.palette.secondary.light,
+            color: (theme: IobTheme) => Utils.invertColor(theme.palette.secondary.main, true),
         },
     },
     itemNameFolderTile: {
@@ -164,14 +163,14 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
         height: TILE_HEIGHT - 32 - 16 - 8, // name + size
         display: 'block',
         paddingLeft: 8,
-        color: theme.palette.secondary.main || '#fbff7d',
+        color: (theme: IobTheme) => theme.palette.secondary.main || '#fbff7d',
     },
     itemFolderIconBack: {
         position: 'absolute',
         top: 22,
         left: 18,
         zIndex: 1,
-        color: theme.palette.mode === 'dark' ? '#FFF' : '#000',
+        color: (theme: IobTheme) => theme.palette.mode === 'dark' ? '#FFF' : '#000',
     },
     itemSizeTile: {
         width: '100%',
@@ -195,8 +194,8 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
     },
 
     itemSelected: {
-        background: theme.palette.primary.main,
-        color: Utils.invertColor(theme.palette.primary.main, true),
+        background: (theme: IobTheme) => theme.palette.primary.main,
+        color: (theme: IobTheme) => Utils.invertColor(theme.palette.primary.main, true),
     },
 
     itemTable: {
@@ -206,8 +205,8 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
         display: 'inline-flex',
         lineHeight: `${ROW_HEIGHT}px`,
         '&:hover': {
-            background: theme.palette.secondary.light,
-            color: Utils.invertColor(theme.palette.secondary.main, true),
+            background: (theme: IobTheme) => theme.palette.secondary.light,
+            color: (theme: IobTheme) => Utils.invertColor(theme.palette.secondary.main, true),
         },
     },
     itemNameTable: {
@@ -260,11 +259,11 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
     },
     itemFolderIconTable: {
         marginTop: 1,
-        marginLeft: theme.spacing(1),
+        marginLeft: (theme: IobTheme) => theme.spacing(1),
         display: 'inline-block',
         width: 30,
         height: 30,
-        color: theme.palette.secondary.main || '#fbff7d',
+        color: (theme: IobTheme) => theme.palette.secondary.main || '#fbff7d',
     },
     itemDownloadButtonTable: {
         display: 'inline-block',
@@ -276,7 +275,7 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
         padding: 0,
         borderRadius: BUTTON_WIDTH / 2,
         '&:hover': {
-            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
+            backgroundColor: (theme: IobTheme) => theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
         },
         '& span': {
             paddingTop: 9,
@@ -287,7 +286,7 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
             fontSize: '1rem',
             marginTop: -3,
             verticalAlign: 'middle',
-            color: theme.palette.mode === 'dark' ? '#EEE' : '#111',
+            color: (theme: IobTheme) => theme.palette.mode === 'dark' ? '#EEE' : '#111',
         },
     },
     itemDownloadEmptyTable: {
@@ -342,7 +341,7 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
         width: 'calc(100% - 40px)',
         height: 'calc(100% - 40px)',
         position: 'relative',
-        color: theme.palette.mode === 'dark' ? '#222' : '#CCC',
+        color: (theme: IobTheme) => theme.palette.mode === 'dark' ? '#222' : '#CCC',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -376,13 +375,13 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
     },
     pathDiv: {
         display: 'flex',
-        width: `calc(100% - ${theme.spacing(2)})`,
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
+        width: (theme: IobTheme) => `calc(100% - ${theme.spacing(2)})`,
+        marginLeft: (theme: IobTheme) => theme.spacing(1),
+        marginRight: (theme: IobTheme) => theme.spacing(1),
         textOverflow: 'clip',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
-        backgroundColor: theme.palette.secondary.main,
+        backgroundColor: (theme: IobTheme) => theme.palette.secondary.main,
     },
     pathDivInput: {
         width: '100%',
@@ -392,7 +391,7 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
         paddingRight: 2,
         cursor: 'pointer',
         '&:hover': {
-            background: theme.palette.primary.main,
+            background: (theme: IobTheme) => theme.palette.primary.main,
         },
     },
     backgroundImageLight: {
@@ -414,9 +413,9 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
         },
     },
     specialFolder: {
-        color: theme.palette.mode === 'dark' ? '#229b0f' : '#5dd300',
+        color: (theme: IobTheme) => theme.palette.mode === 'dark' ? '#229b0f' : '#5dd300',
     },
-});
+};
 
 const USER_DATA = '0_userdata.0';
 
@@ -485,13 +484,13 @@ export interface FileBrowserProps {
     themeName?: ThemeName;
     /** Theme type. */
     themeType?: ThemeType;
+    /** Theme object. */
+    theme: IobTheme;
 
     /** Padding in pixels for folder levels */
     levelPadding?: number;
 
     restrictToFolder?: string;
-
-    classes: Record<string, string>;
 
     modalEditOfAccessControl?: (obj: any) => React.JSX.Element | null;
 
@@ -560,9 +559,6 @@ interface FileBrowserState {
     pathFocus: boolean;
 }
 
-/**
- * @extends {React.Component<import('./types').FileBrowserProps>}
- */
 class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
     private readonly imagePrefix: string;
 
@@ -1206,44 +1202,45 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
         const isUserData = item.name === USER_DATA;
         const isSpecialData = isUserData || item.name === 'vis.0' || item.name === 'vis-2.0';
 
-        return <div
+        return <Box
+            component="div"
             key={item.id}
             id={item.id}
             style={this.state.viewType === TABLE ? { marginLeft: padding, width: `calc(100% - ${padding}px` } : {}}
             onClick={e => (this.state.viewType === TABLE ? this.select(item.id, e) : this.changeFolder(e, item.id))}
             onDoubleClick={e => this.state.viewType === TABLE && this.toggleFolder(item, e)}
             title={this.getText(item.title)}
-            className={Utils.clsx(
-                'browserItem',
-                this.props.classes[`item${this.state.viewType}`],
-                this.props.classes[`itemFolder${this.state.viewType}`],
-                this.state.selected === item.id && this.props.classes.itemSelected,
-                item.temp && this.props.classes.itemFolderTemp,
+            className="browserItem"
+            sx={Object.assign(
+                {},
+                styles[`item${this.state.viewType}`],
+                styles[`itemFolder${this.state.viewType}`],
+                this.state.selected === item.id ? styles.itemSelected : {},
+                item.temp ? styles.itemFolderTemp : {},
             )}
         >
             <IconEl
-                className={Utils.clsx(
-                    this.props.classes[`itemFolderIcon${this.state.viewType}`],
-                    isSpecialData && this.props.classes.specialFolder,
-                )}
+                style={Utils.getStyle(this.props.theme, styles[`itemFolderIcon${this.state.viewType}`], isSpecialData && styles.specialFolder)}
                 onClick={this.state.viewType === TABLE ? (e: React.MouseEvent<Element>) => this.toggleFolder(item, e) : undefined}
             />
 
-            <div
-                className={Utils.clsx(
-                    this.props.classes[`itemName${this.state.viewType}`],
-                    this.props.classes[`itemNameFolder${this.state.viewType}`],
+            <Box
+                component="div"
+                sx={Object.assign(
+                    {},
+                    styles[`itemName${this.state.viewType}`],
+                    styles[`itemNameFolder${this.state.viewType}`],
                 )}
             >
                 {isUserData ? this.props.t('ra_User files') : item.name}
-            </div>
+            </Box>
 
             <Hidden smDown>
-                <div className={this.props.classes[`itemSize${this.state.viewType}`]}>
+                <Box component="div" sx={styles[`itemSize${this.state.viewType}`]}>
                     {this.state.viewType === TABLE && this.state.folders[item.id]
                         ? this.state.folders[item.id].length
                         : ''}
-                </div>
+                </Box>
             </Hidden>
 
             <Hidden smDown>
@@ -1252,10 +1249,10 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
 
             <Hidden smDown>
                 {this.state.viewType === TABLE && this.props.expertMode ?
-                    <div className={this.props.classes[`itemDeleteButton${this.state.viewType}`]} /> : null}
+                    <Box component="div" sx={styles[`itemDeleteButton${this.state.viewType}`]} /> : null}
             </Hidden>
             {this.state.viewType === TABLE && this.props.allowDownload ?
-                <div className={this.props.classes[`itemDownloadEmpty${this.state.viewType}`]} /> : null}
+                <Box component="div" sx={styles[`itemDownloadEmpty${this.state.viewType}`]} /> : null}
 
             {this.state.viewType === TABLE &&
                 this.props.allowDelete &&
@@ -1270,46 +1267,50 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                             this.setState({ deleteItem: item.id });
                         }
                     }}
-                    className={this.props.classes[`itemDeleteButton${this.state.viewType}`]}
+                    sx={styles[`itemDeleteButton${this.state.viewType}`]}
                     size="large"
                 >
                     <DeleteIcon fontSize="small" />
                 </IconButton> :
                 this.state.viewType === TABLE && this.props.allowDelete ?
-                    <div className={this.props.classes[`itemDeleteButton${this.state.viewType}`]} /> : null}
-        </div>;
+                    <Box component="div" sx={styles[`itemDeleteButton${this.state.viewType}`]} /> : null}
+        </Box>;
     }
 
     renderBackFolder() {
-        return <div
+        return <Box
+            component="div"
             key={this.state.currentDir}
             id={this.state.currentDir}
             onClick={e => this.changeFolder(e)}
             title={this.props.t('ra_Back to %s', getParentDir(this.state.currentDir))}
-            className={Utils.clsx(
-                'browserItem',
-                this.props.classes[`item${this.state.viewType}`],
-                this.props.classes[`itemFolder${this.state.viewType}`],
+            className="browserItem"
+            sx={Object.assign(
+                {},
+                styles[`item${this.state.viewType}`],
+                styles[`itemFolder${this.state.viewType}`],
             )}
         >
-            <IconClosed className={this.props.classes[`itemFolderIcon${this.state.viewType}`]} />
-            <IconBack className={this.props.classes.itemFolderIconBack} />
+            <IconClosed style={styles[`itemFolderIcon${this.state.viewType}`]} />
+            <IconBack sx={styles.itemFolderIconBack} />
 
-            <div
-                className={Utils.clsx(
-                    this.props.classes[`itemName${this.state.viewType}`],
-                    this.props.classes[`itemNameFolder${this.state.viewType}`],
+            <Box
+                component="div"
+                sx={Object.assign(
+                    {},
+                    styles[`itemName${this.state.viewType}`],
+                    styles[`itemNameFolder${this.state.viewType}`],
                 )}
             >
                 ..
-            </div>
-        </div>;
+            </Box>
+        </Box>;
     }
 
     formatSize(size: number | null | undefined) {
-        return <div className={this.props.classes[`itemSize${this.state.viewType}`]}>
+        return <Box component="div" sx={styles[`itemSize${this.state.viewType}`]}>
             {size || size === 0 ? Utils.formatBytes(size) : ''}
-        </div>;
+        </Box>;
     }
 
     formatAcl(acl: { permissions?: number; file: number }) {
@@ -1321,33 +1322,33 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             accessStr = '';
         }
 
-        return <div className={this.props.classes[`itemAccess${this.state.viewType}`]}>
+        return <Box component="div" sx={styles[`itemAccess${this.state.viewType}`]}>
             {this.props.modalEditOfAccessControl ? <IconButton
                 size="large"
                 onClick={() => this.setState({ modalEditOfAccess: true })}
-                className={this.props.classes[`itemAclButton${this.state.viewType}`]}
+                sx={styles[`itemAclButton${this.state.viewType}`]}
             >
                 {accessStr || '---'}
             </IconButton> : accessStr || '---'}
-        </div>;
+        </Box>;
     }
 
     getFileIcon(ext: string | null) {
         switch (ext) {
             case 'json':
             case 'json5':
-                return <JsonIcon className={this.props.classes[`itemIcon${this.state.viewType}`]} />;
+                return <JsonIcon sx={styles[`itemIcon${this.state.viewType}`]} />;
 
             case 'css':
-                return <CssIcon className={this.props.classes[`itemIcon${this.state.viewType}`]} />;
+                return <CssIcon sx={styles[`itemIcon${this.state.viewType}`]} />;
 
             case 'js':
             case 'ts':
-                return <JSIcon className={this.props.classes[`itemIcon${this.state.viewType}`]} />;
+                return <JSIcon sx={styles[`itemIcon${this.state.viewType}`]} />;
 
             case 'html':
             case 'md':
-                return <HtmlIcon className={this.props.classes[`itemIcon${this.state.viewType}`]} />;
+                return <HtmlIcon sx={styles[`itemIcon${this.state.viewType}`]} />;
 
             case 'mp3':
             case 'ogg':
@@ -1355,10 +1356,10 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             case 'm4a':
             case 'mp4':
             case 'flac':
-                return <MusicIcon className={this.props.classes[`itemIcon${this.state.viewType}`]} />;
+                return <MusicIcon sx={styles[`itemIcon${this.state.viewType}`]} />;
 
             default:
-                return <FileIcon className={this.props.classes[`itemIcon${this.state.viewType}`]} />;
+                return <FileIcon sx={styles[`itemIcon${this.state.viewType}`]} />;
         }
     }
 
@@ -1396,11 +1397,11 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
         // ['light', 'dark', 'colored', 'delete']
         switch (this.state.backgroundImage) {
             case 'light':
-                return this.props.classes.backgroundImageLight;
+                return styles.backgroundImageLight;
             case 'dark':
-                return this.props.classes.backgroundImageDark;
+                return styles.backgroundImageDark;
             case 'colored':
-                return this.props.classes.backgroundImageColored;
+                return styles.backgroundImageColored;
             case 'delete':
                 return null;
             default:
@@ -1412,7 +1413,8 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
         const padding = this.state.viewType === TABLE ? item.level * this.levelPadding : 0;
         const ext = Utils.getFileExtension(item.name);
 
-        return <div
+        return <Box
+            component="div"
             key={item.id}
             id={item.id}
             onDoubleClick={e => {
@@ -1430,42 +1432,40 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             }}
             onClick={e => this.select(item.id, e)}
             style={this.state.viewType === TABLE ? { marginLeft: padding, width: `calc(100% - ${padding}px)` } : {}}
-            className={Utils.clsx(
-                'browserItem',
-                this.props.classes[`item${this.state.viewType}`],
-                this.props.classes[`itemFile${this.state.viewType}`],
-                this.state.selected === item.id && this.props.classes.itemSelected,
+            className="browserItem"
+            sx={Object.assign(
+                {},
+                styles[`item${this.state.viewType}`],
+                styles[`itemFile${this.state.viewType}`],
+                this.state.selected === item.id ? styles.itemSelected : {},
             )}
         >
             {ext && EXTENSIONS.images.includes(ext) ?
                 this.state.fileErrors.includes(item.id) ?
                     <IconNoIcon
-                        className={Utils.clsx(
-                            this.props.classes[`itemImage${this.state.viewType}`],
+                        style={Object.assign(
+                            {},
+                            styles[`itemImage${this.state.viewType}`],
                             this.getClassBackgroundImage(),
-                            this.props.classes[`itemNoImage${this.state.viewType}`],
+                            styles[`itemNoImage${this.state.viewType}`],
                         )}
                     /> :
                     <Icon
                         onError={e => {
-                            // @ts-expect-error it exists
-                            e.target.onerror = null;
+                            (e.target as HTMLImageElement).onerror = null;
                             const fileErrors = [...this.state.fileErrors];
                             if (!fileErrors.includes(item.id)) {
                                 fileErrors.push(item.id);
                                 this.setState({ fileErrors });
                             }
                         }}
-                        className={Utils.clsx(
-                            this.props.classes[`itemImage${this.state.viewType}`],
-                            this.getClassBackgroundImage(),
-                        )}
+                        style={Object.assign({}, styles[`itemImage${this.state.viewType}`], this.getClassBackgroundImage())}
                         src={this.imagePrefix + item.id}
                         alt={item.name}
                     />
                 :
                 this.getFileIcon(ext)}
-            <div className={this.props.classes[`itemName${this.state.viewType}`]}>{item.name}</div>
+            <Box component="div" sx={styles[`itemName${this.state.viewType}`]}>{item.name}</Box>
             <Hidden smDown>{this.formatSize(item.size)}</Hidden>
             <Hidden smDown>
                 {this.state.viewType === TABLE && this.props.expertMode ? this.formatAcl(item.acl) : null}
@@ -1490,31 +1490,26 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                                 this.props.onSelect(item.id, true, !!this.state.folders[item.id]);
                             }
                         }}
-                        className={this.props.classes[`itemDeleteButton${this.state.viewType}`]}
+                        sx={styles[`itemDeleteButton${this.state.viewType}`]}
                         size="large"
                     >
                         <EditIcon fontSize="small" />
                     </IconButton>
                     :
-                    <div className={this.props.classes[`itemDeleteButton${this.state.viewType}`]} />}
+                    <Box component="div" sx={styles[`itemDeleteButton${this.state.viewType}`]} />}
             </Hidden>
             {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-            {this.state.viewType === TABLE && this.props.allowDownload ? <a
-                className={Utils.clsx(
-                    'MuiButtonBase-root',
-                    'MuiIconButton-root',
-                    'MuiIconButton-sizeLarge',
-                    this.props.classes.itemDownloadButtonTable,
-                )}
+            {this.state.viewType === TABLE && this.props.allowDownload ? <Box
+                component="a"
+                className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge"
+                sx={styles.itemDownloadButtonTable}
                 tabIndex={0}
                 download={item.id}
                 href={this.imagePrefix + item.id}
-                onClick={e => {
-                    e.stopPropagation();
-                }}
+                onClick={e => e.stopPropagation()}
             >
                 <DownloadIcon />
-            </a> : null}
+            </Box> : null}
 
             {this.state.viewType === TABLE &&
             this.props.allowDelete &&
@@ -1531,15 +1526,15 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                             this.setState({ deleteItem: item.id });
                         }
                     }}
-                    className={this.props.classes[`itemDeleteButton${this.state.viewType}`]}
+                    sx={styles[`itemDeleteButton${this.state.viewType}`]}
                     size="large"
                 >
                     <DeleteIcon fontSize="small" />
                 </IconButton>
                 :
                 (this.state.viewType === TABLE && this.props.allowDelete ?
-                    <div className={this.props.classes[`itemDeleteButton${this.state.viewType}`]} /> : null)}
-        </div>;
+                    <Box component="div" sx={styles[`itemDeleteButton${this.state.viewType}`]} /> : null)}
+        </Box>;
     }
 
     renderItems(folderId: string): React.JSX.Element | (React.JSX.Element | null)[] {
@@ -1629,9 +1624,10 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                         ? this.props.t('ra_Show all folders')
                         : this.props.t('ra_Restrict to folder')
                 }
-                className={Utils.clsx(
-                    this.props.classes.menuButton,
-                    this.state.restrictToFolder && this.props.classes.menuButtonRestrictActive,
+                sx={Object.assign(
+                    {},
+                    styles.menuButton,
+                    this.state.restrictToFolder && styles.menuButtonRestrictActive,
                 )}
                 aria-label="restricted to folder"
                 onClick={() =>
@@ -1647,9 +1643,10 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             {this.props.showExpertButton ? <IconButton
                 edge="start"
                 title={this.props.t('ra_Toggle expert mode')}
-                className={Utils.clsx(
-                    this.props.classes.menuButton,
-                    this.state.expertMode && this.props.classes.menuButtonExpertActive,
+                sx={Object.assign(
+                    {},
+                    styles.menuButton,
+                    this.state.expertMode && styles.menuButtonExpertActive,
                 )}
                 aria-label="expert mode"
                 onClick={() => this.setState({ expertMode: !this.state.expertMode })}
@@ -1660,7 +1657,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             {this.props.showViewTypeButton ? <IconButton
                 edge="start"
                 title={this.props.t('ra_Toggle view mode')}
-                className={this.props.classes.menuButton}
+                sx={styles.menuButton}
                 aria-label="view mode"
                 onClick={() => {
                     const viewType = this.state.viewType === TABLE ? TILE : TABLE;
@@ -1682,7 +1679,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             <IconButton
                 edge="start"
                 title={this.props.t('ra_Hide empty folders')}
-                className={this.props.classes.menuButton}
+                sx={styles.menuButton}
                 color={this.state.filterEmpty ? 'secondary' : 'inherit'}
                 aria-label="filter empty"
                 onClick={() => {
@@ -1699,7 +1696,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             <IconButton
                 edge="start"
                 title={this.props.t('ra_Reload files')}
-                className={this.props.classes.menuButton}
+                sx={styles.menuButton}
                 color="inherit"
                 aria-label="reload files"
                 onClick={() => this.setState({ folders: {} }, () => this.loadFolders())}
@@ -1717,7 +1714,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                         this.limitToPath !== this.state.selected)
                 }
                 title={this.props.t('ra_Create folder')}
-                className={this.props.classes.menuButton}
+                sx={styles.menuButton}
                 color="inherit"
                 aria-label="add folder"
                 onClick={() => this.setState({ addFolder: true })}
@@ -1735,7 +1732,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                         this.limitToPath !== this.state.selected)
                 }
                 title={this.props.t('ra_Upload file')}
-                className={this.props.classes.menuButton}
+                sx={styles.menuButton}
                 color="inherit"
                 aria-label="upload file"
                 onClick={() => this.setState({ uploadFile: true })}
@@ -1784,7 +1781,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                 <IconButton
                     color="inherit"
                     edge="start"
-                    className={this.props.classes.menuButton}
+                    sx={styles.menuButton}
                     onClick={this.setStateBackgroundImage}
                     size="small"
                 >
@@ -1803,7 +1800,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                         }
                         color="inherit"
                         edge="start"
-                        className={this.props.classes.menuButton}
+                        sx={styles.menuButton}
                         onClick={e => {
                             e.stopPropagation();
                             if (this.suppressDeleteConfirm > Date.now()) {
@@ -1948,7 +1945,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                     key="close"
                     color="primary"
                     aria-label="close"
-                    className={this.props.classes.uploadCloseButton}
+                    sx={styles.uploadCloseButton}
                     onClick={() => this.setState({ uploadFile: false })}
                 >
                     <CloseIcon />
@@ -2023,27 +2020,29 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                         });
                     }}
                 >
-                    {({ getRootProps, getInputProps }) => <div
-                        className={Utils.clsx(
-                            this.props.classes.uploadDiv,
-                            this.state.uploadFile === 'dragging' && this.props.classes.uploadDivDragging,
+                    {({ getRootProps, getInputProps }) => <Box
+                        component="div"
+                        sx={Object.assign(
+                            {},
+                            styles.uploadDiv,
+                            this.state.uploadFile === 'dragging' ? styles.uploadDivDragging : {},
                         )}
                         {...getRootProps()}
                     >
                         <input {...getInputProps()} />
-                        <div className={this.props.classes.uploadCenterDiv}>
-                            <div className={this.props.classes.uploadCenterTextAndIcon}>
-                                <UploadIcon className={this.props.classes.uploadCenterIcon} />
-                                <div className={this.props.classes.uploadCenterText}>
+                        <Box component="div" sx={styles.uploadCenterDiv}>
+                            <Box component="div" sx={styles.uploadCenterTextAndIcon}>
+                                <UploadIcon sx={styles.uploadCenterIcon} />
+                                <Box component="div" sx={styles.uploadCenterText}>
                                     {this.state.uploadFile === 'dragging'
                                         ? this.props.t('ra_Drop file here')
                                         : this.props.t(
                                             'ra_Place your files here or click here to open the browse dialog',
                                         )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>}
+                                </Box>
+                            </Box>
+                        </Box>
+                    </Box>}
                 </Dropzone>,
             ];
         }
@@ -2276,28 +2275,30 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                 part && p.push(part);
                 const path = p.join('/');
                 if (i < parts.length - 1) {
-                    return <div
+                    return <Box
+                        component="div"
                         key={`${this.state.selected}_${i}`}
-                        className={this.props.classes.pathDivBreadcrumbDir}
+                        sx={styles.pathDivBreadcrumbDir}
                         onClick={e => this.changeFolder(e, path || '/')}
                     >
                         {part || this.props.t('ra_Root')}
-                    </div>;
+                    </Box>;
                 }
 
-                return <div
-                    className={this.props.classes.pathDivBreadcrumbSelected}
+                return <Box
+                    component="div"
+                    sx={styles.pathDivBreadcrumbSelected}
                     key={`${this.state.selected}_${i}`}
                     onClick={() => this.setState({ pathFocus: true })}
                 >
                     {part}
-                </div>;
+                </Box>;
             })}
         </Breadcrumbs>;
     }
 
     renderPath() {
-        return <div key="path" className={this.props.classes.pathDiv}>
+        return <Box component="div" key="path" sx={styles.pathDiv}>
             {this.state.pathFocus ?
                 <Input
                     value={this.state.path}
@@ -2315,11 +2316,11 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                     }
                     onBlur={() => this.changeToPath()}
                     onChange={e => this.setState({ path: e.target.value })}
-                    className={this.props.classes.pathDivInput}
+                    sx={styles.pathDivInput}
                 />
                 :
                 this.renderBreadcrumb()}
-        </div>;
+        </Box>;
     }
 
     render() {
@@ -2338,13 +2339,20 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             }, 300);
         }
 
-        return <div style={this.props.style} className={Utils.clsx(this.props.classes.root, this.props.className)}>
+        return <Box
+            component="div"
+            style={this.props.style}
+            className={this.props.className}
+            sx={styles.root}
+        >
             {this.props.showToolbar ? this.renderToolbar() : null}
             {this.state.viewType === TILE ? this.renderPath() : null}
-            <div
-                className={Utils.clsx(
-                    this.props.classes.filesDiv,
-                    this.props.classes[`filesDiv${this.state.viewType}`],
+            <Box
+                component="div"
+                sx={Object.assign(
+                    {},
+                    styles.filesDiv,
+                    styles[`filesDiv${this.state.viewType}`],
                 )}
                 onClick={e => {
                     if (this.state.viewType !== TABLE) {
@@ -2359,10 +2367,9 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                 {this.state.viewType === TABLE
                     ? this.renderItems('/')
                     : this.renderItems(this.state.currentDir || '/')}
-                {this.state.viewType !== TABLE ? (
-                    <div className={this.props.classes.filesDivHint}>{this.props.t('ra_select_folder_hint')}</div>
-                ) : null}
-            </div>
+                {this.state.viewType !== TABLE ?
+                    <Box component="div" sx={styles.filesDivHint}>{this.props.t('ra_select_folder_hint')}</Box> : null}
+            </Box>
             {this.props.allowUpload ? this.renderInputDialog() : null}
             {this.props.allowUpload ? this.renderUpload() : null}
             {this.props.allowDelete ? this.renderDeleteDialog() : null}
@@ -2371,8 +2378,8 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                 ? this.props.modalEditOfAccessControl(this)
                 : null}
             {this.renderError()}
-        </div>;
+        </Box>;
     }
 }
 
-export default withWidth()(withStyles(styles)(FileBrowser));
+export default withWidth()(FileBrowser);

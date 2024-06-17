@@ -1,10 +1,10 @@
 import React from 'react';
-import { withStyles } from '@mui/styles';
 
 import Icon from './Icon';
 import Utils from './Utils';
+import { ThemeType } from '../types';
 
-const styles: Record<string, any> = {
+const styles: Record<string, React.CSSProperties> = {
     div: {
         borderRadius: 3,
         padding: '0 3px',
@@ -29,7 +29,7 @@ const styles: Record<string, any> = {
 
 interface TextWithIconProps {
     lang: ioBroker.Languages;
-    themeType?: 'dark' | 'light';
+    themeType?: ThemeType;
     value: string | Record<string, any>;
     list?: ioBroker.Object[] | Record<string, ioBroker.Object>;
     options?: Record<string, any>;
@@ -44,7 +44,6 @@ interface TextWithIconProps {
     };
     icon?: string;
     color?: string;
-    classes: Record<string, string>;
 }
 
 interface TextWithIconItem {
@@ -62,7 +61,7 @@ const TextWithIcon = (props: TextWithIconProps) => {
     if (typeof value === 'string') {
         const list = props.list || props.options;
         if (list) {
-            // if list is array, then it is list of ioBroker.Object
+            // if a list is array, then it is list of ioBroker.Object
             if (Array.isArray(list)) {
                 const _item: ioBroker.Object = list.find((obj: ioBroker.Object) => obj._id === prefix + value);
                 if (_item) {
@@ -128,18 +127,22 @@ const TextWithIcon = (props: TextWithIconProps) => {
 
     const style = item?.color ? {
         border:`1px solid ${Utils.invertColor(item?.color)}`,
-        color: Utils.getInvertedColor(item?.color, props.themeType, true) || undefined,
+        color: Utils.getInvertedColor(item?.color, props.themeType || 'light', true) || undefined,
         backgroundColor: item?.color,
     } : {};
 
     return <div
-        style={{ ...props.style, ...style }}
-        className={Utils.clsx(props.className, props.classes.div, props.moreClasses?.root)}
+        style={Object.assign({}, props.style, styles.div, style)}
+        className={Utils.clsx(props.className, props.moreClasses?.root)}
         title={props.title || item.value}
     >
-        {item?.icon ? <Icon src={item?.icon} className={Utils.clsx(props.classes.icon, props.moreClasses?.icon)} /> : null}
-        <div className={Utils.clsx(props.classes.text, props.moreClasses?.text)}>{item?.name}</div>
+        {item?.icon ? <Icon
+            src={item?.icon}
+            className={props.moreClasses?.icon}
+            style={styles.icon}
+        /> : null}
+        <div style={styles.text} className={props.moreClasses?.text}>{item?.name}</div>
     </div>;
 };
 
-export default withStyles(styles)(TextWithIcon);
+export default TextWithIcon;

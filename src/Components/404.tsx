@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@mui/styles';
+import { Box } from "@mui/material";
 
 /*
 Copyright 2019 Robin Selmer
@@ -88,29 +88,34 @@ const styles: Record<string, any> = {
     },
 };
 
-interface Page404Props {
-    classes: Record<string, string>;
-}
-
-function Page404(props: Page404Props) {
-    return <div className={props.classes.content}>
-        <div className={props.classes.root}>
-            <div className={props.classes.overlay}>
-                <div className={props.classes.terminal}>
+function Page404() {
+    return <div
+        style={styles.content}
+    >
+        <div
+            style={styles.root}
+        >
+            <Box
+                component="div"
+                sx={styles.overlay}
+            >
+                <div
+                    style={styles.terminal}
+                >
                     <h1>
                         {I18n.t('ra_Error')}
-                        <span className={props.classes.errorCode}>404</span>
+                        <span style={styles.errorCode}>404</span>
                     </h1>
-                    <p className={props.classes.output}>
+                    <Box component="p" sx={styles.output}>
                         {I18n.t('ra_The page you are looking for was not found')}
-                    </p>
-                    <p className={props.classes.output}>
+                    </Box>
+                    <Box component="p" sx={styles.output}>
                         {I18n.t('ra_Good luck')}
-                    </p>
+                    </Box>
                 </div>
-            </div>
+            </Box>
         </div>
     </div>;
 }
 
-export default withStyles(styles)(Page404);
+export default Page404;

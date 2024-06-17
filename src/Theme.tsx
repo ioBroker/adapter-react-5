@@ -1,6 +1,5 @@
 import React from 'react';
 import { createTheme, alpha, PaletteOptions as PaletteOptionsMui } from '@mui/material/styles';
-import { type CSSProperties } from '@mui/styles/withStyles';
 import { orange, grey } from '@mui/material/colors';
 
 import { SimplePaletteColorOptions } from '@mui/material/styles/createPalette';
@@ -70,8 +69,8 @@ function getElevations(
     color: string,
     /** overlay color in the format '#rrggbb' or '#rgb' */
     overlay: string,
-): CSSProperties {
-    const elevations: CSSProperties = {};
+): Record<string, React.CSSProperties> {
+    const elevations: Record<string, React.CSSProperties> = {};
 
     for (let i = 1; i <= 24; i++) {
         elevations[`elevation${i}`] = {
