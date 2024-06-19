@@ -765,7 +765,7 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 6.0.1 (2024-06-19)
 * (bluefox) Removed the usage of `withStyles` in favor of `sx` and `style` properties (see [Migration from v5 to v6](#migration-from-v5-to-v6)
 * (bluefox) (BREAKING) Higher version of `@mui/material` (5.15.20) is used
 
