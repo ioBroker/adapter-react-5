@@ -13,7 +13,7 @@ import {
 
 import I18n from '../i18n';
 import { IobTheme } from '../types';
-import Utils from "./Utils";
+import Utils from './Utils';
 
 const styles: Record<string, any> = {
     modalDialog: {
@@ -30,11 +30,11 @@ const styles: Record<string, any> = {
     content: {
         fontSize: 16,
     },
-    languageButton: (theme: IobTheme) => ({
+    languageButton: {
         position: 'absolute',
         right: 8,
         top: 8,
-    }),
+    },
     languageButtonActive: (theme: IobTheme) => ({
         color: theme.palette.primary.main,
     }),
@@ -60,6 +60,7 @@ interface CustomModalProps {
     progress?: boolean;
     textInput?: boolean;
     defaultValue?: string;
+    theme: IobTheme;
 }
 
 const CustomModal = (props: CustomModalProps) => {
@@ -110,7 +111,7 @@ const CustomModal = (props: CustomModalProps) => {
             {title}
             {I18n.getLanguage() !== 'en' && toggleTranslation ? <IconButton
                 size="large"
-                sx={Utils.getStyle(styles.languageButton, noTranslation && styles.languageButtonActive)}
+                sx={Utils.getStyle(props.theme, styles.languageButton, noTranslation && styles.languageButtonActive)}
                 onClick={() => toggleTranslation()}
                 title={I18n.t('Disable/Enable translation')}
             >

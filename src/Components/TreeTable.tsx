@@ -257,6 +257,7 @@ interface TreeTableProps {
     /** Shift in pixels for every level */
     levelShift?: number;
     adapterName: string;
+    theme: IobTheme;
 }
 
 interface TreeTableState {
@@ -755,11 +756,11 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             <TableRow key="headerRow">
                 <TableCell
                     component="th"
-                    sx={Utils.getStyle(styles.cell, styles.cellHeader, styles.cellExpand)}
+                    sx={Utils.getStyle(this.props.theme, styles.cell, styles.cellHeader, styles.cellExpand)}
                 />
                 <TableCell
                     component="th"
-                    sx={Utils.getStyle(styles.cell, styles.cellHeader, styles[`width_${this.props.columns[0].field.replace(/\./g, '_')}`])}
+                    sx={Utils.getStyle(this.props.theme, styles.cell, styles.cellHeader, styles[`width_${this.props.columns[0].field.replace(/\./g, '_')}`])}
                     style={this.props.columns[0].headerStyle || this.props.columns[0].cellStyle}
                     sortDirection={this.props.noSort ? false : (this.state.orderBy === this.props.columns[0].field ? this.state.order : false)}
                 >
@@ -778,7 +779,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                 {this.props.columns.map((col, i) =>
                     (!i && !col.hidden ? null : <TableCell
                         key={col.field}
-                        sx={Utils.getStyle(styles.cell, styles.cellHeader, styles[`width_${col.field.replace(/\./g, '_')}`])}
+                        sx={Utils.getStyle(this.props.theme, styles.cell, styles.cellHeader, styles[`width_${col.field.replace(/\./g, '_')}`])}
                         style={col.headerStyle || col.cellStyle}
                         component="th"
                     >
@@ -794,7 +795,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                                 </span> : null}
                         </TableSortLabel> }
                     </TableCell>))}
-                {this.props.onUpdate ? <TableCell component="th" sx={Utils.getStyle(styles.cell, styles.cellHeader, styles.cellButton)}>
+                {this.props.onUpdate ? <TableCell component="th" sx={Utils.getStyle(this.props.theme, styles.cell, styles.cellHeader, styles.cellButton)}>
                     {!this.props.noAdd ? <Fab
                         color="primary"
                         size="small"
@@ -805,7 +806,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                     </Fab> : null }
                 </TableCell> : null}
                 {this.props.onDelete || this.props.onUpdate ?
-                    <TableCell component="th" sx={Utils.getStyle(styles.cell, styles.cellHeader, styles.cellButton)} /> : null}
+                    <TableCell component="th" sx={Utils.getStyle(this.props.theme, styles.cell, styles.cellHeader, styles.cellButton)} /> : null}
             </TableRow>
         </TableHead>;
     }

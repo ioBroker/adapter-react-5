@@ -254,6 +254,7 @@ function string2USdate(date: string): string {
 interface ScheduleProps {
     schedule: string | ScheduleConfig;
     onChange: (schedule: string, desc?: string) => void;
+    theme: IobTheme;
 }
 
 interface ScheduleState {
@@ -842,7 +843,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
             </div>,
 
             // ----- days ---
-            <Box component="div" key="days" sx={Utils.getStyle(styles.rowDiv, styles.rowDays)}>
+            <Box component="div" key="days" sx={Utils.getStyle(this.props.theme, styles.rowDiv, styles.rowDays)}>
                 <div style={styles.modeDiv}>
                     <FormControlLabel
                         control={<Radio
@@ -889,7 +890,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                 </div>,
             */
             // ----- weeks ---
-            <Box component="div" key="weeks" sx={Utils.getStyle(styles.rowDiv, styles.rowDows)}>
+            <Box component="div" key="weeks" sx={Utils.getStyle(this.props.theme, styles.rowDiv, styles.rowDows)}>
                 <div style={styles.modeDiv}>
                     <FormControlLabel
                         control={<Radio
@@ -914,14 +915,14 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                 </div>
                 <Box component="div" style={styles.settingsDiv}>
                     <div style={styles.settingsDiv}>{this.getPeriodSettingsWeekly()}</div>
-                    <Box component="div" sx={Utils.getStyle(styles.settingsDiv, styles.rowDowsDows)}>
+                    <Box component="div" sx={Utils.getStyle(this.props.theme, styles.settingsDiv, styles.rowDowsDows)}>
                         {this.state.schedule.period.weeks ? this.getPeriodSettingsWeekdays() : null}
                     </Box>
                 </Box>
             </Box>,
 
             // ----- months ---
-            <Box component="div" key="months" sx={Utils.getStyle(styles.rowDiv, styles.rowMonths)}>
+            <Box component="div" key="months" sx={Utils.getStyle(this.props.theme, styles.rowDiv, styles.rowMonths)}>
                 <div style={styles.modeDiv}>
                     <FormControlLabel
                         control={<Radio
@@ -947,7 +948,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                 <div style={styles.settingsDiv}>
                     {this.getPeriodSettingsMonthly()}
                     {schedule.period.months ? <Box>
-                        <Box component="div" sx={Utils.getStyle(styles.settingsDiv, styles.rowMonthsDates)}>
+                        <Box component="div" sx={Utils.getStyle(this.props.theme, styles.settingsDiv, styles.rowMonthsDates)}>
                             <FormControlLabel
                                 control={<Checkbox
                                     style={styles.inputRadio}
@@ -974,7 +975,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                                 label={I18n.t('sch_periodDates')}
                             />
                         </Box>
-                        <Box component="div" sx={Utils.getStyle(styles.settingsDiv, styles.rowMonthsDates)}>
+                        <Box component="div" sx={Utils.getStyle(this.props.theme, styles.settingsDiv, styles.rowMonthsDates)}>
                             {this.getPeriodSettingsDates()}
                         </Box>
                     </Box> : null}
@@ -982,7 +983,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
             </Box>,
 
             // ----- years ---
-            <Box component="div" key="years" sx={Utils.getStyle(styles.rowDiv, styles.rowYears)}>
+            <Box component="div" key="years" sx={Utils.getStyle(this.props.theme, styles.rowDiv, styles.rowYears)}>
                 <div style={styles.modeDiv}>
                     <FormControlLabel
                         control={<Radio

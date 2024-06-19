@@ -690,7 +690,8 @@ class JsonComponent extends ConfigGeneric {
 The main change is that the `withStyles` was removed. So you have to replace all `withStyles` with `sx` or `style` properties.
 
 You can read more about sx [here](https://mui.com/system/getting-started/the-sx-prop/).
-
+- Remove at start of the file `import { withStyles } from '@mui/styles';`
+- Replace at the very end of the file `export default withStyles(styles)(MyComponent);` with `export default MyComponent;`
 - Modify `const styles`:
 Before:
 ```
@@ -733,11 +734,11 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 - Modify `classes`:
   Before: `<Dialog classes={{ scrollPaper: this.props.classes.dialog, paper: this.props.classes.paper }}>`
 
-  After: `<Dialog {{ '&.MuiDialog-scrollPaper': styles.dialog, '& .MuiDialog-paper': styles.paper }}>`
+  After: `<Dialog sx={{ '&.MuiDialog-scrollPaper': styles.dialog, '& .MuiDialog-paper': styles.paper }}>`
 
   Before: `<Dialog classes={{ scrollPaper: this.props.classes.dialog, paper: this.props.classes.paper }}>`
 
-  After: `<Dialog {{ '&.MuiDialog-scrollPaper': styles.dialog, '& .MuiDialog-paper': styles.paper }}>`
+  After: `<Dialog sx={{ '&.MuiDialog-scrollPaper': styles.dialog, '& .MuiDialog-paper': styles.paper }}>`
 
   Before: `<ListItem classes={{ root: styles.listItem }} >`
   
@@ -764,7 +765,7 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
-### 6.0.0 (2024-06-19)
+### **WORK IN PROGRESS**
 * (bluefox) Removed the usage of `withStyles` in favor of `sx` and `style` properties (see [Migration from v5 to v6](#migration-from-v5-to-v6)
 * (bluefox) (BREAKING) Higher version of `@mui/material` (5.15.20) is used
 
