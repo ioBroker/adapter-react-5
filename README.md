@@ -686,7 +686,7 @@ class JsonComponent extends ConfigGeneric {
 ...
 }
 ```
-## Migration from adapter-react-v5@5.x to adapter-react-v5@6.x
+## Migration from v5 to v6
 The main change is that the `withStyles` was removed. So you have to replace all `withStyles` with `sx` or `style` properties.
 
 You can read more about sx [here](https://mui.com/system/getting-started/the-sx-prop/).
@@ -764,6 +764,10 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Removed the usage of `withStyles` in favor of `sx` and `style` properties (see [Migration from v5 to v6](#migration-from-v5-to-v6)
+* (bluefox) (BREAKING) Higher version of `@mui/material` (5.15.20) is used
+
 ### 5.0.8 (2024-06-15)
 * (bluefox) Added `modulefederation.admin.config.js` for module federation
 
