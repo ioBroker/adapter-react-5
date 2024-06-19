@@ -21,7 +21,7 @@ interface TabContentProps {
 function TabContent(props: TabContentProps) {
     return <Grid
         item
-        sx={Object.assign({}, styles.root, props.overflow === 'auto' ? styles.overflowAuto : {})}
+        sx={{ ...styles.root, ...(props.overflow === 'auto' ? styles.overflowAuto : undefined) }}
     >
         {props.children}
     </Grid>;

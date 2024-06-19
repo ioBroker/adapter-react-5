@@ -13,6 +13,7 @@ import {
 
 import I18n from '../i18n';
 import { IobTheme } from '../types';
+import Utils from "./Utils";
 
 const styles: Record<string, any> = {
     modalDialog: {
@@ -29,14 +30,14 @@ const styles: Record<string, any> = {
     content: {
         fontSize: 16,
     },
-    languageButton: {
+    languageButton: (theme: IobTheme) => ({
         position: 'absolute',
-        right: (theme: IobTheme) => theme.spacing(1),
-        top: (theme: IobTheme) => theme.spacing(1),
-    },
-    languageButtonActive: {
-        color: (theme: IobTheme) => theme.palette.primary.main,
-    },
+        right: 8,
+        top: 8,
+    }),
+    languageButtonActive: (theme: IobTheme) => ({
+        color: theme.palette.primary.main,
+    }),
 };
 
 interface CustomModalProps {
@@ -105,11 +106,11 @@ const CustomModal = (props: CustomModalProps) => {
         sx={{ '& .MuiDialog-paper': styles.modalDialog }}
     >
         {title && <DialogTitle>
-            {icon ? <Icon sx={styles.titleIcon} /> : null}
+            {icon ? <Icon style={styles.titleIcon} /> : null}
             {title}
             {I18n.getLanguage() !== 'en' && toggleTranslation ? <IconButton
                 size="large"
-                sx={Object.assign({}, styles.languageButton, noTranslation ? styles.languageButtonActive : {})}
+                sx={Utils.getStyle(styles.languageButton, noTranslation && styles.languageButtonActive)}
                 onClick={() => toggleTranslation()}
                 title={I18n.t('Disable/Enable translation')}
             >
@@ -117,8 +118,7 @@ const CustomModal = (props: CustomModalProps) => {
             </IconButton> : null}
         </DialogTitle>}
         <DialogContent
-            sx={Object.assign({}, styles.content, overflowHidden ? styles.overflowHidden : {})}
-            style={{ paddingTop: 8 }}
+            style={{ ...styles.content, ...(overflowHidden ? styles.overflowHidden : undefined), paddingTop: 8 }}
         >
             {textInput && <TextField
                 // className={className}

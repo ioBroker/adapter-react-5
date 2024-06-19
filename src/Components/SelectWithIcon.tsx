@@ -144,7 +144,7 @@ class SelectWithIcon extends Component<SelectWithIconProps, SelectWithIconState>
                 {item?.name}
             </span>}
             sx={{
-                '& .MuiSelect-root': this.props.value === this.props.different ? styles.different : {},
+                '&.MuiSelect-root': this.props.value === this.props.different ? styles.different : {},
             }}
             classes={{
                 root: this.props.dense ? this.props.className : '',
@@ -171,8 +171,10 @@ class SelectWithIcon extends Component<SelectWithIconProps, SelectWithIconState>
             }}
         >
             {this.state.list.map(el => <MenuItem
-                sx={this.props.different && el.value === this.props.different ? styles.different : {}}
-                style={this.props.different && el.value === this.props.different ? {} : { color: el.color || undefined, backgroundColor: Utils.getInvertedColor(el.color || '', this.props.themeType) }}
+                style={this.props.different && el.value === this.props.different ? styles.different : {
+                    color: el.color || undefined,
+                    backgroundColor: Utils.getInvertedColor(el.color || '', this.props.themeType),
+                }}
                 key={el.value}
                 value={el.value}
             >

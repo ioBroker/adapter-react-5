@@ -188,7 +188,7 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
             sx={{
                 '& .MuiDialog-paper': {
                     height: '95%',
-                    padding: 4,
+                    p: '4px',
                     width: '100%',
                     maxWidth: '100%',
                     maxHeight: 'calc(100% - 16px)',

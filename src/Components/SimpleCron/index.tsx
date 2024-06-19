@@ -631,13 +631,10 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
         const settings = type === 'once' ? this.state.once : this.state.specific;
         return <FormControl
             variant="standard"
-            sx={Object.assign(
-                {},
-                styles.formControl,
-                {
-                    '&.MuiFormControl-root': styles.formControlMarginRight,
-                },
-            )}
+            sx={{
+                ...styles.formControl,
+                '&.MuiFormControl-root': styles.formControlMarginRight,
+            }}
         >
             <TextField
                 variant="standard"
@@ -669,7 +666,7 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
         }
 
         // <InputLabel htmlFor="formatted-text-mask-input">{I18n.t('sc_at')}</InputLabel>
-        return <FormControl variant="standard" sx={styles.formControl}>
+        return <FormControl variant="standard" style={styles.formControl}>
             <TextField
                 variant="standard"
                 key="date"
@@ -705,7 +702,7 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
             this.getControlsPeriodElements('intervalBetween'),
             <div key="between" style={{ paddingLeft: 8, display: 'inline-block', verticalAlign: 'top' }}>
                 <h5 style={{ marginBottom: 5 }}>{I18n.t('sc_hours')}</h5>
-                <FormControl variant="standard" sx={styles.formControl}>
+                <FormControl variant="standard" style={styles.formControl}>
                     <InputLabel shrink htmlFor="age-label-placeholder">{I18n.t('sc_from')}</InputLabel>
                     <Select
                         variant="standard"
@@ -721,7 +718,7 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
                             <MenuItem key={`B_${hour}`} value={hour}>{`${padding(hour)}:00`}</MenuItem>)}
                     </Select>
                 </FormControl>
-                <FormControl variant="standard" sx={styles.formControl}>
+                <FormControl variant="standard" style={styles.formControl}>
                     <InputLabel shrink htmlFor="age-label-placeholder">{I18n.t('sc_to')}</InputLabel>
                     <Select
                         variant="standard"
@@ -763,11 +760,11 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
     }
 
     render() {
-        return <Box component="div" sx={styles.mainDiv}>
+        return <div style={styles.mainDiv}>
             <div style={{ paddingLeft: 8, width: '100%' }}><TextField style={{ width: '100%' }} value={this.state.cron} disabled /></div>
             <div style={{ paddingLeft: 8, width: '100%', height: 60 }}>{convertCronToText(this.state.cron, this.props.language || 'en')}</div>
             <div>
-                <FormControl variant="standard" style={{ marginLeft: 8, marginTop: 8 }} sx={styles.formControl}>
+                <FormControl variant="standard" style={{ ...styles.formControl, marginLeft: 8, marginTop: 8 }}>
                     <InputLabel>{I18n.t('ra_Repeat')}</InputLabel>
                     <Select
                         variant="standard"
@@ -786,7 +783,7 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
             {this.state.mode === 'interval' && this.getIntervalElements()}
             {this.state.mode === 'intervalBetween' && this.getIntervalBetweenElements()}
             {this.state.mode === 'specific' && this.getSpecificTimeElements()}
-        </Box>;
+        </div>;
     }
 }
 

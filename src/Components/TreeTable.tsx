@@ -390,7 +390,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
     ) {
         return <TextField
             variant="standard"
-            sx={styles.fieldEdit}
+            style={styles.fieldEdit}
             fullWidth
             value={this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val}
             onChange={e => this.onChange(col, val, e.target.value)}
@@ -403,7 +403,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
     ) {
         return <TextField
             variant="standard"
-            sx={styles.fieldEdit}
+            style={styles.fieldEdit}
             type="number"
             fullWidth
             value={this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val}
@@ -446,8 +446,8 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
     renderSelectColorDialog() {
         return <Dialog
             sx={{
-                '& .MuiDialog-root': styles.root,
-                '& .MuiDialog-paper': styles.paper,
+                '& .MuiPaper-root': styles.root,
+                '& .MuiPaper-paper': styles.paper,
             }}
             onClose={() => {
                 this.selectCallback = null;
@@ -473,14 +473,14 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             <TextField
                 variant="standard"
                 fullWidth
-                sx={styles.fieldEditWithButton}
+                style={styles.fieldEditWithButton}
                 value={_val}
                 inputProps={{ style: { backgroundColor: _val, color: Utils.isUseBright(_val) ? '#FFF' : '#000' } }}
                 onChange={e => this.onChange(col, !!val, e.target.value)}
             />
 
             <IconButton
-                sx={styles.fieldButton}
+                style={styles.fieldButton}
                 onClick={() => {
                     this.selectCallback = newColor => this.onChange(col, val, newColor);
                     this.setState({ showSelectColor: true, selectIdValue: val });
@@ -521,13 +521,13 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             <TextField
                 variant="standard"
                 fullWidth
-                sx={styles.fieldEditWithButton}
+                style={styles.fieldEditWithButton}
                 value={this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val}
                 onChange={e => this.onChange(col, val, e.target.value)}
             />
 
             <IconButton
-                sx={styles.fieldButton}
+                style={styles.fieldButton}
                 onClick={() => {
                     this.selectCallback = selected => this.onChange(col, val, selected);
                     this.setState({ showSelectId: true, selectIdValue: val });
@@ -568,8 +568,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         if (this.state.editMode === i && col.editable !== 'never' && col.editable !== false) {
             return <TableCell
                 key={col.field}
-                sx={Object.assign({}, styles.cell, level ? styles.cellSecondary : {})}
-                style={col.cellStyle}
+                style={{ ...styles.cell, ...(level ? styles.cellSecondary : undefined), ...col.cellStyle }}
                 component="th"
             >
                 {this.renderCellEdit(item, col)}
@@ -577,8 +576,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         }
         return <TableCell
             key={col.field}
-            sx={Object.assign({}, styles.cell, level ? styles.cellSecondary : {})}
-            style={col.cellStyle}
+            style={{ ...styles.cell, ...(level ? styles.cellSecondary : undefined), ...col.cellStyle }}
             component="th"
         >
             {TreeTable.renderCellNonEdit(item, col)}
@@ -626,19 +624,18 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         const row = <TableRow
             key={item.id}
             className={`table-row-${(item.id || '').toString().replace(/[.$]/g, '_')}`}
-            sx={Object.assign(
-                {},
-                (this.state.update && this.state.update.includes(item.id) && styles.glow) || {},
-                styles.row,
-                level ? styles.rowSecondary : {},
-                !level && children.length ? styles.rowMainWithChildren : {},
-                !level && !children.length ? styles.rowMainWithoutChildren : {},
-                this.state.editMode !== false && this.state.editMode !== i ? styles.rowNoEdit : {},
-                this.state.deleteMode !== false && this.state.deleteMode !== i ? styles.rowNoEdit : {},
-            )}
+            style={{
+                ...((this.state.update && this.state.update.includes(item.id) && styles.glow) || undefined),
+                ...styles.row,
+                ...(level ? styles.rowSecondary : undefined),
+                ...(!level && children.length ? styles.rowMainWithChildren : undefined),
+                ...(!level && !children.length ? styles.rowMainWithoutChildren : undefined),
+                ...(this.state.editMode !== false && this.state.editMode !== i ? styles.rowNoEdit : undefined),
+                ...(this.state.deleteMode !== false && this.state.deleteMode !== i ? styles.rowNoEdit : undefined),
+            }}
         >
             <TableCell
-                sx={Object.assign({}, styles.cell, styles.cellExpand, level ? styles.cellSecondary : {})}
+                style={{ ...styles.cell, ...styles.cellExpand, ...(level ? styles.cellSecondary : undefined) }}
             >
                 {children.length ? <IconButton
                     onClick={() => {
@@ -662,8 +659,12 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             </TableCell>
             <TableCell
                 scope="row"
-                sx={Object.assign({}, styles.cell, level ? styles.cellSecondary : {})}
-                style={{ ...this.props.columns[0].cellStyle, ...{ paddingLeft: levelShift * level } }}
+                style={{
+                    ...styles.cell,
+                    ...(level ? styles.cellSecondary : undefined),
+                    ...this.props.columns[0].cellStyle,
+                    paddingLeft: levelShift * level,
+                }}
             >
                 {this.props.columns[0].subField ?
                     this.renderCellWithSubField(item, this.props.columns[0])
@@ -674,7 +675,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             {this.props.columns.map((col, ii) =>
                 (!ii && !col.hidden ? null : this.renderCell(item, col, level, i)))}
 
-            {this.props.onUpdate ? <TableCell sx={Object.assign({}, styles.cell, styles.cellButton)}>
+            {this.props.onUpdate ? <TableCell style={{ ...styles.cell, ...styles.cellButton }}>
                 {this.state.editMode === i || this.state.deleteMode === i ?
                     <IconButton
                         disabled={this.state.editMode !== false && (!this.state.editData || !Object.keys(this.state.editData).length)}
@@ -703,7 +704,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             </TableCell> : null}
 
             {this.props.onDelete && !this.props.onUpdate ?
-                <TableCell sx={Object.assign({}, styles.cell, styles.cellButton)}>
+                <TableCell style={{ ...styles.cell, ...styles.cellButton }}>
                     {this.state.deleteMode === i ?
                         <IconButton
                             disabled={this.state.editMode !== false && (!this.state.editData || !Object.keys(this.state.editData).length)}
@@ -716,7 +717,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                         null}
                 </TableCell> : null}
 
-            {this.props.onUpdate || this.props.onDelete ? <TableCell sx={Object.assign({}, styles.cell, styles.cellButton)}>
+            {this.props.onUpdate || this.props.onDelete ? <TableCell style={{ ...styles.cell, ...styles.cellButton }}>
                 {this.state.editMode === i || this.state.deleteMode === i ?
                     <IconButton
                         onClick={() => this.setState({ editMode: false, deleteMode: false })}
@@ -754,11 +755,11 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             <TableRow key="headerRow">
                 <TableCell
                     component="th"
-                    sx={Object.assign({}, styles.cell, styles.cellHeader, styles.cellExpand)}
+                    sx={Utils.getStyle(styles.cell, styles.cellHeader, styles.cellExpand)}
                 />
                 <TableCell
                     component="th"
-                    sx={Object.assign({}, styles.cell, styles.cellHeader, styles[`width_${this.props.columns[0].field.replace(/\./g, '_')}`])}
+                    sx={Utils.getStyle(styles.cell, styles.cellHeader, styles[`width_${this.props.columns[0].field.replace(/\./g, '_')}`])}
                     style={this.props.columns[0].headerStyle || this.props.columns[0].cellStyle}
                     sortDirection={this.props.noSort ? false : (this.state.orderBy === this.props.columns[0].field ? this.state.order : false)}
                 >
@@ -777,7 +778,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                 {this.props.columns.map((col, i) =>
                     (!i && !col.hidden ? null : <TableCell
                         key={col.field}
-                        sx={Object.assign({}, styles.cell, styles.cellHeader, styles[`width_${col.field.replace(/\./g, '_')}`])}
+                        sx={Utils.getStyle(styles.cell, styles.cellHeader, styles[`width_${col.field.replace(/\./g, '_')}`])}
                         style={col.headerStyle || col.cellStyle}
                         component="th"
                     >
@@ -793,7 +794,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                                 </span> : null}
                         </TableSortLabel> }
                     </TableCell>))}
-                {this.props.onUpdate ? <TableCell component="th" sx={Object.assign({}, styles.cell, styles.cellHeader, styles.cellButton)}>
+                {this.props.onUpdate ? <TableCell component="th" sx={Utils.getStyle(styles.cell, styles.cellHeader, styles.cellButton)}>
                     {!this.props.noAdd ? <Fab
                         color="primary"
                         size="small"
@@ -804,7 +805,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                     </Fab> : null }
                 </TableCell> : null}
                 {this.props.onDelete || this.props.onUpdate ?
-                    <TableCell component="th" sx={Object.assign({}, styles.cell, styles.cellHeader, styles.cellButton)} /> : null}
+                    <TableCell component="th" sx={Utils.getStyle(styles.cell, styles.cellHeader, styles.cellButton)} /> : null}
             </TableRow>
         </TableHead>;
     }
@@ -824,7 +825,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             }
 
             return <div style={styles.tableContainer} className={this.props.className}>
-                <Table sx={styles.table} aria-label="simple table" size="small" stickyHeader>
+                <Table style={styles.table} aria-label="simple table" size="small" stickyHeader>
                     {this.renderHead()}
                     <TableBody>
                         {table.map(it => this.renderLine(it))}
@@ -902,7 +903,7 @@ const styles = theme => ({
 });
 // renderTable
 renderTable() {
-    return <div sx={styles.tableDiv}>
+    return <div style={styles.tableDiv}>
         <TreeTable
             columns={this.columns}
             data={lines}

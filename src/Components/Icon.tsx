@@ -14,6 +14,7 @@ import {
 
 import IconAlias from '../icons/IconAlias';
 import Utils from './Utils';
+import {Box} from "@mui/material";
 
 export function getSystemIcon(obj: ioBroker.Object | null): React.JSX.Element | null {
     let icon;
@@ -99,6 +100,7 @@ interface IconProps {
     className?: string;
     /** Style for image */
     style?: React.CSSProperties;
+    sx?: Record<string, any>;
     /** Tooltip */
     title?: string;
     /** Styles for utf-8 characters */
@@ -117,6 +119,17 @@ export default function Icon(props: IconProps) {
         if (typeof props.src === 'string') {
             if (props.src.length < 3) {
                 // utf-8 char
+                if (props.sx) {
+                    return <Box
+                        component="span"
+                        sx={props.sx}
+                        title={props.title || undefined}
+                        style={{ height: 27, marginTop: -8, ...(props.styleUTF8 || props.style) }}
+                        className={Utils.clsx(props.className, 'iconOwn')}
+                    >
+                    {props.src}
+                </Box>;
+                }
                 return <span
                     title={props.title || undefined}
                     style={{ height: 27, marginTop: -8, ...(props.styleUTF8 || props.style) }}
@@ -143,6 +156,19 @@ export default function Icon(props: IconProps) {
                     src = REMOTE_PREFIX + src;
                 }
 
+                if (props.sx) {
+                    return <Box
+                        component="img"
+                        sx={props.sx}
+                        title={props.title || undefined}
+                        style={props.style || {}}
+                        className={Utils.clsx(props.className, 'iconOwn')}
+                        src={`https://remote-files.iobroker.in${src}`}
+                        alt={props.alt || undefined}
+                        ref={props.ref}
+                        onError={e => props.onError && props.onError(e)}
+                    />;
+                }
                 return <img
                     title={props.title || undefined}
                     style={props.style || {}}
@@ -150,10 +176,20 @@ export default function Icon(props: IconProps) {
                     src={`https://remote-files.iobroker.in${src}`}
                     alt={props.alt || undefined}
                     ref={props.ref}
-                    onError={e => {
-                        // analyse error
-                        props.onError && props.onError(e);
-                    }}
+                    onError={e => props.onError && props.onError(e)}
+                />;
+            }
+            if (props.sx) {
+                return <Box
+                    component="img"
+                    sx={props.sx}
+                    title={props.title || undefined}
+                    style={props.style || {}}
+                    className={Utils.clsx(props.className, 'iconOwn')}
+                    src={props.src}
+                    alt={props.alt || undefined}
+                    ref={props.ref}
+                    onError={props.onError}
                 />;
             }
             return <img

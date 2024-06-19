@@ -94,10 +94,10 @@ const IconPicker = (props: IconPickerProps) => {
 
     return <div style={styles.formContainer}>
         {IconCustom ? <IconCustom style={styles.formIcon} /> : null}
-        <FormControl variant="standard" sx={styles.formControl} style={{ padding: 3 }}>
+        <FormControl variant="standard" style={{ ...styles.formControl, padding: 3 }}>
             <InputLabel
                 shrink
-                sx={props.customStyles?.label ? { '& .MuiInputLabel-root': props.customStyles.label } : undefined}
+                sx={props.customStyles?.label ? { '&.MuiInputLabel-root': props.customStyles.label } : undefined}
                 classes={{ root: props.customClasses?.label }}
             >
                 {props.label}

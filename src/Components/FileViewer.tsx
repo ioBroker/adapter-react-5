@@ -88,7 +88,7 @@ interface FileViewerProps {
     socket: Connection;
     setStateBackgroundImage: () => void;
     // themeType: ThemeType;
-    getClassBackgroundImage: () => string | null;
+    getStyleBackgroundImage: () => React.CSSProperties | null;
     /** Flag is the js-controller support subscribe on file */
     supportSubscribes?: boolean;
 }
@@ -249,14 +249,14 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
     getContent() {
         if (this.state.ext && EXTENSIONS.images.includes(this.state.ext)) {
             if (this.state.imgError) {
-                return <IconNoIcon style={Object.assign({}, styles.img, this.props.getClassBackgroundImage())} />;
+                return <IconNoIcon style={{ ...styles.img, ...this.props.getStyleBackgroundImage() }} />;
             }
             return <Icon
                 onError={e => {
                     (e.target as HTMLImageElement).onerror = null;
                     this.setState({ imgError: true });
                 }}
-                className={Object.assign({}, styles.img, this.props.getClassBackgroundImage())}
+                style={{ ...styles.img, ...this.props.getStyleBackgroundImage() }}
                 src={`${this.props.href}?ts=${this.state.forceUpdate}`}
                 alt={this.props.href}
             />;
@@ -271,7 +271,7 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
             // />;
             return <TextField
                 variant="standard"
-                sx={styles.textarea}
+                style={styles.textarea}
                 multiline
                 value={this.state.editingValue || this.state.code || this.state.text}
                 // onChange={newValue => this.setState({ editingValue: newValue, changed: true })}
@@ -284,7 +284,7 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
     render() {
         return <Dialog
             sx={{
-                '& .MuiDialog-scrollPper': styles.dialog,
+                '&.MuiDialog-scrollPaper': styles.dialog,
                 '& .MuiDialog-paper': styles.paper,
             }}
             scroll="paper"
@@ -306,7 +306,7 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
                     </IconButton>
                 </div>}
             </div>
-            <DialogContent sx={styles.content}>
+            <DialogContent style={styles.content}>
                 {this.getContent()}
             </DialogContent>
             <DialogActions>

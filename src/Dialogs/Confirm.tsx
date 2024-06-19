@@ -31,7 +31,8 @@ const styles: Record<string, React.CSSProperties> = {
         fontSize: 12,
     },
     suppressRoot: {
-        marginTop: 16,
+        // it is sx
+        marginTop: '16px',
     },
 };
 
@@ -123,7 +124,7 @@ class DialogConfirm extends Component<DialogConfirmProps, DialogConfirmState> {
                     {this.props.text}
                     {this.props.suppressQuestionMinutes ? <br /> : null}
                     {this.props.suppressQuestionMinutes ? <FormControlLabel
-                        sx={{ '& .FormControlLabel-label': styles.suppress, '& .FormControlLabel-root': styles.suppressRoot }}
+                        sx={{ '& .FormControlLabel-label': styles.suppress, '&.FormControlLabel-root': styles.suppressRoot }}
                         control={<Checkbox id={`ar_dialog_confirm_suppress_${this.props.dialogName || ''}`} checked={!!this.state.suppress} onChange={() => this.setState({ suppress: !this.state.suppress })} />}
                         label={this.props.suppressText || I18n.t('ra_Suppress question for next %s minutes', (this.props.suppressQuestionMinutes || 2).toString())}
                     /> : null}

@@ -35,7 +35,8 @@ const styles: Record<string, React.CSSProperties> = {
         height: '95%',
     },
     dialogMobile: {
-        padding: 4,
+        // it is sx
+        padding: '4px',
         width: '100%',
         maxWidth: '100%',
         maxHeight: 'calc(100% - 16px)',
@@ -203,13 +204,13 @@ class DialogSelectFile extends React.Component<DialogSelectFileProps, DialogSele
         return <Dialog
             onClose={() => {}}
             maxWidth={false}
-            sx={{ '& .MuiDialog-paper': Object.assign({}, styles.dialog, styles.dialogMobile) }}
+            sx={{ '& .MuiDialog-paper': { ...styles.dialog, ...styles.dialogMobile } }}
             fullWidth
             open={!0}
             aria-labelledby="ar_dialog_selectfile_title"
         >
-            <DialogTitle id="ar_dialog_selectfile_title" sx={{ '& .MuiDialogTitle-root': styles.titleRoot }}>{title}</DialogTitle>
-            <DialogContent sx={Object.assign({}, styles.content, styles.contentMobile)}>
+            <DialogTitle id="ar_dialog_selectfile_title" sx={{ '&.MuiDialogTitle-root': styles.titleRoot }}>{title}</DialogTitle>
+            <DialogContent style={{ ...styles.content, ...styles.contentMobile }}>
                 <FileBrowser
                     ready
                     imagePrefix={this.props.imagePrefix || this.props.prefix || '../'} // prefix is for back compatibility

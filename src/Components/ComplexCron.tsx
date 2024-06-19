@@ -308,7 +308,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
             <Button
                 key="removeall"
                 variant="outlined"
-                sx={styles.numberButton}
+                style={styles.numberButton}
                 // style={{paddingBottom: 20}}
                 color="primary"
                 onClick={() => this.onToggle(false, type, max)}
@@ -319,7 +319,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                 key="addall"
                 variant="contained"
                 // style={{paddingBottom: 20}}
-                sx={styles.numberButton}
+                style={styles.numberButton}
                 color="secondary"
                 onClick={() => this.onToggle(true, type, max)}
             >
@@ -336,7 +336,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                     <Button
                         key={`_${i}`}
                         variant={parts.indexOf(i) !== -1 ? 'contained' : 'outlined'}
-                        sx={styles.numberButton}
+                        style={styles.numberButton}
                         color={parts.indexOf(i) !== -1 ? 'secondary' : 'primary'}
                         onClick={() => this.onToggle(i, type, max)}
                     >
@@ -372,8 +372,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
         return <div>
             <Select
                 variant="standard"
-                sx={styles.periodSelect}
-                style={{ verticalAlign: 'bottom' }}
+                style={{ ...styles.periodSelect, verticalAlign: 'bottom' }}
                 value={select}
                 onChange={e => {
                     const modes = JSON.parse(JSON.stringify(this.state.modes));
@@ -469,7 +468,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
 
     render() {
         const tab = this.state.seconds !== false ? this.state.tab : this.state.tab + 1;
-        return <Box component="div" sx={styles.mainDiv}>
+        return <div style={styles.mainDiv}>
             <div style={{ paddingLeft: 8, width: '100%' }}><TextField variant="standard" style={{ width: '100%' }} value={this.state.cron} disabled /></div>
             <div style={{ paddingLeft: 8, width: '100%', height: 60 }}>{ComplexCron.convertCronToText(this.state.cron, this.props.language || 'en')}</div>
             <FormControlLabel
@@ -482,7 +481,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
             <AppBar position="static" sx={{ '&.MuiAppBar-root': styles.appBar }} color="secondary">
                 <Tabs
                     value={this.state.tab}
-                    sx={styles.appBar}
+                    style={styles.appBar}
                     color="secondary"
                     onChange={(active, _tab) =>
                         this.setState({ tab: _tab })}
@@ -495,13 +494,13 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                     <Tab id="dow" label={I18n.t('sc_dows')} />
                 </Tabs>
             </AppBar>
-            {tab === 0 && <Box component="div" sx={styles.tabContent}>{this.getPeriodsTab('seconds', 60)}</Box>}
-            {tab === 1 && <Box component="div" sx={styles.tabContent}>{this.getPeriodsTab('minutes', 60)}</Box>}
-            {tab === 2 && <Box component="div" sx={styles.tabContent}>{this.getPeriodsTab('hours', 24)}</Box>}
-            {tab === 3 && <Box component="div" sx={styles.tabContent}>{this.getPeriodsTab('dates', 31)}</Box>}
-            {tab === 4 && <Box component="div" sx={styles.tabContent}>{this.getPeriodsTab('months', 12)}</Box>}
-            {tab === 5 && <Box component="div" sx={styles.tabContent}>{this.getPeriodsTab('dow', 7)}</Box>}
-        </Box>;
+            {tab === 0 && <div style={styles.tabContent}>{this.getPeriodsTab('seconds', 60)}</div>}
+            {tab === 1 && <div style={styles.tabContent}>{this.getPeriodsTab('minutes', 60)}</div>}
+            {tab === 2 && <div style={styles.tabContent}>{this.getPeriodsTab('hours', 24)}</div>}
+            {tab === 3 && <div style={styles.tabContent}>{this.getPeriodsTab('dates', 31)}</div>}
+            {tab === 4 && <div style={styles.tabContent}>{this.getPeriodsTab('months', 12)}</div>}
+            {tab === 5 && <div style={styles.tabContent}>{this.getPeriodsTab('dow', 7)}</div>}
+        </div>;
     }
 }
 

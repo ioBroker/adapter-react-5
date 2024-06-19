@@ -686,6 +686,75 @@ class JsonComponent extends ConfigGeneric {
 ...
 }
 ```
+## Migration from adapter-react-v5@5.x to adapter-react-v5@6.x
+The main change is that the `withStyles` was removed. So you have to replace all `withStyles` with `sx` or `style` properties.
+
+You can read more about sx [here](https://mui.com/system/getting-started/the-sx-prop/).
+
+- Modify `const styles`:
+Before:
+```
+const styles: Record<string, any> = (theme: IobTheme) => ({
+   dialog: {
+      height: `calc(100% - ${theme.mixins.toolbar.minHeight}px)`,
+      padding: theme.spacing(1),
+   },
+   ...
+});
+```
+
+After:
+```
+const styles: Record<string, any> = {
+   dialog: (theme: IobTheme) => ({
+      height: `calc(100% - ${theme => theme.mixins.toolbar.minHeight}px)`,
+      p: 1,
+   }),
+};
+```
+
+- Modify `className`:
+Before: `<div className={this.props.classes.box}>`
+
+After: `<Box component="div" sx={styles.box}>`
+
+Before: `<div className={Utils.clsx(this.props.classes.box1, condition && this.props.classes.box2)}>`
+
+After: `<Box component="div" sx={Utils.getStyle(this.props.theme, this.props.classes.box1, condition && this.props.classes.box2)}>`
+Or if no one style is a function: `<Box component="div" sx={{ ...this.props.classes.box1, ...(condition ? this.props.classes.box2 : undefined) }}>`
+
+Do not use `sx` if the style is not dynamic (not a function). Use `style` instead.
+
+Be aware, that all paddings and margins are now in `theme.spacing(1)` format.
+So you have to replace all `padding: 8` with `padding: 1` or with `padding: '8px'`.
+
+The best practice is to replace `padding` with `p` and `margin` with `m`, so you will see immediately that it is a padding or margin for `sx` property.
+
+- Modify `classes`:
+  Before: `<Dialog classes={{ scrollPaper: this.props.classes.dialog, paper: this.props.classes.paper }}>`
+
+  After: `<Dialog {{ '&.MuiDialog-scrollPaper': styles.dialog, '& .MuiDialog-paper': styles.paper }}>`
+
+  Before: `<Dialog classes={{ scrollPaper: this.props.classes.dialog, paper: this.props.classes.paper }}>`
+
+  After: `<Dialog {{ '&.MuiDialog-scrollPaper': styles.dialog, '& .MuiDialog-paper': styles.paper }}>`
+
+  Before: `<ListItem classes={{ root: styles.listItem }} >`
+  
+  After: `<ListItem sx={{ '&.MuiListItem-root': styles.listItem }} >`
+
+  Before: `<Typography component="h2" variant="h6" classes={{ root: styles.typography }}>`
+  
+  After: `<Typography component="h2" variant="h6" sx={{ '&.MuiTypography-root': styles.typography }}>`
+
+  Before: `<Badge classes={{ 'badge': styles.expertBadge }}>`
+  
+  After: `<Badge sx={{ '& .MuiBadge-badge': styles.expertBadge }}>`
+
+  Before: `<Tooltip title={this.props.t('ra_Refresh tree')} classes={{ popper: styles.tooltip }}>`
+  
+  After: `<Tooltip title={this.props.t('ra_Refresh tree')} componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}>`
+  Or: `<Tooltip title={this.props.t('ra_Refresh tree')} componentsProps={{ popper: { sx: styles.tooltip } }}>`
 
 ## Warning
 `react-inlinesvg@4.0.5` cannot be used. Use `react-inlinesvg@4.0.3` instead.  

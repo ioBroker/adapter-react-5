@@ -26,7 +26,8 @@ import {
     DialogActions,
     Button,
     Input,
-    Breadcrumbs, Box,
+    Breadcrumbs,
+    Box,
 } from '@mui/material';
 
 // MUI Icons
@@ -85,7 +86,17 @@ const TILE_WIDTH   = 64;
 
 const NOT_FOUND = 'Not found';
 
-const FILE_TYPE_ICONS: Record<string, React.FC<{ fontSize: 'small' }>> = {
+// Todo: replace with js-controller types
+export interface MetaACL extends ioBroker.ObjectACL {
+    file: number;
+}
+
+// Todo: replace with js-controller types
+export interface MetaObject extends ioBroker.MetaObject {
+    acl: MetaACL;
+}
+
+const FILE_TYPE_ICONS: Record<string, React.FC<{ fontSize?: 'small' }>> = {
     all: FileIcon,
     images: TypeIconImages,
     code: JSIcon,
@@ -95,9 +106,9 @@ const FILE_TYPE_ICONS: Record<string, React.FC<{ fontSize: 'small' }>> = {
 };
 
 const styles: Record<string, any> = {
-    dialog: {
-        height: (theme: IobTheme) => `calc(100% - ${theme.mixins.toolbar.minHeight}px)`,
-    },
+    dialog: (theme: IobTheme) => ({
+        height: `calc(100% - ${theme.mixins.toolbar.minHeight}px)`,
+    }),
     root: {
         width: '100%',
         overflow: 'hidden',
@@ -105,10 +116,10 @@ const styles: Record<string, any> = {
         position: 'relative',
     },
     filesDiv: {
-        width: (theme: IobTheme) => `calc(100% - ${theme.spacing(2)})`,
+        width: 'calc(100% - 16px)',
         overflowX: 'hidden',
         overflowY: 'auto',
-        padding: (theme: IobTheme) => theme.spacing(1),
+        padding: 8,
     },
     filesDivHint: {
         position: 'absolute',
@@ -119,10 +130,10 @@ const styles: Record<string, any> = {
         fontSize: 12,
     },
     filesDivTable: {
-        height: (theme: IobTheme) => `calc(100% - ${48 + parseInt(theme.spacing(1), 10)}px)`,
+        height: 'calc(100% - 56px)',
     },
     filesDivTile: {
-        height: (theme: IobTheme) => `calc(100% - ${48 * 2 + parseInt(theme.spacing(1), 10)}px)`,
+        height: `calc(100% - ${48 * 2 + 8}px)`,
         display: 'flex',
         alignContent: 'flex-start',
         alignItems: 'stretch',
@@ -130,7 +141,7 @@ const styles: Record<string, any> = {
         flex: `0 0 ${TILE_WIDTH}px`,
     },
 
-    itemTile: {
+    itemTile: (theme: IobTheme) => ({
         position: 'relative',
         userSelect: 'none',
         cursor: 'pointer',
@@ -142,10 +153,10 @@ const styles: Record<string, any> = {
         transition: 'opacity 1s',
         margin: 4,
         '&:hover': {
-            background: (theme: IobTheme) => theme.palette.secondary.light,
-            color: (theme: IobTheme) => Utils.invertColor(theme.palette.secondary.main, true),
+            background: theme.palette.secondary.light,
+            color: Utils.invertColor(theme.palette.secondary.main, true),
         },
-    },
+    }),
     itemNameFolderTile: {
         fontWeight: 'bold',
     },
@@ -158,20 +169,20 @@ const styles: Record<string, any> = {
         textAlign: 'center',
         wordBreak: 'break-all',
     },
-    itemFolderIconTile: {
+    itemFolderIconTile: (theme: IobTheme) => ({
         width: '100%',
         height: TILE_HEIGHT - 32 - 16 - 8, // name + size
         display: 'block',
-        paddingLeft: 8,
-        color: (theme: IobTheme) => theme.palette.secondary.main || '#fbff7d',
-    },
-    itemFolderIconBack: {
+        pl: 1,
+        color: theme.palette.secondary.main || '#fbff7d',
+    }),
+    itemFolderIconBack: (theme: IobTheme) => ({
         position: 'absolute',
         top: 22,
         left: 18,
         zIndex: 1,
-        color: (theme: IobTheme) => theme.palette.mode === 'dark' ? '#FFF' : '#000',
-    },
+        color: theme.palette.mode === 'dark' ? '#FFF' : '#000',
+    }),
     itemSizeTile: {
         width: '100%',
         height: 16,
@@ -193,28 +204,35 @@ const styles: Record<string, any> = {
         objectFit: 'contain',
     },
 
-    itemSelected: {
-        background: (theme: IobTheme) => theme.palette.primary.main,
-        color: (theme: IobTheme) => Utils.invertColor(theme.palette.primary.main, true),
-    },
+    itemSelected: (theme: IobTheme) => ({
+        background: theme.palette.primary.main,
+        color: Utils.invertColor(theme.palette.primary.main, true),
+    }),
 
-    itemTable: {
+    itemTable: (theme: IobTheme) => ({
         userSelect: 'none',
         cursor: 'pointer',
         height: ROW_HEIGHT,
         display: 'inline-flex',
         lineHeight: `${ROW_HEIGHT}px`,
         '&:hover': {
-            background: (theme: IobTheme) => theme.palette.secondary.light,
-            color: (theme: IobTheme) => Utils.invertColor(theme.palette.secondary.main, true),
+            background: theme.palette.secondary.light,
+            color: Utils.invertColor(theme.palette.secondary.main, true),
         },
-    },
+    }),
     itemNameTable: {
         display: 'inline-block',
-        paddingLeft: 10,
+        pl: '10px',
         fontSize: '1rem',
         verticalAlign: 'top',
         flexGrow: 1,
+        '@media screen and (max-width: 500px)': {
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            textAlign: 'end',
+            direction: 'rtl',
+        },
     },
     itemNameFolderTable: {
         fontWeight: 'bold',
@@ -257,15 +275,15 @@ const styles: Record<string, any> = {
     itemFolderTemp: {
         opacity: 0.4,
     },
-    itemFolderIconTable: {
+    itemFolderIconTable: (theme: IobTheme) => ({
         marginTop: 1,
-        marginLeft: (theme: IobTheme) => theme.spacing(1),
+        marginLeft: 8,
         display: 'inline-block',
         width: 30,
         height: 30,
-        color: (theme: IobTheme) => theme.palette.secondary.main || '#fbff7d',
-    },
-    itemDownloadButtonTable: {
+        color: theme.palette.secondary.main || '#fbff7d',
+    }),
+    itemDownloadButtonTable: (theme: IobTheme) => ({
         display: 'inline-block',
         width: BUTTON_WIDTH,
         height: ROW_HEIGHT,
@@ -273,22 +291,22 @@ const styles: Record<string, any> = {
         verticalAlign: 'middle',
         textAlign: 'center',
         padding: 0,
-        borderRadius: BUTTON_WIDTH / 2,
+        borderRadius: `${BUTTON_WIDTH / 2}px`,
         '&:hover': {
-            backgroundColor: (theme: IobTheme) => theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
+            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
         },
         '& span': {
-            paddingTop: 9,
+            pt: '9px',
         },
         '& svg': {
             width: 14,
             height: 14,
             fontSize: '1rem',
-            marginTop: -3,
+            mt: '-3px',
             verticalAlign: 'middle',
-            color: (theme: IobTheme) => theme.palette.mode === 'dark' ? '#EEE' : '#111',
+            color: theme.palette.mode === 'dark' ? '#EEE' : '#111',
         },
-    },
+    }),
     itemDownloadEmptyTable: {
         display: 'inline-block',
         width: BUTTON_WIDTH,
@@ -334,18 +352,18 @@ const styles: Record<string, any> = {
         opacity: 1,
     },
 
-    uploadCenterDiv: {
-        margin: 20,
+    uploadCenterDiv: (theme: IobTheme) => ({
+        m: '20px',
         border: '3px dashed grey',
-        borderRadius: 30,
+        borderRadius: '30px',
         width: 'calc(100% - 40px)',
         height: 'calc(100% - 40px)',
         position: 'relative',
-        color: (theme: IobTheme) => theme.palette.mode === 'dark' ? '#222' : '#CCC',
+        color: theme.palette.mode === 'dark' ? '#222' : '#CCC',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-    },
+    }),
     uploadCenterIcon: {
         width: '25%',
         height: '25%',
@@ -373,27 +391,27 @@ const styles: Record<string, any> = {
     menuButtonRestrictActive: {
         color: '#c05000',
     },
-    pathDiv: {
+    pathDiv: (theme: IobTheme) => ({
         display: 'flex',
-        width: (theme: IobTheme) => `calc(100% - ${theme.spacing(2)})`,
-        marginLeft: (theme: IobTheme) => theme.spacing(1),
-        marginRight: (theme: IobTheme) => theme.spacing(1),
+        width: 'calc(100% - 16px)',
+        ml: 1,
+        mr: 1,
         textOverflow: 'clip',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
-        backgroundColor: (theme: IobTheme) => theme.palette.secondary.main,
-    },
+        backgroundColor: theme.palette.secondary.main,
+    }),
     pathDivInput: {
         width: '100%',
     },
-    pathDivBreadcrumbDir: {
-        paddingLeft: 2,
-        paddingRight: 2,
+    pathDivBreadcrumbDir: (theme: IobTheme) => ({
+        pl: '2px',
+        pr: '2px',
         cursor: 'pointer',
         '&:hover': {
-            background: (theme: IobTheme) => theme.palette.primary.main,
+            background: theme.palette.primary.main,
         },
-    },
+    }),
     backgroundImageLight: {
         background: 'white',
     },
@@ -403,17 +421,11 @@ const styles: Record<string, any> = {
     backgroundImageColored: {
         background: 'silver',
     },
-    '@media screen and (max-width: 500px)': {
-        itemNameTable: {
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            textAlign: 'end',
-            direction: 'rtl',
-        },
-    },
-    specialFolder: {
-        color: (theme: IobTheme) => theme.palette.mode === 'dark' ? '#229b0f' : '#5dd300',
+    specialFolder: (theme: IobTheme) => ({
+        color: theme.palette.mode === 'dark' ? '#229b0f' : '#5dd300',
+    }),
+    tooltip: {
+        pointerEvents: 'none',
     },
 };
 
@@ -492,14 +504,15 @@ export interface FileBrowserProps {
 
     restrictToFolder?: string;
 
-    modalEditOfAccessControl?: (obj: any) => React.JSX.Element | null;
+    // eslint-disable-next-line no-use-before-define
+    modalEditOfAccessControl?: (obj: FileBrowserClass) => React.JSX.Element | null;
 
     allowNonRestricted?: boolean;
 
     showTypeSelector?: boolean;
 }
 
-interface FolderOrFileItem {
+export interface FolderOrFileItem {
     id: string;
     level: number;
     name: string;
@@ -515,10 +528,10 @@ interface FolderOrFileItem {
     ts?: number;
     color?: string;
     icon?: string;
-    acl?:    any;
+    acl?: ioBroker.EvaluatedFileACL | MetaACL;
 }
 
-type Folders = Record<string, FolderOrFileItem[]>;
+export type Folders = Record<string, FolderOrFileItem[]>;
 
 function sortFolders(a: FolderOrFileItem, b: FolderOrFileItem) {
     if (a.folder && b.folder) {
@@ -549,17 +562,17 @@ interface FileBrowserState {
     selected: string;
     errorText: string;
     modalEditOfAccess: boolean;
-    backgroundImage: string;
+    backgroundImage: string | null;
     queueLength: number;
     loadAllFolders: boolean;
     fileErrors: string[];
     filterByType: string;
-    showTypesMenu: any;
+    showTypesMenu: HTMLButtonElement | null;
     restrictToFolder: string;
     pathFocus: boolean;
 }
 
-class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
+export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserState> {
     private readonly imagePrefix: string;
 
     private readonly levelPadding: number;
@@ -584,7 +597,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
 
     private supportSubscribes: boolean | null;
 
-    private _tempTimeout: Record<string, any>;
+    private _tempTimeout: Record<string, ReturnType<typeof setTimeout>>;
 
     private readonly limitToObjectID: string | null = null;
 
@@ -600,9 +613,13 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
 
     private cacheFolders: Folders | null = null;
 
+    private readonly localStorage: Storage;
+
     constructor(props: FileBrowserProps) {
         super(props);
-        const expandedStr = ((window as any)._localStorage || window.localStorage).getItem('files.expanded') || '[]';
+
+        this.localStorage = ((window as any)._localStorage || window.localStorage);
+        const expandedStr = this.localStorage.getItem('files.expanded') || '[]';
 
         if (this.props.limitPath) {
             const parts = this.props.limitPath.split('/');
@@ -626,14 +643,14 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
 
         let viewType;
         if (this.props.showViewTypeButton) {
-            viewType = ((window as any)._localStorage || window.localStorage).getItem('files.viewType') || TABLE;
+            viewType = this.localStorage.getItem('files.viewType') || TABLE;
         } else {
             viewType = TABLE;
         }
 
         let selected =
             this.props.selected ||
-            ((window as any)._localStorage || window.localStorage).getItem('files.selected') ||
+            this.localStorage.getItem('files.selected') ||
             USER_DATA;
 
         let currentDir: string;
@@ -661,12 +678,12 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             }
         }
         const backgroundImage =
-            ((window as any)._localStorage || window.localStorage).getItem('files.backgroundImage') || null;
+            this.localStorage.getItem('files.backgroundImage') || null;
 
         this.state = {
             viewType,
             folders: {},
-            filterEmpty: ((window as any)._localStorage || window.localStorage).getItem('files.empty') !== 'false',
+            filterEmpty: this.localStorage.getItem('files.empty') !== 'false',
             expanded,
             currentDir,
             expertMode: !!props.expertMode,
@@ -935,7 +952,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
         // if root folder
         if (!folderId || folderId === '/') {
             try {
-                let objs = await this.props.socket.readMetaItems();
+                let objs = (await this.props.socket.readMetaItems()) as MetaObject[];
                 const _folders: FolderOrFileItem[] = [];
                 let userData = null;
 
@@ -1074,7 +1091,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             expanded.push(item.id);
             expanded.sort();
 
-            ((window as any)._localStorage || window.localStorage).setItem('files.expanded', JSON.stringify(expanded));
+            this.localStorage.setItem('files.expanded', JSON.stringify(expanded));
 
             if (!item.temp) {
                 this.browseFolder(item.id)
@@ -1089,7 +1106,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             }
         } else {
             expanded.splice(pos, 1);
-            ((window as any)._localStorage || window.localStorage).setItem('files.expanded', JSON.stringify(expanded));
+            this.localStorage.setItem('files.expanded', JSON.stringify(expanded));
             this.setState({ expanded });
         }
     }
@@ -1123,7 +1140,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             _folder = '';
         }
 
-        ((window as any)._localStorage || window.localStorage).setItem('files.currentDir', _folder);
+        this.localStorage.setItem('files.currentDir', _folder);
 
         if (folder && e && (e.altKey || e.shiftKey || e.ctrlKey || e.metaKey)) {
             return this.setState({ selected: _folder });
@@ -1158,7 +1175,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
         e && e.stopPropagation();
         this.lastSelect = Date.now();
 
-        ((window as any)._localStorage || window.localStorage).setItem('files.selected', id);
+        this.localStorage.setItem('files.selected', id);
 
         this.setState({ selected: id, path: id, pathFocus: false }, () => {
             if (this.props.onSelect) {
@@ -1211,8 +1228,8 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             onDoubleClick={e => this.state.viewType === TABLE && this.toggleFolder(item, e)}
             title={this.getText(item.title)}
             className="browserItem"
-            sx={Object.assign(
-                {},
+            sx={Utils.getStyle(
+                this.props.theme,
                 styles[`item${this.state.viewType}`],
                 styles[`itemFolder${this.state.viewType}`],
                 this.state.selected === item.id ? styles.itemSelected : {},
@@ -1226,8 +1243,8 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
 
             <Box
                 component="div"
-                sx={Object.assign(
-                    {},
+                sx={Utils.getStyle(
+                    this.props.theme,
                     styles[`itemName${this.state.viewType}`],
                     styles[`itemNameFolder${this.state.viewType}`],
                 )}
@@ -1236,11 +1253,11 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             </Box>
 
             <Hidden smDown>
-                <Box component="div" sx={styles[`itemSize${this.state.viewType}`]}>
+                <div style={styles[`itemSize${this.state.viewType}`]}>
                     {this.state.viewType === TABLE && this.state.folders[item.id]
                         ? this.state.folders[item.id].length
                         : ''}
-                </Box>
+                </div>
             </Hidden>
 
             <Hidden smDown>
@@ -1252,7 +1269,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                     <Box component="div" sx={styles[`itemDeleteButton${this.state.viewType}`]} /> : null}
             </Hidden>
             {this.state.viewType === TABLE && this.props.allowDownload ?
-                <Box component="div" sx={styles[`itemDownloadEmpty${this.state.viewType}`]} /> : null}
+                <div style={styles[`itemDownloadEmpty${this.state.viewType}`]} /> : null}
 
             {this.state.viewType === TABLE &&
                 this.props.allowDelete &&
@@ -1285,8 +1302,8 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             onClick={e => this.changeFolder(e)}
             title={this.props.t('ra_Back to %s', getParentDir(this.state.currentDir))}
             className="browserItem"
-            sx={Object.assign(
-                {},
+            sx={Utils.getStyle(
+                this.props.theme,
                 styles[`item${this.state.viewType}`],
                 styles[`itemFolder${this.state.viewType}`],
             )}
@@ -1296,8 +1313,8 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
 
             <Box
                 component="div"
-                sx={Object.assign(
-                    {},
+                sx={Utils.getStyle(
+                    this.props.theme,
                     styles[`itemName${this.state.viewType}`],
                     styles[`itemNameFolder${this.state.viewType}`],
                 )}
@@ -1308,13 +1325,13 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
     }
 
     formatSize(size: number | null | undefined) {
-        return <Box component="div" sx={styles[`itemSize${this.state.viewType}`]}>
+        return <div style={styles[`itemSize${this.state.viewType}`]}>
             {size || size === 0 ? Utils.formatBytes(size) : ''}
-        </Box>;
+        </div>;
     }
 
-    formatAcl(acl: { permissions?: number; file: number }) {
-        const access: number = acl && (acl.permissions || acl.file);
+    formatAcl(acl: ioBroker.EvaluatedFileACL | MetaACL | undefined) {
+        const access: number = acl ? ((acl as ioBroker.EvaluatedFileACL).permissions || (acl as MetaACL).file) : 0;
         let accessStr: string;
         if (access) {
             accessStr = access.toString(16).padStart(3, '0');
@@ -1322,7 +1339,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             accessStr = '';
         }
 
-        return <Box component="div" sx={styles[`itemAccess${this.state.viewType}`]}>
+        return <div style={styles[`itemAccess${this.state.viewType}`]}>
             {this.props.modalEditOfAccessControl ? <IconButton
                 size="large"
                 onClick={() => this.setState({ modalEditOfAccess: true })}
@@ -1330,25 +1347,25 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             >
                 {accessStr || '---'}
             </IconButton> : accessStr || '---'}
-        </Box>;
+        </div>;
     }
 
     getFileIcon(ext: string | null) {
         switch (ext) {
             case 'json':
             case 'json5':
-                return <JsonIcon sx={styles[`itemIcon${this.state.viewType}`]} />;
+                return <JsonIcon style={styles[`itemIcon${this.state.viewType}`]} />;
 
             case 'css':
-                return <CssIcon sx={styles[`itemIcon${this.state.viewType}`]} />;
+                return <CssIcon style={styles[`itemIcon${this.state.viewType}`]} />;
 
             case 'js':
             case 'ts':
-                return <JSIcon sx={styles[`itemIcon${this.state.viewType}`]} />;
+                return <JSIcon style={styles[`itemIcon${this.state.viewType}`]} />;
 
             case 'html':
             case 'md':
-                return <HtmlIcon sx={styles[`itemIcon${this.state.viewType}`]} />;
+                return <HtmlIcon style={styles[`itemIcon${this.state.viewType}`]} />;
 
             case 'mp3':
             case 'ogg':
@@ -1356,10 +1373,10 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             case 'm4a':
             case 'mp4':
             case 'flac':
-                return <MusicIcon sx={styles[`itemIcon${this.state.viewType}`]} />;
+                return <MusicIcon style={styles[`itemIcon${this.state.viewType}`]} />;
 
             default:
-                return <FileIcon sx={styles[`itemIcon${this.state.viewType}`]} />;
+                return <FileIcon style={styles[`itemIcon${this.state.viewType}`]} />;
         }
     }
 
@@ -1381,19 +1398,19 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
     setStateBackgroundImage = () => {
         const array = ['light', 'dark', 'colored', 'delete'];
         this.setState(({ backgroundImage }) => {
-            if (array.indexOf(backgroundImage) !== -1 && array.length - 1 !== array.indexOf(backgroundImage)) {
-                ((window as any)._localStorage || window.localStorage).setItem(
+            if (backgroundImage && array.indexOf(backgroundImage) !== -1 && array.length - 1 !== array.indexOf(backgroundImage)) {
+                this.localStorage.setItem(
                     'files.backgroundImage',
                     array[array.indexOf(backgroundImage) + 1],
                 );
                 return { backgroundImage: array[array.indexOf(backgroundImage) + 1] };
             }
-            ((window as any)._localStorage || window.localStorage).setItem('files.backgroundImage', array[0]);
+            this.localStorage.setItem('files.backgroundImage', array[0]);
             return { backgroundImage: array[0] };
         });
     };
 
-    getClassBackgroundImage = () => {
+    getStyleBackgroundImage = () => {
         // ['light', 'dark', 'colored', 'delete']
         switch (this.state.backgroundImage) {
             case 'light':
@@ -1433,22 +1450,21 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             onClick={e => this.select(item.id, e)}
             style={this.state.viewType === TABLE ? { marginLeft: padding, width: `calc(100% - ${padding}px)` } : {}}
             className="browserItem"
-            sx={Object.assign(
-                {},
+            sx={Utils.getStyle(
+                this.props.theme,
                 styles[`item${this.state.viewType}`],
                 styles[`itemFile${this.state.viewType}`],
-                this.state.selected === item.id ? styles.itemSelected : {},
+                this.state.selected === item.id ? styles.itemSelected : undefined,
             )}
         >
             {ext && EXTENSIONS.images.includes(ext) ?
                 this.state.fileErrors.includes(item.id) ?
                     <IconNoIcon
-                        style={Object.assign(
-                            {},
-                            styles[`itemImage${this.state.viewType}`],
-                            this.getClassBackgroundImage(),
-                            styles[`itemNoImage${this.state.viewType}`],
-                        )}
+                        style={{
+                            ...styles[`itemImage${this.state.viewType}`],
+                            ...this.getStyleBackgroundImage(),
+                            ...styles[`itemNoImage${this.state.viewType}`],
+                        }}
                     /> :
                     <Icon
                         onError={e => {
@@ -1459,7 +1475,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                                 this.setState({ fileErrors });
                             }
                         }}
-                        style={Object.assign({}, styles[`itemImage${this.state.viewType}`], this.getClassBackgroundImage())}
+                        style={{ ...styles[`itemImage${this.state.viewType}`], ...this.getStyleBackgroundImage() }}
                         src={this.imagePrefix + item.id}
                         alt={item.name}
                     />
@@ -1471,7 +1487,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                 {this.state.viewType === TABLE && this.props.expertMode ? this.formatAcl(item.acl) : null}
             </Hidden>
             <Hidden smDown>
-                {this.state.viewType === TABLE && this.props.expertMode && FileBrowser.getEditFile(ext) ?
+                {this.state.viewType === TABLE && this.props.expertMode && FileBrowserClass.getEditFile(ext) ?
                     <IconButton
                         aria-label="edit"
                         onClick={e => {
@@ -1512,11 +1528,10 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             </Box> : null}
 
             {this.state.viewType === TABLE &&
-            this.props.allowDelete &&
-            item.id !== 'vis.0/' &&
-            item.id !== 'vis-2.0/' &&
-            item.id !== USER_DATA ?
-                <IconButton
+                this.props.allowDelete &&
+                item.id !== 'vis.0/' &&
+                item.id !== 'vis-2.0/' &&
+                item.id !== USER_DATA ? <IconButton
                     aria-label="delete"
                     onClick={e => {
                         e.stopPropagation();
@@ -1609,7 +1624,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
     }
 
     renderToolbar() {
-        const IconType: any = this.props.showTypeSelector
+        const IconType: React.FC< { fontSize?: 'small' }> | null = this.props.showTypeSelector
             ? FILE_TYPE_ICONS[this.state.filterByType || 'all'] ||
               FILE_TYPE_ICONS.all
             : null;
@@ -1624,11 +1639,10 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                         ? this.props.t('ra_Show all folders')
                         : this.props.t('ra_Restrict to folder')
                 }
-                sx={Object.assign(
-                    {},
-                    styles.menuButton,
-                    this.state.restrictToFolder && styles.menuButtonRestrictActive,
-                )}
+                style={{
+                    ...styles.menuButton,
+                    ...(this.state.restrictToFolder ? styles.menuButtonRestrictActive : undefined),
+                }}
                 aria-label="restricted to folder"
                 onClick={() =>
                     this.setState({
@@ -1643,11 +1657,10 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             {this.props.showExpertButton ? <IconButton
                 edge="start"
                 title={this.props.t('ra_Toggle expert mode')}
-                sx={Object.assign(
-                    {},
-                    styles.menuButton,
-                    this.state.expertMode && styles.menuButtonExpertActive,
-                )}
+                style={{
+                    ...styles.menuButton,
+                    ...(this.state.expertMode ? styles.menuButtonExpertActive : undefined),
+                }}
                 aria-label="expert mode"
                 onClick={() => this.setState({ expertMode: !this.state.expertMode })}
                 size="small"
@@ -1657,11 +1670,11 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             {this.props.showViewTypeButton ? <IconButton
                 edge="start"
                 title={this.props.t('ra_Toggle view mode')}
-                sx={styles.menuButton}
+                style={styles.menuButton}
                 aria-label="view mode"
                 onClick={() => {
                     const viewType = this.state.viewType === TABLE ? TILE : TABLE;
-                    ((window as any)._localStorage || window.localStorage).setItem('files.viewType', viewType);
+                    this.localStorage.setItem('files.viewType', viewType);
                     let currentDir = this.state.selected;
                     if (isFile(currentDir)) {
                         currentDir = getParentDir(currentDir);
@@ -1679,13 +1692,13 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             <IconButton
                 edge="start"
                 title={this.props.t('ra_Hide empty folders')}
-                sx={styles.menuButton}
+                style={styles.menuButton}
                 color={this.state.filterEmpty ? 'secondary' : 'inherit'}
                 aria-label="filter empty"
                 onClick={() => {
-                    ((window as any)._localStorage || window.localStorage).setItem(
+                    this.localStorage.setItem(
                         'file.empty',
-                        !this.state.filterEmpty,
+                        this.state.filterEmpty ? 'false' : 'true',
                     );
                     this.setState({ filterEmpty: !this.state.filterEmpty });
                 }}
@@ -1696,7 +1709,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             <IconButton
                 edge="start"
                 title={this.props.t('ra_Reload files')}
-                sx={styles.menuButton}
+                style={styles.menuButton}
                 color="inherit"
                 aria-label="reload files"
                 onClick={() => this.setState({ folders: {} }, () => this.loadFolders())}
@@ -1714,7 +1727,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                         this.limitToPath !== this.state.selected)
                 }
                 title={this.props.t('ra_Create folder')}
-                sx={styles.menuButton}
+                style={styles.menuButton}
                 color="inherit"
                 aria-label="add folder"
                 onClick={() => this.setState({ addFolder: true })}
@@ -1732,7 +1745,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                         this.limitToPath !== this.state.selected)
                 }
                 title={this.props.t('ra_Upload file')}
-                sx={styles.menuButton}
+                style={styles.menuButton}
                 color="inherit"
                 aria-label="upload file"
                 onClick={() => this.setState({ uploadFile: true })}
@@ -1740,8 +1753,8 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             >
                 <UploadIcon fontSize="small" />
             </IconButton> : null}
-            {this.props.showTypeSelector ? <Tooltip title={this.props.t('ra_Filter files')}>
-                <IconButton size="small" onClick={e => this.setState({ showTypesMenu: e.target })}>
+            {this.props.showTypeSelector && IconType ? <Tooltip title={this.props.t('ra_Filter files')}>
+                <IconButton size="small" onClick={e => this.setState({ showTypesMenu: e.target as HTMLButtonElement })}>
                     <IconType fontSize="small" />
                 </IconButton>
             </Tooltip> : null}
@@ -1751,18 +1764,18 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                 onClose={() => this.setState({ showTypesMenu: null })}
             >
                 {Object.keys(FILE_TYPE_ICONS).map(type => {
-                    const MyIcon: React.FC<{ fontSize: 'small' }> = FILE_TYPE_ICONS[type];
+                    const MyIcon: React.FC<{ fontSize?: 'small' }> = FILE_TYPE_ICONS[type];
                     return <MenuItem
                         key={type}
                         selected={this.state.filterByType === type}
                         onClick={() => {
                             if (type === 'all') {
-                                ((window as any)._localStorage || window.localStorage).removeItem(
+                                this.localStorage.removeItem(
                                     'files.filterByType',
                                 );
                                 this.setState({ filterByType: '', showTypesMenu: null });
                             } else {
-                                ((window as any)._localStorage || window.localStorage).setItem(
+                                this.localStorage.setItem(
                                     'files.filterByType',
                                     type,
                                 );
@@ -1777,18 +1790,18 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                     </MenuItem>;
                 })}
             </Menu> : null}
-            <Tooltip title={this.props.t('ra_Background image')}>
+            <Tooltip title={this.props.t('ra_Background image')} componentsProps={{ popper: { sx: styles.tooltip } }}>
                 <IconButton
                     color="inherit"
                     edge="start"
-                    sx={styles.menuButton}
+                    style={styles.menuButton}
                     onClick={this.setStateBackgroundImage}
                     size="small"
                 >
                     <Brightness5Icon fontSize="small" />
                 </IconButton>
             </Tooltip>
-            {this.state.viewType !== TABLE && this.props.allowDelete ? <Tooltip title={this.props.t('ra_Delete')}>
+            {this.state.viewType !== TABLE && this.props.allowDelete ? <Tooltip title={this.props.t('ra_Delete')} componentsProps={{ popper: { sx: styles.tooltip } }}>
                 <span>
                     <IconButton
                         aria-label="delete"
@@ -1800,7 +1813,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                         }
                         color="inherit"
                         edge="start"
-                        sx={styles.menuButton}
+                        style={styles.menuButton}
                         onClick={e => {
                             e.stopPropagation();
                             if (this.suppressDeleteConfirm > Date.now()) {
@@ -1818,7 +1831,10 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
         </Toolbar>;
     }
 
-    findItem(id: string, folders?: Folders | null) {
+    findItem(
+        id: string,
+        folders?: Folders | null,
+    ) {
         folders = folders || this.state.folders;
         if (!folders) {
             return null;
@@ -1878,7 +1894,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                             expanded.push(parentFolder);
                             expanded.sort();
                         }
-                        ((window as any)._localStorage || window.localStorage).setItem(
+                        this.localStorage.setItem(
                             'files.expanded',
                             JSON.stringify(expanded),
                         );
@@ -1902,16 +1918,6 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                 (items[i] as HTMLElement).style.opacity = '1';
             }
         }, 100);
-    }
-
-    async uploadFile(fileName: string, data: string): Promise<void> {
-        const parts = fileName.split('/');
-        const adapter = parts.shift();
-        try {
-            return await this.props.socket.writeFile64(adapter || '', parts.join('/'), data);
-        } catch (e) {
-            return window.alert(`Cannot write file: ${e}`);
-        }
     }
 
     findFirstFolder(id: string) {
@@ -1938,6 +1944,16 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
         return parentFolder;
     }
 
+    async uploadFile(fileName: string, data: string): Promise<void> {
+        const parts: string[] = fileName.split('/');
+        const adapterName = parts.shift();
+        try {
+            await this.props.socket.writeFile64(adapterName || '', parts.join('/'), data);
+        } catch (e) {
+            window.alert(`Cannot write file: ${e}`);
+        }
+    }
+
     renderUpload() {
         if (this.state.uploadFile) {
             return [
@@ -1945,7 +1961,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                     key="close"
                     color="primary"
                     aria-label="close"
-                    sx={styles.uploadCloseButton}
+                    style={styles.uploadCloseButton}
                     onClick={() => this.setState({ uploadFile: false })}
                 >
                     <CloseIcon />
@@ -1980,7 +1996,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                                                         if (!expanded.includes(parentFolder)) {
                                                             expanded.push(parentFolder);
                                                             expanded.sort();
-                                                            ((window as any)._localStorage || window.localStorage).setItem(
+                                                            this.localStorage.setItem(
                                                                 'files.expanded',
                                                                 JSON.stringify(expanded),
                                                             );
@@ -1996,10 +2012,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                                                                         if (!expanded.includes(parentFolder)) {
                                                                             expanded.push(parentFolder);
                                                                             expanded.sort();
-                                                                            (
-                                                                                (window as any)._localStorage ||
-                                                                                window.localStorage
-                                                                            ).setItem(
+                                                                            this.localStorage.setItem(
                                                                                 'files.expanded',
                                                                                 JSON.stringify(expanded),
                                                                             );
@@ -2020,29 +2033,27 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                         });
                     }}
                 >
-                    {({ getRootProps, getInputProps }) => <Box
-                        component="div"
-                        sx={Object.assign(
-                            {},
-                            styles.uploadDiv,
-                            this.state.uploadFile === 'dragging' ? styles.uploadDivDragging : {},
-                        )}
+                    {({ getRootProps, getInputProps }) => <div
+                        style={{
+                            ...styles.uploadDiv,
+                            ...(this.state.uploadFile === 'dragging' ? styles.uploadDivDragging : undefined),
+                        }}
                         {...getRootProps()}
                     >
                         <input {...getInputProps()} />
                         <Box component="div" sx={styles.uploadCenterDiv}>
-                            <Box component="div" sx={styles.uploadCenterTextAndIcon}>
-                                <UploadIcon sx={styles.uploadCenterIcon} />
-                                <Box component="div" sx={styles.uploadCenterText}>
+                            <div style={styles.uploadCenterTextAndIcon}>
+                                <UploadIcon style={styles.uploadCenterIcon} />
+                                <div style={styles.uploadCenterText}>
                                     {this.state.uploadFile === 'dragging'
                                         ? this.props.t('ra_Drop file here')
                                         : this.props.t(
                                             'ra_Place your files here or click here to open the browse dialog',
                                         )}
-                                </Box>
-                            </Box>
+                                </div>
+                            </div>
                         </Box>
-                    </Box>}
+                    </div>}
                 </Dropzone>,
             ];
         }
@@ -2103,7 +2114,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                     if (pos !== -1) {
                         const expanded = [...this.state.expanded];
                         expanded.splice(pos, 1);
-                        ((window as any)._localStorage || window.localStorage).setItem('files.expanded', JSON.stringify(expanded));
+                        this.localStorage.setItem('files.expanded', JSON.stringify(expanded));
                         newState.expanded = expanded;
                     }
 
@@ -2191,7 +2202,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             formatEditFile={this.state.formatEditFile}
             themeType={this.props.themeType}
             setStateBackgroundImage={this.setStateBackgroundImage}
-            getClassBackgroundImage={this.getClassBackgroundImage}
+            getStyleBackgroundImage={this.getStyleBackgroundImage}
             t={this.props.t}
             socket={this.props.socket}
             lang={this.props.lang}
@@ -2285,14 +2296,13 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                     </Box>;
                 }
 
-                return <Box
-                    component="div"
-                    sx={styles.pathDivBreadcrumbSelected}
+                return <div
+                    style={styles.pathDivBreadcrumbSelected}
                     key={`${this.state.selected}_${i}`}
                     onClick={() => this.setState({ pathFocus: true })}
                 >
                     {part}
-                </Box>;
+                </div>;
             })}
         </Breadcrumbs>;
     }
@@ -2316,7 +2326,7 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                     }
                     onBlur={() => this.changeToPath()}
                     onChange={e => this.setState({ path: e.target.value })}
-                    sx={styles.pathDivInput}
+                    style={styles.pathDivInput}
                 />
                 :
                 this.renderBreadcrumb()}
@@ -2339,21 +2349,17 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
             }, 300);
         }
 
-        return <Box
-            component="div"
-            style={this.props.style}
+        return <div
+            style={{ ...styles.root, ...this.props.style }}
             className={this.props.className}
-            sx={styles.root}
         >
             {this.props.showToolbar ? this.renderToolbar() : null}
             {this.state.viewType === TILE ? this.renderPath() : null}
-            <Box
-                component="div"
-                sx={Object.assign(
-                    {},
-                    styles.filesDiv,
-                    styles[`filesDiv${this.state.viewType}`],
-                )}
+            <div
+                style={{
+                    ...styles.filesDiv,
+                    ...styles[`filesDiv${this.state.viewType}`],
+                }}
                 onClick={e => {
                     if (this.state.viewType !== TABLE) {
                         if (this.state.selected !== (this.state.currentDir || '/')) {
@@ -2368,8 +2374,8 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                     ? this.renderItems('/')
                     : this.renderItems(this.state.currentDir || '/')}
                 {this.state.viewType !== TABLE ?
-                    <Box component="div" sx={styles.filesDivHint}>{this.props.t('ra_select_folder_hint')}</Box> : null}
-            </Box>
+                    <div style={styles.filesDivHint}>{this.props.t('ra_select_folder_hint')}</div> : null}
+            </div>
             {this.props.allowUpload ? this.renderInputDialog() : null}
             {this.props.allowUpload ? this.renderUpload() : null}
             {this.props.allowDelete ? this.renderDeleteDialog() : null}
@@ -2378,8 +2384,8 @@ class FileBrowser extends Component<FileBrowserProps, FileBrowserState> {
                 ? this.props.modalEditOfAccessControl(this)
                 : null}
             {this.renderError()}
-        </Box>;
+        </div>;
     }
 }
 
-export default withWidth()(FileBrowser);
+export default withWidth()(FileBrowserClass);
