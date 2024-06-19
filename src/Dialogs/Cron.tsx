@@ -19,6 +19,7 @@ import SimpleCron, { cron2state } from '../Components/SimpleCron';
 import Schedule from '../Components/Schedule';
 
 import I18n from '../i18n';
+import { IobTheme } from '../types';
 
 // Generate cron expression
 
@@ -41,6 +42,7 @@ interface DialogCronProps {
     complex?: boolean;
     /** do not show wizard */
     noWizard?: boolean;
+    theme: IobTheme;
 }
 
 interface DialogCronState {
@@ -145,6 +147,7 @@ class DialogCron extends React.Component<DialogCronProps, DialogCronState> {
                     language={I18n.getLanguage()}
                 />}
                 {this.state.mode === 'wizard' && <Schedule
+                    theme={this.props.theme}
                     schedule={this.state.cron}
                     onChange={(cron: string) => this.setState({ cron })}
                 />}
