@@ -13,15 +13,21 @@ const styles: Record<string, React.CSSProperties> = {
 };
 
 interface TabContentProps {
-    /* Set to 'auto' to show the overflow. */
-    overflow?: string;
-    children: React.ReactNode;
+    /** The content of the component. */
+    children: React.JSX.Element | (React.JSX.Element | null | React.JSX.Element[])[];
+    /** Overflow behavior */
+    overflow?: 'auto';
+
+    style?: React.CSSProperties;
 }
 
 function TabContent(props: TabContentProps) {
     return <Grid
         item
-        sx={{ ...styles.root, ...(props.overflow === 'auto' ? styles.overflowAuto : undefined) }}
+        sx={{
+            ...props.style,
+            ...(props.overflow === 'auto' ? styles.overflowAuto : undefined),
+        }}
     >
         {props.children}
     </Grid>;

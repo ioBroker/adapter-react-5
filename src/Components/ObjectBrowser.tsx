@@ -3294,7 +3294,11 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             onClose={() => this.setState({ columnsSelectorShow: false })}
             open={!0}
             sx={{
-                '& .MuiPaper-root': Utils.getStyle(this.props.theme, styles.dialogColumns, styles[`transparent_${this.state.columnsDialogTransparent}`]),
+                '& .MuiPaper-root': Utils.getStyle(
+                    this.props.theme,
+                    styles.dialogColumns,
+                    styles[`transparent_${this.state.columnsDialogTransparent}`],
+                ),
             }}
         >
             <DialogTitle sx={styles.fontSizeTitle}>{this.props.t('ra_Configure')}</DialogTitle>

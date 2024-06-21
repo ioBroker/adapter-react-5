@@ -752,11 +752,19 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
   
   After: `<Badge sx={{ '& .MuiBadge-badge': styles.expertBadge }}>`
 
+  Before: `<Tab classes={{ selected: styles.selected }} />`
+  
+  After: `<Tab sx={{ '&.Mui-selected': styles.selected }} />`
+
   Before: `<Tooltip title={this.props.t('ra_Refresh tree')} classes={{ popper: styles.tooltip }}>`
   
   After: `<Tooltip title={this.props.t('ra_Refresh tree')} componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}>`
   Or: `<Tooltip title={this.props.t('ra_Refresh tree')} componentsProps={{ popper: { sx: styles.tooltip } }}>`
 
+  Before. `<AccordionSummary classes={{ root: styles.rootStyle, content: styles.content }}>`
+
+  After. `<AccordionSummary sx={{ '&.MuiAccordionSummary-root': styles.rootStyle, '& .MuiAccordionSummary-content': styles.content }}>`
+  
 ## Warning
 `react-inlinesvg@4.0.5` cannot be used. Use `react-inlinesvg@4.0.3` instead.  
 <!--
@@ -765,7 +773,7 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
-### 6.0.1 (2024-06-19)
+### **WORK IN PROGRESS**
 * (bluefox) Removed the usage of `withStyles` in favor of `sx` and `style` properties (see [Migration from v5 to v6](#migration-from-v5-to-v6)
 * (bluefox) (BREAKING) Higher version of `@mui/material` (5.15.20) is used
 

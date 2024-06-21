@@ -22,9 +22,9 @@ import {
 
 import type { Connection } from '@iobroker/socket-client';
 
-import Utils from '../Components/Utils';
 import I18n from '../i18n';
 import FileBrowser from '../Components/FileBrowser';
+import { IobTheme } from '../types';
 
 const styles: Record<string, React.CSSProperties> = {
     headerID: {
@@ -79,6 +79,8 @@ interface DialogSelectFileProps {
     themeName?: string;
     /** Theme type. */
     themeType?: 'dark' | 'light';
+    /** Theme object. */
+    theme: IobTheme;
     /** The selected IDs. */
     selected?: string | string[];
     /** The ok button text; default: OK (translated) */
@@ -236,6 +238,7 @@ class DialogSelectFile extends React.Component<DialogSelectFileProps, DialogSele
                     socket={this.props.socket}
                     themeType={this.props.themeType}
                     themeName={this.props.themeName}
+                    theme={this.props.theme}
                     showExpertButton={this.props.showExpertButton}
                     expertMode={this.props.expertMode}
                     showTypeSelector={this.props.showTypeSelector}

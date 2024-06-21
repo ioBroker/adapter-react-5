@@ -761,7 +761,7 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
 
     render() {
         return <div style={styles.mainDiv}>
-            <div style={{ paddingLeft: 8, width: '100%' }}><TextField style={{ width: '100%' }} value={this.state.cron} disabled /></div>
+            <div style={{ paddingLeft: 8, width: '100%' }}><TextField variant="standard" style={{ width: '100%' }} value={this.state.cron} disabled /></div>
             <div style={{ paddingLeft: 8, width: '100%', height: 60 }}>{convertCronToText(this.state.cron, this.props.language || 'en')}</div>
             <div>
                 <FormControl variant="standard" style={{ ...styles.formControl, marginLeft: 8, marginTop: 8 }}>

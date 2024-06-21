@@ -20,18 +20,24 @@ interface TabContainerProps {
     elevation?: number;
     /* Set to 'visible' show the overflow. */
     overflow?: string;
-    className?: string;
-    style?: React.CSSProperties;
+    styles?: {
+        root?: React.CSSProperties;
+        container?: React.CSSProperties;
+    };
     onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
     tabIndex?: number;
+    /** The content of the component. */
     children: React.ReactNode;
 }
 
 function TabContainer(props: TabContainerProps) {
     return <Paper
         elevation={!Number.isNaN(props.elevation) ? props.elevation : 1}
-        className={props.className}
-        style={{ ...styles.root, ...(props.overflow !== 'visible' ? styles.overflowHidden :undefined), ...props.style }}
+        style={{
+            ...styles.root,
+            ...(props.styles?.root || undefined),
+            ...(props.overflow !== 'visible' ? styles.overflowHidden : undefined),
+        }}
         onKeyDown={props.onKeyDown}
         tabIndex={props.tabIndex}
     >

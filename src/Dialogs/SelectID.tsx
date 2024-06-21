@@ -25,6 +25,7 @@ import type Connection from '../Connection';
 import I18n from '../i18n';
 import ObjectBrowser, { ObjectBrowserFilter } from '../Components/ObjectBrowser';
 import { ObjectBrowserColumn, ObjectBrowserCustomFilter, ObjectBrowserType } from '../Components/types';
+import { IobTheme } from '../types';
 
 export interface SelectIDFilters {
     id?: string;
@@ -67,6 +68,8 @@ interface DialogSelectIDProps {
     themeName?: string;
     /* Theme type: dark or light */
     themeType?: string;
+    /** The theme object */
+    theme?: IobTheme;
     /* Custom filter. */
     customFilter?: ObjectBrowserCustomFilter;
     /* The selected IDs. */
@@ -237,6 +240,7 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
                     // name={this.state.name}
                     themeName={this.props.themeName}
                     themeType={this.props.themeType}
+                    theme={this.props.theme}
                     customFilter={this.props.customFilter}
                     onFilterChanged={(filterConfig: ObjectBrowserFilter) => {
                         this.filters = filterConfig;
