@@ -25,7 +25,8 @@ function TabContent(props: TabContentProps) {
     return <Grid
         item
         sx={{
-            ...props.style,
+            ...styles.root,
+            ...(props?.style || undefined),
             ...(props.overflow === 'auto' ? styles.overflowAuto : undefined),
         }}
     >
