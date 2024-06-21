@@ -764,9 +764,7 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
   Before. `<AccordionSummary classes={{ root: styles.rootStyle, content: styles.content }}>`
 
   After. `<AccordionSummary sx={{ '&.MuiAccordionSummary-root': styles.rootStyle, '& .MuiAccordionSummary-content': styles.content }}>`
-  
-## Warning
-`react-inlinesvg@4.0.5` cannot be used. Use `react-inlinesvg@4.0.3` instead.  
+
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
