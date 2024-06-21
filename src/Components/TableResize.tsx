@@ -16,7 +16,8 @@ interface TableResizeProps {
     ready?: boolean;
     stickyHeader?: boolean;
     size?: 'small' | 'medium';
-    className: string;
+    className?: string;
+    sx?: Record<string, any>;
     style?: React.CSSProperties;
     initialWidths?: (number | 'auto')[];
     minWidths?: number[];
@@ -246,8 +247,9 @@ class TableResize extends Component<TableResizeProps> {
             stickyHeader={this.props.stickyHeader}
             size={this.props.size || 'small'}
             className={this.props.className}
+            sx={this.props.sx}
             ref={this.resizerRefTable}
-            style={({ ...this.props.style || {}, ...style })}
+            style={({ ...(this.props.style || undefined), ...style })}
         >
             {this.props.children}
         </Table>;
