@@ -759,7 +759,7 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
   Before: `<Tooltip title={this.props.t('ra_Refresh tree')} classes={{ popper: styles.tooltip }}>`
   
   After: `<Tooltip title={this.props.t('ra_Refresh tree')} componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}>`
-  Or: `<Tooltip title={this.props.t('ra_Refresh tree')} componentsProps={{ popper: { sx: styles.tooltip } }}>`
+  Or: `<Tooltip title={this.props.t('ra_Refresh tree')} elr>`
 
   Before. `<AccordionSummary classes={{ root: styles.rootStyle, content: styles.content }}>`
 
@@ -771,6 +771,9 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Synchronised with admin
+
 ### 6.0.4 (2024-06-21)
 * (bluefox) Removed the usage of `withStyles` in favor of `sx` and `style` properties (see [Migration from v5 to v6](#migration-from-v5-to-v6)
 * (bluefox) (BREAKING) Higher version of `@mui/material` (5.15.20) is used

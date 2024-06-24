@@ -152,7 +152,7 @@ class Utils {
             if (text === text.toUpperCase()) {
                 text = text[0] + text.substring(1).toLowerCase();
             }
-        } else if (!isDesc && item.common) {
+        } else if (!isDesc && item?.common) {
             const textObj = item.common.name || item.common.desc;
             if (textObj && typeof textObj === 'object') {
                 text = (options.language && textObj[options.language]) || textObj.en || textObj.de || textObj.ru || '';
@@ -1473,16 +1473,7 @@ class Utils {
         }
 
         // time
-        let v = dateObj.getHours().toString().padStart(2, '0');
-        text += ` ${v}`;
-        v = dateObj.getMinutes().toString().toString();
-        text += `:${v}`;
-
-        v = dateObj.getSeconds().toString().padStart(2, '0');
-        text += `:${v}`;
-
-        v = dateObj.getMilliseconds().toString().padStart(3, '0');
-        text += `.${v}`;
+        text += ` ${dateObj.getHours().toString().padStart(2, '0')}:${dateObj.getMinutes().toString().padStart(2, '0')}:${dateObj.getSeconds().toString().padStart(2, '0')}.${dateObj.getMilliseconds().toString().padStart(3, '0')}`;
 
         return text;
     }

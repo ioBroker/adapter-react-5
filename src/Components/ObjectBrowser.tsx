@@ -666,26 +666,25 @@ const styles: Record<string, any> = {
     },
     cellButtonsButton: {
         display: 'inline-block',
-        opacity: 0.7,
+        opacity: 0.5,
         width: SMALL_BUTTON_SIZE + 4,
         height: SMALL_BUTTON_SIZE + 4,
         '&:hover': {
             opacity: 1,
         },
-        paddingTop: 0,
-        paddingLeft: 0,
-        marginTop: -2,
+        p: 0,
+        mt: '-2px',
     },
     cellButtonsEmptyButton: {
         fontSize: 12,
     },
     cellButtonMinWidth: {
-        minWidth: 47,
+        minWidth: 40,
     },
     cellButtonsButtonAlone: {
-        marginLeft: SMALL_BUTTON_SIZE + 4,
-        paddingTop: 0,
-        marginTop: -2,
+        ml: `${SMALL_BUTTON_SIZE + 20}px`,
+        pt: 0,
+        mt: '-2px',
     },
     cellButtonsButtonWithCustoms: (theme: IobTheme) => ({
         color: theme.palette.mode === 'dark' ? theme.palette.primary.main : theme.palette.secondary.main,
@@ -806,6 +805,7 @@ const styles: Record<string, any> = {
     },
     aclText: {
         fontSize: 13,
+        marginTop: 6,
     },
     rightsObject: {
         color: '#55ff55',
@@ -2019,21 +2019,21 @@ function prepareSparkData(
 }
 
 export const ITEM_IMAGES: Record<string, React.JSX.Element> = {
-    state: <IconState className="itemIcon" />,
-    channel: <IconChannel className="itemIcon" />,
-    device: <IconDevice className="itemIcon" />,
-    adapter: <IconAdapter className="itemIcon" />,
-    meta: <IconMeta className="itemIcon" />,
-    instance: <IconInstance className="itemIcon" style={{ color: '#7da7ff' }} />,
-    enum: <IconEnum className="itemIcon" />,
-    chart: <IconChart className="itemIcon" />,
-    config: <IconConfig className="itemIcon" />,
-    group: <IconGroup className="itemIcon" />,
-    user: <IconUser className="itemIcon" />,
-    host: <IconHost className="itemIcon" />,
-    schedule: <IconSchedule className="itemIcon" />,
-    script: <IconScript className="itemIcon" />,
-    folder: <IconClosed className="itemIcon itemIconFolder" />,
+    state: <IconState className="itemIcon" style={{ verticalAlign: 'middle' }} />,
+    channel: <IconChannel className="itemIcon" style={{ verticalAlign: 'middle' }} />,
+    device: <IconDevice className="itemIcon" style={{ verticalAlign: 'middle' }} />,
+    adapter: <IconAdapter className="itemIcon" style={{ verticalAlign: 'middle' }} />,
+    meta: <IconMeta className="itemIcon" style={{ verticalAlign: 'middle' }} />,
+    instance: <IconInstance className="itemIcon" style={{ color: '#7da7ff', verticalAlign: 'middle' }} />,
+    enum: <IconEnum className="itemIcon" style={{ verticalAlign: 'middle' }} />,
+    chart: <IconChart className="itemIcon" style={{ verticalAlign: 'middle' }} />,
+    config: <IconConfig className="itemIcon" style={{ verticalAlign: 'middle' }} />,
+    group: <IconGroup className="itemIcon" style={{ verticalAlign: 'middle' }} />,
+    user: <IconUser className="itemIcon" style={{ verticalAlign: 'middle' }} />,
+    host: <IconHost className="itemIcon" style={{ verticalAlign: 'middle' }} />,
+    schedule: <IconSchedule className="itemIcon" style={{ verticalAlign: 'middle' }} />,
+    script: <IconScript className="itemIcon" style={{ verticalAlign: 'middle' }} />,
+    folder: <IconClosed className="itemIcon itemIconFolder" style={{ verticalAlign: 'middle' }} />,
 };
 
 interface ScreenWidthOne {
@@ -2238,6 +2238,7 @@ interface ObjectBrowserValueProps {
     }) => void;
     /** Configured theme */
     themeType: ThemeType;
+    theme: IobTheme;
     socket: Connection;
     defaultHistory: string;
     dateFormat: string;
@@ -3002,11 +3003,13 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 JSON.stringify(this.lastSelectedItems),
             );
 
-            const name =
-                this.lastSelectedItems.length === 1
-                    ? Utils.getObjectName(this.objects, this.lastSelectedItems[0], null, { language: this.props.lang })
-                    : '';
-            this.props.onSelect && this.props.onSelect(this.lastSelectedItems, name, isDouble);
+            if (this.lastSelectedItems.length === 1 && this.objects[this.lastSelectedItems[0]]) {
+                const name =
+                    this.lastSelectedItems.length === 1
+                        ? Utils.getObjectName(this.objects, this.lastSelectedItems[0], null, { language: this.props.lang })
+                        : '';
+                this.props.onSelect && this.props.onSelect(this.lastSelectedItems, name, isDouble);
+            }
         } else {
             this.localStorage.setItem(`${this.props.dialogName || 'App'}.objectSelected`, '');
             if (this.state.selected.length) {
@@ -4912,10 +4915,10 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                         this.setState({ modalEditOfAccess: true, modalEditOfAccessObjData: item.data })}
                     size="large"
                 >
-                    ---
+                    <div style={{ height: 15 }}>---</div>
                 </IconButton> : null}
                 {this.props.onObjectDelete && item.children && item.children.length ? <IconButton
-                    style={{ ...styles.cellButtonsButton, ...styles.cellButtonsButtonAlone }}
+                    sx={{ ...styles.cellButtonsButton, ...styles.cellButtonsButtonAlone }}
                     size="small"
                     aria-label="delete"
                     title={this.texts.deleteObject}
@@ -4963,7 +4966,11 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 componentsProps={{ popper: { sx: styles.tooltip } }}
             >
                 <IconButton
-                    style={styles.cellButtonMinWidth}
+                    sx={{
+                        ...styles.cellButtonsButton,
+                        ...styles.cellButtonMinWidth,
+                        opacity: 1,
+                    }}
                     onClick={() => this.setState({ modalEditOfAccess: true, modalEditOfAccessObjData: item.data })}
                     size="large"
                 >
@@ -4978,7 +4985,10 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
             showEdit ? <IconButton
                 key="edit"
-                style={styles.cellButtonsButton}
+                sx={{
+                    ...styles.cellButtonsButton,
+                    ...styles.cellButtonMinWidth,
+                }}
                 size="small"
                 aria-label="edit"
                 title={this.texts.editObject}
@@ -4989,11 +4999,11 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             >
                 <IconEdit style={styles.cellButtonsButtonIcon} />
             </IconButton> :
-                <div key="editDisabled" style={styles.cellButtonsButton} />,
+                <Box component="div" key="editDisabled" sx={styles.cellButtonsButton} />,
 
             this.props.onObjectDelete && (item.children?.length || !item.data.obj.common?.dontDelete) ? <IconButton
                 key="delete"
-                style={styles.cellButtonsButton}
+                sx={styles.cellButtonsButton}
                 size="small"
                 aria-label="delete"
                 onClick={() => {
@@ -5025,7 +5035,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 item.data.obj.type === 'state' &&
                 // @ts-expect-error deprecated from js-controller 6
                 item.data.obj.common?.type !== 'file' ? <IconButton
-                    xs={{
+                    sx={{
                         ...styles.cellButtonsButton,
                         ...(item.data.hasCustoms
                             ? this.styles.cellButtonsButtonWithCustoms
@@ -5109,7 +5119,6 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     private getTooltipInfo(id: string, cb?: () => void) {
         const obj = this.objects[id];
         const state = this.states[id];
-        const classes = styles;
 
         const { valFull, fileViewer } = formatValue({
             state,
@@ -5123,7 +5132,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
         valFull?.forEach(_item => {
             if (_item.t === this.texts.quality && state.q) {
-                valFullRx.push(<div style={classes.cellValueTooltipBoth} key={_item.t}>
+                valFullRx.push(<div style={styles.cellValueTooltipBoth} key={_item.t}>
                     {_item.t}
                     :&nbsp;
                     {_item.v}
@@ -5131,11 +5140,11 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 // <div style={styles.cellValueTooltipValue} key={item.t + '_v'}>{item.v}</div>,
                 !_item.nbr && valFullRx.push(<br key={`${_item.t}_br`} />);
             } else {
-                valFullRx.push(<div style={classes.cellValueTooltipTitle} key={_item.t}>
+                valFullRx.push(<div style={styles.cellValueTooltipTitle} key={_item.t}>
                     {_item.t}
                     :&nbsp;
                 </div>);
-                valFullRx.push(<div style={classes.cellValueTooltipValue} key={`${_item.t}_v`}>
+                valFullRx.push(<div style={styles.cellValueTooltipValue} key={`${_item.t}_v`}>
                     {_item.v}
                 </div>);
                 !_item.nbr && valFullRx.push(<br key={`${_item.t}_br`} />);
@@ -5144,7 +5153,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
         if (fileViewer === 'image') {
             valFullRx.push(<img
-                style={classes.cellValueTooltipImage}
+                style={styles.cellValueTooltipImage}
                 src={state.val as string}
                 alt={id}
             />);
@@ -7506,6 +7515,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             role={role || ''}
             states={Utils.getStates(this.objects[this.edit.id] as ioBroker.StateObject)}
             themeType={this.props.themeType}
+            theme={this.props.theme}
             expertMode={!!this.state.filter.expertMode}
             value={this.edit.val}
             socket={this.props.socket}
