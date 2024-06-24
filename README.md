@@ -771,7 +771,7 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 6.0.5 (2024-06-24)
 * (bluefox) Synchronised with admin
 
 ### 6.0.4 (2024-06-21)
