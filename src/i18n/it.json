@@ -422,5 +422,8 @@
   "ra_create_boolean_state": "Crea uno stato booleano",
   "ra_Select color": "Seleziona il colore",
   "ra_Cannot read licenses: %s": "Impossibile leggere le licenze: %s",
-  "ra_Advanced options": "Opzioni avanzate"
+  "ra_Advanced options": "Opzioni avanzate",
+  "sc_everyN_dow": "ogni Nesimo giorno della settimana",
+  "sc_every_dow": "Tutti i giorni della settimana",
+  "sc_specific_dow": "giorno/i specifico/i della settimana"
 }

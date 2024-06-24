@@ -422,5 +422,8 @@
   "ra_create_boolean_state": "Створіть логічний стан",
   "ra_Select color": "Виберіть колір",
   "ra_Cannot read licenses: %s": "Неможливо прочитати ліцензії: %s",
-  "ra_Advanced options": "Розширені опції"
+  "ra_Advanced options": "Розширені опції",
+  "sc_everyN_dow": "кожен N-й день тижня",
+  "sc_every_dow": "кожен день тижня",
+  "sc_specific_dow": "конкретний день (дні) тижня"
 }

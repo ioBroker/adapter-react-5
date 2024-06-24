@@ -771,8 +771,9 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
-### 6.0.5 (2024-06-24)
+### **WORK IN PROGRESS**
 * (bluefox) Synchronised with admin
+* (bluefox) Added translations for time scheduler
 
 ### 6.0.4 (2024-06-21)
 * (bluefox) Removed the usage of `withStyles` in favor of `sx` and `style` properties (see [Migration from v5 to v6](#migration-from-v5-to-v6)

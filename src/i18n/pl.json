@@ -422,5 +422,8 @@
   "ra_create_boolean_state": "Utwórz stan logiczny",
   "ra_Select color": "Wybierz kolor",
   "ra_Cannot read licenses: %s": "Nie można odczytać licencji: %s",
-  "ra_Advanced options": "Zaawansowane opcje"
+  "ra_Advanced options": "Zaawansowane opcje",
+  "sc_everyN_dow": "w każdy N-ty dzień tygodnia",
+  "sc_every_dow": "każdy dzień tygodnia",
+  "sc_specific_dow": "określone dni tygodnia"
 }

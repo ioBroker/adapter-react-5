@@ -422,5 +422,8 @@
   "ra_create_boolean_state": "创建布尔状态",
   "ra_Select color": "选择颜色",
   "ra_Cannot read licenses: %s": "无法读取许可证：%s",
-  "ra_Advanced options": "高级选项"
+  "ra_Advanced options": "高级选项",
+  "sc_everyN_dow": "每周的第 N 天",
+  "sc_every_dow": "一周的每一天",
+  "sc_specific_dow": "一周中的特定日子"
 }

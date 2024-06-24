@@ -422,5 +422,8 @@
   "ra_create_boolean_state": "Creëer een Booleaanse status",
   "ra_Select color": "Selecteer kleur",
   "ra_Cannot read licenses: %s": "Kan licenties niet lezen: %s",
-  "ra_Advanced options": "Geavanceerde mogelijkheden"
+  "ra_Advanced options": "Geavanceerde mogelijkheden",
+  "sc_everyN_dow": "elke N-de dag van de week",
+  "sc_every_dow": "elke dag van de week",
+  "sc_specific_dow": "specifieke dag(en) van de week"
 }
