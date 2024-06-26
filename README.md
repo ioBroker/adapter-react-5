@@ -771,7 +771,7 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 6.0.7 (2024-06-26)
 * (bluefox) Corrected types of the select ID dialog
 
 ### 6.0.6 (2024-06-24)
