@@ -771,6 +771,9 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Corrected types of the select ID dialog
+
 ### 6.0.6 (2024-06-24)
 * (bluefox) Synchronised with admin
 * (bluefox) Added translations for time scheduler

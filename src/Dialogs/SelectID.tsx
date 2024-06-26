@@ -38,58 +38,62 @@ export interface SelectIDFilters {
 }
 
 interface DialogSelectIDProps {
-    /* The internal name of the dialog; default: "default". Used to store settings in local storage */
+    /** The internal name of the dialog; default: "default". Used to store settings in local storage */
     dialogName?: string;
-    /* The dialog title; default: Please select object ID... (translated) */
+    /** The dialog title; default: Please select object ID... (translated) */
     title?: string;
-    /* Set to true to allow the selection of multiple IDs. */
+    /** Set to true to allow the selection of multiple IDs. */
     multiSelect?: boolean;
-    /* Show folders before any leaves. */
+    /** Show folders before any leaves. */
     foldersFirst?: boolean;
-    /* Path prefix for images (default: '.') */
+    /** Path prefix for images (default: '.') */
     imagePrefix?: string;
-    /* @deprecated: same as imagePrefix */
+    /** @deprecated: same as imagePrefix */
     prefix?: string;
-    /* Show the expert button */
+    /** Show the expert button */
     showExpertButton?: boolean;
-    /* Force expert mode */
+    /** Force expert mode */
     expertMode?: boolean;
-    /* optional ['name', 'type', 'role', 'room', 'func', 'val', 'buttons'] */
+    /** optional ['name', 'type', 'role', 'room', 'func', 'val', 'buttons'] */
     columns?: ObjectBrowserColumn[];
-    /*  Object types to show; default: 'state' only */
+    /**  Object types to show; default: 'state' only */
     types?: ObjectBrowserType | ObjectBrowserType[];
-    /* The language. */
+    /** The language. */
     lang?: ioBroker.Languages;
-    /* The socket connection. */
+    /** The socket connection. */
     socket: Connection;
-    /* Can't objects be edited? (default: true) */
+    /** Can't objects be edited? (default: true) */
     notEditable?: boolean;
-    /* Theme name. */
+    /** Theme name. */
     themeName?: string;
-    /* Theme type: dark or light */
+    /** Theme type: dark or light */
     themeType?: string;
     /** The theme object */
-    theme?: IobTheme;
-    /* Custom filter. */
+    theme: IobTheme;
+    /** The date format for the date columns */
+    dateFormat?: string;
+    /** Is use comma or point for displaying of float numbers */
+    isFloatComma?: boolean;
+    /** Custom filter. */
     customFilter?: ObjectBrowserCustomFilter;
-    /* The selected IDs. */
+    /** The selected IDs. */
     selected?: string | string[];
-    /* The ok button text; default: OK (translated) */
+    /** The ok button text; default: OK (translated) */
     ok?: string;
-    /* The cancel button text; default: Cancel (translated) */
+    /** The cancel button text; default: Cancel (translated) */
     cancel?: string;
-    /* Close handler that is always called when the dialog is closed. */
+    /** Close handler that is always called when the dialog is closed. */
     onClose: () => void;
-    /* Handler that is called when the user presses OK. */
+    /** Handler that is called when the user presses OK. */
     onOk: (selected: string | string[] | undefined, name: string) => void;
-    /* Function to filter out all unnecessary objects. Can be string or function.
+    /** Function to filter out all unnecessary objects. Can be string or function.
        It cannot be used together with "types".
-       Example for function: `obj => obj.common && obj.common.type === 'boolean'` to show only boolean states
+       Example for function: `obj => obj.common?.type === 'boolean'` to show only boolean states
        In case of string, it must look like `obj.common && obj.common.type === 'boolean'` */
     filterFunc?: string | ((obj: ioBroker.Object) => boolean);
-    /* predefined filter fields, like {"id":"","name":"","room":"","func":"","role":"level","type":"","custom":""} */
+    /** predefined filter fields, like {"id":"","name":"","room":"","func":"","role":"level","type":"","custom":""} */
     filters?: SelectIDFilters;
-    /* Show elements only of this root ID */
+    /** Show elements only of this root ID */
     root?: string;
 }
 
@@ -223,8 +227,10 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
                 <ObjectBrowser
                     foldersFirst={this.props.foldersFirst}
                     imagePrefix={this.props.imagePrefix || this.props.prefix} // prefix is for back compatibility
+                    dateFormat={this.props.dateFormat}
                     defaultFilters={this.filters}
                     dialogName={this.dialogName}
+                    isFloatComma={this.props.isFloatComma}
                     showExpertButton={this.props.showExpertButton !== undefined ? this.props.showExpertButton : true}
                     expertMode={this.props.expertMode}
                     // style={{ width: '100%', height: '100%' }}
