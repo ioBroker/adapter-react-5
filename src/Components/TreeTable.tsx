@@ -500,6 +500,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                 imagePrefix="../.."
                 dialogName={this.props.adapterName}
                 themeType={this.props.themeType}
+                theme={this.props.theme}
                 socket={this.props.socket as Connection}
                 selected={this.state.selectIdValue as string}
                 onClose={() => this.setState({ showSelectId: false })}
