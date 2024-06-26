@@ -2161,7 +2161,11 @@ class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
                     <div style={{ width: '100%', textAlign: 'center' }}>
                         {this.state.icons && this.state.icons.map((icon, i) => {
                             if (!this.state.filter || (this.state.names[i] && this.state.names[i].toLowerCase().includes(this.state.filter))) {
-                                return <Tooltip title={this.state.names[i] || ''} key={i}>
+                                return <Tooltip
+                                    title={this.state.names[i] || ''}
+                                    key={i}
+                                    componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}
+                                >
                                     <IconButton
                                         onClick={() => this.setState({ opened: false }, () => {
                                             const onApply: ((_icon: string) => void) | undefined = this.props.onSelect || this.props.onChange;

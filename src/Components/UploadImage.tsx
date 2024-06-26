@@ -527,7 +527,7 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
                     </div>
                         :
                         removeIconFunc && !cropHandler && <div style={styles.buttonRemoveWrapper}>
-                            <Tooltip title={I18n.t('ra_Clear')}>
+                            <Tooltip title={I18n.t('ra_Clear')} componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}>
                                 <IconButton
                                     size="large"
                                     onClick={e => {
@@ -540,7 +540,7 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
                             </Tooltip>
                         </div>}
                     {icon && crop && <div style={styles.buttonCropWrapper}>
-                        <Tooltip title={I18n.t('ra_Crop')}>
+                        <Tooltip title={I18n.t('ra_Crop')} componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}>
                             <IconButton
                                 size="large"
                                 onClick={e => {

@@ -22,7 +22,7 @@ export default function ToggleThemeMenu({
     themeName, toggleTheme, t, className, style, size,
 }: ToggleThemeMenuProps) {
     return <div className={className || undefined} style={style || undefined}>
-        <Tooltip title={t('ra_Change color theme')}>
+        <Tooltip title={t('ra_Change color theme')} componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}>
             <IconButton onClick={() => toggleTheme()} size={size || 'medium'}>
                 {themeName === 'dark' && <Brightness4Icon className={className} />}
                 {themeName === 'blue' && <Brightness5Icon className={className} />}

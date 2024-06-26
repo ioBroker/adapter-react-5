@@ -682,7 +682,7 @@ const styles: Record<string, any> = {
         minWidth: 40,
     },
     cellButtonsButtonAlone: {
-        ml: `${SMALL_BUTTON_SIZE + 20}px`,
+        ml: `${SMALL_BUTTON_SIZE + 6}px`,
         pt: 0,
         mt: '-2px',
     },
@@ -4919,7 +4919,10 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                     <div style={{ height: 15 }}>---</div>
                 </IconButton> : null}
                 {this.props.onObjectDelete && item.children && item.children.length ? <IconButton
-                    sx={{ ...styles.cellButtonsButton, ...styles.cellButtonsButtonAlone }}
+                    sx={{
+                        ...styles.cellButtonsButton,
+                        ...styles.cellButtonsButtonAlone,
+                    }}
                     size="small"
                     aria-label="delete"
                     title={this.texts.deleteObject}
@@ -4987,8 +4990,8 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             showEdit ? <IconButton
                 key="edit"
                 sx={{
+                    marginRight: '2px',
                     ...styles.cellButtonsButton,
-                    ...styles.cellButtonMinWidth,
                 }}
                 size="small"
                 aria-label="edit"
