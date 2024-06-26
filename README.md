@@ -771,6 +771,9 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Corrected Icons
+
 ### 6.0.8 (2024-06-26)
 * (bluefox) Corrected types of the select ID dialog
 * (bluefox) Made the tooltips neutral to the pointer events

@@ -111,7 +111,7 @@ interface IconProps {
     alt?: string;
 }
 
-const REMOTE_SERVER = window.location.hostname.includes('iobroker.in');
+const REMOTE_SERVER = window.location.hostname.endsWith('iobroker.in');
 const REMOTE_PREFIX = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
 
 export default function Icon(props: IconProps) {
