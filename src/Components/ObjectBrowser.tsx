@@ -2254,6 +2254,7 @@ interface ObjectBrowserEditObjectProps {
     roleArray: string[];
     expertMode: boolean;
     themeType: ThemeType;
+    theme: IobTheme;
     aliasTab: boolean;
     onClose: (obj?: ioBroker.AnyObject) => void;
     dialogName?: string;
@@ -7019,6 +7020,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             dateFormat={this.props.dateFormat || this.systemConfig.common.dateFormat}
             isFloatComma={this.props.isFloatComma === undefined ? this.systemConfig.common.isFloatComma : this.props.isFloatComma}
             themeType={this.props.themeType}
+            theme={this.props.theme}
             socket={this.props.socket}
             dialogName={this.props.dialogName}
             aliasTab={this.state.editObjectAlias}
