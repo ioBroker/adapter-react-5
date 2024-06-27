@@ -425,5 +425,6 @@
   "ra_Advanced options": "Opzioni avanzate",
   "sc_everyN_dow": "ogni Nesimo giorno della settimana",
   "sc_every_dow": "Tutti i giorni della settimana",
-  "sc_specific_dow": "giorno/i specifico/i della settimana"
+  "sc_specific_dow": "giorno/i specifico/i della settimana",
+  "ra_Name": "Nome"
 }

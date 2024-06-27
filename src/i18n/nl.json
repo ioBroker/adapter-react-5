@@ -425,5 +425,6 @@
   "ra_Advanced options": "Geavanceerde mogelijkheden",
   "sc_everyN_dow": "elke N-de dag van de week",
   "sc_every_dow": "elke dag van de week",
-  "sc_specific_dow": "specifieke dag(en) van de week"
+  "sc_specific_dow": "specifieke dag(en) van de week",
+  "ra_Name": "Naam"
 }

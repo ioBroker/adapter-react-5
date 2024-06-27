@@ -771,6 +771,10 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Added translation
+* (bluefox) Mobile object browser improved
+
 ### 6.0.9 (2024-06-26)
 * (bluefox) Corrected Icons
 

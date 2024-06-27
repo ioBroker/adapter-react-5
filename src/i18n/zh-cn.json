@@ -425,5 +425,6 @@
   "ra_Advanced options": "高级选项",
   "sc_everyN_dow": "每周的第 N 天",
   "sc_every_dow": "一周的每一天",
-  "sc_specific_dow": "一周中的特定日子"
+  "sc_specific_dow": "一周中的特定日子",
+  "ra_Name": "姓名"
 }
