@@ -2295,6 +2295,7 @@ interface ObjectBrowserEditObjectProps {
     isFloatComma: boolean;
     onNewObject: (obj: ioBroker.AnyObject) => void;
     t: Translate;
+    width: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
 
 interface ObjectAliasEditorProps {
@@ -7291,6 +7292,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 }
                 this.setState({ editObjectDialog: '', editObjectAlias: false });
             }}
+            width={this.props.width}
         />;
     }
 
