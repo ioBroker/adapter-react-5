@@ -771,8 +771,8 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
-### 6.0.11 (2024-06-29)
-* (bluefox) Added support of the overrides in the theme
+### **WORK IN PROGRESS**
+* (bluefox) Added support for the overrides in the theme
 
 ### 6.0.10 (2024-06-27)
 * (bluefox) Added translation

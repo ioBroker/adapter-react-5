@@ -388,9 +388,8 @@ function customTheme(type: ThemeName, overrides?: Record<string, any>): IobTheme
                 mode: 'light',
                 primary: {
                     main: '#3399CC',
-                    light: undefined,
-                    dark: undefined,
-                    contrastText: undefined,
+                    dark: '#256c97',
+                    light: '#76d0fd',
                 },
                 secondary: {
                     main: '#164477',
