@@ -177,12 +177,12 @@ interface ThemeOptions extends ThemeOptionsMui {
 /**
  * The theme creation factory function.
  */
-const CustomTheme = (type: ThemeName): IobTheme => {
+function customTheme(type: ThemeName, overrides?: Record<string, any>): IobTheme {
     let options: ThemeOptions;
-    let overrides: Record<string, any>;
+    let localOverrides: Record<string, any>;
 
     if (type === 'dark') {
-        overrides = {
+        localOverrides = {
             MuiAppBar: {
                 colorDefault: {
                     backgroundColor: '#272727',
@@ -223,7 +223,7 @@ const CustomTheme = (type: ThemeName): IobTheme => {
             },
         };
     } else if (type === 'blue') {
-        overrides = {
+        localOverrides = {
             MuiAppBar: {
                 colorDefault: {
                     backgroundColor: '#3399CC',
@@ -264,7 +264,7 @@ const CustomTheme = (type: ThemeName): IobTheme => {
 
         };
     } else if (type === 'colored') {
-        overrides = {
+        localOverrides = {
             MuiAppBar: {
                 colorDefault: {
                     backgroundColor: '#2a3135',
@@ -298,7 +298,7 @@ const CustomTheme = (type: ThemeName): IobTheme => {
 
         };
     } else if (type === 'PT') {
-        overrides = {
+        localOverrides = {
             MuiAppBar: {
                 colorDefault: {
                     backgroundColor: '#0F99DE',
@@ -331,7 +331,7 @@ const CustomTheme = (type: ThemeName): IobTheme => {
 
         };
     } else if (type === 'DX') {
-        overrides = {
+        localOverrides = {
             MuiAppBar: {
                 colorDefault: {
                     backgroundColor: '#a9a9a9',
@@ -369,7 +369,7 @@ const CustomTheme = (type: ThemeName): IobTheme => {
 
         };
     } else {
-        overrides = {
+        localOverrides = {
             MuiLink: {
                 root: {
                     textTransform: 'uppercase',
@@ -424,8 +424,9 @@ const CustomTheme = (type: ThemeName): IobTheme => {
     const palette: PaletteOptions = (theme.palette as PaletteOptions);
 
     return createTheme(theme, {
+        ...(overrides || undefined),
         components: {
-            ...overrides,
+            ...localOverrides,
             MuiButton: {
                 variants: [
                     {
@@ -471,8 +472,9 @@ const CustomTheme = (type: ThemeName): IobTheme => {
                     },
                 ],
             },
+            ...(overrides?.components || undefined),
         },
     }) as IobTheme;
-};
+}
 
-export default CustomTheme;
+export default customTheme;

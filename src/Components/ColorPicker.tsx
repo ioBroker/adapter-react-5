@@ -120,6 +120,7 @@ interface ColorPickerProps {
     customPalette?: string[];
     noInputField?: boolean;
     barWidth?: number;
+    sx?: Record<string, any>;
 }
 
 interface ColorPickerState {
@@ -138,20 +139,14 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
         };
     }
 
-    /**
-     * @private
-     */
-    handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    private handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
         this.setState({
             displayColorPicker: !this.state.displayColorPicker,
             anchorEl: this.state.displayColorPicker ? null : e.currentTarget,
         });
     };
 
-    /**
-     * @private
-     */
-    handleClose = () => {
+    private handleClose = () => {
         this.setState({ displayColorPicker: false, anchorEl: null });
     };
 
@@ -204,8 +199,6 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
 
     /**
      * IF the props are updated from outside, they should override the state
-     * @param _prevProps
-     * @param prevState
      */
     componentDidUpdate(_prevProps: ColorPickerProps, prevState: ColorPickerState) {
         const color = ColorPicker.getColor(this.props.color || this.props.value || '');
@@ -243,6 +236,7 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
         return <Box
             component="div"
             style={style}
+            sx={this.props.sx || undefined}
             className={this.props.className || ''}
         >
             {this.props.noInputField ? null : <TextField
