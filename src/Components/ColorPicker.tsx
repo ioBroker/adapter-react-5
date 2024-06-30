@@ -38,15 +38,13 @@ const styles: Record<string, any> = {
         borderRadius: 2,
     },
     delButton: {
-        // width: 32,
-        // height: 32,
         marginTop: 16,
     },
     swatch: {
-        marginTop: 16,
-        padding: 5,
-        background: 'background.paper',
-        borderRadius: 1,
+        mt: '16px',
+        p: '5px',
+        backgroundColor: 'background.paper',
+        borderRadius: '1px',
         boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
         display: 'inline-block',
         cursor: 'pointer',
@@ -57,10 +55,11 @@ const styles: Record<string, any> = {
         cursor: 'default',
     },
     popover: {
-        // position: 'absolute',
-        // zIndex: 2,
-        backgroundColor: '#00000000',
-        textAlign: 'right',
+        '& .MuiPaper-root': {
+            textAlign: 'right',
+            backgroundColor: '#00000000',
+            boxShadow: 'none',
+        },
     },
     popoverList: {
         padding: 0,
@@ -115,12 +114,11 @@ interface ColorPickerProps {
     style?: React.CSSProperties;
     /** The CSS class name. */
     className?: string;
-    /** Open the color picker above the field? */
-    // openAbove?: boolean;
     customPalette?: string[];
     noInputField?: boolean;
     barWidth?: number;
     sx?: Record<string, any>;
+    theme?: IobTheme;
 }
 
 interface ColorPickerState {
@@ -243,13 +241,13 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
                 disabled={this.props.disabled}
                 variant="standard"
                 id="ar_color_picker_name"
-                label={this.props.label || this.props.name || 'color'}
+                label={this.props.label || this.props.name}
                 value={color || ''}
                 margin="dense"
                 sx={{
                     '&.MuiFormControl-root': styles.textDense,
                     width: color ? 'calc(100% - 80px)' : 'calc(100% - 56px)',
-                    mr: color ? undefined: 1,
+                    mr: color ? undefined : 1,
                 }}
                 onChange={e => this.handleChange(e.target.value)}
             />}
@@ -257,45 +255,47 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
                 disabled={this.props.disabled}
                 onClick={() => this.handleChange('')}
                 size="small"
-                style={{ ...styles.delButton, ...(color ? undefined : { opacity: 0, cursor: 'default' }) }}
+                style={{ ...(this.props.label || this.props.name ? styles.delButton : undefined), ...(color ? undefined : { opacity: 0, cursor: 'default' }) }}
             >
                 <IconDelete />
             </IconButton> : null}
-            <div
+            <Box
+                component="div"
                 onClick={e => !this.props.disabled && this.handleClick(e)}
                 title={I18n.t('ra_Select color')}
-                style={{
+                sx={{
                     ...styles.swatch,
                     ...(this.props.disabled ? styles.swatchDisabled : undefined),
                     background: color ? undefined : 'transparent',
                     border: color ? undefined : '1px dashed #ccc',
                     boxSizing: 'border-box',
-                    marginTop: this.props.noInputField ? 0 : undefined,
+                    marginTop: this.props.noInputField || !(this.props.label || this.props.name) ? 0 : undefined,
                 }}
             >
                 <div
                     style={{
                         ...styles.color,
                         background: ColorPicker.getColor(color),
-                        width: this.props.noInputField ? (this.props.barWidth || 16) : (this.props.barWidth || undefined),
+                        width: this.props.noInputField ? (this.props.barWidth || 16) : this.props.barWidth || 36,
                     }}
                 />
-            </div>
+            </Box>
             {this.state.displayColorPicker && !this.props.disabled ? <Menu
-                classes={{ paper: styles.popover, list: styles.popoverList }}
+                sx={{
+                    ...styles.popover,
+                    '&. MuiMenu-list': styles.popoverList,
+                }}
                 anchorEl={this.state.anchorEl}
                 open={!0}
                 onClose={() => this.handleClose()}
             >
                 <ChromePicker
-                    // todo
-                    // sx={styles.picker}
                     color={this.state.color || undefined}
-                    onChangeComplete={_color => this.handleChange(_color.rgb)}
+                    onChangeComplete={(_color: { rgb: RGBColor }) => this.handleChange(_color.rgb)}
                     styles={{
                         default: {
                             picker: {
-                                backgroundColor: '#112233',
+                                backgroundColor: this.props.theme?.palette.background.paper || '#888',
                             },
                         },
                     }}
