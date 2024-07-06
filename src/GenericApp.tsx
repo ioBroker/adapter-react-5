@@ -327,7 +327,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                         }
 
                         // read UUID and init sentry with it.
-                        // for backward compatibility it will be processed separately from above logic: some adapters could still have this.sentryDSN as undefined
+                        // for backward compatibility it will be processed separately from the above logic: some adapters could still have this.sentryDSN as undefined
                         if (!this.sentryInited && sentryEnabled) {
                             this.sentryInited = true;
 

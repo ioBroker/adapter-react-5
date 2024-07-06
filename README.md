@@ -699,6 +699,11 @@ const styles: Record<string, any> = (theme: IobTheme) => ({
    dialog: {
       height: `calc(100% - ${theme.mixins.toolbar.minHeight}px)`,
       padding: theme.spacing(1),
+      margin: theme.spacing(2),
+      gap: 5,
+      borderRadius: 5,
+      marginLeft: 10, // marginTop, marginRight, marginBottom
+      paddingLeft: 10, // paddingTop, paddingRight, paddingBottom
    },
    ...
 });
@@ -709,7 +714,12 @@ After:
 const styles: Record<string, any> = {
    dialog: (theme: IobTheme) => ({
       height: `calc(100% - ${theme => theme.mixins.toolbar.minHeight}px)`,
-      p: 1,
+      p: 1, // or 8px, padding is OK too
+      m: '16px', // or 2, margin is OK too
+      gap: '5px',
+      borderRadius: '5px',
+      ml: '10px', // mt, mr, mb, but marginLeft, marginRight, marginBottom is OK too
+      pl: '10px', // pt, pr, pb, but paddingTop, paddingRight, paddingBottom is OK too
    }),
 };
 ```
