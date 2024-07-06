@@ -727,11 +727,11 @@ const styles: Record<string, any> = {
 - Modify `className`:
 Before: `<div className={this.props.classes.box}>`
 
-After: `<Box component="div" sx={styles.box}>`
+After: `<Box sx={styles.box}>`
 
-Before: `<div className={Utils.clsx(this.props.classes.box1, condition && this.props.classes.box2)}>`
+Before: `<span className={Utils.clsx(this.props.classes.box1, condition && this.props.classes.box2)}>`
 
-After: `<Box component="div" sx={Utils.getStyle(this.props.theme, this.props.classes.box1, condition && this.props.classes.box2)}>`
+After: `<Box component="span" sx={Utils.getStyle(this.props.theme, this.props.classes.box1, condition && this.props.classes.box2)}>`
 Or if no one style is a function: `<Box component="div" sx={{ ...this.props.classes.box1, ...(condition ? this.props.classes.box2 : undefined) }}>`
 
 Do not use `sx` if the style is not dynamic (not a function). Use `style` instead.
