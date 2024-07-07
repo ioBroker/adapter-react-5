@@ -781,6 +781,9 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Corrected theme type selection
+
 ### 6.0.13 (2024-06-30)
 * (bluefox) Corrected color picker
 

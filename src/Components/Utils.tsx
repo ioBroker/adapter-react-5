@@ -1353,7 +1353,7 @@ class Utils {
             return 'light';
         }
 
-        themeName = themeName || ((window as any)._localStorage || window.localStorage).getItem('App.themeName');
+        themeName = themeName || Utils.getThemeName();
         return themeName === 'dark' || themeName === 'blue' ? 'dark' : 'light';
     }
 
