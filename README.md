@@ -769,7 +769,7 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
   Before: `<Tooltip title={this.props.t('ra_Refresh tree')} classes={{ popper: styles.tooltip }}>`
   
   After: `<Tooltip title={this.props.t('ra_Refresh tree')} componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}>`
-  Or: `<Tooltip title={this.props.t('ra_Refresh tree')} elr>`
+  Or: `<Tooltip title={this.props.t('ra_Refresh tree')} componentsProps={{ popper: { sx: styles.tooltip } }}>`
 
   Before. `<AccordionSummary classes={{ root: styles.rootStyle, content: styles.content }}>`
 
