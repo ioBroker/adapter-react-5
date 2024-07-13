@@ -781,6 +781,10 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Allowed playing mp3 files in the file browser
+* (bluefox) Corrected jump by object selection
+
 ### 6.0.14 (2024-07-07)
 * (bluefox) Corrected theme type selection
 

@@ -261,6 +261,42 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
                 alt={this.props.href}
             />;
         }
+        if (this.state.ext && EXTENSIONS.audio.includes(this.state.ext)) {
+            return <div
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+                <audio
+                    style={{ width: '100%' }}
+                    src={this.props.href}
+                    controls
+                ></audio>
+            </div>;
+        }
+        if (this.state.ext && EXTENSIONS.video.includes(this.state.ext)) {
+            return (
+                <div
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+                    <video style={{ width: '100%', height: '100%' }} controls>
+                        <source src={this.props.href} type={`video/${this.state.ext}}`} />
+                    </video>
+                </div>
+            );
+        }
         if (this.state.code !== null || this.state.text !== null || this.state.editing) {
             // File viewer in adapter-react does not support write
             // return <Editor
