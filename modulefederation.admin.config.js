@@ -17,11 +17,7 @@ module.exports = {
         '@iobroker/dm-gui-components',
         '@mui/icons-material',
         '@mui/material',
-        '@mui/material/styles',
-        '@mui/material/colors',
-        '@mui/styles',
-        '@mui/styles/withStyles',
-        '@mui/x-date-pickers/AdapterDateFns',
+        '@mui/x-date-pickers',
         'date-fns/locale',
         'leaflet',
         'leaflet-geosearch',
@@ -30,6 +26,6 @@ module.exports = {
         'react-ace',
         'react-dom',
         'react-dropzone',
-        'semver'
+        'semver',
     ]),
 };
