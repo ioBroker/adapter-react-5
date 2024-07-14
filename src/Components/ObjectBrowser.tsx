@@ -3037,7 +3037,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
      */
     private onAfterSelect(isDouble?: boolean) {
         this.lastSelectedItems = [...this.state.selected];
-        if (this.state.selected && this.state.selected.length) {
+        if (this.state.selected?.length) {
             this.localStorage.setItem(
                 `${this.props.dialogName || 'App'}.objectSelected`,
                 JSON.stringify(this.lastSelectedItems),
@@ -3051,7 +3051,8 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 this.props.onSelect && this.props.onSelect(this.lastSelectedItems, name, isDouble);
             }
         } else {
-            this.localStorage.setItem(`${this.props.dialogName || 'App'}.objectSelected`, '');
+            this.localStorage.removeItem(`${this.props.dialogName || 'App'}.objectSelected`);
+            this.selectedFound = true;
             if (this.state.selected.length) {
                 this.setState({ selected: [] }, () => this.props.onSelect && this.props.onSelect([], ''));
             } else {
@@ -7175,6 +7176,10 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
      * Called when component is updated.
      */
     componentDidUpdate() {
+        if (!this.selectedFound && !this.state.selected?.length && !this.lastSelectedItems?.length) {
+            this.selectedFound = true;
+        }
+
         if (this.tableRef.current) {
             const scrollBarWidth = this.tableRef.current.offsetWidth - this.tableRef.current.clientWidth;
             if (this.state.scrollBarWidth !== scrollBarWidth) {
