@@ -18,6 +18,7 @@ module.exports = {
         '@mui/icons-material',
         '@mui/material',
         '@mui/material/styles',
+        '@mui/material/colors',
         '@mui/styles',
         '@mui/styles/withStyles',
         '@mui/x-date-pickers/AdapterDateFns',

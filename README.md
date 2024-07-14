@@ -781,6 +781,9 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) added some packages for federation
+
 ### 6.0.17 (2024-07-14)
 * (bluefox) Allowed playing mp3 files in the file browser
 * (bluefox) Corrected jump by object selection
