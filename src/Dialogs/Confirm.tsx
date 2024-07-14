@@ -40,7 +40,7 @@ interface DialogConfirmProps {
     /*+ The dialog title; default: Are you sure? (translated) */
     title?: string;
     /** The dialog text */
-    text: string | React.JSX.Element;
+    text?: string | React.JSX.Element;
     /** Close handler. */
     onClose?: (ok: boolean) => void;
     /** if the dialog must be fill sized */
@@ -125,7 +125,11 @@ class DialogConfirm extends Component<DialogConfirmProps, DialogConfirmState> {
                     {this.props.suppressQuestionMinutes ? <br /> : null}
                     {this.props.suppressQuestionMinutes ? <FormControlLabel
                         sx={{ '& .FormControlLabel-label': styles.suppress, '&.FormControlLabel-root': styles.suppressRoot }}
-                        control={<Checkbox id={`ar_dialog_confirm_suppress_${this.props.dialogName || ''}`} checked={!!this.state.suppress} onChange={() => this.setState({ suppress: !this.state.suppress })} />}
+                        control={<Checkbox
+                            id={`ar_dialog_confirm_suppress_${this.props.dialogName || ''}`}
+                            checked={!!this.state.suppress}
+                            onChange={() => this.setState({ suppress: !this.state.suppress })}
+                        />}
                         label={this.props.suppressText || I18n.t('ra_Suppress question for next %s minutes', (this.props.suppressQuestionMinutes || 2).toString())}
                     /> : null}
                 </DialogContentText>
