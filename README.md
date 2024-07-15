@@ -781,7 +781,7 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 6.1.0 (2024-07-15)
 * (bluefox) Replace by CRON to text the package to `cronstrue`
 
 ### 6.0.19 (2024-07-14)
