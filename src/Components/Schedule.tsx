@@ -13,7 +13,7 @@ import {
 
 import I18n from '../i18n';
 import { IobTheme } from '../types';
-import Utils from "./Utils";
+import Utils from './Utils';
 
 const styles: Record<string, any> = {
     hr: {
@@ -770,7 +770,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
         </div>;
     }
 
-    getDivider() {
+    static getDivider() {
         return <hr style={styles.hr} />;
     }
 
@@ -783,7 +783,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
 
         return [
             // ----- once ---
-            <div key="once" style={Object.assign({}, styles.rowDiv, styles.rowOnce)}>
+            <div key="once" style={{ ...styles.rowDiv, ...styles.rowOnce }}>
                 <div style={styles.modeDiv}>
                     <FormControlLabel
                         control={<Radio
@@ -1622,7 +1622,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
         const schedule = this.state.schedule;
         // ----- from ---
         return <div style={styles.rowDiv}>
-            <div style={Object.assign({}, styles.modeDiv, { verticalAlign: 'middle' })}>
+            <div style={{ ...styles.modeDiv, verticalAlign: 'middle' }}>
                 <span style={{ fontWeight: 'bold', paddingRight: 10 }}>{I18n.t('sch_valid')}</span>
                 <span>{I18n.t('sch_validFrom')}</span>
             </div>
@@ -1711,10 +1711,10 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                 <h5>{I18n.t('sch_time')}</h5>
                 {this.getTimePeriodElements()}
                 {this.getTimeExactElements()}
-                {this.getDivider()}
+                {Schedule.getDivider()}
                 <h5>{I18n.t('sch_period')}</h5>
                 {this.getPeriodModes()}
-                {!this.state.schedule.period.once && this.getDivider()}
+                {!this.state.schedule.period.once && Schedule.getDivider()}
                 {!this.state.schedule.period.once && this.getValidSettings()}
             </div>
         </div>;

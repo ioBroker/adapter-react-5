@@ -113,8 +113,8 @@ const styles: Record<string, any> = {
     },
     cellHeader: {
         fontWeight: 'bold',
-        background: (theme: IobTheme) => theme.palette.mode === 'dark' ? '#888' : '#888',
-        color: (theme: IobTheme) => theme.palette.mode === 'dark' ? '#EEE' : '#111',
+        background: (theme: IobTheme) => (theme.palette.mode === 'dark' ? '#888' : '#888'),
+        color: (theme: IobTheme) => (theme.palette.mode === 'dark' ? '#EEE' : '#111'),
         height: 48,
         wordBreak: 'break-word',
         whiteSpace: 'pre',
@@ -585,7 +585,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         </TableCell>;
     }
 
-    renderCellWithSubField(
+    static renderCellWithSubField(
         item: Record<string, any>,
         col: Column,
     ) {
@@ -594,7 +594,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
             const sub  = getAttr(item, col.subField, col.subLookup);
             return <div>
                 <div style={styles.mainText}>{main}</div>
-                <div style={Object.assign({}, styles.subText, col.subStyle || {})}>{sub}</div>
+                <div style={{ ...styles.subText, ...(col.subStyle || undefined) }}>{sub}</div>
             </div>;
         }
         return <div>
@@ -669,7 +669,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                 }}
             >
                 {this.props.columns[0].subField ?
-                    this.renderCellWithSubField(item, this.props.columns[0])
+                    TreeTable.renderCellWithSubField(item, this.props.columns[0])
                     :
                     getAttr(item, this.props.columns[0].field, this.props.columns[0].lookup)}
             </TableCell>

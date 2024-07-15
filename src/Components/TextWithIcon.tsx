@@ -132,7 +132,7 @@ const TextWithIcon = (props: TextWithIconProps) => {
     } : {};
 
     return <div
-        style={Object.assign({}, props.style, styles.div, style)}
+        style={{ ...(props.style || undefined), ...styles.div, ...(style || undefined) }}
         className={Utils.clsx(props.className, props.moreClasses?.root)}
         title={props.title || item.value}
     >

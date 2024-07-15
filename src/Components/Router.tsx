@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 
 interface Router<P = {}, S = {}> extends Component<P, S> {}
 

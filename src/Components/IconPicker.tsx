@@ -131,7 +131,10 @@ const IconPicker = (props: IconPickerProps) => {
 
                 {!props.disabled && <div
                     {...getRootProps()}
-                    style={Object.assign({}, styles.dragField, isDragActive ? { backgroundColor: 'rgba(0, 255, 0, 0.1)' } : { cursor: 'pointer' })}
+                    style={{
+                        ...styles.dragField,
+                        ...(isDragActive ? { backgroundColor: 'rgba(0, 255, 0, 0.1)' } : { cursor: 'pointer' }),
+                    }}
                 >
                     <input {...getInputProps()} />
                     {isDragActive ?

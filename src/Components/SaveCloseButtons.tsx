@@ -103,7 +103,7 @@ class SaveCloseButtons extends React.Component<SaveCloseButtonsProps> {
             </Fab>
             <div style={{ flexGrow: 1 }} />
             <Fab variant="extended" aria-label="Close" onClick={() => this.props.onClose()} style={buttonStyle}>
-                <IconClose style={!noTextOnButtons ?styles.buttonIcon : undefined} />
+                <IconClose style={!noTextOnButtons ? styles.buttonIcon : undefined} />
                 {!noTextOnButtons && I18n.t('ra_Close')}
             </Fab>
         </Toolbar>;

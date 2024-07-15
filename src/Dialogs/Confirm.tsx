@@ -37,7 +37,7 @@ const styles: Record<string, React.CSSProperties> = {
 };
 
 interface DialogConfirmProps {
-    /*+ The dialog title; default: Are you sure? (translated) */
+    /** The dialog title; default: Are you sure? (translated) */
     title?: string;
     /** The dialog text */
     text?: string | React.JSX.Element;

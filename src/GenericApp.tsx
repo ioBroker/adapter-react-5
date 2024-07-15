@@ -520,11 +520,11 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
         return currentTheme.palette.mode;
     }
 
-    onThemeChanged(newThemeName: string) {
+    onThemeChanged(_newThemeName: string) {
 
     }
 
-    onToggleExpertMode(expertMode: boolean) {
+    onToggleExpertMode(_expertMode: boolean) {
 
     }
 

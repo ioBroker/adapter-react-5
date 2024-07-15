@@ -506,18 +506,17 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
             }}
         >
             {({ getRootProps, getInputProps }) => <div
-                style={Object.assign(
-                    {},
-                    styles.uploadDiv,
-                    uploadFile === 'dragging' ? styles.uploadDivDragging : {},
-                    styles.dropZone,
-                    disabled ? styles.disabledOpacity : {},
-                    !icon ? styles.dropZoneEmpty : {},
-                )}
+                style={{
+                    ...styles.uploadDiv,
+                    ...(uploadFile === 'dragging' ? styles.uploadDivDragging : undefined),
+                    ...styles.dropZone,
+                    ...(disabled ? styles.disabledOpacity : undefined),
+                    ...(!icon ? styles.dropZoneEmpty : undefined),
+                }}
                 {...getRootProps()}
             >
                 <input {...getInputProps()} />
-                <div style={Object.assign({}, styles.uploadCenterDiv, error ? styles.error : {})}>
+                <div style={{ ...styles.uploadCenterDiv, ...(error ? styles.error : undefined) }}>
                     {!icon ? <div style={styles.uploadCenterTextAndIcon}>
                         <UploadIcon style={styles.uploadCenterIcon} />
                         <div style={styles.uploadCenterText}>

@@ -4,7 +4,6 @@
  * MIT License
  *
  * */
-import React from 'react';
 import copy from './CopyToClipboard';
 
 class MDUtils {

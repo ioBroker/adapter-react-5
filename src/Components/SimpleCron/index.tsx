@@ -7,7 +7,7 @@ import {
     TextField,
     FormControl,
     FormControlLabel,
-    Checkbox, Box,
+    Checkbox,
 } from '@mui/material';
 
 import convertCronToText from './cronText';
@@ -113,6 +113,37 @@ interface CronStructure {
     date: string;
     months: string;
     dow: string;
+}
+
+function text2weekdays(text: string): number[] {
+    if (text === '*') {
+        return [0, 1, 2, 3, 4, 5, 6];
+    }
+
+    const parts = text.split(',');
+    const list: number[] = [];
+    parts.forEach(part => {
+        const _parts = part.split('-');
+        if (_parts.length === 2) {
+            const start = parseInt(_parts[0], 10);
+            const end = parseInt(_parts[1], 10);
+            for (let day = start; day <= end; day++) {
+                if (!list.includes(day === 7 ? 0 : day)) {
+                    list.push(day === 7 ? 0 : day);
+                }
+            }
+        } else {
+            if (part === '7') {
+                part = '0';
+            }
+            const numPart = parseInt(part, 10);
+            if (!list.includes(numPart)) {
+                list.push(numPart);
+            }
+        }
+    });
+    list.sort();
+    return list;
 }
 
 export function cron2state(cron: string, force?: boolean): Partial<SimpleCronState> | null {
@@ -222,7 +253,7 @@ export function cron2state(cron: string, force?: boolean): Partial<SimpleCronSta
                 unit: PERIODIC_TYPES.seconds,
                 timeFrom: parseInt(options.hours.split('-')[0], 10),
                 timeTo: parseInt(options.hours.split('-')[1], 10),
-                weekdays: SimpleCron.text2weekdays(options.dow),
+                weekdays: text2weekdays(options.dow),
             },
         };
     } else if (
@@ -241,7 +272,7 @@ export function cron2state(cron: string, force?: boolean): Partial<SimpleCronSta
                 unit: PERIODIC_TYPES.minutes,
                 timeFrom: parseInt(options.hours.split('-')[0], 10),
                 timeTo: parseInt(options.hours.split('-')[1], 10),
-                weekdays: SimpleCron.text2weekdays(options.dow),
+                weekdays: text2weekdays(options.dow),
             },
         };
     } else if (
@@ -257,7 +288,7 @@ export function cron2state(cron: string, force?: boolean): Partial<SimpleCronSta
             mode: 'specific',
             specific: {
                 time: `${padding(parseInt(options.hours, 10))}:${padding(parseInt(options.minutes, 10))}`,
-                weekdays: SimpleCron.text2weekdays(options.dow),
+                weekdays: text2weekdays(options.dow),
             },
         };
     } else if (
@@ -354,33 +385,7 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
     }
 
     static text2weekdays(text: string): number[] {
-        if (text === '*') {
-            return [0, 1, 2, 3, 4, 5, 6];
-        }
-        const parts = text.split(',');
-        const list: number[] = [];
-        parts.forEach(part => {
-            const _parts = part.split('-');
-            if (_parts.length === 2) {
-                const start = parseInt(_parts[0], 10);
-                const end = parseInt(_parts[1], 10);
-                for (let day = start; day <= end; day++) {
-                    if (!list.includes(day === 7 ? 0 : day)) {
-                        list.push(day === 7 ? 0 : day);
-                    }
-                }
-            } else {
-                if (part === '7') {
-                    part = '0';
-                }
-                const numPart = parseInt(part, 10);
-                if (!list.includes(numPart)) {
-                    list.push(numPart);
-                }
-            }
-        });
-        list.sort();
-        return list;
+        return text2weekdays(text);
     }
 
     static state2cron(state: Partial<SimpleCronState>) {
@@ -715,11 +720,15 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
                         }}
                     >
                         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].map(hour =>
-                            <MenuItem key={`B_${hour}`} value={hour}>{`${padding(hour)}:00`}</MenuItem>)}
+                            <MenuItem key={`B_${hour}`} value={hour}>
+                                {`${padding(hour)}:00`}
+                            </MenuItem>)}
                     </Select>
                 </FormControl>
                 <FormControl variant="standard" style={styles.formControl}>
-                    <InputLabel shrink htmlFor="age-label-placeholder">{I18n.t('sc_to')}</InputLabel>
+                    <InputLabel shrink htmlFor="age-label-placeholder">
+                        {I18n.t('sc_to')}
+                    </InputLabel>
                     <Select
                         variant="standard"
                         style={{ width: 100 }}
@@ -731,7 +740,9 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
                         }}
                     >
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].map(hour =>
-                            <MenuItem key={`A_${hour}`} value={hour}>{`${padding(hour)}:00`}</MenuItem>)}
+                            <MenuItem key={`A_${hour}`} value={hour}>
+                                {`${padding(hour)}:00`}
+                            </MenuItem>)}
                     </Select>
                 </FormControl>
             </div>,
@@ -741,7 +752,9 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
 
     getSpecificTimeElements() {
         return [
-            <div key="time" style={{ marginLeft: 8 }}>{this.getControlsTime('specific')}</div>,
+            <div key="time" style={{ marginLeft: 8 }}>
+                {this.getControlsTime('specific')}
+            </div>,
             this.getControlsWeekdaysElements('specific'),
         ];
     }

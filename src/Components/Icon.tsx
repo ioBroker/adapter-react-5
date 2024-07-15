@@ -1,6 +1,8 @@
 import React, { ReactEventHandler } from 'react';
 import SVG from 'react-inlinesvg';
 
+import { Box } from '@mui/material';
+
 import {
     SettingsApplications as IconSystem,
     Photo as IconPhoto,
@@ -14,7 +16,6 @@ import {
 
 import IconAlias from '../icons/IconAlias';
 import Utils from './Utils';
-import {Box} from "@mui/material";
 
 export function getSystemIcon(obj: ioBroker.Object | null): React.JSX.Element | null {
     let icon;
@@ -127,8 +128,8 @@ export default function Icon(props: IconProps) {
                         style={{ height: 27, marginTop: -8, ...(props.styleUTF8 || props.style) }}
                         className={Utils.clsx(props.className, 'iconOwn')}
                     >
-                    {props.src}
-                </Box>;
+                        {props.src}
+                    </Box>;
                 }
                 return <span
                     title={props.title || undefined}

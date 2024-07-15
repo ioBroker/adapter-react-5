@@ -2845,12 +2845,12 @@ class Connection {
                 const IPs4: {
                     name: string;
                     address: string;
-                    family: 'ipv4' | 'ipv6',
+                    family: 'ipv4' | 'ipv6';
                 }[] = [{ name: '[IPv4] 0.0.0.0 - Listen on all IPs', address: '0.0.0.0', family: 'ipv4' }];
                 const IPs6: {
                     name: string;
                     address: string;
-                    family: 'ipv4' | 'ipv6'
+                    family: 'ipv4' | 'ipv6';
                 }[] = [{ name: '[IPv6] :: - Listen on all IPs', address: '::', family: 'ipv6' }];
                 if (host?.native?.hardware?.networkInterfaces) {
                     for (const eth in host.native.hardware.networkInterfaces) {
