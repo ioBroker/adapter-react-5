@@ -426,5 +426,6 @@
   "sc_everyN_dow": "кожен N-й день тижня",
   "sc_every_dow": "кожен день тижня",
   "sc_specific_dow": "конкретний день (дні) тижня",
-  "ra_Name": "Ім'я"
+  "ra_Name": "Ім'я",
+  "ra_import data from %s file": "Імпортувати дані з файлу %s"
 }

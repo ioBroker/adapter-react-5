@@ -417,6 +417,7 @@
   "ra_You can export all objects or just the selected branch.": "You can export all objects or just the selected branch.",
   "ra_Do not export values of states": "Do not export values of states",
   "ra_Selected %s object(s)": "Selected %s object(s)",
+  "ra_import data from %s file": "Import data from %s file",
   "ra_create_device": "Create device",
   "ra_create_channel": "Create channel",
   "ra_create_state": "Create state",

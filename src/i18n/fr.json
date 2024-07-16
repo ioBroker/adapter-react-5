@@ -426,5 +426,6 @@
   "sc_everyN_dow": "chaque Nième jour de la semaine",
   "sc_every_dow": "Chaque jour de la semaine",
   "sc_specific_dow": "jour(s) spécifique(s) de la semaine",
-  "ra_Name": "Nom"
+  "ra_Name": "Nom",
+  "ra_import data from %s file": "Importer des données à partir du fichier %s"
 }

@@ -426,5 +426,6 @@
   "sc_everyN_dow": "elke N-de dag van de week",
   "sc_every_dow": "elke dag van de week",
   "sc_specific_dow": "specifieke dag(en) van de week",
-  "ra_Name": "Naam"
+  "ra_Name": "Naam",
+  "ra_import data from %s file": "Importeer gegevens uit %s bestand"
 }
