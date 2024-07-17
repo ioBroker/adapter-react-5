@@ -10,13 +10,24 @@
       "innerStyle": {},
       "label": "Main settings",
       "items": {
+        "qrCode": {
+          "type": "qrCode",
+          "data": "MT:XYZ",
+          "bgColor": "red",
+          "fgColor": "blue",
+          "size": 24,
+          "level": "M"
+        },
         "timePicker": {
           "type": "timePicker",
           "format": "HH:mm:ss",
-          "views": ["hours", "minutes"],
+          "views": [
+            "hours",
+            "minutes"
+          ],
           "returnFormat": "HH:mm:ss",
           "timeSteps": {
-            "minutes":  1,
+            "minutes": 1,
             "hours": 1
           },
           "tooltip": "test"
@@ -113,7 +124,9 @@
         "autocmpleteSendTo": {
           "type": "autocompleteSendTo",
           "command": "",
-          "alsoDependsOn": ["auth"]
+          "alsoDependsOn": [
+            "auth"
+          ]
         },
         "defaultUser": {
           "hidden": "!!data.auth",
@@ -423,10 +436,13 @@
               "type": "timePicker",
               "tooltip": "test",
               "format": "HH:mm:ss",
-              "views": ["hours", "minutes"],
+              "views": [
+                "hours",
+                "minutes"
+              ],
               "returnFormat": "HH:mm:ss",
               "timeSteps": {
-                "minutes":  1,
+                "minutes": 1,
                 "hours": 1
               }
             },
@@ -445,7 +461,9 @@
               "filter": false,
               "sort": false,
               "width": "40%",
-              "types": ["state"]
+              "types": [
+                "state"
+              ]
             },
             {
               "type": "autocompleteSendTo",
@@ -534,7 +552,9 @@
             },
             {
               "type": "selectSendTo",
-              "alsoDependsOn": ["sendTo"],
+              "alsoDependsOn": [
+                "sendTo"
+              ],
               "command": "test",
               "width": 50,
               "title": {
@@ -571,6 +591,14 @@
               "title": "Active",
               "filter": false,
               "sort": false
+            },
+            {
+              "type": "qrCode",
+              "data": "MT:XYZ",
+              "bgColor": "red",
+              "fgColor": "blue",
+              "size": 24,
+              "level": "L"
             }
           ]
         },

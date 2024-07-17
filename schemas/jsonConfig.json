@@ -79,7 +79,8 @@
         "checkLicense",
         "uuid",
         "timePicker",
-        "datePicker"
+        "datePicker",
+        "qrCode"
       ]
     },
     "numberProps": {
@@ -501,6 +502,65 @@
       "required": [
         "type"
       ]
+    },
+    "qrCodeProps": {
+      "required": [
+        "type",
+        "data"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "description": "The data to be encoded in the QR Code",
+          "type": "string"
+        },
+        "size": {
+          "description": "The size of the QR code",
+          "type": "number"
+        },
+        "fgColor": {
+          "description": "Foreground color",
+          "type": "string"
+        },
+        "bgColor": {
+          "description": "Background color",
+          "type": "string"
+        },
+        "level": {
+          "description": "QR code level",
+          "enum": [
+            "L",
+            "M",
+            "Q",
+            "H"
+          ]
+        },
+        "label": true,
+        "type": true,
+        "defaultSendTo": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "helpLink": true,
+        "help": true,
+        "style": true,
+        "darkStyle": true,
+        "validator": true,
+        "validatorNoSaveOnError": true,
+        "validatorErrorText": true,
+        "noMultiEdit": true,
+        "tooltip": true,
+        "default": true,
+        "defaultFunc": true,
+        "onChange": true,
+        "noTranslation": true,
+        "confirm": true
+      }
     },
     "cronProps": {
       "properties": {
@@ -2683,6 +2743,82 @@
             "if": {
               "properties": {
                 "type": {
+                  "const": "qrCode"
+                }
+              }
+            },
+            "then": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/tableItemBaseProps"
+                },
+                {
+                  "properties": {
+                    "data": {
+                      "description": "The data to be encoded in the QR Code",
+                      "type": "string"
+                    },
+                    "size": {
+                      "description": "The size of the QR code",
+                      "type": "number"
+                    },
+                    "fgColor": {
+                      "description": "Foreground color",
+                      "type": "string"
+                    },
+                    "bgColor": {
+                      "description": "Background color",
+                      "type": "string"
+                    },
+                    "level": {
+                      "description": "QR code level",
+                      "enum": [
+                        "L",
+                        "M",
+                        "Q",
+                        "H"
+                      ]
+                    },
+                    "attr": true,
+                    "label": true,
+                    "type": true,
+                    "defaultSendTo": true,
+                    "sm": true,
+                    "md": true,
+                    "lg": true,
+                    "xs": true,
+                    "newLine": true,
+                    "hidden": true,
+                    "hideOnlyControl": true,
+                    "disabled": true,
+                    "helpLink": true,
+                    "help": true,
+                    "style": true,
+                    "darkStyle": true,
+                    "validator": true,
+                    "validatorNoSaveOnError": true,
+                    "validatorErrorText": true,
+                    "noMultiEdit": true,
+                    "tooltip": true,
+                    "default": true,
+                    "defaultFunc": true,
+                    "onChange": true,
+                    "noTranslation": true,
+                    "confirm": true
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "type",
+                    "data"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
                   "const": "func"
                 }
               }
@@ -4749,6 +4885,18 @@
                       "type",
                       "options"
                     ]
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "const": "qrCode"
+                      }
+                    }
+                  },
+                  "then": {
+                    "$ref": "#/definitions/qrCodeProps"
                   }
                 },
                 {
