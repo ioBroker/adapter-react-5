@@ -39,6 +39,7 @@
         "alive",
         "autocomplete",
         "cron",
+        "deviceManager",
         "fileSelector",
         "text",
         "textSendTo",
@@ -561,6 +562,39 @@
         "noTranslation": true,
         "confirm": true
       }
+    },
+    "deviceManagerProps": {
+      "properties": {
+        "label": true,
+        "type": true,
+        "defaultSendTo": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "helpLink": true,
+        "help": true,
+        "style": true,
+        "darkStyle": true,
+        "validator": true,
+        "validatorNoSaveOnError": true,
+        "validatorErrorText": true,
+        "noMultiEdit": true,
+        "tooltip": true,
+        "default": true,
+        "defaultFunc": true,
+        "onChange": true,
+        "noTranslation": true,
+        "confirm": true
+      },
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ]
     },
     "cronProps": {
       "properties": {
@@ -4909,6 +4943,18 @@
                   },
                   "then": {
                     "$ref": "#/definitions/cronProps"
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "const": "deviceManager"
+                      }
+                    }
+                  },
+                  "then": {
+                    "$ref": "#/definitions/deviceManagerProps"
                   }
                 },
                 {

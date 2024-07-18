@@ -50,7 +50,7 @@ const expectedErrorsPerTest = {
         },
         {
             instancePath: '/items/demoTab/items/myTable',
-            schemaPath: '#/patternProperties/%5E.%2B/allOf/24/if',
+            schemaPath: '#/patternProperties/%5E.%2B/allOf/25/if',
             keyword: 'if',
             params: {
                 failingKeyword: 'then',
