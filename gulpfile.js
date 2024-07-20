@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2023 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2024 bluefox <dogafox@gmail.com>
  *
  * MIT License
  *
@@ -7,11 +7,8 @@
 'use strict';
 
 const gulp  = require('gulp');
-const babel = require('gulp-babel');
-const sourcemaps = require('gulp-sourcemaps');
-const typescript = require('gulp-typescript');
-const fs = require('fs');
-const cp = require('child_process');
+const fs = require('node:fs');
+const cp = require('node:child_process');
 
 function npmInstall(dir) {
     dir = dir || `${__dirname}/`;
@@ -75,28 +72,6 @@ gulp.task('copy', () => Promise.all([
     })
 ]));
 
-const tsProject = typescript.createProject('tsconfig.build.json');
-
-gulp.task('typedefs', () => {
-    return gulp.src(['src/**/*.js', 'src/**/*.jsx', '!src/gulpfile.js'])
-        .pipe(tsProject())
-        .dts
-        .pipe(gulp.dest('dist'));
-});
-
-const babelOptions = {
-    presets: ['@babel/preset-env', '@babel/preset-react'],
-    plugins: [
-        '@babel/plugin-proposal-class-properties',
-        '@babel/plugin-transform-runtime',
-    ],
-};
-
-function handleError (error) {
-    console.log(error.toString());
-    this.emit('end');
-}
-
 gulp.task('patchReadme', async () => {
     const pack = require('./package.json');
     let readme = fs.readFileSync(`${__dirname}/README.md`).toString('utf8');
@@ -105,42 +80,11 @@ gulp.task('patchReadme', async () => {
 });
 
 gulp.task('compile', gulp.parallel('copy',
-    'typedefs',
     () => Promise.all([
-        gulp.src(['src/Dialogs/*.js', 'src/Dialogs/**/*.js', 'src/Dialogs/*.jsx', 'src/Dialogs/**/*.jsx'])
-            .pipe(sourcemaps.init())
-            .pipe(babel(babelOptions))
-            .on('error', handleError)
-            .pipe(sourcemaps.write('.'))
-            .pipe(gulp.dest('dist/Dialogs')),
-
-        gulp.src(['src/icons/*.js', 'src/icons/**/*.js', 'src/icons/*.jsx', 'src/icons/**/*.jsx'])
-            .pipe(sourcemaps.init())
-            .pipe(babel(babelOptions))
-            .on('error', handleError)
-            .pipe(sourcemaps.write('.'))
-            .pipe(gulp.dest('dist/icons')),
-
-        gulp.src(['src/*.js', 'src/*.jsx', '!src/gulpfile.js'])
-            .pipe(sourcemaps.init())
-            .pipe(babel(babelOptions))
-            .on('error', handleError)
-            .pipe(sourcemaps.write('.'))
-            .pipe(gulp.dest('dist')),
-
-        gulp.src(['src/Components/*.js', 'src/Components/**/*.js', 'src/Components/*.jsч', 'src/Components/**/*.jsx'])
-            .pipe(sourcemaps.init())
-            .pipe(babel({
-                presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-flow'],
-                plugins: [
-                    '@babel/plugin-proposal-class-properties',
-                    '@babel/plugin-transform-runtime',
-                    ['inline-json-import', {}]
-                ]
-            }))
-             .on('error', handleError)
-            .pipe(sourcemaps.write('.'))
-            .pipe(gulp.dest('dist/Components')),
+        gulp.src(['src/*/*.tsx', 'src/*/*.css'])
+            .pipe(gulp.dest('dist/src')),
+        gulp.src(['src/*.tsx', 'src/*.css'])
+            .pipe(gulp.dest('dist/src')),
 
         gulp.src(['src/i18n/*.json'])
             .pipe(gulp.dest('dist/i18n')),

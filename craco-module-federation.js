@@ -29,7 +29,7 @@ module.exports = {
             }
 
             const htmlWebpackPlugin = webpackConfig.plugins.find(
-                plugin => plugin.constructor.name === 'HtmlWebpackPlugin'
+                plugin => plugin.constructor.name === 'HtmlWebpackPlugin',
             );
 
             const myModule = require(moduleFederationConfigPath);
