@@ -781,7 +781,7 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
-### 6.1.2 (2024-07-20)
+### **WORK IN PROGRESS**
 * (bluefox) Better typing of legacy connection
 
 ### 6.1.1 (2024-07-16)
