@@ -3906,7 +3906,7 @@
             "description": "Text to show if validator fails"
           },
           "showSecondAddAt": {
-            "description": "Number of lines from which the second add button at the bottom of the table will be shown. Default 5",
+            "description": "The number of lines from which the second add button at the bottom of the table will be shown. Default 5",
             "type": "number"
           },
           "showFirstAddOnTop": {
@@ -5056,17 +5056,28 @@
                           "type": "string"
                         }
                       },
+                      "compact": {
+                        "description": "Show table in compact mode",
+                        "type": "boolean"
+                      },
                       "export": {
                         "description": "If export button should be shown. Export as csv file.",
                         "type": "boolean"
                       },
                       "import": {
-                        "description": "if import button should be shown. Import from csv file.",
+                        "description": "If import button should be shown. Import from csv file.",
                         "type": "boolean"
                       },
                       "clone": {
                         "description": "If clone button should be shown. If true, the clone button will be shown. If attribute name, this name will be unique.",
                         "type": "boolean"
+                      },
+                      "encryptedAttributes": {
+                        "description": "These items will be encrypted before saving with simple (not SHA) encryption method",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
                       },
                       "allowAddByFilter": {
                         "$ref": "#/definitions/allowAddByFilterProp"
@@ -5822,27 +5833,9 @@
                         "description": "If delete or add disabled, If noDelete is false, add, delete and move up/down should work",
                         "type": "boolean"
                       },
-                      "uniqueColumns": {
-                        "description": "Specify the 'attr' name of columns which need to be unique",
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
-                      },
-                      "export": {
-                        "description": "If export button should be shown. Export as csv file.",
-                        "type": "boolean"
-                      },
-                      "import": {
-                        "description": "if import button should be shown. Import from csv file.",
-                        "type": "boolean"
-                      },
                       "clone": {
                         "description": "If clone button should be shown. If true, the clone button will be shown. If attribute name, this name will be unique.",
                         "type": "boolean"
-                      },
-                      "allowAddByFilter": {
-                        "$ref": "#/definitions/allowAddByFilterProp"
                       },
                       "items": {
                         "$ref": "#/definitions/tableItems"
