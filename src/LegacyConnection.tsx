@@ -189,7 +189,7 @@ interface Promises {
     installed?: {
         [host: string]: Promise<Record<string, ioBroker.AdapterObject>> | null;
     } | null;
-    systemConfig?: Promise<ioBroker.Object> | null;
+    systemConfig?: Promise<ioBroker.SystemConfigObject> | null;
     hosts?: Promise<ioBroker.HostObject[]> | null;
     users?: Promise<ioBroker.UserObject[]> | null;
     compactAdapters?: Promise<Record<string, ioBroker.AdapterObject>> | null;
@@ -201,7 +201,7 @@ interface Promises {
     webName?: Promise<string> | null;
     compactInstances?: Promise<Record<string, ioBroker.InstanceObject>> | null;
     getCompactSystemRepositories?: Promise<ioBroker.Object> | null;
-    systemConfigCommon?: Promise<ioBroker.Object> | null;
+    systemConfigPromise?: Promise<ioBroker.SystemConfigObject> | null;
     hostsCompact?: Promise<ioBroker.HostObject[]> | null;
     uuid?: Promise<string | undefined>;
     [feature: `supportedFeatures_${string}`]: Promise<boolean> | null;
@@ -296,7 +296,7 @@ class Connection {
 
     private onCmdExitHandler: ((id: string, exitCode: number) => void) | undefined;
 
-    public systemConfig: ioBroker.Object | null = null;
+    public systemConfig: ioBroker.SystemConfigObject | null = null;
 
     constructor(props: ConnectionProps) {
         props                 = props || { protocol: window.location.protocol, host: window.location.hostname };
@@ -640,7 +640,7 @@ class Connection {
         }
 
         // Read system configuration
-        let data: ioBroker.Object | null;
+        let data: ioBroker.SystemConfigObject | null;
         try {
             if (this.admin5only && !window.vendorPrefix) {
                 data = await this.getCompactSystemConfig();
@@ -2713,7 +2713,7 @@ class Connection {
      * @param {boolean} [update] Force update.
      * @returns {Promise<ioBroker.OtherObject>}
      */
-    getSystemConfig(update?: boolean) {
+    getSystemConfig(update?: boolean): Promise<ioBroker.SystemConfigObject> {
         if (!update && this._promises.systemConfig) {
             return this._promises.systemConfig;
         }
@@ -2723,8 +2723,8 @@ class Connection {
         }
 
         this._promises.systemConfig = this.getObject('system.config')
-            .then(systemConfig => {
-                systemConfig = systemConfig || {} as ioBroker.SystemConfigObject;
+            .then(obj => {
+                const systemConfig: ioBroker.SystemConfigObject = (obj || {}) as ioBroker.SystemConfigObject;
                 systemConfig.common = systemConfig.common || {} as ioBroker.SystemConfigCommon;
                 systemConfig.native = systemConfig.native || {};
                 return systemConfig;
@@ -2736,9 +2736,9 @@ class Connection {
     /**
      * Sets the system configuration.
      */
-    setSystemConfig(obj: ioBroker.SettableObjectWorker<ioBroker.Object>): Promise<ioBroker.SettableObjectWorker<ioBroker.Object>> {
+    setSystemConfig(obj: ioBroker.SettableObjectWorker<ioBroker.SystemConfigObject>): Promise<ioBroker.SystemConfigObject> {
         return this.setObject('system.config', obj)
-            .then(() => this._promises.systemConfig = Promise.resolve(obj as ioBroker.Object));
+            .then(() => this._promises.systemConfig = Promise.resolve(obj as ioBroker.SystemConfigObject));
     }
 
     /**
@@ -3326,21 +3326,21 @@ class Connection {
     }
 
     // returns very optimized information for adapters to minimize a connection load
-    getCompactSystemConfig(update?: boolean): Promise<ioBroker.Object> {
-        if (!update && this._promises.systemConfigCommon) {
-            return this._promises.systemConfigCommon;
+    getCompactSystemConfig(update?: boolean): Promise<ioBroker.SystemConfigObject> {
+        if (!update && this._promises.systemConfigPromise) {
+            return this._promises.systemConfigPromise;
         }
 
         if (!this.connected) {
             return Promise.reject(NOT_CONNECTED);
         }
 
-        this._promises.systemConfigCommon = new Promise((resolve, reject) => {
-            this._socket.emit('getCompactSystemConfig', (err: string | null, systemConfig: ioBroker.Object) =>
+        this._promises.systemConfigPromise = new Promise((resolve, reject) => {
+            this._socket.emit('getCompactSystemConfig', (err: string | null, systemConfig: ioBroker.SystemConfigObject) =>
                 (err ? reject(err) : resolve(systemConfig)));
         });
 
-        return this._promises.systemConfigCommon;
+        return this._promises.systemConfigPromise;
     }
 
     /**
