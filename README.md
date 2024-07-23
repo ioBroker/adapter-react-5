@@ -775,6 +775,10 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 
   After. `<AccordionSummary sx={{ '&.MuiAccordionSummary-root': styles.rootStyle, '& .MuiAccordionSummary-content': styles.content }}>`
 
+  Before. `<Drawer classes={{ paper: styles.paperStyle }}>`
+
+  After. `<Drawer sx={{ '& .MuiDrawer-paper': styles.paperStyle }}>`
+
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
