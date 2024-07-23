@@ -75,5 +75,9 @@
       "./src/**/*.tsx",
       "./src/**/*.d.ts"
     ],
-    "exclude": ["gulpfile.js"]
+    "exclude": [
+      "gulpfile.js",
+      "src/assets/devices/parseNames.js",
+      "src/assets/rooms/parseNames.js"
+    ]
   }

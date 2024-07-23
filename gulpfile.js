@@ -50,15 +50,15 @@ gulp.task('npm', () => {
 gulp.task('copy', () => Promise.all([
     gulp.src(['src/**/*.d.ts']).pipe(gulp.dest('dist')),
     gulp.src(['src/vendor/*.*']).pipe(gulp.dest('dist/vendor')),
-    gulp.src(['src/assets/*.*']).pipe(gulp.dest('dist/assets')),
+    gulp.src(['src/assets/*.*', '!parseNames.js']).pipe(gulp.dest('dist/assets')),
     gulp.src(['README.md']).pipe(gulp.dest('dist')),
     gulp.src(['LICENSE']).pipe(gulp.dest('dist')),
     gulp.src(['src/*.css']).pipe(gulp.dest('dist')),
     gulp.src(['src/Components/*.css']).pipe(gulp.dest('dist/Components')),
     gulp.src(['src/Components/**/*.css']).pipe(gulp.dest('dist/Components')),
     gulp.src(['src/Components/assets/*.*']).pipe(gulp.dest('dist/Components/assets')),
-    gulp.src(['src/assets/devices/*.*']).pipe(gulp.dest('dist/assets/devices')),
-    gulp.src(['src/assets/rooms/*.*']).pipe(gulp.dest('dist/assets/rooms')),
+    gulp.src(['src/assets/devices/*.*', '!src/assets/devices/parseNames.js', '!src/assets/devices/list.json', '!src/assets/devices/names.txt']).pipe(gulp.dest('dist/assets/devices')),
+    gulp.src(['src/assets/rooms/*.*', '!src/assets/rooms/parseNames.js', '!src/assets/rooms/list.json', '!src/assets/rooms/names.txt']).pipe(gulp.dest('dist/assets/rooms')),
     gulp.src(['craco-module-federation.js']).pipe(gulp.dest('dist')),
     gulp.src(['modulefederation.admin.config.js']).pipe(gulp.dest('dist')),
     new Promise(resolve => {
@@ -81,7 +81,7 @@ gulp.task('patchReadme', async () => {
 
 gulp.task('compile', gulp.parallel('copy',
     () => Promise.all([
-        gulp.src(['src/*/*.tsx', 'src/*/*.css'])
+        gulp.src(['src/*/*.tsx', 'src/*/*.css', '!src/assets/devices/parseNames.js'])
             .pipe(gulp.dest('dist/src')),
         gulp.src(['src/*.tsx', 'src/*.css'])
             .pipe(gulp.dest('dist/src')),

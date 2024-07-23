@@ -781,6 +781,9 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Optimize package
+
 ### 6.1.5 (2024-07-20)
 * (bluefox) Added sources to package
 
