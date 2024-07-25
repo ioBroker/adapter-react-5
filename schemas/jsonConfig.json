@@ -82,7 +82,8 @@
         "timePicker",
         "datePicker",
         "qrCode",
-        "jsonEditor"
+        "jsonEditor",
+        "coordinates"
       ]
     },
     "numberProps": {
@@ -714,7 +715,11 @@
         },
         "window": {
           "description": "if `openUrl` is true, this is a name of the new window. Could be overwritten if response consist `window` attribute. It is not the title of the new window!",
-          "type": "string"
+          "type": "string",
+          "default": [
+            "_blank",
+            "_self"
+          ]
         },
         "label": true,
         "type": true,
@@ -3838,6 +3843,72 @@
                 "type"
               ]
             }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "coordinates"
+                }
+              }
+            },
+            "then": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/tableItemBaseProps"
+                }
+              ],
+              "properties": {
+                "divider": {
+                  "description": "divider between latitude and longitude. Default \",\" (Used if longitudeName and latitudeName are not defined)",
+                  "type": "string"
+                },
+                "autoInit": {
+                  "description": "init field with current coordinates if empty",
+                  "type": "boolean"
+                },
+                "longitudeName": {
+                  "description": "if defined, the longitude will be stored in this attribute, divider will be ignored",
+                  "type": "string"
+                },
+                "latitudeName": {
+                  "description": "if defined, the latitude will be stored in this attribute, divider will be ignored",
+                  "type": "string"
+                },
+                "useSystemName": {
+                  "description": "if defined, the checkbox with \"Use system settings\" will be shown and latitude, longitude will be read from system.config, a boolean will be saved to the given name",
+                  "type": "string"
+                },
+                "attr": true,
+                "label": true,
+                "type": true,
+                "defaultSendTo": true,
+                "sm": true,
+                "md": true,
+                "lg": true,
+                "xs": true,
+                "newLine": true,
+                "maxLength": true,
+                "hidden": true,
+                "hideOnlyControl": true,
+                "disabled": true,
+                "helpLink": true,
+                "help": true,
+                "style": true,
+                "darkStyle": true,
+                "validator": true,
+                "validatorNoSaveOnError": true,
+                "validatorErrorText": true,
+                "noMultiEdit": true,
+                "tooltip": true,
+                "noTranslation": true,
+                "confirm": true
+              },
+              "additionalProperties": false,
+              "required": [
+                "type"
+              ]
+            }
           }
         ],
         "properties": {
@@ -5846,6 +5917,64 @@
                       "darkStyle": true,
                       "noMultiEdit": true,
                       "noTranslation": true
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "const": "coordinates"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "divider": {
+                        "description": "divider between latitude and longitude. Default \",\" (Used if longitudeName and latitudeName are not defined)",
+                        "type": "string"
+                      },
+                      "autoInit": {
+                        "description": "init field with current coordinates if empty",
+                        "type": "boolean"
+                      },
+                      "longitudeName": {
+                        "description": "if defined, the longitude will be stored in this attribute, divider will be ignored",
+                        "type": "string"
+                      },
+                      "latitudeName": {
+                        "description": "if defined, the latitude will be stored in this attribute, divider will be ignored",
+                        "type": "string"
+                      },
+                      "useSystemName": {
+                        "description": "if defined, the checkbox with \"Use system settings\" will be shown and latitude, longitude will be read from system.config, a boolean will be saved to the given name",
+                        "type": "string"
+                      },
+                      "attr": true,
+                      "label": true,
+                      "type": true,
+                      "defaultSendTo": true,
+                      "sm": true,
+                      "md": true,
+                      "lg": true,
+                      "xs": true,
+                      "newLine": true,
+                      "maxLength": true,
+                      "hidden": true,
+                      "hideOnlyControl": true,
+                      "disabled": true,
+                      "helpLink": true,
+                      "help": true,
+                      "style": true,
+                      "darkStyle": true,
+                      "validator": true,
+                      "validatorNoSaveOnError": true,
+                      "validatorErrorText": true,
+                      "noMultiEdit": true,
+                      "tooltip": true,
+                      "noTranslation": true,
+                      "confirm": true
                     },
                     "additionalProperties": false
                   }
