@@ -81,7 +81,8 @@
         "uuid",
         "timePicker",
         "datePicker",
-        "qrCode"
+        "qrCode",
+        "jsonEditor"
       ]
     },
     "numberProps": {
