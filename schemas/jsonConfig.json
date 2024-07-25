@@ -36,54 +36,55 @@
       "description": "Type of the element",
       "type": "string",
       "enum": [
+        "accordion",
         "alive",
         "autocomplete",
-        "cron",
-        "deviceManager",
-        "fileSelector",
-        "text",
-        "textSendTo",
-        "number",
-        "port",
-        "color",
-        "checkbox",
-        "chips",
-        "header",
-        "slider",
-        "ip",
-        "user",
-        "room",
-        "func",
-        "select",
-        "icon",
-        "image",
-        "panel",
-        "password",
-        "file",
-        "sendTo",
-        "staticText",
-        "custom",
-        "pattern",
-        "table",
-        "accordion",
-        "instance",
-        "language",
-        "setState",
+        "autocompleteSendTo",
         "certificate",
         "certificates",
+        "checkLicense",
+        "checkbox",
+        "chips",
+        "color",
+        "coordinates",
+        "cron",
+        "custom",
+        "datePicker",
+        "deviceManager",
+        "divider",
+        "file",
+        "fileSelector",
+        "func",
+        "header",
+        "icon",
+        "image",
+        "instance",
+        "interface",
+        "ip",
+        "jsonEditor",
+        "language",
+        "number",
+        "objectId",
+        "panel",
+        "password",
+        "pattern",
+        "port",
+        "qrCode",
+        "room",
+        "select",
+        "selectSendTo",
+        "sendTo",
+        "setState",
+        "slider",
         "staticImage",
         "staticLink",
-        "divider",
-        "objectId",
-        "selectSendTo",
-        "autocompleteSendTo",
-        "checkLicense",
-        "uuid",
+        "staticText",
+        "table",
+        "text",
+        "textSendTo",
         "timePicker",
-        "datePicker",
-        "qrCode",
-        "jsonEditor",
-        "coordinates"
+        "user",
+        "uuid"
       ]
     },
     "numberProps": {
@@ -1061,6 +1062,99 @@
         "type"
       ]
     },
+    "interfaceProps": {
+      "properties": {
+        "ignoreLoopback": {
+          "description": "do not show loopback interface (127.0.0.1)",
+          "type": "boolean"
+        },
+        "ignoreInternal": {
+          "description": "do not show internal interfaces (normally it is 127.0.0.1 too)",
+          "type": "boolean"
+        },
+        "label": true,
+        "type": true,
+        "defaultSendTo": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "helpLink": true,
+        "help": true,
+        "style": true,
+        "darkStyle": true,
+        "validator": true,
+        "validatorNoSaveOnError": true,
+        "validatorErrorText": true,
+        "noMultiEdit": true,
+        "tooltip": true,
+        "default": true,
+        "defaultFunc": true,
+        "onChange": true,
+        "noTranslation": true,
+        "confirm": true
+      },
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ]
+    },
+    "coordinatesProps": {
+      "properties": {
+        "divider": {
+          "description": "divider between latitude and longitude. Default \",\" (Used if longitudeName and latitudeName are not defined)",
+          "type": "string"
+        },
+        "autoInit": {
+          "description": "init field with current coordinates if empty",
+          "type": "boolean"
+        },
+        "longitudeName": {
+          "description": "if defined, the longitude will be stored in this attribute, divider will be ignored",
+          "type": "string"
+        },
+        "latitudeName": {
+          "description": "if defined, the latitude will be stored in this attribute, divider will be ignored",
+          "type": "string"
+        },
+        "useSystemName": {
+          "description": "if defined, the checkbox with \"Use system settings\" will be shown and latitude, longitude will be read from system.config, a boolean will be saved to the given name",
+          "type": "string"
+        },
+        "attr": true,
+        "label": true,
+        "type": true,
+        "defaultSendTo": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "maxLength": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "helpLink": true,
+        "help": true,
+        "style": true,
+        "darkStyle": true,
+        "validator": true,
+        "validatorNoSaveOnError": true,
+        "validatorErrorText": true,
+        "noMultiEdit": true,
+        "tooltip": true,
+        "noTranslation": true,
+        "confirm": true
+      },
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ]
+    },
     "doNotSaveProp": {
       "type": "boolean",
       "description": "Do not save this attribute as used only for internal calculations"
@@ -1091,6 +1185,7 @@
       "description": "Do not show internal IP addresses",
       "type": "boolean"
     },
+
     "tableItems": {
       "description": "Items of the table",
       "type": "array",
@@ -5930,53 +6025,19 @@
                     }
                   },
                   "then": {
+                    "$ref": "#/definitions/coordinatesProps"
+                  }
+                },
+                {
+                  "if": {
                     "properties": {
-                      "divider": {
-                        "description": "divider between latitude and longitude. Default \",\" (Used if longitudeName and latitudeName are not defined)",
-                        "type": "string"
-                      },
-                      "autoInit": {
-                        "description": "init field with current coordinates if empty",
-                        "type": "boolean"
-                      },
-                      "longitudeName": {
-                        "description": "if defined, the longitude will be stored in this attribute, divider will be ignored",
-                        "type": "string"
-                      },
-                      "latitudeName": {
-                        "description": "if defined, the latitude will be stored in this attribute, divider will be ignored",
-                        "type": "string"
-                      },
-                      "useSystemName": {
-                        "description": "if defined, the checkbox with \"Use system settings\" will be shown and latitude, longitude will be read from system.config, a boolean will be saved to the given name",
-                        "type": "string"
-                      },
-                      "attr": true,
-                      "label": true,
-                      "type": true,
-                      "defaultSendTo": true,
-                      "sm": true,
-                      "md": true,
-                      "lg": true,
-                      "xs": true,
-                      "newLine": true,
-                      "maxLength": true,
-                      "hidden": true,
-                      "hideOnlyControl": true,
-                      "disabled": true,
-                      "helpLink": true,
-                      "help": true,
-                      "style": true,
-                      "darkStyle": true,
-                      "validator": true,
-                      "validatorNoSaveOnError": true,
-                      "validatorErrorText": true,
-                      "noMultiEdit": true,
-                      "tooltip": true,
-                      "noTranslation": true,
-                      "confirm": true
-                    },
-                    "additionalProperties": false
+                      "type": {
+                        "const": "interface"
+                      }
+                    }
+                  },
+                  "then": {
+                    "$ref": "#/definitions/interfaceProps"
                   }
                 },
                 {
