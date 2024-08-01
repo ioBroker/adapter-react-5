@@ -44,7 +44,7 @@
     "@iobroker/types": "^6.0.9",
     "@iobroker/js-controller-common": "^6.0.9",
     "@iobroker/js-controller-common-db": "^6.0.9",
-    "@mui/icons-material": "^5.16.2",
+    "@mui/icons-material": "^5.16.6",
     "@mui/material": "^5.16.6",
     "@mui/x-date-pickers": "^7.10.0",
     "@sentry/browser": "^8.17.0",
