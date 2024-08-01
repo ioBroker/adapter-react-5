@@ -42,7 +42,7 @@
     "@emotion/styled": "^11.11.5",
     "@iobroker/socket-client": "^2.4.18",
     "@iobroker/types": "^6.0.8",
-    "@iobroker/js-controller-common": "^6.0.8",
+    "@iobroker/js-controller-common": "^6.0.9",
     "@iobroker/js-controller-common-db": "^6.0.8",
     "@mui/icons-material": "^5.16.2",
     "@mui/material": "^5.16.2",
