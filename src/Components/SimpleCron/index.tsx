@@ -753,7 +753,7 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
                             <MenuItem key={`A_${hour}`} value={hour}>
                                 {`${padding(hour)}:00`}
                             </MenuItem>)}
-                        {!settings.timeFrom && <MenuItem value={24}>24:00</MenuItem>}
+                        {!settings.timeFrom && <MenuItem value={24}>00:00</MenuItem>}
                     </Select>
                 </FormControl>
             </div>,
