@@ -41,8 +41,9 @@ class Logo extends React.Component<LogoProps> {
 
     handleFileSelect = (evt: Event) => {
         const target = evt.target as HTMLInputElement;
-        const files = target.files;
+        const files = target?.files;
         if (!files || !files.length) {
+            console.error('No files found. Please report to developers');
             return;
         }
         const f = files[0];
