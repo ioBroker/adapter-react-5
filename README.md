@@ -594,6 +594,7 @@ class MyComponent {
 
 ## List of adapters that use adapter-react
 - Admin
+- Backitup
 - iot
 - echarts
 - text2command
