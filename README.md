@@ -786,7 +786,7 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
-### 6.1.7 (2024-08-03)
+### **WORK IN PROGRESS**
 * (bluefox) Added translations
 
 ### 6.1.6 (2024-07-23)
