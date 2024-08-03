@@ -427,5 +427,6 @@
   "sc_every_dow": "jeden Tag der Woche",
   "sc_specific_dow": "bestimmte(r) Tag(e) der Woche",
   "ra_Name": "Name",
-  "ra_import data from %s file": "Daten aus %s-Datei importieren"
+  "ra_import data from %s file": "Daten aus %s-Datei importieren",
+  "ra_Invalid JSON": "Ungültiges JSON"
 }

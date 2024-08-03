@@ -427,5 +427,6 @@
   "sc_every_dow": "一周的每一天",
   "sc_specific_dow": "一周中的特定日子",
   "ra_Name": "姓名",
-  "ra_import data from %s file": "从 %s 文件导入数据"
+  "ra_import data from %s file": "从 %s 文件导入数据",
+  "ra_Invalid JSON": "JSON 无效"
 }

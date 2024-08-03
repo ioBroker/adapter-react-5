@@ -427,5 +427,6 @@
   "ra_Select color": "Select color",
   "ra_Cannot read licenses: %s": "Cannot read licenses: %s",
   "ra_Advanced options": "Advanced options",
-  "ra_Name": "Name"
+  "ra_Name": "Name",
+  "ra_Invalid JSON": "Invalid JSON"
 }

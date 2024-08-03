@@ -1155,6 +1155,39 @@
         "type"
       ]
     },
+"jsonEditorProps": {
+      "properties": {
+        "validateJson": {
+          "description": "if false, the text will be not validated as JSON",
+          "type": "boolean",
+          "default": true
+        },
+        "allowEmpty": {
+          "type": "boolean",
+          "description": "if true, the JSON will be validated only if the value is not empty"
+        },
+        "label": true,
+        "type": true,
+        "defaultSendTo": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "style": true,
+        "darkStyle": true,
+        "noMultiEdit": true,
+        "tooltip": true,
+        "noTranslation": true
+      },
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ]
+    },
     "doNotSaveProp": {
       "type": "boolean",
       "description": "Do not save this attribute as used only for internal calculations"
@@ -1185,7 +1218,6 @@
       "description": "Do not show internal IP addresses",
       "type": "boolean"
     },
-
     "tableItems": {
       "description": "Items of the table",
       "type": "array",
@@ -2631,6 +2663,14 @@
                 "noClearButton": {
                   "type": "boolean",
                   "description": "Do not show a clear button"
+                },
+                "validateJson": {
+                  "type": "boolean",
+                  "description": "if true, the text will be validated as JSON"
+                },
+                "allowEmpty": {
+                  "type": "boolean",
+                  "description": "if true, the JSON will be validated only if the value is not empty"
                 },
                 "label": true,
                 "type": true,
