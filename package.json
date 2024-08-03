@@ -10,7 +10,7 @@
     "prepublishOnly": "echo \"Error: publish from dist directory and write gulp\" && exit 1",
     "build:ts": "tsc -p tsconfig.build.json",
     "build": "npm run build:ts && gulp",
-    "release": "release-script",
+    "release": "release-script --noPush --yes --lf",
     "release-patch": "release-script patch --yes --lf",
     "release-minor": "release-script minor --yes --lf",
     "release-major": "release-script major --yes --lf",
