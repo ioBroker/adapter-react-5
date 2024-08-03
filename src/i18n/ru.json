@@ -427,5 +427,6 @@
   "sc_every_dow": "Каждый день недели",
   "sc_specific_dow": "конкретный день(а) недели",
   "ra_Name": "Имя",
-  "ra_import data from %s file": "Импортировать данные из файла %s"
+  "ra_import data from %s file": "Импортировать данные из файла %s",
+  "ra_Invalid JSON": "Неверный JSON"
 }
