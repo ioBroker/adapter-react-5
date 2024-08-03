@@ -245,7 +245,7 @@ export function cron2state(cron: string, force?: boolean): Partial<SimpleCronSta
         options.months === '*' &&
         (options.dow === '*' || force)
     ) {
-        // */n * 1-24 * * 1-7 or  */n * 1-24 * * *
+        // */n * 0-23 * * 1-7 or  */n * 0-23 * * *
         state = {
             mode: 'intervalBetween',
             intervalBetween: {
@@ -264,7 +264,7 @@ export function cron2state(cron: string, force?: boolean): Partial<SimpleCronSta
         options.months === '*' &&
         (options.dow === '*' || force)
     ) {
-        // */n 1-24 * * 1-7 or  */n 1-24 * * *
+        // */n 0-23 * * 1-7 or  */n 0-23 * * *
         state = {
             mode: 'intervalBetween',
             intervalBetween: {
@@ -441,13 +441,20 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
             let hours;
             settings.timeFrom = settings.timeFrom || 0;
             settings.timeTo = settings.timeTo === undefined ? 24 : settings.timeTo;
+            if (settings.timeFrom !== 0 && settings.timeTo === 24) {
+                settings.timeTo = 23;
+            }
             if (settings.timeFrom === 0 && settings.timeTo === 24) {
                 hours = '*';
             } else {
                 hours = settings.timeFrom !== settings.timeTo ? `${settings.timeFrom}-${settings.timeTo}` : '*';
             }
-            if (settings.period > 60) settings.period = 60;
-            if (settings.period < 1) settings.period = 1;
+            if (settings.period > 60) {
+                settings.period = 60;
+            }
+            if (settings.period < 1) {
+                settings.period = 1;
+            }
             settings.unit = settings.unit || PERIODIC_TYPES.minutes;
             switch (settings.unit) {
                 case PERIODIC_TYPES.seconds:
@@ -716,6 +723,9 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
                         onChange={e => {
                             const _settings = JSON.parse(JSON.stringify(this.state.intervalBetween));
                             _settings.timeFrom = parseInt(e.target.value as string, 10);
+                            if (_settings.timeTo === 24) {
+                                _settings.timeTo = 23;
+                            }
                             this.setState({ intervalBetween: _settings }, () => this.recalcCron());
                         }}
                     >
@@ -739,10 +749,11 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
                             this.setState({ intervalBetween: _settings }, () => this.recalcCron());
                         }}
                     >
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].map(hour =>
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].map(hour =>
                             <MenuItem key={`A_${hour}`} value={hour}>
                                 {`${padding(hour)}:00`}
                             </MenuItem>)}
+                        {!settings.timeFrom && <MenuItem value={24}>00:00</MenuItem>}
                     </Select>
                 </FormControl>
             </div>,
