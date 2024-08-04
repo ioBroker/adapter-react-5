@@ -1877,7 +1877,7 @@
                       "$ref": "#/definitions/iconPositionProp"
                     },
                     "#include": {
-                      "description": "Include other JSON or JSON5 file. Here is the name of the file with extension. E.g. 'jsonConfigOptions.json' for 'anyName.json5'",
+                      "description": "Include other JSON or JSON5 file. Here is the name of the file with extension. E.g. 'jsonConfigOptions.json' or 'anyName.json5'",
                       "type": "string"
                     },
                     "attr": true,
