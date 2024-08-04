@@ -461,7 +461,7 @@
             },
             {
               "type": "panel",
-              "#include": "dummy.json"
+              "#include": "dummy.jsonConfig.json"
             },
             {
               "type": "text",
