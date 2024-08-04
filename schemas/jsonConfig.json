@@ -1877,8 +1877,9 @@
                       "$ref": "#/definitions/iconPositionProp"
                     },
                     "#include": {
-                      "description": "Include other JSON or JSON5 file. Here is the name of the file with extension. E.g. 'jsonConfigOptions.json' for 'anyName.json5'",
-                      "type": "string"
+                      "description": "Include other JSON or JSON5 file. Here is the name of the file with extension. E.g. 'options.jsonConfig.json' for 'anyName.jsonConfig.json5'",
+                      "type": "string",
+                      "pattern": "^.+\\.jsonConfig(.json|.json5)$"
                     },
                     "attr": true,
                     "label": true,
@@ -2502,6 +2503,10 @@
                       }
                     },
                     "attr": true,
+                    "width": true,
+                    "title": true,
+                    "filter": true,
+                    "sort": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -3610,6 +3615,10 @@
                       "type": "string"
                     },
                     "attr": true,
+                    "width": true,
+                    "title": true,
+                    "filter": true,
+                    "sort": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -4778,8 +4787,9 @@
                         "$ref": "#/definitions/topLevelProperties/properties/items"
                       },
                       "#include": {
-                        "description": "Include other JSON or JSON5 file. Here is the name of the file with extension. E.g. 'jsonConfigOptions.json' for 'anyName.json5'",
-                        "type": "string"
+                        "description": "Include other JSON or JSON5 file. Here is the name of the file with extension. E.g. 'options.jsonConfig.json' for 'anyName.jsonConfig.json5'",
+                        "type": "string",
+                        "pattern": "^.+\\.jsonConfig(.json|.json5)$"
                       },
                       "icon": {
                         "description": "Panel can have icon (base64)",
