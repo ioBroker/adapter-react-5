@@ -2502,6 +2502,10 @@
                       }
                     },
                     "attr": true,
+                    "width": true,
+                    "title": true,
+                    "filter": true,
+                    "sort": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,
@@ -3610,6 +3614,10 @@
                       "type": "string"
                     },
                     "attr": true,
+                    "width": true,
+                    "title": true,
+                    "filter": true,
+                    "sort": true,
                     "label": true,
                     "type": true,
                     "defaultSendTo": true,

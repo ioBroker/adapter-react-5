@@ -425,6 +425,19 @@
           "showSecondAddAt": 1,
           "items": [
             {
+              "type": "chips",
+              "width": 100,
+              "filter": false
+            },
+            {
+              "type": "autocomplete",
+              "options": [],
+              "width": 100,
+              "filter": false
+            },
+            {
+              "filter": true,
+              "width": 200,
               "type": "staticLink",
               "href": "https://iobroker.net",
               "color": "#fff"
