@@ -6406,7 +6406,8 @@
       "$schema": true,
       "i18n": true,
       "items": true,
-      "iconPosition": true
+      "iconPosition": true,
+      "tabsStyle": true
     },
     "allOf": [
       {
