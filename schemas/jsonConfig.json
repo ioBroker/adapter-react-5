@@ -6416,6 +6416,10 @@
         "properties": {
           "iconPosition": {
             "$ref": "#/definitions/iconPositionProp"
+          },
+          "tabsStyle": {
+            "description": "CSS styles in ReactJS notation: 'radiusBorder' and not 'radius-border'",
+            "type": "object"
           }
         }
       }
