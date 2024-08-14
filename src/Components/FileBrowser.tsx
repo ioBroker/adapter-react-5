@@ -9,7 +9,6 @@ import Dropzone from 'react-dropzone';
 
 import {
     LinearProgress,
-    Hidden,
     ListItemIcon,
     ListItemText,
     Menu,
@@ -226,10 +225,10 @@ const styles: Record<string, any> = {
         fontSize: '1rem',
         verticalAlign: 'top',
         flexGrow: 1,
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
         '@media screen and (max-width: 500px)': {
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
             textAlign: 'end',
             direction: 'rtl',
         },
@@ -433,7 +432,9 @@ const USER_DATA = '0_userdata.0';
 
 function getParentDir(dir: string | null): string {
     const parts = (dir || '').split('/');
-    parts.length && parts.pop();
+    if (parts.length) {
+        parts.pop();
+    }
     return parts.join('/');
 }
 
@@ -637,7 +638,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                 expanded = expanded.filter(id => id.startsWith(`${this.limitToPath}/`) ||
                     id === this.limitToPath || this.limitToPath?.startsWith(`${id}/`));
             }
-        } catch (e) {
+        } catch {
             expanded = [];
         }
 
@@ -770,7 +771,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
     scrollToSelected() {
         if (this.mounted) {
             const el = document.getElementById(this.state.selected);
-            el && el.scrollIntoView();
+            el?.scrollIntoView();
         }
     }
 
@@ -780,7 +781,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
             .catch(error => console.error(`Cannot load folders: ${error}`));
 
         this.supportSubscribes = await this.props.socket.checkFeatureSupported('BINARY_STATE_EVENT');
-        this.supportSubscribes && (await this.props.socket.subscribeFiles('*', '*', this.onFileChange));
+        if (this.supportSubscribes) {
+            await this.props.socket.subscribeFiles('*', '*', this.onFileChange);
+        }
     }
 
     componentWillUnmount() {
@@ -844,7 +847,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                     adapter,
                     relPath,
                 });
-                !this.browseListRunning && this.processBrowseList();
+                if (!this.browseListRunning) {
+                    this.processBrowseList();
+                }
             }
         });
     }
@@ -1252,22 +1257,26 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                 {isUserData ? this.props.t('ra_User files') : item.name}
             </Box>
 
-            <Hidden smDown>
-                <div style={styles[`itemSize${this.state.viewType}`]}>
-                    {this.state.viewType === TABLE && this.state.folders[item.id]
-                        ? this.state.folders[item.id].length
-                        : ''}
-                </div>
-            </Hidden>
+            <Box
+                component="div"
+                style={styles[`itemSize${this.state.viewType}`]}
+                sx={{ display: { md: 'inline-block', sm: 'none' } }}
+            >
+                {this.state.viewType === TABLE && this.state.folders[item.id]
+                    ? this.state.folders[item.id].length
+                    : ''}
+            </Box>
 
-            <Hidden smDown>
+            <Box
+                component="div"
+                sx={{ display: { md: 'inline-block', sm: 'none' } }}
+            >
                 {this.state.viewType === TABLE && this.props.expertMode ? this.formatAcl(item.acl) : null}
-            </Hidden>
+            </Box>
 
-            <Hidden smDown>
-                {this.state.viewType === TABLE && this.props.expertMode ?
-                    <Box component="div" sx={styles[`itemDeleteButton${this.state.viewType}`]} /> : null}
-            </Hidden>
+            {this.state.viewType === TABLE && this.props.expertMode ?
+                <Box component="div" sx={{ ...styles.itemDeleteButtonTable, display: { md: 'inline-block', sm: 'none' } }} /> : null}
+
             {this.state.viewType === TABLE && this.props.allowDownload ?
                 <div style={styles[`itemDownloadEmpty${this.state.viewType}`]} /> : null}
 
@@ -1482,11 +1491,22 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                 :
                 this.getFileIcon(ext)}
             <Box component="div" sx={styles[`itemName${this.state.viewType}`]}>{item.name}</Box>
-            <Hidden smDown>{this.formatSize(item.size)}</Hidden>
-            <Hidden smDown>
+            <Box
+                component="div"
+                sx={{ display: { md: 'inline-block', sm: 'none' } }}
+            >
+                {this.formatSize(item.size)}
+            </Box>
+            <Box
+                component="div"
+                sx={{ display: { md: 'inline-block', sm: 'none' } }}
+            >
                 {this.state.viewType === TABLE && this.props.expertMode ? this.formatAcl(item.acl) : null}
-            </Hidden>
-            <Hidden smDown>
+            </Box>
+            <Box
+                component="div"
+                sx={{ display: { md: 'inline-block', sm: 'none' } }}
+            >
                 {this.state.viewType === TABLE && this.props.expertMode && FileBrowserClass.getEditFile(ext) ?
                     <IconButton
                         aria-label="edit"
@@ -1506,14 +1526,14 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                                 this.props.onSelect(item.id, true, !!this.state.folders[item.id]);
                             }
                         }}
-                        sx={styles[`itemDeleteButton${this.state.viewType}`]}
+                        sx={styles.itemDeleteButtonTable}
                         size="large"
                     >
                         <EditIcon fontSize="small" />
                     </IconButton>
                     :
                     <Box component="div" sx={styles[`itemDeleteButton${this.state.viewType}`]} />}
-            </Hidden>
+            </Box>
             {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
             {this.state.viewType === TABLE && this.props.allowDownload ? <Box
                 component="a"
