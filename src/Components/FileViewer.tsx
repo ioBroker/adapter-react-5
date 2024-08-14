@@ -148,7 +148,7 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
                             newState.copyPossible = true;
                             try {
                                 fileData = atob(bufferToBase64((data as { data: Buffer; type: string }).data, true));
-                            } catch (e) {
+                            } catch {
                                 console.error('Cannot convert base64 to string');
                                 fileData = '';
                             }
@@ -185,21 +185,30 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
         const adapter = parts[0];
         const name = parts.splice(1).join('/');
 
-        this.props.supportSubscribes && this.props.socket.subscribeFiles(adapter, name, this.onFileChanged);
+        if (this.props.supportSubscribes) {
+            this.props.socket.subscribeFiles(adapter, name, this.onFileChanged);
+        }
     }
 
     componentWillUnmount() {
-        this.timeout && clearTimeout(this.timeout);
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+            this.timeout = null;
+        }
         const parts = this.props.href.split('/');
         parts.splice(0, 2);
         const adapter = parts[0];
         const name = parts.splice(1).join('/');
-        this.props.supportSubscribes && this.props.socket.subscribeFiles(adapter, name, this.onFileChanged);
+        if (this.props.supportSubscribes) {
+            this.props.socket.subscribeFiles(adapter, name, this.onFileChanged);
+        }
     }
 
     onFileChanged = (id: string, fileName: string, size: number | null) => {
         if (!this.state.changed) {
-            this.timeout && clearTimeout(this.timeout);
+            if (this.timeout) {
+                clearTimeout(this.timeout);
+            }
             this.timeout = setTimeout(() => {
                 this.timeout = null;
                 if (size === null) {
