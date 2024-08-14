@@ -786,7 +786,7 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 6.1.9 (2024-08-14)
 * (bluefox) Updated JSON schema
 
 ### 6.1.8 (2024-08-03)
