@@ -1897,6 +1897,7 @@
                     "help": true,
                     "style": true,
                     "darkStyle": true,
+                    "innerStyle": true,
                     "validator": true,
                     "validatorNoSaveOnError": true,
                     "validatorErrorText": true,
@@ -4121,11 +4122,11 @@
             ]
           },
           "style": {
-            "description": "css style in react notation: 'radiusBorder' and not 'radius-border'",
+            "description": "CSS style in react notation: 'radiusBorder' and not 'radius-border'",
             "type": "object"
           },
           "darkStyle": {
-            "description": "css style for dark mode",
+            "description": "CSS style for dark mode",
             "type": "string"
           },
           "validator": {
@@ -6219,15 +6220,15 @@
                   ]
                 },
                 "style": {
-                  "description": "css style in react notation: 'radiusBorder' and not 'radius-border'",
+                  "description": "CSS style in react notation: 'radiusBorder' and not 'radius-border'",
                   "type": "object"
                 },
                 "darkStyle": {
-                  "description": "css style for dark mode",
+                  "description": "CSS style for dark mode",
                   "type": "string"
                 },
                 "innerStyle": {
-                  "description": "css style in react notation: 'radiusBorder' and not 'radius-border'",
+                  "description": "CSS style in react notation: 'radiusBorder' and not 'radius-border'",
                   "type": "object"
                 },
                 "validator": {
