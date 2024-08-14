@@ -3,6 +3,7 @@
   "type": "tabs",
   "i18n": true,
   "iconPosition": "bottom",
+  "tabsStyle": {},
   "items": {
     "mainTab": {
       "type": "panel",
