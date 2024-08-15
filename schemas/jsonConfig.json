@@ -239,6 +239,10 @@
           "description": "max rows of textarea. Used only if `minRows` > 1",
           "type": "number"
         },
+        "time": {
+          "description": "If true, the text will be shown as time. The value is readonly automatically",
+          "type": "boolean"
+        },
         "label": true,
         "type": true,
         "defaultSendTo": true,
@@ -393,6 +397,10 @@
         },
         "visible": {
           "description": "True if allow to view the password by toggling the view button",
+          "type": "boolean"
+        },
+        "readOnly": {
+          "description": "The read-only flag. Visible is automatically true if readOnly is true",
           "type": "boolean"
         },
         "doNotSave": true,
