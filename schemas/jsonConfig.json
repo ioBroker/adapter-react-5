@@ -76,6 +76,7 @@
         "sendTo",
         "setState",
         "slider",
+        "state",
         "staticImage",
         "staticLink",
         "staticText",
@@ -760,6 +761,111 @@
       "required": [
         "type",
         "command"
+      ]
+    },
+    "stateProps": {
+      "properties": {
+        "oid": {
+          "description": "Which object ID should be taken for the controlling. The ID is without \"adapter.X.\" prefix",
+          "type": "string"
+        },
+        "system": {
+          "description": "IF true, the state will be taken from system.adapter.XX.I. and not from XX.I",
+          "type": "boolean"
+        },
+        "control": {
+          "description": "How the value of the state should be shown",
+          "type": "string",
+          "enum": [
+            "text",
+            "html",
+            "input",
+            "number",
+            "slider",
+            "switch",
+            "select",
+            "button"
+          ]
+        },
+        "controlled": {
+          "description": "If false, the control will be read only",
+          "type": "boolean"
+        },
+        "unit": {
+          "description": "Add unit to the value",
+          "type": "string"
+        },
+        "trueText": {
+          "description": "This text will be shown if the value is true",
+          "type": "string"
+        },
+        "trueTextStyle": {
+          "description": "Style of the text if the value is true",
+          "type": "object"
+        },
+        "falseText": {
+          "description": "This text will be shown if the value is false",
+          "type": "string"
+        },
+        "falseTextStyle": {
+          "description": "Style of the text if the value is false",
+          "type": "object"
+        },
+        "trueImage": {
+          "description": "This image will be shown if the value is true. It could be base64 or URL",
+          "type": "string"
+        },
+        "falseImage": {
+          "description": "This image will be shown if the value is false. It could be base64 or URL",
+          "type": "string"
+        },
+        "min": {
+          "description": "Minimum value for number or slider",
+          "type": "number"
+        },
+        "max": {
+          "description": "Maximum value for number or slider",
+          "type": "number"
+        },
+        "step": {
+          "description": "Step for number or slider",
+          "type": "number"
+        },
+        "controlDelay": {
+          "description": "Delay in ms between the change and the command",
+          "type": "number"
+        },
+        "variant": {
+          "description": "Show spinner while request is in progress",
+          "type": "string",
+          "enum": [
+            "contained",
+            "outlined",
+            "text"
+          ]
+        },
+        "label": true,
+        "type": true,
+        "sm": true,
+        "md": true,
+        "lg": true,
+        "xs": true,
+        "newLine": true,
+        "hidden": true,
+        "hideOnlyControl": true,
+        "disabled": true,
+        "helpLink": true,
+        "help": true,
+        "style": true,
+        "darkStyle": true,
+        "tooltip": true,
+        "noTranslation": true,
+        "confirm": true
+      },
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "oid"
       ]
     },
     "instanceProps": {
@@ -4932,6 +5038,18 @@
                   },
                   "then": {
                     "$ref": "#/definitions/sendToProps"
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "const": "state"
+                      }
+                    }
+                  },
+                  "then": {
+                    "$ref": "#/definitions/stateProps"
                   }
                 },
                 {
