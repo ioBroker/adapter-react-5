@@ -1269,7 +1269,7 @@
         "type"
       ]
     },
-"jsonEditorProps": {
+    "jsonEditorProps": {
       "properties": {
         "validateJson": {
           "description": "if false, the text will be not validated as JSON",
@@ -6274,6 +6274,18 @@
                       "items"
                     ],
                     "additionalProperties": false
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "const": "state"
+                      }
+                    }
+                  },
+                  "then": {
+                    "$ref": "#/definitions/stateProps"
                   }
                 }
               ],
