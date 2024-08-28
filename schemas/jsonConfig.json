@@ -5048,18 +5048,6 @@
                   "if": {
                     "properties": {
                       "type": {
-                        "const": "state"
-                      }
-                    }
-                  },
-                  "then": {
-                    "$ref": "#/definitions/stateProps"
-                  }
-                },
-                {
-                  "if": {
-                    "properties": {
-                      "type": {
                         "const": "password"
                       }
                     }
