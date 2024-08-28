@@ -744,40 +744,34 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 
 - Modify `classes`:
   Before: `<Dialog classes={{ scrollPaper: this.props.classes.dialog, paper: this.props.classes.paper }}>`
-
-  After: `<Dialog sx={{ '&.MuiDialog-scrollPaper': styles.dialog, '& .MuiDialog-paper': styles.paper }}>`
+  After: `<Dialog sx={{ '&.MuiDialog-scrollPaper': styles.dialog, '& .MuiDialog-paper': styles.paper }}>`,
 
   Before: `<Dialog classes={{ scrollPaper: this.props.classes.dialog, paper: this.props.classes.paper }}>`
-
   After: `<Dialog sx={{ '&.MuiDialog-scrollPaper': styles.dialog, '& .MuiDialog-paper': styles.paper }}>`
 
-  Before: `<ListItem classes={{ root: styles.listItem }} >`
-  
+  Before: `<ListItem classes={{ root: this.props.classes.listItem }} >`,
   After: `<ListItem sx={{ '&.MuiListItem-root': styles.listItem }} >`
 
-  Before: `<Typography component="h2" variant="h6" classes={{ root: styles.typography }}>`
-  
+  Before: `<Typography component="h2" variant="h6" classes={{ root: this.props.classes.typography }}>`,
   After: `<Typography component="h2" variant="h6" sx={{ '&.MuiTypography-root': styles.typography }}>`
 
-  Before: `<Badge classes={{ 'badge': styles.expertBadge }}>`
-  
+  Before: `<Badge classes={{ 'badge': this.props.classes.expertBadge }}>`,
   After: `<Badge sx={{ '& .MuiBadge-badge': styles.expertBadge }}>`
 
-  Before: `<Tab classes={{ selected: styles.selected }} />`
-  
+  Before: `<Tab classes={{ selected: this.props.classes..selected }} />`,
   After: `<Tab sx={{ '&.Mui-selected': styles.selected }} />`
 
-  Before: `<Tooltip title={this.props.t('ra_Refresh tree')} classes={{ popper: styles.tooltip }}>`
-  
-  After: `<Tooltip title={this.props.t('ra_Refresh tree')} componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}>`
+  Before: `<Tabs classes={{ indicator: this.props.classes.indicator }} />`,
+  After: `<Tabs sx={{ '& .MuiTabs-indicator': styles.indicator }} />`
+
+  Before: `<Tooltip title={this.props.t('ra_Refresh tree')} classes={{ popper: this.props.classes.tooltip }}>`,
+  After: `<Tooltip title={this.props.t('ra_Refresh tree')} componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}>`,
   Or: `<Tooltip title={this.props.t('ra_Refresh tree')} componentsProps={{ popper: { sx: styles.tooltip } }}>`
 
-  Before. `<AccordionSummary classes={{ root: styles.rootStyle, content: styles.content }}>`
-
+  Before. `<AccordionSummary classes={{ root: this.props.classes.rootStyle, content: this.props.classes.content }}>`,
   After. `<AccordionSummary sx={{ '&.MuiAccordionSummary-root': styles.rootStyle, '& .MuiAccordionSummary-content': styles.content }}>`
 
-  Before. `<Drawer classes={{ paper: styles.paperStyle }}>`
-
+  Before. `<Drawer classes={{ paper: this.props.classes.paperStyle }}>`,
   After. `<Drawer sx={{ '& .MuiDrawer-paper': styles.paperStyle }}>`
 
 <!--
