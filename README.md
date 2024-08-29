@@ -780,7 +780,7 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 7.0.1 (2024-08-29)
 * (bluefox) Updated the object browser
 * (bluefox) Used MUI Library 6.0
 
