@@ -172,6 +172,10 @@
             "text"
           ]
         },
+        "controlStyle": {
+          "description": "Style of the button or control itself",
+          "type": "object"
+        },
         "label": true,
         "type": true,
         "defaultSendTo": true,
@@ -5042,6 +5046,18 @@
                   },
                   "then": {
                     "$ref": "#/definitions/sendToProps"
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "const": "state"
+                      }
+                    }
+                  },
+                  "then": {
+                    "$ref": "#/definitions/stateProps"
                   }
                 },
                 {

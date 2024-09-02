@@ -295,7 +295,6 @@ function customTheme(type: ThemeName, overrides?: Record<string, any>): IobTheme
                 },
                 expert: '#96fc96',
             },
-
         };
     } else if (type === 'PT') {
         localOverrides = {
@@ -431,7 +430,8 @@ function customTheme(type: ThemeName, overrides?: Record<string, any>): IobTheme
                     {
                         props: { variant: 'contained', color: 'grey' },
                         style: {
-                            color: palette.getContrastText && palette.grey && palette.grey[300] ? palette.getContrastText(palette.grey[300]) : undefined,
+                            backgroundColor: palette.grey?.[300],
+                            color: palette.getContrastText && palette.grey?.[300]? palette.getContrastText(palette.grey[300]) : undefined,
                         },
                     },
                     {
