@@ -784,6 +784,9 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 * (bluefox) Updated the object browser
 * (bluefox) Used MUI Library 6.0
 
+### 6.1.10 (2024-08-30)
+* (bluefox) Updated the object browser
+
 ### 6.1.9 (2024-08-14)
 * (bluefox) Updated JSON schema
 
