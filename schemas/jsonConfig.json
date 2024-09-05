@@ -482,7 +482,7 @@
       "properties": {
         "instance": {
           "description": "Check if the instance is alive. If not defined, it will be used current instance. You can use `${data.number}` pattern in the text.",
-          "type": "number"
+          "type": "string"
         },
         "textAlive": {
           "description": "Default text is `Instance %s is alive`, where `%s` will be replaced by `ADAPTER.0`",
