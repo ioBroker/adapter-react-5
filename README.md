@@ -47,7 +47,7 @@ If you want to create the configuration page with ReactJS:
 }
 ```
 5. Call in `src`: `npm install`
-6. Copy gulpfile.js into `src`: `cp node_modules/@iobroker/adapter-react/gulpfile.js gulpfile.js`
+6. Copy tasks.js into `src`: `cp node_modules/@iobroker/adapter-react/tasks.js tasks.js`
 7. Start your dummy application `npm run start` for developing or build with `npm run build` and
 copy files in `build` directory to `www` or to `admin`. In the admin you must rename `index.html` to `index_m.html`.
 8. You can do that with `gulp` tasks: `gulp build`, `gulp copy`, `gulp renameIndex` or  `gulp renameTab`
@@ -692,7 +692,7 @@ The main change is that the `withStyles` was removed. So you have to replace all
 
 You can read more about sx [here](https://mui.com/system/getting-started/the-sx-prop/).
 - Remove at start of the file `import { withStyles } from '@mui/styles';`
-- Replace at the very end of the file `export default withStyles(styles)(MyComponent);` with `export default MyComponent;`
+- Replace it at the very end of the file `export default withStyles(styles)(MyComponent);` with `export default MyComponent;`
 - Modify `const styles`:
 Before:
 ```
@@ -780,6 +780,10 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
+### 7.0.1 (2024-08-29)
+* (bluefox) Updated the object browser
+* (bluefox) Used MUI Library 6.0
+
 ### 6.1.10 (2024-08-30)
 * (bluefox) Updated the object browser
 

@@ -173,6 +173,10 @@
             "text"
           ]
         },
+        "controlStyle": {
+          "description": "Style of the button or control itself",
+          "type": "object"
+        },
         "label": true,
         "type": true,
         "defaultSendTo": true,
