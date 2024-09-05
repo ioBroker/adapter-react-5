@@ -652,7 +652,7 @@
         },
         "alive": {
           "type": "alive",
-          "instance": 0,
+          "instance": "admin.0",
           "textAlive": "Instance %s is alive",
           "textNotAlive": "Instance %s is not alive"
         },
