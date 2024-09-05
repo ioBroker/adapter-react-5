@@ -76,7 +76,7 @@
       "./src/**/*.d.ts"
     ],
     "exclude": [
-      "gulpfile.js",
+        "tasks.js",
       "src/assets/devices/parseNames.js",
       "src/assets/rooms/parseNames.js"
     ]
