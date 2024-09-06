@@ -357,7 +357,8 @@
         },
         "defaultSendToText": {
           "type": "text",
-          "defaultSendTo": "fill"
+          "defaultSendTo": "fill",
+          "allowSaveWithError": true
         },
         "textSendTo": {
           "type": "textSendTo",
