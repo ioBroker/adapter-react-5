@@ -32,7 +32,7 @@ const expectedErrorsPerTest = {
     'testFailJsonConfig.json':  [
         {
             instancePath: '/items/demoTab/items/myTable/items/2',
-            schemaPath: '#/items/allOf/17/then/additionalProperties',
+            schemaPath: '#/items/allOf/18/then/additionalProperties',
             keyword: 'additionalProperties',
             params: {
                 additionalProperty: 'test',
@@ -41,7 +41,7 @@ const expectedErrorsPerTest = {
         },
         {
             instancePath: '/items/demoTab/items/myTable/items/2',
-            schemaPath: '#/items/allOf/17/if',
+            schemaPath: '#/items/allOf/18/if',
             keyword: 'if',
             params: {
                 failingKeyword: 'then',
@@ -50,7 +50,7 @@ const expectedErrorsPerTest = {
         },
         {
             instancePath: '/items/demoTab/items/myTable',
-            schemaPath: '#/patternProperties/%5E.%2B/allOf/26/if',
+            schemaPath: '#/patternProperties/%5E.%2B/allOf/27/if',
             keyword: 'if',
             params: {
                 failingKeyword: 'then',
@@ -59,7 +59,7 @@ const expectedErrorsPerTest = {
         },
         {
             instancePath: '/items/demoTab',
-            schemaPath: '#/properties/items/patternProperties/%5E.%2B/allOf/8/if',
+            schemaPath: '#/properties/items/patternProperties/%5E.%2B/allOf/9/if',
             keyword: 'if',
             params: {
                 failingKeyword: 'then',
