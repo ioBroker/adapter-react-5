@@ -428,5 +428,8 @@
   "sc_specific_dow": "día(s) específico(s) de la semana",
   "ra_Name": "Nombre",
   "ra_import data from %s file": "Importar datos del archivo %s",
-  "ra_Invalid JSON": "JSON no válido"
+  "ra_Invalid JSON": "JSON no válido",
+  "ra_Create alias": "Crear alias",
+  "ra_Categories": "Categorías",
+  "ra_%s links from aliases": "%s enlaces de alias"
 }

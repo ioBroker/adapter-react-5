@@ -787,7 +787,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
     }
 
     componentWillUnmount() {
-        this.supportSubscribes && this.props.socket.unsubscribeFiles('*', '*', this.onFileChange);
+        if (this.supportSubscribes) {
+            this.props.socket.unsubscribeFiles('*', '*', this.onFileChange);
+        }
         this.mounted = false;
         this.browseList = null;
         this.browseListRunning = false;
@@ -879,7 +881,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                             item.reject  = null;
                             item.adapter = null;
                             item.relPath = null;
-                            resolve && resolve(files);
+                            if (resolve) {
+                                resolve(files);
+                            }
                             this.browseListRunning = false;
                             if (this.browseList.length) {
                                 if (level < 5) {
@@ -905,7 +909,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                             item.reject = null;
                             item.adapter = null;
                             item.relPath = null;
-                            reject && reject(e);
+                            if (reject) {
+                                reject(e);
+                            }
                             this.browseListRunning = false;
                             if (this.browseList.length) {
                                 if (level < 5) {
@@ -1003,7 +1009,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
 
                 _folders.sort((a, b) => (a.id > b.id ? 1 : (a.id < b.id ? -1 : 0)));
                 if (!this.limitToObjectID || this.limitToObjectID === USER_DATA) {
-                    userData && _folders.unshift(userData);
+                    if (userData) {
+                        _folders.unshift(userData);
+                    }
                 }
 
                 newFoldersNotNull[folderId || '/'] = _folders;
@@ -1016,7 +1024,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                         .then(() => newFoldersNotNull);
                 }
             } catch (e) {
-                this.initialReadFinished && window.alert(`Cannot read meta items: ${e}`);
+                if (this.initialReadFinished) {
+                    window.alert(`Cannot read meta items: ${e}`);
+                }
                 newFoldersNotNull[folderId || '/'] = [];
             }
             return newFoldersNotNull;
@@ -1081,7 +1091,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                     .then(() => newFoldersNotNull);
             }
         } catch (e) {
-            this.initialReadFinished && window.alert(`Cannot read ${adapter}${relPath ? `/${relPath}` : ''}: ${e}`);
+            if (this.initialReadFinished) {
+                window.alert(`Cannot read ${adapter}${relPath ? `/${relPath}` : ''}: ${e}`);
+            }
             newFoldersNotNull[folderId] = [];
         }
 
@@ -1123,7 +1135,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         console.log(`File changed ${key}[${size}]`);
 
         if (this.state.folders[folder]) {
-            this._tempTimeout[folder] && clearTimeout(this._tempTimeout[folder]);
+            if (this._tempTimeout[folder]) {
+                clearTimeout(this._tempTimeout[folder]);
+            }
 
             this._tempTimeout[folder] = setTimeout(() => {
                 delete this._tempTimeout[folder];
@@ -1135,7 +1149,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
     };
 
     changeFolder(e: React.MouseEvent<HTMLDivElement>, folder?: string) {
-        e && e.stopPropagation();
+        if (e) {
+            e.stopPropagation();
+        }
 
         this.lastSelect = Date.now();
 
@@ -1177,7 +1193,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
     }
 
     select(id: string, e?: React.MouseEvent<HTMLDivElement> | null, cb?: () => void) {
-        e && e.stopPropagation();
+        if (e) {
+            e.stopPropagation();
+        }
         this.lastSelect = Date.now();
 
         this.localStorage.setItem('files.selected', id);
@@ -1195,7 +1213,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                     this.props.onSelect('');
                 }
             }
-            cb && cb();
+            if (cb) {
+                cb();
+            }
         });
     }
 
@@ -1773,7 +1793,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
             >
                 <UploadIcon fontSize="small" />
             </IconButton> : null}
-            {this.props.showTypeSelector && IconType ? <Tooltip title={this.props.t('ra_Filter files')} componentsProps={{ popper: { sx: styles.tooltip } }}>
+            {this.props.showTypeSelector && IconType ? <Tooltip title={this.props.t('ra_Filter files')} slotProps={{ popper: { sx: styles.tooltip } }}>
                 <IconButton size="small" onClick={e => this.setState({ showTypesMenu: e.target as HTMLButtonElement })}>
                     <IconType fontSize="small" />
                 </IconButton>
@@ -1810,7 +1830,10 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                     </MenuItem>;
                 })}
             </Menu> : null}
-            <Tooltip title={this.props.t('ra_Background image')} componentsProps={{ popper: { sx: styles.tooltip } }}>
+            <Tooltip
+                title={this.props.t('ra_Background image')}
+                slotProps={{ popper: { sx: styles.tooltip } }}
+            >
                 <IconButton
                     color="inherit"
                     edge="start"
@@ -1823,7 +1846,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
             </Tooltip>
             {this.state.viewType !== TABLE && this.props.allowDelete ? <Tooltip
                 title={this.props.t('ra_Delete')}
-                componentsProps={{ popper: { sx: styles.tooltip } }}
+                slotProps={{ popper: { sx: styles.tooltip } }}
             >
                 <span>
                     <IconButton
@@ -1933,7 +1956,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
     }
 
     componentDidUpdate(/* prevProps , prevState, snapshot */) {
-        this.setOpacityTimer && clearTimeout(this.setOpacityTimer);
+        if (this.setOpacityTimer) {
+            clearTimeout(this.setOpacityTimer);
+        }
         this.setOpacityTimer = setTimeout(() => {
             this.setOpacityTimer = null;
             const items = window.document.getElementsByClassName('browserItem');
@@ -2259,7 +2284,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
             }
         });
         if (changed) {
-            this.cacheFoldersTimeout && clearTimeout(this.cacheFoldersTimeout);
+            if (this.cacheFoldersTimeout) {
+                clearTimeout(this.cacheFoldersTimeout);
+            }
             this.cacheFoldersTimeout = setTimeout(() => {
                 this.cacheFoldersTimeout = null;
                 const folders = this.cacheFolders || {};
@@ -2306,7 +2333,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         const p: string[] = [];
         return <Breadcrumbs style={{ paddingLeft: 8 }}>
             {parts.map((part, i) => {
-                part && p.push(part);
+                if (part) {
+                    p.push(part);
+                }
                 const path = p.join('/');
                 if (i < parts.length - 1) {
                     return <Box
