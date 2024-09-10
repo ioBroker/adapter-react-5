@@ -3,10 +3,10 @@
  *
  * MIT License
  *
- * */
+ */
 import React, { useEffect } from 'react';
 
-import { ThemeType, ThemeName } from '../../types';
+import type { ThemeType, ThemeName } from '../../types';
 
 // import './PT.css'
 const ptStyles = `
@@ -142,11 +142,21 @@ function LoaderPT(props: LoaderPTProps) {
     return <div
         className={`pt-logo-back logo-background-${themeName}`}
         style={{
-            backgroundImage: (props.backgroundImage && props.backgroundImage !== '@@loginBackgroundImage@@') ? props.backgroundImage :
-                (window.loadingBackgroundImage && window.loadingBackgroundImage !== '@@loginBackgroundImage@@' ? `url(${window.loadingBackgroundImage})` : undefined),
-            backgroundColor: (props.backgroundColor && props.backgroundColor !== '@@loginBackgroundColor@@') ? props.backgroundColor :
-                (window.loadingBackgroundColor && window.loadingBackgroundColor !== '@@loginBackgroundColor@@' ? window.loadingBackgroundColor : (props.themeType === 'dark' ? '#000' : '#FFF')),
-            backgroundSize: 'cover',
+            backgroundImage:
+                props.backgroundImage && props.backgroundImage !== '@@loginBackgroundImage@@'
+                    ? props.backgroundImage
+                    : window.loadingBackgroundImage && window.loadingBackgroundImage !== '@@loginBackgroundImage@@'
+                      ? `url(${window.loadingBackgroundImage})`
+                      : undefined,
+            backgroundColor:
+                props.backgroundColor && props.backgroundColor !== '@@loginBackgroundColor@@'
+                    ? props.backgroundColor
+                    : window.loadingBackgroundColor && window.loadingBackgroundColor !== '@@loginBackgroundColor@@'
+                      ? window.loadingBackgroundColor
+                      : props.themeType === 'dark'
+                        ? '#000'
+                        : '#FFF',
+            backgroundSize: 'cover'
         }}
     >
         <div className="pt-logo-div" style={{ width: size, height: size }}>
