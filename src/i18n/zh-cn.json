@@ -428,5 +428,8 @@
   "sc_specific_dow": "一周中的特定日子",
   "ra_Name": "姓名",
   "ra_import data from %s file": "从 %s 文件导入数据",
-  "ra_Invalid JSON": "JSON 无效"
+  "ra_Invalid JSON": "JSON 无效",
+  "ra_Create alias": "创建别名",
+  "ra_Categories": "类别",
+  "ra_%s links from aliases": "来自别名的 %s 个链接"
 }

@@ -428,5 +428,8 @@
   "sc_specific_dow": "specifieke dag(en) van de week",
   "ra_Name": "Naam",
   "ra_import data from %s file": "Importeer gegevens uit %s bestand",
-  "ra_Invalid JSON": "Ongeldige JSON"
+  "ra_Invalid JSON": "Ongeldige JSON",
+  "ra_Create alias": "Alias maken",
+  "ra_Categories": "Categorieën",
+  "ra_%s links from aliases": "%s links van aliassen"
 }

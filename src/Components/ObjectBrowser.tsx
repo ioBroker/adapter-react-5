@@ -21,7 +21,7 @@ import {
     Fab,
     FormControl,
     FormControlLabel,
-    Grid,
+    Grid2,
     IconButton,
     Input,
     List,
@@ -275,6 +275,8 @@ interface TreeInfo {
     customs: string[];
     enums: string[];
     hasSomeCustoms: boolean;
+    // List of all aliases that shows to this state
+    aliasesMap: { [stateId: string]: string[] };
 }
 
 interface GetValueStyleOptions {
@@ -986,7 +988,7 @@ function walkThroughArray(object: any[], iteratee: (result: any[], value: any, k
  */
 function walkThroughObject(
     object: Record<string, any>,
-    iteratee: (result: Record<string, any>, value: any, key: string) => void
+    iteratee: (result: Record<string, any>, value: any, key: string) => void,
 ): Record<string, any> {
     const copiedObject: Record<string, any> = {};
     for (const key in object) {
@@ -1533,13 +1535,14 @@ function buildTree(
     const info: TreeInfo = {
         funcEnums: [],
         roomEnums: [],
-        roles:     [],
-        ids:       [],
-        types:     [],
+        roles: [],
+        ids: [],
+        types: [],
         objects,
-        customs:   ['_'],
-        enums:     [],
+        customs: ['_'],
+        enums: [],
         hasSomeCustoms: false,
+        aliasesMap: {},
     };
 
     let cRoot: TreeItem = root;
@@ -1572,6 +1575,35 @@ function buildTree(
             } else if (obj.type === 'instance' && common && (common.supportCustoms || common.adminUI?.custom)) {
                 info.hasSomeCustoms = true;
                 info.customs.push(id.substring('system.adapter.'.length));
+            }
+
+            // Build a map of aliases
+            if (id.startsWith('alias.') && obj.common.alias?.id) {
+                if (typeof obj.common.alias.id === 'string') {
+                    const usedId = obj.common.alias.id;
+                    if (!info.aliasesMap[usedId]) {
+                        info.aliasesMap[usedId] = [id];
+                    } else if (!info.aliasesMap[usedId].includes(id)) {
+                        info.aliasesMap[usedId].push(id);
+                    }
+                } else {
+                    const readId = obj.common.alias.id.read;
+                    if (readId) {
+                        if (!info.aliasesMap[readId]) {
+                            info.aliasesMap[readId] = [id];
+                        } else if (!info.aliasesMap[readId].includes(id)) {
+                            info.aliasesMap[readId].push(id);
+                        }
+                    }
+                    const writeId = obj.common.alias.id.write;
+                    if (writeId) {
+                        if (!info.aliasesMap[writeId]) {
+                            info.aliasesMap[writeId] = [id];
+                        } else if (!info.aliasesMap[writeId].includes(id)) {
+                            info.aliasesMap[writeId].push(id);
+                        }
+                    }
+                }
             }
         }
 
@@ -2016,12 +2048,13 @@ function formatValue(
  * Get CSS style for given state value
  */
 function getValueStyle(options: GetValueStyleOptions): { color: string } {
-    const { state, isExpertMode, isButton } = options;
-    let color = state?.ack ? (state.q ? '#ffa500' : '') : '#ff2222c9';
+    const { state /* , isExpertMode, isButton */ } = options;
+    const color = state?.ack ? (state.q ? '#ffa500' : '') : '#ff2222c9';
 
-    if (!isExpertMode && isButton) {
-        color = '';
-    }
+    // do not show the color of the button in non-expert mode
+    // if (!isExpertMode && isButton) {
+    //     color = '';
+    // }
 
     return { color };
 }
@@ -2448,7 +2481,12 @@ interface ObjectBrowserState {
     showAllExportOptions: boolean;
     linesEnabled: boolean;
     showDescription: boolean;
-    showContextMenu: { item: TreeItem; subItem?: string; subAnchor?: HTMLLIElement } | null;
+    showContextMenu: {
+        item: TreeItem;
+        position: { left: number; top: number };
+        subItem?: string;
+        subAnchor?: HTMLLIElement;
+    } | null;
     noStatesByExportImport: boolean;
     beautifyJsonExport: boolean;
     excludeSystemRepositoriesFromExport: boolean;
@@ -2460,6 +2498,8 @@ interface ObjectBrowserState {
     modalEditOfAccessObjData?: TreeItemData;
     updateOpened?: boolean;
     tooltipInfo: null | { el: React.JSX.Element[]; id: string };
+    /** Show the menu with aliases for state */
+    aliasMenu: string;
 }
 
 export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrowserState> {
@@ -2761,6 +2801,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             excludeSystemRepositoriesFromExport: true,
             excludeTranslations: false,
             tooltipInfo: null,
+            aliasMenu: '',
         };
 
         this.texts = {
@@ -2908,6 +2949,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             if (typeof props.filterFunc === 'function') {
                 this.objects = {};
                 const filterFunc: (obj: ioBroker.Object) => boolean = props.filterFunc;
+
                 Object.keys(objects).forEach(id => {
                     try {
                         if (filterFunc(objects[id])) {
@@ -2933,6 +2975,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             } else if (props.types) {
                 this.objects = {};
                 const propsTypes = props.types;
+
                 Object.keys(objects).forEach(id => {
                     const type = objects[id] && objects[id].type;
                     // include "folder" types too
@@ -3166,7 +3209,12 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         // console.log(`CONTEXT MENU: ${this.contextMenu ? Date.now() - this.contextMenu.ts : 'false'}`);
         if (this.contextMenu && Date.now() - this.contextMenu.ts < 2000) {
             e.preventDefault();
-            this.setState({ showContextMenu: { item: this.contextMenu.item } });
+            this.setState({
+                showContextMenu: {
+                    item: this.contextMenu.item,
+                    position: { left: e.clientX + 2, top: e.clientY - 6 },
+                },
+            });
         } else if (this.state.showContextMenu) {
             e.preventDefault();
             this.setState({ showContextMenu: null });
@@ -3667,7 +3715,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 cColumns = null;
             }
 
-            if (cColumns?.length) {
+            if (cColumns && cColumns.length) {
                 columnsForAdmin = columnsForAdmin || {};
                 columnsForAdmin[obj.common.name] = cColumns.sort((a, b) =>
                     (a.path > b.path ? -1 : a.path < b.path ? 1 : 0));
@@ -3734,6 +3782,50 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     }
 
+    // This function is called when the user changes the alias of an object.
+    // It updates the aliasMap and returns true if the aliasMap has changed.
+    updateAliases(aliasId: string): void {
+        if (!this.objects || !this.info?.aliasesMap || !aliasId?.startsWith('alias.')) {
+            return;
+        }
+        // Rebuild aliases map
+        const aliasesIds = Object.keys(this.objects)
+            .filter(id => id.startsWith('alias.0'));
+
+        this.info.aliasesMap = {};
+
+        for (const id of aliasesIds) {
+            const obj = this.objects[id];
+            if (obj?.common?.alias?.id) {
+                if (typeof obj.common.alias.id === 'string') {
+                    const usedId = obj.common.alias.id;
+                    if (!this.info.aliasesMap[usedId]) {
+                        this.info.aliasesMap[usedId] = [id];
+                    } else if (!this.info.aliasesMap[usedId].includes(id)) {
+                        this.info.aliasesMap[usedId].push(id);
+                    }
+                } else {
+                    const readId = obj.common.alias.id.read;
+                    if (readId) {
+                        if (!this.info.aliasesMap[readId]) {
+                            this.info.aliasesMap[readId] = [id];
+                        } else if (!this.info.aliasesMap[readId].includes(id)) {
+                            this.info.aliasesMap[readId].push(id);
+                        }
+                    }
+                    const writeId = obj.common.alias.id.write;
+                    if (writeId) {
+                        if (!this.info.aliasesMap[writeId]) {
+                            this.info.aliasesMap[writeId] = [id];
+                        } else if (!this.info.aliasesMap[writeId].includes(id)) {
+                            this.info.aliasesMap[writeId].push(id);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Processes a single element in regard to certain filters, columns for admin and updates object dict
      * @returns Returns an object containing the new state (if any) and whether the object was filtered.
@@ -3750,6 +3842,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         console.log(`> objectChange ${id}`);
         const type = obj?.type;
 
+        // If the object is filtered out, we don't need to update the React state
         if (
             obj &&
             typeof this.props.filterFunc === 'function' &&
@@ -3764,7 +3857,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
 
         let newInnerState = null;
-        if (id.startsWith('system.adapter.') && obj && obj.type === 'adapter') {
+        if (id.startsWith('system.adapter.') && obj?.type === 'adapter') {
             const columnsForAdmin: Record<string, CustomAdminColumnStored[]> | null = JSON.parse(JSON.stringify(this.state.columnsForAdmin));
 
             this.parseObjectForAdmins(columnsForAdmin, obj as ioBroker.AdapterObject);
@@ -3773,12 +3866,17 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 newInnerState = { columnsForAdmin };
             }
         }
+
         this.objects = this.objects || {};
+
         if (obj) {
             this.objects[id] = obj;
         } else if (this.objects[id]) {
             delete this.objects[id];
         }
+
+        this.updateAliases(id);
+
         return { newInnerState, filtered: false };
     }
 
@@ -4650,7 +4748,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             >
                 <Tooltip
                     title={this.props.t('ra_Refresh tree')}
-                    componentsProps={{ popper: { sx: styles.tooltip } }}
+                    slotProps={{ popper: { sx: styles.tooltip } }}
                 >
                     <div>
                         <IconButton
@@ -4664,7 +4762,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 </Tooltip>
                 {this.props.showExpertButton && !this.props.expertMode && <Tooltip
                     title={this.props.t('ra_expertMode')}
-                    componentsProps={{ popper: { sx: styles.tooltip } }}
+                    slotProps={{ popper: { sx: styles.tooltip } }}
                 >
                     <IconButton
                         key="expertMode"
@@ -4677,7 +4775,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 </Tooltip>}
                 {!this.props.disableColumnSelector && this.props.width !== 'xs' && <Tooltip
                     title={this.props.t('ra_Configure')}
-                    componentsProps={{ popper: { sx: styles.tooltip } }}
+                    slotProps={{ popper: { sx: styles.tooltip } }}
                 >
                     <IconButton
                         key="columnSelector"
@@ -4690,7 +4788,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 </Tooltip>}
                 {this.props.width !== 'xs' && this.state.expandAllVisible && <Tooltip
                     title={this.props.t('ra_Expand all nodes')}
-                    componentsProps={{ popper: { sx: styles.tooltip } }}
+                    slotProps={{ popper: { sx: styles.tooltip } }}
                 >
                     <IconButton key="expandAll" onClick={() => this.onExpandAll()} size="large">
                         <IconOpen />
@@ -4698,7 +4796,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 </Tooltip>}
                 <Tooltip
                     title={this.props.t('ra_Collapse all nodes')}
-                    componentsProps={{ popper: { sx: styles.tooltip } }}
+                    slotProps={{ popper: { sx: styles.tooltip } }}
                 >
                     <IconButton key="collapseAll" onClick={() => this.onCollapseAll()} size="large">
                         <IconClosed />
@@ -4706,7 +4804,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 </Tooltip>
                 {this.props.width !== 'xs' && <Tooltip
                     title={this.props.t('ra_Expand one step node')}
-                    componentsProps={{ popper: { sx: styles.tooltip } }}
+                    slotProps={{ popper: { sx: styles.tooltip } }}
                 >
                     <IconButton
                         key="expandVisible"
@@ -4732,7 +4830,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 </Tooltip>}
                 {this.props.width !== 'xs' && <Tooltip
                     title={this.props.t('ra_Collapse one step node')}
-                    componentsProps={{ popper: { sx: styles.tooltip } }}
+                    slotProps={{ popper: { sx: styles.tooltip } }}
                 >
                     <IconButton
                         key="collapseVisible"
@@ -4758,7 +4856,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 </Tooltip>}
                 {this.props.objectStatesView && <Tooltip
                     title={this.props.t('ra_Toggle the states view')}
-                    componentsProps={{ popper: { sx: styles.tooltip } }}
+                    slotProps={{ popper: { sx: styles.tooltip } }}
                 >
                     <IconButton onClick={() => this.onStatesViewVisible()} size="large">
                         <LooksOneIcon color={this.state.statesView ? 'primary' : 'inherit'} />
@@ -4767,7 +4865,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
                 <Tooltip
                     title={this.props.t('ra_Show/Hide object descriptions')}
-                    componentsProps={{ popper: { sx: styles.tooltip } }}
+                    slotProps={{ popper: { sx: styles.tooltip } }}
                 >
                     <IconButton
                         onClick={() => {
@@ -4785,7 +4883,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
                 {this.props.objectAddBoolean ? <Tooltip
                     title={this.toolTipObjectCreating()}
-                    componentsProps={{ popper: { sx: styles.tooltip } }}
+                    slotProps={{ popper: { sx: styles.tooltip } }}
                 >
                     <div>
                         <IconButton
@@ -4804,7 +4902,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
                 {this.props.objectImportExport && <Tooltip
                     title={this.props.t('ra_Add objects tree from JSON file')}
-                    componentsProps={{ popper: { sx: styles.tooltip } }}
+                    slotProps={{ popper: { sx: styles.tooltip } }}
                 >
                     <IconButton
                         onClick={() => {
@@ -4824,7 +4922,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                     (!!this.state.selected.length || this.state.selectedNonObject) &&
                     <Tooltip
                         title={this.props.t('ra_Save objects tree as JSON file')}
-                        componentsProps={{ popper: { sx: styles.tooltip } }}
+                        slotProps={{ popper: { sx: styles.tooltip } }}
                     >
                         <IconButton
                             onClick={() =>
@@ -4844,7 +4942,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             </div>}
             {this.props.objectEditBoolean && <Tooltip
                 title={this.props.t('ra_Edit custom config')}
-                componentsProps={{ popper: { sx: styles.tooltip } }}
+                slotProps={{ popper: { sx: styles.tooltip } }}
             >
                 <IconButton
                     onClick={() => {
@@ -5049,7 +5147,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             this.state.filter.expertMode && this.props.objectEditOfAccessControl ? <Tooltip
                 key="acl"
                 title={item.data.aclTooltip}
-                componentsProps={{ popper: { sx: styles.tooltip } }}
+                slotProps={{ popper: { sx: styles.tooltip } }}
             >
                 <IconButton
                     sx={{
@@ -5378,7 +5476,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         return <Tooltip
             key="value"
             title={this.state.tooltipInfo?.el}
-            componentsProps={{
+            slotProps={{
                 popper: { sx: styles.cellValueTooltipBox },
                 tooltip: { sx: styles.cellValueTooltip },
             }}
@@ -5544,6 +5642,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                             }
                             this.setState({ enumDialogEnums });
                         }}
+                        secondaryAction={icon}
                     >
                         <ListItemIcon sx={{ '&.MuiListItemIcon-root': styles.enumCheckbox }}>
                             <Checkbox
@@ -5555,7 +5654,6 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                             />
                         </ListItemIcon>
                         <ListItemText id={labelId}>{name}</ListItemText>
-                        {icon ? <ListItemSecondaryAction>{icon}</ListItemSecondaryAction> : null}
                     </ListItem>;
                 })}
             </List>
@@ -5874,6 +5972,37 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         return null;
     }
 
+    renderAliasLink(id: string, index?: number, customStyle?: Record<string, any>): React.JSX.Element | null {
+        // read the type of operation
+        const aliasObj = this.objects[this.info.aliasesMap[id][index]].common.alias.id;
+        if (aliasObj) {
+            index = index || 0;
+            return <Box
+                component="div"
+                onClick={e => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    const aliasId = this.info.aliasesMap[id][index];
+                    // if more than one alias, close the menu
+                    if (this.info.aliasesMap[id].length > 1) {
+                        this.setState({ aliasMenu: '' });
+                    }
+                    this.onSelect(aliasId);
+                    setTimeout(() => this.expandAllSelected(() => this.scrollToItem(aliasId)), 100);
+                }}
+                sx={customStyle || this.styles.aliasAlone}
+            >
+                <span className="admin-browser-arrow">
+                    {(typeof aliasObj === 'string' ||
+                        (aliasObj.read === id && aliasObj.write === id)) ? '↔' : (aliasObj.read === id ? '→' : '←')}
+                </span>
+                {this.info.aliasesMap[id][index]}
+            </Box>;
+        }
+
+        return null;
+    }
+
     /**
      * Renders a leaf.
      */
@@ -5996,60 +6125,81 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             }
         }
 
-        const readWriteAlias = typeof common?.alias?.id === 'object';
-
-        const alias =
-            id.startsWith('alias.') && common?.alias?.id ? (
-                readWriteAlias ?
-                    <div style={styles.cellIdAliasReadWriteDiv}>
-                        {common.alias.id.read ? <Box
-                            component="div"
-                            onClick={e => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                this.onSelect(common.alias.id.read);
-                                setTimeout(
-                                    () => this.expandAllSelected(() => this.scrollToItem(common.alias.id.read)),
-                                    100,
-                                );
-                            }}
-                            sx={this.styles.aliasReadWrite}
-                        >
-                            ←
-                            {common.alias.id.read}
-                        </Box> : null}
-                        {common.alias.id.write ? <Box
-                            component="div"
-                            onClick={e => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                this.onSelect(common.alias.id.write);
-                                setTimeout(
-                                    () => this.expandAllSelected(() => this.scrollToItem(common.alias.id.write)),
-                                    100,
-                                );
-                            }}
-                            sx={this.styles.aliasReadWrite}
-                        >
-                            →
-                            {common.alias.id.write}
-                        </Box> : null}
-                    </div>
-                    :
-                    <Box
+        let readWriteAlias: boolean = false;
+        let alias: React.JSX.Element | null = null;
+        if (id.startsWith('alias.') && common?.alias?.id) {
+            readWriteAlias = typeof common.alias.id === 'object';
+            if (readWriteAlias) {
+                alias = <div style={styles.cellIdAliasReadWriteDiv}>
+                    {common.alias.id.read ? <Box
                         component="div"
                         onClick={e => {
                             e.stopPropagation();
                             e.preventDefault();
-                            this.onSelect(common.alias.id);
-                            setTimeout(() => this.expandAllSelected(() => this.scrollToItem(common.alias.id)), 100);
+                            this.onSelect(common.alias.id.read);
+                            setTimeout(
+                                () => this.expandAllSelected(() => this.scrollToItem(common.alias.id.read)),
+                                100,
+                            );
                         }}
-                        sx={this.styles.aliasAlone}
+                        sx={this.styles.aliasReadWrite}
+                    >
+                        ←
+                        {common.alias.id.read}
+                    </Box> : null}
+                    {common.alias.id.write ? <Box
+                        component="div"
+                        onClick={e => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            this.onSelect(common.alias.id.write);
+                            setTimeout(
+                                () => this.expandAllSelected(() => this.scrollToItem(common.alias.id.write)),
+                                100,
+                            );
+                        }}
+                        sx={this.styles.aliasReadWrite}
                     >
                         →
-                        {common.alias.id}
-                    </Box>
-            ) : null;
+                        {common.alias.id.write}
+                    </Box> : null}
+                </div>;
+            } else {
+                alias = <Box
+                    component="div"
+                    onClick={e => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        this.onSelect(common.alias.id);
+                        setTimeout(() => this.expandAllSelected(() => this.scrollToItem(common.alias.id)), 100);
+                    }}
+                    sx={this.styles.aliasAlone}
+                >
+                    →
+                    {common.alias.id}
+                </Box>;
+            }
+        } else if (this.info.aliasesMap[id]) {
+            // Some alias points to this object. It can be more than one
+            if (this.info.aliasesMap[id].length > 1) {
+                // Show number of aliases and open a menu by click
+                alias = <Box
+                    component="div"
+                    id={`alias_${id}`}
+                    onClick={e => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        this.setState({ aliasMenu: id });
+                    }}
+                    sx={this.styles.aliasAlone}
+                >
+                    {this.props.t('ra_%s links from aliases', this.info.aliasesMap[id].length)}
+                </Box>;
+            } else {
+                // Show name of alias and open it by click
+                alias = this.renderAliasLink(id, 0);
+            }
+        }
 
         let checkColor = common?.color;
         let invertBackground;
@@ -6209,19 +6359,18 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
         const narrowStyleWithDetails = this.props.width === 'xs' && this.state.focused === id;
 
-        const colID = <Grid
+        const colID = <Grid2
             container
             wrap="nowrap"
             direction="row"
             sx={styles.cellId}
             style={{ width: this.columnsVisibility.id, paddingLeft }}
         >
-            <Grid item container alignItems="center">
+            <Grid2 container alignItems="center">
                 {checkbox}
                 {iconFolder}
-            </Grid>
-            <Grid
-                item
+            </Grid2>
+            <Grid2
                 style={{
                     ...styles.cellIdSpan,
                     ...(invertBackground ? this.styles.invertedBackground : undefined),
@@ -6231,17 +6380,17 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             >
                 <Tooltip
                     title={getIdFieldTooltip(item.data, this.props.lang)}
-                    componentsProps={{ popper: { sx: styles.tooltip } }}
+                    slotProps={{ popper: { sx: styles.tooltip } }}
                 >
                     <div>{item.data.name}</div>
                 </Tooltip>
                 {alias}
                 {icons}
-            </Grid>
+            </Grid2>
             <div style={{ ...styles.grow, ...(invertBackground ? this.styles.invertedBackgroundFlex : {}) }} />
-            <Grid item container alignItems="center">
+            <Grid2 container alignItems="center">
                 {iconItem}
-            </Grid>
+            </Grid2>
             {this.props.width !== 'xs' ? <div>
                 <IconCopy
                     className={narrowStyleWithDetails ? '' : 'copyButton'}
@@ -6249,7 +6398,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                     onClick={e => this.onCopy(e, id)}
                 />
             </div> : null}
-        </Grid>;
+        </Grid2>;
 
         let colName = (narrowStyleWithDetails && name) || this.columnsVisibility.name ? <Box
             component="div"
@@ -6595,7 +6744,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             colButtons = null;
         }
 
-        const row = <Grid
+        const row = <Grid2
             container
             direction="row"
             wrap="nowrap"
@@ -6650,7 +6799,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             {colCustom}
             {colValue}
             {colButtons}
-        </Grid>;
+        </Grid2>;
         return { row, details: colDetails };
     }
 
@@ -7470,6 +7619,33 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         });
     }
 
+    /** Renders the aliases list for one state (if more than 2) */
+    private renderAliasMenu(): React.JSX.Element | null {
+        if (!this.state.aliasMenu) {
+            return null;
+        }
+
+        return <Menu
+            key="aliasmenu"
+            open={!0}
+            anchorEl={window.document.getElementById(`alias_${this.state.aliasMenu}`)}
+            onClose={() => this.setState({ aliasMenu: '' })}
+        >
+            {this.info.aliasesMap[this.state.aliasMenu].map((aliasId, i) => <MenuItem
+                key={aliasId}
+                onClick={() => this.onSelect(aliasId)}
+            >
+                <ListItemText>
+                    {this.renderAliasLink(this.state.aliasMenu, i, {
+                        '& .admin-browser-arrow': {
+                            mr: '8px',
+                        },
+                    })}
+                </ListItemText>
+            </MenuItem>)}
+        </Menu>;
+    }
+
     /**
      * Renders the right mouse button context menu
      */
@@ -7667,10 +7843,10 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                         ? this.styles.cellButtonsButtonWithCustoms
                         : styles.cellButtonsButtonWithoutCustoms}
                 />,
-                label: this.props.t('ra_Edit alias'),
+                label: this.info.aliasesMap[item.data.id] ? this.props.t('ra_Edit alias') : this.props.t('ra_Create alias'),
                 onClick: () => {
                     if (obj?.common?.alias) {
-                        this.setState({ editObjectDialog: item.data.id, showContextMenu: null, editObjectAlias: true });
+                        this.setState({ showContextMenu: null, editObjectDialog: item.data.id, editObjectAlias: true });
                     } else {
                         this.setState({ showContextMenu: null, showAliasEditor: item.data.id });
                     }
@@ -7749,9 +7925,11 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 if (ITEMS[key].subMenu) {
                     items.push(<MenuItem
                         key={key}
-                        onClick={(e: React.MouseEvent<HTMLLIElement>) => this.state.showContextMenu && this.setState({
+                        href=""
+                        onClick={(e: React.MouseEvent<HTMLAnchorElement>) => this.state.showContextMenu && this.setState({
                             showContextMenu: {
                                 item: this.state.showContextMenu.item,
+                                position: this.state.showContextMenu.position,
                                 subItem: key,
                                 subAnchor: e.target as HTMLLIElement,
                             },
@@ -7777,7 +7955,12 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                             anchorEl={this.state.showContextMenu.subAnchor}
                             onClose={() => {
                                 if (this.state.showContextMenu) {
-                                    this.setState({ showContextMenu: { item: this.state.showContextMenu.item } });
+                                    this.setState({
+                                        showContextMenu: {
+                                            item: this.state.showContextMenu.item,
+                                            position: this.state.showContextMenu.position,
+                                        },
+                                    });
                                 }
                                 this.contextMenu = null;
                             }}
@@ -7819,8 +8002,6 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             return null;
         }
 
-        const el = document.getElementById(id);
-
         return <Menu
             key="contextMenu"
             open={!0}
@@ -7834,7 +8015,8 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                     });
                 }
             }}
-            anchorEl={el}
+            anchorReference="anchorPosition"
+            anchorPosition={this.state.showContextMenu.position}
             onClose={() => {
                 this.setState({ showContextMenu: null });
                 this.contextMenu = null;
@@ -8009,6 +8191,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 </div>
             </TabContent>
             {this.renderContextMenu()}
+            {this.renderAliasMenu()}
             {this.renderToast()}
             {this.renderColumnsEditCustomDialog()}
             {this.renderColumnsSelectorDialog()}

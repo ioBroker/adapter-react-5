@@ -409,6 +409,8 @@
   "ra_Edit function": "Edit function",
   "ra_Edit room": "Edit room",
   "ra_Edit alias": "Edit alias",
+  "ra_Create alias": "Create alias",
+  "ra_Categories": "Categories",
   "ra_View file": "View file",
   "ra_Del": "Delete",
   "ra_Show all folders": "Show all folders",
@@ -428,5 +430,6 @@
   "ra_Cannot read licenses: %s": "Cannot read licenses: %s",
   "ra_Advanced options": "Advanced options",
   "ra_Name": "Name",
-  "ra_Invalid JSON": "Invalid JSON"
+  "ra_Invalid JSON": "Invalid JSON",
+  "ra_%s links from aliases": "%s links from aliases"
 }

@@ -428,5 +428,8 @@
   "sc_specific_dow": "конкретний день (дні) тижня",
   "ra_Name": "Ім'я",
   "ra_import data from %s file": "Імпортувати дані з файлу %s",
-  "ra_Invalid JSON": "Недійсний JSON"
+  "ra_Invalid JSON": "Недійсний JSON",
+  "ra_Create alias": "Створити псевдонім",
+  "ra_Categories": "Категорії",
+  "ra_%s links from aliases": "%s посилань із псевдонімів"
 }
