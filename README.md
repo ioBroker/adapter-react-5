@@ -780,6 +780,10 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Showed the context menu under cursor position in the object browser
+* (bluefox) Added links to aliases in the object browser
+
 ### 7.0.1 (2024-08-29)
 * (bluefox) Updated the object browser
 * (bluefox) Used MUI Library 6.0
