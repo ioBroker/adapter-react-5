@@ -780,7 +780,7 @@ The best practice is to replace `padding` with `p` and `margin` with `m`, so you
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 7.0.2 (2024-09-10)
 * (bluefox) Showed the context menu under cursor position in the object browser
 * (bluefox) Added links to aliases in the object browser
 
