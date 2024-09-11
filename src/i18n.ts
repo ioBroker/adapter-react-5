@@ -3,7 +3,7 @@
  *
  * MIT License
  *
- * */
+ */
 
 declare global {
     interface Window {
@@ -40,8 +40,11 @@ class I18n {
 
     static _disableWarning: boolean = false;
 
-    /** Set the language to display */
-    static setLanguage(lang: ioBroker.Languages) {
+    /**
+     * Set the language to display
+     * @param lang The default language for translations.
+     **/
+    static setLanguage(lang: ioBroker.Languages): void {
         if (lang) {
             I18n.lang = lang;
         }
@@ -52,10 +55,14 @@ class I18n {
      * User can provide two types of structures:
      * - {"word1": "translated word1", "word2": "translated word2"}, but in this case the lang must be provided
      * - {"word1": {"en": "translated en word1", "de": "translated de word1"}, "word2": {"en": "translated en word2", "de": "translated de word2"}}, but no lang must be provided
-     * @param {object} words additional words for specific language
-     * @param {ioBroker.Languages} lang
+     *
+     * @param words additional words for specific language
+     * @param lang language for the words
      */
-    static extendTranslations(words: I18nWordsWithPrefix | I18nOneLanguageDictionary | I18nWordsDictionary, lang?: ioBroker.Languages) {
+    static extendTranslations(
+        words: I18nWordsWithPrefix | I18nOneLanguageDictionary | I18nWordsDictionary,
+        lang?: ioBroker.Languages,
+    ): void {
         // automatically extend all languages with prefix
         if ((words as I18nWordsWithPrefix).prefix) {
             const wordsWithPrefix = words as I18nWordsWithPrefix;
@@ -98,7 +105,7 @@ class I18n {
                 } else {
                     // It could be vice versa: words.word1 = {en: 'translated word1', de: 'übersetztes Wort2'}
                     Object.keys(words).forEach(word => {
-                        const _word: I18nWordDictionary = (words as I18nWordsDictionary)[word] as I18nWordDictionary;
+                        const _word: I18nWordDictionary = (words as I18nWordsDictionary)[word];
                         Object.keys(_word).forEach(key => {
                             const _lang = key as ioBroker.Languages;
                             const languageDictionary: I18nOneLanguageDictionary | undefined = I18n.translations[_lang];
@@ -107,7 +114,9 @@ class I18n {
                             } else if (!languageDictionary[word]) {
                                 languageDictionary[word] = _word[_lang];
                             } else if (languageDictionary[word] !== _word[_lang]) {
-                                console.warn(`Translation for word "${word}" in "${_lang}" was ignored: existing = "${languageDictionary[word]}", new = ${_word[_lang]}`);
+                                console.warn(
+                                    `Translation for word "${word}" in "${_lang}" was ignored: existing = "${languageDictionary[word]}", new = ${_word[_lang]}`,
+                                );
                             }
                         });
                     });
@@ -120,26 +129,28 @@ class I18n {
                 I18n.translations[lang] = I18n.translations[lang] || {};
                 const languageDictionary: I18nOneLanguageDictionary | undefined = I18n.translations[lang];
                 if (languageDictionary) {
-                    Object.keys(words)
-                        .forEach(word => {
-                            if (!languageDictionary[word]) {
-                                languageDictionary[word] = (words as I18nOneLanguageDictionary)[word];
-                            } else if (languageDictionary[word] !== (words as I18nOneLanguageDictionary)[word]) {
-                                console.warn(`Translation for word "${word}" in "${lang}" was ignored: existing = "${languageDictionary[word]}", new = ${(words as I18nOneLanguageDictionary)[word]}`);
-                            }
-                        });
+                    Object.keys(words).forEach(word => {
+                        if (!languageDictionary[word]) {
+                            languageDictionary[word] = (words as I18nOneLanguageDictionary)[word];
+                        } else if (languageDictionary[word] !== (words as I18nOneLanguageDictionary)[word]) {
+                            console.warn(
+                                `Translation for word "${word}" in "${lang}" was ignored: existing = "${languageDictionary[word]}", new = ${(words as I18nOneLanguageDictionary)[word]}`,
+                            );
+                        }
+                    });
                 }
             }
-        } catch (e) {
+        } catch (e: Error | any) {
             console.error(`Cannot apply translations: ${e}`);
         }
     }
 
     /**
      * Sets all translations (in all languages).
-     * @param {{ [lang in ioBroker.Languages]?: Record<string, string>; }} translations
+     *
+     * @param translations The translations to add.
      */
-    static setTranslations(translations: I18nDictionary) {
+    static setTranslations(translations: I18nDictionary): void {
         if (translations) {
             I18n.translations = translations;
         }
@@ -147,19 +158,20 @@ class I18n {
 
     /**
      * Get the currently chosen language.
-     * @returns {ioBroker.Languages} The current language.
+     *
+     * @returns The current language.
      */
-    static getLanguage() {
+    static getLanguage(): ioBroker.Languages {
         return I18n.lang;
     }
 
-    /** Translate the given string to the selected language */
-    static t(
-        /** The (key) word to look up the string. */
-        word: string,
-        /** Optional arguments which will replace the first (second, third, ...) occurrences of %s */
-        ...args: any[]
-    ) {
+    /**
+     * Translate the given string to the selected language
+     *
+     * @param word The (key) word to look up the string.
+     * @param args Optional arguments which will replace the first (second, third, ...) occurrences of %s
+     */
+    static t(word: string, ...args: any[]): string {
         const translation = I18n.translations[I18n.lang];
         if (translation) {
             const w = translation[word];
@@ -188,15 +200,14 @@ class I18n {
     /**
      * Show non-translated words
      * Required during development
+     *
+     * @param filter The filter to apply to the list of non-translated words.
      */
-    static i18nShow(
-        /** The filter to apply to the list of non-translated words. */
-        filter?: string | RegExp,
-    ) {
+    static i18nShow(filter?: string | RegExp): void {
         /** List words with their translations. */
         const result: Record<string, string> = {};
         if (!filter) {
-            I18n.unknownTranslations.forEach(word => result[word] = word);
+            I18n.unknownTranslations.forEach(word => (result[word] = word));
             console.log(JSON.stringify(result, null, 2));
         } else if (typeof filter === 'string') {
             I18n.unknownTranslations.forEach(word => {
@@ -218,12 +229,9 @@ class I18n {
     /**
      * Disable warning about non-translated words
      * Required during development
-     * @param {boolean} disable
+     * @param disable Whether to disable the warning
      */
-    static disableWarning(
-        /** Whether to disable the warning. */
-        disable: boolean,
-    ) {
+    static disableWarning(disable: boolean): void {
         I18n._disableWarning = !!disable;
     }
 }

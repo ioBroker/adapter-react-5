@@ -1,11 +1,11 @@
 import Ajv from 'ajv';
-import fs from 'node:fs';
-import path from 'node:path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 const ajv = new Ajv({ allErrors: true, strict: false });
-const basePath = path.join(__dirname, '..', 'schemas');
+const basePath = join(__dirname, '..', 'schemas');
 
-const schema = fs.readFileSync(path.join(basePath, 'jsonConfig.json'), { encoding: 'utf-8' });
+const schema = readFileSync(join(basePath, 'jsonConfig.json'), { encoding: 'utf-8' });
 
 const validate = ajv.compile(JSON.parse(schema));
 
@@ -14,7 +14,7 @@ const validate = ajv.compile(JSON.parse(schema));
  */
 function positiveTests(): void {
     for (const fileName of ['testJsonConfig.json', 'testJSONConfigPanel.json']) {
-        const content = fs.readFileSync(path.join(basePath, fileName), { encoding: 'utf-8' });
+        const content = readFileSync(join(basePath, fileName), { encoding: 'utf-8' });
         const config = JSON.parse(content);
         const valid = validate(config);
 
@@ -29,7 +29,7 @@ function positiveTests(): void {
 
 /** Expected errors per test */
 const expectedErrorsPerTest = {
-    'testFailJsonConfig.json':  [
+    'testFailJsonConfig.json': [
         {
             instancePath: '/items/demoTab/items/myTable/items/2',
             schemaPath: '#/items/allOf/18/then/additionalProperties',
@@ -103,7 +103,7 @@ const expectedErrorsPerTest = {
  */
 function failingTests(): void {
     for (const fileName of ['testFailJsonConfig.json', 'testFailJsonConfigPanel.json'] as const) {
-        const content = fs.readFileSync(path.join(basePath, fileName), { encoding: 'utf-8' });
+        const content = readFileSync(join(basePath, fileName), { encoding: 'utf-8' });
         const config = JSON.parse(content);
         const valid = validate(config);
 

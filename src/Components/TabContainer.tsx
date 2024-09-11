@@ -30,26 +30,28 @@ interface TabContainerProps {
     children: React.ReactNode;
 }
 
-function TabContainer(props: TabContainerProps) {
-    return <Paper
-        elevation={!Number.isNaN(props.elevation) ? props.elevation : 1}
-        style={{
-            ...styles.root,
-            ...(props.styles?.root || undefined),
-            ...(props.overflow !== 'visible' ? styles.overflowHidden : undefined),
-        }}
-        onKeyDown={props.onKeyDown}
-        tabIndex={props.tabIndex}
-    >
-        <Grid
-            container
-            direction="column"
-            wrap="nowrap"
-            sx={styles.container}
+function TabContainer(props: TabContainerProps): React.JSX.Element {
+    return (
+        <Paper
+            elevation={!Number.isNaN(props.elevation) ? props.elevation : 1}
+            style={{
+                ...styles.root,
+                ...(props.styles?.root || undefined),
+                ...(props.overflow !== 'visible' ? styles.overflowHidden : undefined),
+            }}
+            onKeyDown={props.onKeyDown}
+            tabIndex={props.tabIndex}
         >
-            {props.children}
-        </Grid>
-    </Paper>;
+            <Grid
+                container
+                direction="column"
+                wrap="nowrap"
+                sx={styles.container}
+            >
+                {props.children}
+            </Grid>
+        </Paper>
+    );
 }
 
 export default TabContainer;

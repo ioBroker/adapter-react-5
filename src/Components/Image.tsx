@@ -58,6 +58,9 @@ interface ImageState {
     showError?: boolean;
 }
 
+/**
+ * A component for displaying an image.
+ */
 class Image extends Component<ImageProps, ImageState> {
     private svg: React.JSX.Element | null;
 
@@ -79,7 +82,7 @@ class Image extends Component<ImageProps, ImageState> {
         this.svg = this.state.svg && this.state.src ? this.getSvgFromData(this.state.src) : null;
     }
 
-    static getDerivedStateFromProps(props: ImageProps, state: ImageState) {
+    static getDerivedStateFromProps(props: ImageProps, state: ImageState): void {
         const newState: ImageState = {};
         let changed = false;
 
@@ -118,20 +121,22 @@ class Image extends Component<ImageProps, ImageState> {
 
             svg.remove();
 
-            return <svg
-                className={this.props.className}
-                style={this.state.color ? { color: this.state.color } : {}}
-                {...svgProps}
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: inner }}
-            />;
-        } catch (e) {
+            return (
+                <svg
+                    className={this.props.className}
+                    style={this.state.color ? { color: this.state.color } : {}}
+                    {...svgProps}
+                    // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{ __html: inner }}
+                />
+            );
+        } catch {
             // ignore
         }
         return null;
     }
 
-    render() {
+    render(): React.JSX.Element | null {
         if (this.state.svg) {
             if (!this.state.created) {
                 setTimeout(() => {
@@ -146,27 +151,39 @@ class Image extends Component<ImageProps, ImageState> {
             if (this.state.imgError || !this.state.src) {
                 return <IconNoIcon className={this.props.className} />;
             }
-            if (Image.REMOTE_SERVER && !this.state.src.startsWith('http://') && !this.state.src.startsWith('https://')) {
+            if (
+                Image.REMOTE_SERVER &&
+                !this.state.src.startsWith('http://') &&
+                !this.state.src.startsWith('https://')
+            ) {
                 let src = (this.props.imagePrefix || '') + this.state.src;
                 if (src.startsWith('./')) {
                     src = Image.REMOTE_PREFIX + src.substring(2);
                 } else if (!src.startsWith('/')) {
                     src = Image.REMOTE_PREFIX + src;
                 }
-                return <img
-                    className={this.props.className}
-                    src={`https://remote-files.iobroker.in${src}`}
-                    alt=""
-                    onError={() => (this.props.showError ? this.setState({ imgError: true }) : this.setState({ src: '' }))}
-                />;
+                return (
+                    <img
+                        className={this.props.className}
+                        src={`https://remote-files.iobroker.in${src}`}
+                        alt=""
+                        onError={() =>
+                            this.props.showError ? this.setState({ imgError: true }) : this.setState({ src: '' })
+                        }
+                    />
+                );
             }
 
-            return <img
-                className={this.props.className}
-                src={(this.props.imagePrefix || '') + this.state.src}
-                alt=""
-                onError={() => (this.props.showError ? this.setState({ imgError: true }) : this.setState({ src: '' }))}
-            />;
+            return (
+                <img
+                    className={this.props.className}
+                    src={(this.props.imagePrefix || '') + this.state.src}
+                    alt=""
+                    onError={() =>
+                        this.props.showError ? this.setState({ imgError: true }) : this.setState({ src: '' })
+                    }
+                />
+            );
         }
 
         return null;

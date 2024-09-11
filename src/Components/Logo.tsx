@@ -26,9 +26,12 @@ interface LogoProps {
 }
 
 class Logo extends React.Component<LogoProps> {
-    static generateFile(fileName: string, obj: any) {
+    static generateFile(fileName: string, obj: any): void {
         const el = window.document.createElement('a');
-        el.setAttribute('href', `data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify(obj, null, 2))}`);
+        el.setAttribute(
+            'href',
+            `data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify(obj, null, 2))}`,
+        );
         el.setAttribute('download', fileName);
 
         el.style.display = 'none';
@@ -39,7 +42,7 @@ class Logo extends React.Component<LogoProps> {
         window.document.body.removeChild(el);
     }
 
-    handleFileSelect = (evt: Event) => {
+    handleFileSelect = (evt: Event): void => {
         const target = evt.target as HTMLInputElement;
         const files = target?.files;
         if (!files || !files.length) {
@@ -73,7 +76,7 @@ class Logo extends React.Component<LogoProps> {
         }
     };
 
-    download() {
+    download(): void {
         const result = {
             _id: `system.adapter.${this.props.common.name}.${this.props.instance}`,
             common: JSON.parse(JSON.stringify(this.props.common)),
@@ -94,72 +97,79 @@ class Logo extends React.Component<LogoProps> {
         Logo.generateFile(`${result._id}.json`, result);
     }
 
-    upload() {
+    upload(): void {
         const input = window.document.createElement('input');
         input.setAttribute('type', 'file');
         input.setAttribute('id', 'files');
         input.setAttribute('opacity', '0');
         input.addEventListener('change', this.handleFileSelect, false);
-        (input.click)();
+        input.click();
     }
 
-    render() {
-        return <div className={this.props.className} style={this.props.style}>
-            {this.props.common.icon ?
-                <Icon
-                    src={this.props.common.icon}
-                    style={{
-                        padding: 8,
-                        width: 64,
-                    }}
-                    alt="logo"
-                /> : null}
-            {this.props.common.readme ?
+    render(): React.JSX.Element {
+        return (
+            <div
+                className={this.props.className}
+                style={this.props.style}
+            >
+                {this.props.common.icon ? (
+                    <Icon
+                        src={this.props.common.icon}
+                        style={{
+                            padding: 8,
+                            width: 64,
+                        }}
+                        alt="logo"
+                    />
+                ) : null}
+                {this.props.common.readme ? (
+                    <Fab
+                        size="small"
+                        color="primary"
+                        aria-label="Help"
+                        style={{
+                            marginRight: 5,
+                            marginTop: 5,
+                            float: 'right',
+                        }}
+                        onClick={() => {
+                            const win = window.open(this.props.common.readme, '_blank');
+                            win?.focus();
+                        }}
+                    >
+                        <IconHelp />
+                    </Fab>
+                ) : null}
                 <Fab
                     size="small"
                     color="primary"
-                    aria-label="Help"
+                    aria-label="Load config"
                     style={{
                         marginRight: 5,
                         marginTop: 5,
                         float: 'right',
                     }}
-                    onClick={() => {
-                        const win = window.open(this.props.common.readme, '_blank');
-                        win?.focus();
-                    }}
+                    title={I18n.t('ra_Load configuration from file')}
+                    onClick={() => this.upload()}
                 >
-                    <IconHelp />
-                </Fab> : null}
-            <Fab
-                size="small"
-                color="primary"
-                aria-label="Load config"
-                style={{
-                    marginRight: 5,
-                    marginTop: 5,
-                    float: 'right',
-                }}
-                title={I18n.t('ra_Load configuration from file')}
-                onClick={() => this.upload()}
-            >
-                <IconUpload />
-            </Fab>
-            <Fab
-                size="small"
-                color="primary"
-                aria-label="Save config"
-                style={{
-                    marginRight: 5,
-                    marginTop: 5,
-                    float: 'right',
-                }}
-                title={I18n.t('ra_Save configuration to file')}
-                onClick={() => this.download()}
-            >
-                <IconDownload />
-            </Fab>
-        </div>;
+                    <IconUpload />
+                </Fab>
+                <Fab
+                    size="small"
+                    color="primary"
+                    aria-label="Save config"
+                    style={{
+                        marginRight: 5,
+                        marginTop: 5,
+                        float: 'right',
+                    }}
+                    title={I18n.t('ra_Save configuration to file')}
+                    onClick={() => this.download()}
+                >
+                    <IconDownload />
+                </Fab>
+            </div>
+        );
     }
 }
 

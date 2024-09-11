@@ -7,14 +7,8 @@ const getModuleFederationConfigPath = (additionalPaths = []) => {
     const appDirectory = fs.realpathSync(process.cwd());
     const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
 
-    const moduleFederationConfigFiles = [
-        'modulefederation.config.js',
-        ...additionalPaths,
-    ];
-    return moduleFederationConfigFiles
-        .map(resolveApp)
-        .filter(fs.existsSync)
-        .shift();
+    const moduleFederationConfigFiles = ['modulefederation.config.js', ...additionalPaths];
+    return moduleFederationConfigFiles.map(resolveApp).filter(fs.existsSync).shift();
 };
 
 module.exports = {
@@ -42,10 +36,7 @@ module.exports = {
 
             const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 
-            webpackConfig.plugins = [
-                ...webpackConfig.plugins,
-                new ModuleFederationPlugin(myModule),
-            ];
+            webpackConfig.plugins = [...webpackConfig.plugins, new ModuleFederationPlugin(myModule)];
 
             // webpackConfig.module = {
             //   ...webpackConfig.module,

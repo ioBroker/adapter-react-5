@@ -1,14 +1,6 @@
 import React from 'react';
 
-import {
-    InputLabel,
-    MenuItem,
-    Select,
-    TextField,
-    FormControl,
-    FormControlLabel,
-    Checkbox,
-} from '@mui/material';
+import { InputLabel, MenuItem, Select, TextField, FormControl, FormControlLabel, Checkbox } from '@mui/material';
 
 import convertCronToText from './cronText';
 
@@ -44,16 +36,7 @@ const PERIODIC_TYPES = {
     minutes: 'minutes',
     // hours: 'hours',
 };
-const WEEKDAYS = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
-];
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 function padding(num: number): string {
     if (num < 10) {
@@ -107,7 +90,7 @@ interface SimpleCronState {
 }
 
 interface CronStructure {
-    seconds:  string | null;
+    seconds: string | null;
     minutes: string;
     hours: string;
     date: string;
@@ -173,7 +156,8 @@ export function cron2state(cron: string, force?: boolean): Partial<SimpleCronSta
     }
 
     // * * * * *
-    if (options.seconds === null &&
+    if (
+        options.seconds === null &&
         options.minutes === '*' &&
         options.hours === '*' &&
         options.date === '*' &&
@@ -189,7 +173,8 @@ export function cron2state(cron: string, force?: boolean): Partial<SimpleCronSta
         };
     } // * * * * * *
 
-    if (options.seconds === '*' &&
+    if (
+        options.seconds === '*' &&
         options.minutes === '*' &&
         options.hours === '*' &&
         options.date === '*' &&
@@ -315,7 +300,10 @@ export function cron2state(cron: string, force?: boolean): Partial<SimpleCronSta
 class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
     constructor(props: SimpleCronProps) {
         super(props);
-        let cron = typeof props.cronExpression === 'string' ? props.cronExpression.replace(/^["']/, '').replace(/["']\n?$/, '') : '';
+        let cron =
+            typeof props.cronExpression === 'string'
+                ? props.cronExpression.replace(/^["']/, '').replace(/["']\n?$/, '')
+                : '';
         if (cron[0] === '{') {
             cron = '';
         }
@@ -388,7 +376,7 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
         return text2weekdays(text);
     }
 
-    static state2cron(state: Partial<SimpleCronState>) {
+    static state2cron(state: Partial<SimpleCronState>): string {
         let cron = '* * * * *';
         if (state.mode === 'interval') {
             const settings = state.interval || {
@@ -473,11 +461,19 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
             };
             const parts = (settings.time || '00:00').split(':');
             let minutes = parseInt(parts[1], 10) || 0;
-            if (minutes > 59) minutes = 59;
-            if (minutes < 0) minutes = 0;
+            if (minutes > 59) {
+                minutes = 59;
+            }
+            if (minutes < 0) {
+                minutes = 0;
+            }
             let hours = parseInt(parts[0], 10) || 0;
-            if (hours > 23) hours = 59;
-            if (hours < 0) hours = 0;
+            if (hours > 23) {
+                hours = 59;
+            }
+            if (hours < 0) {
+                hours = 0;
+            }
 
             cron = `${minutes} ${hours} * * ${this.periodArray2text(settings.weekdays || [])}`;
         } else if (state.mode === 'once') {
@@ -491,71 +487,170 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
             const parts = (settings.time || '00:00').split(':');
             const partsDate = settings.date.split('.');
             let minutes = parseInt(parts[1], 10) || 0;
-            if (minutes > 59) minutes = 59;
-            if (minutes < 0) minutes = 0;
+            if (minutes > 59) {
+                minutes = 59;
+            }
+            if (minutes < 0) {
+                minutes = 0;
+            }
             let hours = parseInt(parts[0], 10) || 0;
-            if (hours > 23) hours = 59;
-            if (hours < 0) hours = 0;
+            if (hours > 23) {
+                hours = 59;
+            }
+            if (hours < 0) {
+                hours = 0;
+            }
             let date = parseInt(partsDate[0], 10) || 1;
-            if (date > 31) date = 31;
-            if (date < 1) hours = 1;
+            if (date > 31) {
+                date = 31;
+            }
+            if (date < 1) {
+                hours = 1;
+            }
             let month = parseInt(partsDate[1], 10) || 1;
-            if (month > 12) month = 12;
-            if (month < 1) month = 1;
+            if (month > 12) {
+                month = 12;
+            }
+            if (month < 1) {
+                month = 1;
+            }
 
             cron = `${minutes} ${hours} ${date} ${month} *`;
         }
         return cron;
     }
 
-    recalcCron() {
+    recalcCron(): void {
         this.onChange(SimpleCron.state2cron(this.state));
     }
 
-    getControlsWeekdaysElements(type: 'intervalBetween' | 'specific') {
+    getControlsWeekdaysElements(type: 'intervalBetween' | 'specific'): React.JSX.Element {
         const settings = type === 'intervalBetween' ? this.state.intervalBetween : this.state.specific;
-        return <div key="weekdays" style={{ paddingLeft: 8, width: '100%', maxWidth: 600 }}>
-            <h5>{I18n.t('ra_On weekdays')}</h5>
-            {[1, 2, 3, 4, 5, 6, 0].map(day => <FormControlLabel
-                key={WEEKDAYS[day]}
-                control={<Checkbox
-                    checked={settings.weekdays.includes(day)}
-                    onChange={e => {
-                        const _settings = JSON.parse(JSON.stringify(this.state[type]));
-                        const pos = _settings.weekdays.indexOf(day);
-                        e.target.checked && pos === -1 && _settings.weekdays.push(day);
-                        !e.target.checked && pos !== -1 && _settings.weekdays.splice(pos, 1);
-                        _settings.weekdays.sort();
-                        if (type === 'intervalBetween') {
-                            this.setState({ intervalBetween: _settings }, () => this.recalcCron());
-                        } else {
-                            this.setState({ specific: _settings }, () => this.recalcCron());
+        return (
+            <div
+                key="weekdays"
+                style={{ paddingLeft: 8, width: '100%', maxWidth: 600 }}
+            >
+                <h5>{I18n.t('ra_On weekdays')}</h5>
+                {[1, 2, 3, 4, 5, 6, 0].map(day => (
+                    <FormControlLabel
+                        key={WEEKDAYS[day]}
+                        control={
+                            <Checkbox
+                                checked={settings.weekdays.includes(day)}
+                                onChange={e => {
+                                    const _settings = JSON.parse(JSON.stringify(this.state[type]));
+                                    const pos = _settings.weekdays.indexOf(day);
+                                    e.target.checked && pos === -1 && _settings.weekdays.push(day);
+                                    !e.target.checked && pos !== -1 && _settings.weekdays.splice(pos, 1);
+                                    _settings.weekdays.sort();
+                                    if (type === 'intervalBetween') {
+                                        this.setState({ intervalBetween: _settings }, () => this.recalcCron());
+                                    } else {
+                                        this.setState({ specific: _settings }, () => this.recalcCron());
+                                    }
+                                }}
+                                value={day.toString()}
+                            />
                         }
-                    }}
-                    value={day.toString()}
-                />}
-                label={I18n.t(WEEKDAYS[day])}
-            />)}
-        </div>;
+                        label={I18n.t(WEEKDAYS[day])}
+                    />
+                ))}
+            </div>
+        );
     }
 
-    getControlsPeriodElements(type: 'interval' | 'intervalBetween') {
+    getControlsPeriodElements(type: 'interval' | 'intervalBetween'): React.JSX.Element {
         const settings = type === 'interval' ? this.state.interval : this.state.intervalBetween;
 
         if (this.state.extended) {
-            return <div key="period" style={{ paddingLeft: 8, display: 'inline-block' }}>
+            return (
+                <div
+                    key="period"
+                    style={{ paddingLeft: 8, display: 'inline-block' }}
+                >
+                    <h5 style={{ marginBottom: 5 }}>{I18n.t('sc_period')}</h5>
+                    <TextField
+                        variant="standard"
+                        style={{ marginTop: 0, marginBottom: 0, verticalAlign: 'bottom' }}
+                        key="value"
+                        label={I18n.t('sc_minutes')}
+                        value={settings.minutes}
+                        onChange={e => {
+                            const _settings = JSON.parse(JSON.stringify(this.state[type]));
+                            _settings.minutes = parseInt(e.target.value, 10);
+                            if (_settings.minutes < 1) {
+                                _settings.minutes = 1;
+                            }
+                            if (type === 'interval') {
+                                this.setState({ interval: _settings }, () => this.recalcCron());
+                            } else {
+                                this.setState({ intervalBetween: _settings }, () => this.recalcCron());
+                            }
+                        }}
+                        slotProps={{
+                            htmlInput: {
+                                min: 1,
+                                max: 60,
+                            },
+                            inputLabel: {
+                                shrink: true,
+                            },
+                        }}
+                        type="number"
+                        margin="normal"
+                    />
+                    <TextField
+                        variant="standard"
+                        style={{ marginTop: 0, marginBottom: 0, verticalAlign: 'bottom' }}
+                        key="value"
+                        label={I18n.t('sc_hours')}
+                        value={settings.hours}
+                        onChange={e => {
+                            const _settings = JSON.parse(JSON.stringify(this.state[type]));
+                            _settings.hours = parseInt(e.target.value, 10);
+                            if (_settings.hours < 1) {
+                                _settings.hours = 1;
+                            }
+                            if (type === 'interval') {
+                                this.setState({ interval: _settings }, () => this.recalcCron());
+                            } else {
+                                this.setState({ intervalBetween: _settings }, () => this.recalcCron());
+                            }
+                        }}
+                        slotProps={{
+                            htmlInput: {
+                                min: 1,
+                                max: 24,
+                            },
+                            inputLabel: {
+                                shrink: true,
+                            },
+                        }}
+                        type="number"
+                        margin="normal"
+                    />
+                </div>
+            );
+        }
+
+        return (
+            <div
+                key="period"
+                style={{ paddingLeft: 8, display: 'inline-block' }}
+            >
                 <h5 style={{ marginBottom: 5 }}>{I18n.t('sc_period')}</h5>
                 <TextField
                     variant="standard"
                     style={{ marginTop: 0, marginBottom: 0, verticalAlign: 'bottom' }}
                     key="value"
-                    label={I18n.t('sc_minutes')}
-                    value={settings.minutes}
+                    label={I18n.t('sc_every')}
+                    value={settings.period}
                     onChange={e => {
                         const _settings = JSON.parse(JSON.stringify(this.state[type]));
-                        _settings.minutes = parseInt(e.target.value, 10);
-                        if (_settings.minutes < 1) {
-                            _settings.minutes = 1;
+                        _settings.period = parseInt(e.target.value, 10);
+                        if (_settings.period < 1) {
+                            _settings.period = 1;
                         }
                         if (type === 'interval') {
                             this.setState({ interval: _settings }, () => this.recalcCron());
@@ -563,113 +658,76 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
                             this.setState({ intervalBetween: _settings }, () => this.recalcCron());
                         }
                     }}
-                    InputProps={{ inputProps: { min: 1, max: 60 } }}
+                    slotProps={{
+                        htmlInput: {
+                            min: 1,
+                            max: 60,
+                        },
+                        inputLabel: {
+                            shrink: true,
+                        },
+                    }}
                     type="number"
-                    InputLabelProps={{ shrink: true }}
                     margin="normal"
                 />
-                <TextField
+                <Select
                     variant="standard"
-                    style={{ marginTop: 0, marginBottom: 0, verticalAlign: 'bottom' }}
-                    key="value"
-                    label={I18n.t('sc_hours')}
-                    value={settings.hours}
+                    style={{ verticalAlign: 'bottom' }}
+                    value={settings.unit}
                     onChange={e => {
                         const _settings = JSON.parse(JSON.stringify(this.state[type]));
-                        _settings.hours = parseInt(e.target.value, 10);
-                        if (_settings.hours < 1) {
-                            _settings.hours = 1;
-                        }
+                        _settings.unit = e.target.value;
                         if (type === 'interval') {
                             this.setState({ interval: _settings }, () => this.recalcCron());
                         } else {
                             this.setState({ intervalBetween: _settings }, () => this.recalcCron());
                         }
                     }}
-                    InputProps={{ inputProps: { min: 1, max: 24 } }}
-                    type="number"
-                    InputLabelProps={{ shrink: true }}
-                    margin="normal"
-                />
-            </div>;
-        }
+                >
+                    <MenuItem value="seconds">{I18n.t('sc_seconds')}</MenuItem>)
+                    <MenuItem value="minutes">{I18n.t('sc_minutes')}</MenuItem>)
+                </Select>
+            </div>
+        );
+    }
 
-        return <div key="period" style={{ paddingLeft: 8, display: 'inline-block' }}>
-            <h5 style={{ marginBottom: 5 }}>{I18n.t('sc_period')}</h5>
-            <TextField
+    getControlsTime(type: 'once' | 'specific'): React.JSX.Element {
+        const settings = type === 'once' ? this.state.once : this.state.specific;
+        return (
+            <FormControl
                 variant="standard"
-                style={{ marginTop: 0, marginBottom: 0, verticalAlign: 'bottom' }}
-                key="value"
-                label={I18n.t('sc_every')}
-                value={settings.period}
-                onChange={e => {
-                    const _settings = JSON.parse(JSON.stringify(this.state[type]));
-                    _settings.period = parseInt(e.target.value, 10);
-                    if (_settings.period < 1) {
-                        _settings.period = 1;
-                    }
-                    if (type === 'interval') {
-                        this.setState({ interval: _settings }, () => this.recalcCron());
-                    } else {
-                        this.setState({ intervalBetween: _settings }, () => this.recalcCron());
-                    }
-                }}
-                InputProps={{ inputProps: { min: 1, max: 60 } }}
-                type="number"
-                InputLabelProps={{ shrink: true }}
-                margin="normal"
-            />
-            <Select
-                variant="standard"
-                style={{ verticalAlign: 'bottom' }}
-                value={settings.unit}
-                onChange={e => {
-                    const _settings = JSON.parse(JSON.stringify(this.state[type]));
-                    _settings.unit = e.target.value;
-                    if (type === 'interval') {
-                        this.setState({ interval: _settings }, () => this.recalcCron());
-                    } else {
-                        this.setState({ intervalBetween: _settings }, () => this.recalcCron());
-                    }
+                sx={{
+                    ...styles.formControl,
+                    '&.MuiFormControl-root': styles.formControlMarginRight,
                 }}
             >
-                <MenuItem value="seconds">{I18n.t('sc_seconds')}</MenuItem>)
-                <MenuItem value="minutes">{I18n.t('sc_minutes')}</MenuItem>)
-            </Select>
-        </div>;
+                <TextField
+                    variant="standard"
+                    key="at"
+                    label={I18n.t('sc_time')}
+                    value={settings.time}
+                    type="time"
+                    onChange={e => {
+                        const _settings = JSON.parse(JSON.stringify(this.state[type]));
+                        _settings.time = e.target.value;
+                        if (type === 'once') {
+                            this.setState({ once: _settings }, () => this.recalcCron());
+                        } else {
+                            this.setState({ specific: _settings }, () => this.recalcCron());
+                        }
+                    }}
+                    slotProps={{
+                        inputLabel: {
+                            shrink: true,
+                        },
+                    }}
+                    margin="normal"
+                />
+            </FormControl>
+        );
     }
 
-    getControlsTime(type: 'once' | 'specific') {
-        const settings = type === 'once' ? this.state.once : this.state.specific;
-        return <FormControl
-            variant="standard"
-            sx={{
-                ...styles.formControl,
-                '&.MuiFormControl-root': styles.formControlMarginRight,
-            }}
-        >
-            <TextField
-                variant="standard"
-                key="at"
-                label={I18n.t('sc_time')}
-                value={settings.time}
-                type="time"
-                onChange={e => {
-                    const _settings = JSON.parse(JSON.stringify(this.state[type]));
-                    _settings.time = e.target.value;
-                    if (type === 'once') {
-                        this.setState({ once: _settings }, () => this.recalcCron());
-                    } else {
-                        this.setState({ specific: _settings }, () => this.recalcCron());
-                    }
-                }}
-                InputLabelProps={{ shrink: true }}
-                margin="normal"
-            />
-        </FormControl>;
-    }
-
-    getControlsDate() {
+    getControlsDate(): React.JSX.Element {
         const settings = this.state.once;
 
         if (!settings.date) {
@@ -678,44 +736,68 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
         }
 
         // <InputLabel htmlFor="formatted-text-mask-input">{I18n.t('sc_at')}</InputLabel>
-        return <FormControl variant="standard" style={styles.formControl}>
-            <TextField
+        return (
+            <FormControl
                 variant="standard"
-                key="date"
-                label={I18n.t('sc_date')}
-                value={settings.date}
-                type="text"
-                inputProps={{ style: styles.formControlPaddingTop }}
-                onChange={e => {
-                    const _settings = JSON.parse(JSON.stringify(this.state.once));
-                    _settings.date = e.target.value;
-                    this.setState({ once: _settings }, () => this.recalcCron());
-                }}
-                InputLabelProps={{ shrink: true }}
-                margin="normal"
-            />
-        </FormControl>;
+                style={styles.formControl}
+            >
+                <TextField
+                    variant="standard"
+                    key="date"
+                    label={I18n.t('sc_date')}
+                    value={settings.date}
+                    type="text"
+                    slotProps={{
+                        htmlInput: {
+                            style: styles.formControlPaddingTop,
+                        },
+                        inputLabel: {
+                            shrink: true,
+                        },
+                    }}
+                    onChange={e => {
+                        const _settings = JSON.parse(JSON.stringify(this.state.once));
+                        _settings.date = e.target.value;
+                        this.setState({ once: _settings }, () => this.recalcCron());
+                    }}
+                    margin="normal"
+                />
+            </FormControl>
+        );
     }
 
-    getOnceElements() {
-        return <div style={{ marginLeft: 8 }}>
-            {this.getControlsTime('once')}
-            {this.getControlsDate()}
-        </div>;
+    getOnceElements(): React.JSX.Element {
+        return (
+            <div style={{ marginLeft: 8 }}>
+                {this.getControlsTime('once')}
+                {this.getControlsDate()}
+            </div>
+        );
     }
 
-    getIntervalElements() {
+    getIntervalElements(): React.JSX.Element {
         return this.getControlsPeriodElements('interval');
     }
 
-    getIntervalBetweenElements() {
+    getIntervalBetweenElements(): React.JSX.Element[] {
         const settings = this.state.intervalBetween;
         return [
             this.getControlsPeriodElements('intervalBetween'),
-            <div key="between" style={{ paddingLeft: 8, display: 'inline-block', verticalAlign: 'top' }}>
+            <div
+                key="between"
+                style={{ paddingLeft: 8, display: 'inline-block', verticalAlign: 'top' }}
+            >
                 <h5 style={{ marginBottom: 5 }}>{I18n.t('sc_hours')}</h5>
-                <FormControl variant="standard" style={styles.formControl}>
-                    <InputLabel shrink htmlFor="age-label-placeholder">{I18n.t('sc_from')}</InputLabel>
+                <FormControl
+                    variant="standard"
+                    style={styles.formControl}
+                >
+                    <InputLabel
+                        shrink
+                        htmlFor="age-label-placeholder"
+                    >
+                        {I18n.t('sc_from')}
+                    </InputLabel>
                     <Select
                         variant="standard"
                         style={{ width: 100 }}
@@ -729,14 +811,26 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
                             this.setState({ intervalBetween: _settings }, () => this.recalcCron());
                         }}
                     >
-                        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].map(hour =>
-                            <MenuItem key={`B_${hour}`} value={hour}>
-                                {`${padding(hour)}:00`}
-                            </MenuItem>)}
+                        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].map(
+                            hour => (
+                                <MenuItem
+                                    key={`B_${hour}`}
+                                    value={hour}
+                                >
+                                    {`${padding(hour)}:00`}
+                                </MenuItem>
+                            ),
+                        )}
                     </Select>
                 </FormControl>
-                <FormControl variant="standard" style={styles.formControl}>
-                    <InputLabel shrink htmlFor="age-label-placeholder">
+                <FormControl
+                    variant="standard"
+                    style={styles.formControl}
+                >
+                    <InputLabel
+                        shrink
+                        htmlFor="age-label-placeholder"
+                    >
                         {I18n.t('sc_to')}
                     </InputLabel>
                     <Select
@@ -749,10 +843,16 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
                             this.setState({ intervalBetween: _settings }, () => this.recalcCron());
                         }}
                     >
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].map(hour =>
-                            <MenuItem key={`A_${hour}`} value={hour}>
-                                {`${padding(hour)}:00`}
-                            </MenuItem>)}
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].map(
+                            hour => (
+                                <MenuItem
+                                    key={`A_${hour}`}
+                                    value={hour}
+                                >
+                                    {`${padding(hour)}:00`}
+                                </MenuItem>
+                            ),
+                        )}
                         {!settings.timeFrom && <MenuItem value={24}>00:00</MenuItem>}
                     </Select>
                 </FormControl>
@@ -761,53 +861,70 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
         ];
     }
 
-    getSpecificTimeElements() {
+    getSpecificTimeElements(): React.JSX.Element[] {
         return [
-            <div key="time" style={{ marginLeft: 8 }}>
+            <div
+                key="time"
+                style={{ marginLeft: 8 }}
+            >
                 {this.getControlsTime('specific')}
             </div>,
             this.getControlsWeekdaysElements('specific'),
         ];
     }
 
-    onModeChange(mode: 'once' | 'interval' | 'intervalBetween' | 'specific') {
+    onModeChange(mode: 'once' | 'interval' | 'intervalBetween' | 'specific'): void {
         if (mode !== this.state.mode) {
             this.setState({ mode }, () => this.recalcCron());
         }
     }
 
-    onChange(cron: string) {
+    onChange(cron: string): void {
         if (cron !== this.state.cron) {
             this.setState({ cron });
             this.props.onChange && this.props.onChange(cron);
         }
     }
 
-    render() {
-        return <div style={styles.mainDiv}>
-            <div style={{ paddingLeft: 8, width: '100%' }}><TextField variant="standard" style={{ width: '100%' }} value={this.state.cron} disabled /></div>
-            <div style={{ paddingLeft: 8, width: '100%', height: 60 }}>{convertCronToText(this.state.cron, this.props.language || 'en')}</div>
-            <div>
-                <FormControl variant="standard" style={{ ...styles.formControl, marginLeft: 8, marginTop: 8 }}>
-                    <InputLabel>{I18n.t('ra_Repeat')}</InputLabel>
-                    <Select
+    render(): React.JSX.Element {
+        return (
+            <div style={styles.mainDiv}>
+                <div style={{ paddingLeft: 8, width: '100%' }}>
+                    <TextField
                         variant="standard"
-                        value={this.state.mode}
-                        onChange={e => this.onModeChange(e.target.value as SimpleCronType)}
-                        inputProps={{ name: 'mode', id: 'mode' }}
+                        style={{ width: '100%' }}
+                        value={this.state.cron}
+                        disabled
+                    />
+                </div>
+                <div style={{ paddingLeft: 8, width: '100%', height: 60 }}>
+                    {convertCronToText(this.state.cron, this.props.language || 'en')}
+                </div>
+                <div>
+                    <FormControl
+                        variant="standard"
+                        style={{ ...styles.formControl, marginLeft: 8, marginTop: 8 }}
                     >
-                        <MenuItem value="once">{I18n.t('sc_once')}</MenuItem>
-                        <MenuItem value="interval">{I18n.t('sc_interval')}</MenuItem>
-                        <MenuItem value="intervalBetween">{I18n.t('sc_intervalBetween')}</MenuItem>
-                        <MenuItem value="specific">{I18n.t('sc_specific')}</MenuItem>
-                    </Select>
-                </FormControl>
+                        <InputLabel>{I18n.t('ra_Repeat')}</InputLabel>
+                        <Select
+                            variant="standard"
+                            value={this.state.mode}
+                            onChange={e => this.onModeChange(e.target.value as SimpleCronType)}
+                            inputProps={{ name: 'mode', id: 'mode' }}
+                        >
+                            <MenuItem value="once">{I18n.t('sc_once')}</MenuItem>
+                            <MenuItem value="interval">{I18n.t('sc_interval')}</MenuItem>
+                            <MenuItem value="intervalBetween">{I18n.t('sc_intervalBetween')}</MenuItem>
+                            <MenuItem value="specific">{I18n.t('sc_specific')}</MenuItem>
+                        </Select>
+                    </FormControl>
+                </div>
+                {this.state.mode === PERIODIC.once && this.getOnceElements()}
+                {this.state.mode === 'interval' && this.getIntervalElements()}
+                {this.state.mode === 'intervalBetween' && this.getIntervalBetweenElements()}
+                {this.state.mode === 'specific' && this.getSpecificTimeElements()}
             </div>
-            {this.state.mode === PERIODIC.once && this.getOnceElements()}
-            {this.state.mode === 'interval' && this.getIntervalElements()}
-            {this.state.mode === 'intervalBetween' && this.getIntervalBetweenElements()}
-            {this.state.mode === 'specific' && this.getSpecificTimeElements()}
-        </div>;
+        );
     }
 }
 

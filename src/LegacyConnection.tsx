@@ -33,7 +33,7 @@ export const PROGRESS = {
 };
 
 const PERMISSION_ERROR = 'permissionError';
-const NOT_CONNECTED    = 'notConnectedError';
+const NOT_CONNECTED = 'notConnectedError';
 const TIMEOUT_FOR_ADMIN4 = 1300;
 
 export const ERRORS = {
@@ -41,10 +41,7 @@ export const ERRORS = {
     NOT_CONNECTED,
 };
 
-export type BinaryStateChangeHandler = (
-    id: string,
-    base64: string | null,
-) => void;
+export type BinaryStateChangeHandler = (id: string, base64: string | null) => void;
 
 function fixAdminUI(obj: ioBroker.AdapterObject): ioBroker.AdapterObject {
     // @ts-expect-error it is deprecated, but still could appear
@@ -98,7 +95,12 @@ function fixAdminUI(obj: ioBroker.AdapterObject): ioBroker.AdapterObject {
         }
 
         // @ts-expect-error it is deprecated, but still could appear
-        obj.common.adminUI && console.debug(`Please add to "${obj._id.replace(/\.\d+$/, '')}" common.adminUI=${JSON.stringify(obj.common.adminUI)}`);
+        if (obj.common.adminUI) {
+            console.debug(
+                // @ts-expect-error it is deprecated, but still could appear
+                `Please add to "${obj._id.replace(/\.\d+$/, '')}" common.adminUI=${JSON.stringify(obj.common.adminUI)}`,
+            );
+        }
     }
     return obj;
 }
@@ -110,9 +112,7 @@ export function pattern2RegEx(pattern: string): string {
     const startsWithWildcard = pattern[0] === '*';
     const endsWithWildcard = pattern[pattern.length - 1] === '*';
 
-    pattern = pattern
-        .replace(/[-/\\^$+?.()|[\]{}]/g, '\\$&')
-        .replace(/\*/g, '.*');
+    pattern = pattern.replace(/[-/\\^$+?.()|[\]{}]/g, '\\$&').replace(/\*/g, '.*');
 
     return (startsWithWildcard ? '' : '^') + pattern + (endsWithWildcard ? '' : '$');
 }
@@ -166,7 +166,7 @@ export interface ConnectOptions {
     uuid?: string;
 }
 
-export interface SocketClient{
+export interface SocketClient {
     connect(url?: string, options?: ConnectOptions): void;
     close(): void;
     destroy(): void;
@@ -229,7 +229,13 @@ class Connection {
 
     private _promises: Promises = {};
 
-    private readonly _instanceSubscriptions: Record<string, {messageType: string; callback: (data: Record<string, any>, sourceInstance: string, messageType: string) => void }[]>;
+    private readonly _instanceSubscriptions: Record<
+        string,
+        {
+            messageType: string;
+            callback: (data: Record<string, any>, sourceInstance: string, messageType: string) => void;
+        }[]
+    >;
 
     private props: ConnectionProps;
 
@@ -251,24 +257,40 @@ class Connection {
 
     private connected: boolean = false;
 
-    private readonly statesSubscribes: Record<string, { reg: RegExp; cbs: (ioBroker.StateChangeHandler | BinaryStateChangeHandler)[] }> = {};
+    private readonly statesSubscribes: Record<
+        string,
+        { reg: RegExp; cbs: (ioBroker.StateChangeHandler | BinaryStateChangeHandler)[] }
+    > = {};
 
-    private readonly objectsSubscribes: Record<string, { reg: RegExp; cbs: ((id: string, obj: ioBroker.Object | null | undefined, oldObj?: ioBroker.Object | null) => void)[] }> = {};
+    private readonly objectsSubscribes: Record<
+        string,
+        {
+            reg: RegExp;
+            cbs: ((id: string, obj: ioBroker.Object | null | undefined, oldObj?: ioBroker.Object | null) => void)[];
+        }
+    > = {};
 
-    private readonly filesSubscribes: Record<string, { regId: RegExp; cbs: ioBroker.FileChangeHandler[]; regFilePattern: RegExp }> = {};
+    private readonly filesSubscribes: Record<
+        string,
+        { regId: RegExp; cbs: ioBroker.FileChangeHandler[]; regFilePattern: RegExp }
+    > = {};
 
     private onConnectionHandlers: ((connected: boolean) => void)[] = [];
 
     private onLogHandlers: ((message: string) => void)[] = [];
 
-    private readonly onProgress: ((progress: number) => void);
+    private readonly onProgress: (progress: number) => void;
 
-    private readonly onError: ((err: string | {
-        message: string;
-        operation: string;
-        type: string;
-        id: string;
-    }) => void);
+    private readonly onError: (
+        err:
+            | string
+            | {
+                  message: string;
+                  operation: string;
+                  type: string;
+                  id: string;
+              },
+    ) => void;
 
     private loaded: boolean = false;
 
@@ -299,34 +321,42 @@ class Connection {
     public systemConfig: ioBroker.SystemConfigObject | null = null;
 
     constructor(props: ConnectionProps) {
-        props                 = props || { protocol: window.location.protocol, host: window.location.hostname };
-        this.props            = props;
+        props = props || { protocol: window.location.protocol, host: window.location.hostname };
+        this.props = props;
 
-        this.autoSubscribes   = this.props.autoSubscribes || [];
+        this.autoSubscribes = this.props.autoSubscribes || [];
         this.autoSubscribeLog = this.props.autoSubscribeLog || false;
 
-        this.props.protocol   = this.props.protocol || window.location.protocol;
-        this.props.host       = this.props.host     || window.location.hostname;
-        this.props.port       = this.props.port     || (window.location.port === '3000' ? (Connection.isWeb() ? 8082 : 8081) : window.location.port);
-        this.props.ioTimeout  = Math.max(this.props.ioTimeout  || 20000, 20000);
+        this.props.protocol = this.props.protocol || window.location.protocol;
+        this.props.host = this.props.host || window.location.hostname;
+        this.props.port =
+            this.props.port ||
+            (window.location.port === '3000' ? (Connection.isWeb() ? 8082 : 8081) : window.location.port);
+        this.props.ioTimeout = Math.max(this.props.ioTimeout || 20000, 20000);
         this.props.cmdTimeout = Math.max(this.props.cmdTimeout || 5000, 5000);
         this._instanceSubscriptions = {};
 
         // breaking change. Do not load all objects by default is true
         this.doNotLoadAllObjects = this.props.doNotLoadAllObjects === undefined ? true : this.props.doNotLoadAllObjects;
-        this.doNotLoadACL        = this.props.doNotLoadACL        === undefined ? true : this.props.doNotLoadACL;
+        this.doNotLoadACL = this.props.doNotLoadACL === undefined ? true : this.props.doNotLoadACL;
 
         this.states = {};
         this._waitForFirstConnection = new Promise(resolve => {
             this._waitForFirstConnectionResolve = resolve;
         });
         this.onProgress = this.props.onProgress || (() => {});
-        this.onError = this.props.onError || ((err: string | {
-            message: string;
-            operation: string;
-            type: string;
-            id: string;
-        }) => console.error(err));
+        this.onError =
+            this.props.onError ||
+            ((
+                err:
+                    | string
+                    | {
+                          message: string;
+                          operation: string;
+                          type: string;
+                          id: string;
+                      },
+            ) => console.error(err));
         this.admin5only = this.props.admin5only || false;
 
         this.startSocket();
@@ -338,11 +368,13 @@ class Connection {
      */
     static isWeb(): boolean {
         const adapterName: string | undefined = window.adapterName;
-        return adapterName === 'material' ||
+        return (
+            adapterName === 'material' ||
             adapterName === 'vis' ||
             adapterName?.startsWith('vis-') ||
             adapterName === 'echarts-show' ||
-            window.socketUrl !== undefined;
+            window.socketUrl !== undefined
+        );
     }
 
     /**
@@ -379,10 +411,7 @@ class Connection {
         let protocol = this.props.protocol.replace(':', '');
         let path = window.location.pathname;
 
-        if (
-            window.location.hostname === 'iobroker.net' ||
-            window.location.hostname === 'iobroker.pro'
-        ) {
+        if (window.location.hostname === 'iobroker.net' || window.location.hostname === 'iobroker.pro') {
             path = '';
         } else {
             // if web adapter, socket io could be on another port or even host
@@ -418,23 +447,20 @@ class Connection {
 
         const url = port ? `${protocol}://${host}:${port}${path}` : `${protocol}://${host}${path}`;
 
-        this._socket = window.io.connect(
-            url,
-            {
-                path: path.endsWith('/') ? `${path}socket.io` : `${path}/socket.io`,
-                query: 'ws=true',
-                name: this.props.name,
-                timeout: this.props.ioTimeout,
-                uuid: this.props.uuid,
-            },
-        );
+        this._socket = window.io.connect(url, {
+            path: path.endsWith('/') ? `${path}socket.io` : `${path}/socket.io`,
+            query: 'ws=true',
+            name: this.props.name,
+            timeout: this.props.ioTimeout,
+            uuid: this.props.uuid,
+        });
 
         this._socket.on('connect', (noTimeout: boolean | undefined) => {
             // If the user is not admin, it takes some time to install the handlers, because all rights must be checked
             if (noTimeout !== true) {
-                setTimeout(() =>
-                    this.getVersion()
-                        .then(info => {
+                setTimeout(
+                    () =>
+                        this.getVersion().then(info => {
                             const [major, minor, patch] = info.version.split('.');
                             const v = parseInt(major, 10) * 10000 + parseInt(minor, 10) * 100 + parseInt(patch, 10);
                             if (v < 40102) {
@@ -442,12 +468,18 @@ class Connection {
                                 // possible this is an old version of admin
                                 this.onPreConnect(false, false);
                             } else {
-                                this._socket.emit('authenticate', (isOk: boolean, isSecure: boolean) => this.onPreConnect(isOk, isSecure));
+                                this._socket.emit('authenticate', (isOk: boolean, isSecure: boolean) =>
+                                    this.onPreConnect(isOk, isSecure),
+                                );
                             }
-                        }), 500);
+                        }),
+                    500,
+                );
             } else {
                 // iobroker websocket waits, till all handlers are installed
-                this._socket.emit('authenticate', (isOk: boolean, isSecure: boolean) => this.onPreConnect(isOk, isSecure));
+                this._socket.emit('authenticate', (isOk: boolean, isSecure: boolean) =>
+                    this.onPreConnect(isOk, isSecure),
+                );
             }
         });
 
@@ -464,14 +496,13 @@ class Connection {
         });
 
         this._socket.on('disconnect', () => {
-            this.connected  = false;
+            this.connected = false;
             this.subscribed = false;
             this.onProgress(PROGRESS.CONNECTING);
             this.onConnectionHandlers.forEach(cb => cb(false));
         });
 
-        this._socket.on('reauthenticate', () =>
-            Connection.authenticate());
+        this._socket.on('reauthenticate', () => Connection.authenticate());
 
         this._socket.on('log', message => {
             this.props.onLog && this.props.onLog(message);
@@ -492,8 +523,7 @@ class Connection {
             }
         });
 
-        this._socket.on('connect_error', (err: string) =>
-            console.error(`Connect error: ${err}`));
+        this._socket.on('connect_error', (err: string) => console.error(`Connect error: ${err}`));
 
         this._socket.on('permissionError', (err: { operation: string; type: string; id?: string }) =>
             this.onError({
@@ -501,28 +531,37 @@ class Connection {
                 operation: err.operation,
                 type: err.type,
                 id: err.id || '',
-            }));
+            }),
+        );
 
         this._socket.on('objectChange', (id: string, obj: ioBroker.Object | null) =>
-            setTimeout(() => this.objectChange(id, obj), 0));
+            setTimeout(() => this.objectChange(id, obj), 0),
+        );
 
-        this._socket.on('stateChange', (id: string, state) =>
-            setTimeout(() => this.stateChange(id, state), 0));
+        this._socket.on('stateChange', (id: string, state) => setTimeout(() => this.stateChange(id, state), 0));
 
         this._socket.on('im', (messageType: string, from: string, data) =>
-            setTimeout(() => this.instanceMessage(messageType, from, data), 0));
+            setTimeout(() => this.instanceMessage(messageType, from, data), 0),
+        );
 
         this._socket.on('fileChange', (id: string, fileName: string, size: number | null) =>
-            setTimeout(() => this.fileChange(id, fileName, size), 0));
+            setTimeout(() => this.fileChange(id, fileName, size), 0),
+        );
 
-        this._socket.on('cmdStdout', (id: string, text: string) =>
-            this.onCmdStdoutHandler && this.onCmdStdoutHandler(id, text));
+        this._socket.on(
+            'cmdStdout',
+            (id: string, text: string) => this.onCmdStdoutHandler && this.onCmdStdoutHandler(id, text),
+        );
 
-        this._socket.on('cmdStderr', (id: string, text: string) =>
-            this.onCmdStderrHandler && this.onCmdStderrHandler(id, text));
+        this._socket.on(
+            'cmdStderr',
+            (id: string, text: string) => this.onCmdStderrHandler && this.onCmdStderrHandler(id, text),
+        );
 
-        this._socket.on('cmdExit', (id: string, exitCode: number) =>
-            this.onCmdExitHandler && this.onCmdExitHandler(id, exitCode));
+        this._socket.on(
+            'cmdExit',
+            (id: string, exitCode: number) => this.onCmdExitHandler && this.onCmdExitHandler(id, exitCode),
+        );
     }
 
     /**
@@ -571,19 +610,13 @@ class Connection {
      * Checks if running in ioBroker cloud
      */
     static isCloud(): boolean {
-        if (
-            window.location.hostname.includes('amazonaws.com') ||
-            window.location.hostname.includes('iobroker.in')
-        ) {
+        if (window.location.hostname.includes('amazonaws.com') || window.location.hostname.includes('iobroker.in')) {
             return true;
         }
         if (typeof window.socketUrl === 'undefined') {
             return false;
         }
-        return (
-            window.socketUrl.includes('iobroker.in') ||
-            window.socketUrl.includes('amazonaws')
-        );
+        return window.socketUrl.includes('iobroker.in') || window.socketUrl.includes('amazonaws');
     }
 
     /**
@@ -610,7 +643,8 @@ class Connection {
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('getUserPermissions', (err: string | null, acl: Record<string, any> | null) =>
-                (err ? reject(err) : resolve(acl)));
+                err ? reject(err) : resolve(acl),
+            );
         });
     }
 
@@ -668,9 +702,7 @@ class Connection {
 
                 if (/^(en|de|ru|pt|nl|fr|it|es|pl|uk)-?/.test(this.systemLang)) {
                     this.systemLang = this.systemLang.substr(0, 2) as ioBroker.Languages;
-                } else if (
-                    !/^(en|de|ru|pt|nl|fr|it|es|pl|uk|zh-cn)$/.test(this.systemLang)
-                ) {
+                } else if (!/^(en|de|ru|pt|nl|fr|it|es|pl|uk|zh-cn)$/.test(this.systemLang)) {
                     this.systemLang = 'en';
                 }
             }
@@ -749,8 +781,7 @@ class Connection {
                     toSubscribe.push(_id);
                 }
             } else {
-                !this.statesSubscribes[_id].cbs.includes(cb) &&
-                    this.statesSubscribes[_id].cbs.push(cb);
+                !this.statesSubscribes[_id].cbs.includes(cb) && this.statesSubscribes[_id].cbs.push(cb);
             }
         }
 
@@ -770,10 +801,14 @@ class Connection {
                     .catch(e => console.error(`Cannot getBinaryState "${ids[i]}": ${JSON.stringify(e)}`));
             }
         } else {
-            this._socket.emit(Connection.isWeb() ? 'getStates' : 'getForeignStates', id, (err: string | null, states: Record<string, ioBroker.State>) => {
-                err && console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`);
-                states && Object.keys(states).forEach(_id => (cb as ioBroker.StateChangeHandler)(_id, states[_id]));
-            });
+            this._socket.emit(
+                Connection.isWeb() ? 'getStates' : 'getForeignStates',
+                id,
+                (err: string | null, states: Record<string, ioBroker.State>) => {
+                    err && console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`);
+                    states && Object.keys(states).forEach(_id => (cb as ioBroker.StateChangeHandler)(_id, states[_id]));
+                },
+            );
         }
     }
 
@@ -825,11 +860,17 @@ class Connection {
 
         return new Promise((resolve, reject) => {
             if (typeof cb === 'function' && this.connected) {
-                this._socket.emit(Connection.isWeb() ? 'getStates' : 'getForeignStates', id, (err: string | null, states: Record<string, ioBroker.State>) => {
-                    err && console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`);
-                    states && Object.keys(states).forEach(_id => cb(_id, states[_id]));
-                    states ? resolve() : reject(new Error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`));
-                });
+                this._socket.emit(
+                    Connection.isWeb() ? 'getStates' : 'getForeignStates',
+                    id,
+                    (err: string | null, states: Record<string, ioBroker.State>) => {
+                        err && console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`);
+                        states && Object.keys(states).forEach(_id => cb(_id, states[_id]));
+                        states
+                            ? resolve()
+                            : reject(new Error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`));
+                    },
+                );
             } else {
                 this.connected ? reject(new Error('callback is not a function')) : reject(new Error('not connected'));
             }
@@ -904,8 +945,7 @@ class Connection {
                 this.objectsSubscribes[_id] = { reg: new RegExp(reg), cbs: [cb] };
                 toSubscribe.push(_id);
             } else {
-                !this.objectsSubscribes[_id].cbs.includes(cb) &&
-                    this.objectsSubscribes[_id].cbs.push(cb);
+                !this.objectsSubscribes[_id].cbs.includes(cb) && this.objectsSubscribes[_id].cbs.push(cb);
             }
         }
         if (this.connected && toSubscribe.length) {
@@ -958,20 +998,14 @@ class Connection {
     /**
      * Called internally.
      */
-    private fileChange(
-        id: string,
-        fileName: string,
-        size: number | null,
-    ) {
+    private fileChange(id: string, fileName: string, size: number | null) {
         for (const sub of Object.values(this.filesSubscribes)) {
             if (sub.regId.test(id) && sub.regFilePattern.test(fileName)) {
                 for (const cb of sub.cbs) {
                     try {
                         cb(id, fileName, size);
                     } catch (e) {
-                        console.error(
-                            `Error by callback of fileChange: ${e}`,
-                        );
+                        console.error(`Error by callback of fileChange: ${e}`);
                     }
                 }
             }
@@ -1015,8 +1049,7 @@ class Connection {
 
                 toSubscribe.push(pattern);
             } else {
-                !this.filesSubscribes[key].cbs.includes(cb) &&
-                    this.filesSubscribes[key].cbs.push(cb);
+                !this.filesSubscribes[key].cbs.includes(cb) && this.filesSubscribes[key].cbs.push(cb);
             }
         }
         if (this.connected && toSubscribe.length) {
@@ -1030,11 +1063,7 @@ class Connection {
      * @param {string} filePattern Pattern or file name, like 'main/*' or 'main/visViews.json`
      * @param {function} cb The callback.
      */
-    unsubscribeFiles(
-        id: string,
-        filePattern: string,
-        cb?: ioBroker.FileChangeHandler,
-    ): void {
+    unsubscribeFiles(id: string, filePattern: string, cb?: ioBroker.FileChangeHandler): void {
         let filePatterns: string[];
         if (Array.isArray(filePattern)) {
             filePatterns = filePattern;
@@ -1056,8 +1085,7 @@ class Connection {
 
                 if (!sub.cbs || !sub.cbs.length) {
                     delete this.filesSubscribes[key];
-                    this.connected &&
-                    toUnsubscribe.push(pattern);
+                    this.connected && toUnsubscribe.push(pattern);
                 }
             }
         }
@@ -1070,10 +1098,7 @@ class Connection {
     /**
      * Called internally.
      */
-    private objectChange(
-        id: string,
-        obj: ioBroker.Object | null,
-    ) {
+    private objectChange(id: string, obj: ioBroker.Object | null) {
         // update main.objects cache
         if (!this.objects) {
             return;
@@ -1119,12 +1144,12 @@ class Connection {
     /**
      * Called internally.
      */
-    private stateChange(
-        id: string,
-        state: ioBroker.State | null,
-    ): void {
+    private stateChange(id: string, state: ioBroker.State | null): void {
         for (const task in this.statesSubscribes) {
-            if (Object.prototype.hasOwnProperty.call(this.statesSubscribes, task) && this.statesSubscribes[task].reg.test(id)) {
+            if (
+                Object.prototype.hasOwnProperty.call(this.statesSubscribes, task) &&
+                this.statesSubscribes[task].reg.test(id)
+            ) {
                 this.statesSubscribes[task].cbs.forEach(cb => {
                     try {
                         (cb as ioBroker.StateChangeHandler)(id, state);
@@ -1190,11 +1215,12 @@ class Connection {
             return Promise.reject(NOT_CONNECTED);
         }
         if (id && id === this.ignoreState) {
-            return Promise.resolve(this.simStates[id] || { val: null, ack: true } as ioBroker.State);
+            return Promise.resolve(this.simStates[id] || ({ val: null, ack: true } as ioBroker.State));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('getState', id, (err: string | null, state: ioBroker.State) =>
-                (err ? reject(err) : resolve(state)));
+                err ? reject(err) : resolve(state),
+            );
         });
     }
 
@@ -1213,7 +1239,8 @@ class Connection {
         // the data will come in base64
         return new Promise((resolve, reject) => {
             this._socket.emit('getBinaryState', id, (err: string | null, base64: string) =>
-                (err ? reject(err) : resolve(base64)));
+                err ? reject(err) : resolve(base64),
+            );
         });
     }
 
@@ -1233,8 +1260,7 @@ class Connection {
 
         // the data will come in base64
         return new Promise((resolve, reject) => {
-            this._socket.emit('setBinaryState', id, base64, (err: string | null) =>
-                ((err ? reject(err) : resolve())));
+            this._socket.emit('setBinaryState', id, base64, (err: string | null) => (err ? reject(err) : resolve()));
         });
     }
 
@@ -1278,9 +1304,7 @@ class Connection {
                     try {
                         (cb as ioBroker.StateChangeHandler)(id, state as ioBroker.State);
                     } catch (e) {
-                        console.error(
-                            `Error by callback of stateChanged: ${e}`,
-                        );
+                        console.error(`Error by callback of stateChanged: ${e}`);
                     }
                 }
             }
@@ -1289,8 +1313,7 @@ class Connection {
         }
 
         return new Promise((resolve, reject) => {
-            this._socket.emit('setState', id, val, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+            this._socket.emit('setState', id, val, (err: string | null) => (err ? reject(err) : resolve()));
         });
     }
 
@@ -1310,11 +1333,14 @@ class Connection {
             if (!update && this.objects) {
                 resolve(this.objects);
             } else {
-                this._socket.emit(Connection.isWeb() ? 'getObjects' : 'getAllObjects', (err: string | null, res: Record<string, ioBroker.Object>) => {
-                    this.objects = res;
-                    disableProgressUpdate && this.onProgress(PROGRESS.OBJECTS_LOADED);
-                    err ? reject(err) : resolve(this.objects);
-                });
+                this._socket.emit(
+                    Connection.isWeb() ? 'getObjects' : 'getAllObjects',
+                    (err: string | null, res: Record<string, ioBroker.Object>) => {
+                        this.objects = res;
+                        disableProgressUpdate && this.onProgress(PROGRESS.OBJECTS_LOADED);
+                        err ? reject(err) : resolve(this.objects);
+                    },
+                );
             }
         });
     }
@@ -1332,7 +1358,8 @@ class Connection {
 
         return new Promise((resolve, reject) => {
             this._socket.emit('getObjects', list, (err: string | null, res: Record<string, ioBroker.Object>) =>
-                (err ? reject(err) : resolve(res)));
+                err ? reject(err) : resolve(res),
+            );
         });
     }
 
@@ -1350,11 +1377,16 @@ class Connection {
             // re-subscribe states
             const ids = Object.keys(this.statesSubscribes);
             ids.forEach(id => this._socket.emit('subscribe', id));
-            ids.length && this._socket.emit(Connection.isWeb() ? 'getStates' : 'getForeignStates', ids, (err: string | null, states: Record<string, ioBroker.State>) => {
-                err && console.error(`Cannot getForeignStates: ${JSON.stringify(err)}`);
-                // inform about states
-                states && Object.keys(states).forEach(id => this.stateChange(id, states[id]));
-            });
+            ids.length &&
+                this._socket.emit(
+                    Connection.isWeb() ? 'getStates' : 'getForeignStates',
+                    ids,
+                    (err: string | null, states: Record<string, ioBroker.State>) => {
+                        err && console.error(`Cannot getForeignStates: ${JSON.stringify(err)}`);
+                        // inform about states
+                        states && Object.keys(states).forEach(id => this.stateChange(id, states[id]));
+                    },
+                );
         } else if (!isEnable && this.subscribed) {
             this.subscribed = false;
             // un-subscribe objects
@@ -1379,8 +1411,7 @@ class Connection {
             return Promise.reject(NOT_CONNECTED);
         }
         return new Promise((resolve, reject) => {
-            this._socket.emit('requireLog', isEnabled, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+            this._socket.emit('requireLog', isEnabled, (err: string | null) => (err ? reject(err) : resolve()));
         });
     }
 
@@ -1398,7 +1429,8 @@ class Connection {
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('delObject', id, { maintenance: !!maintenance }, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+                err ? reject(err) : resolve(),
+            );
         });
     }
 
@@ -1416,7 +1448,8 @@ class Connection {
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('delObjects', id, { maintenance: !!maintenance }, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+                err ? reject(err) : resolve(),
+            );
         });
     }
 
@@ -1445,8 +1478,7 @@ class Connection {
         }
 
         return new Promise((resolve, reject) => {
-            this._socket.emit('setObject', id, obj, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+            this._socket.emit('setObject', id, obj, (err: string | null) => (err ? reject(err) : resolve()));
         });
     }
 
@@ -1474,7 +1506,8 @@ class Connection {
 
         return new Promise((resolve, reject) => {
             this._socket.emit('getObject', id, (err: string | null, obj: ioBroker.Object) =>
-                (err ? reject(err) : resolve(obj)));
+                err ? reject(err) : resolve(obj),
+            );
         });
     }
 
@@ -1509,17 +1542,23 @@ class Connection {
                     `system.adapter.${adapter ? `${adapter}.` : ''}\u9999`,
                     'instance',
                 )
-                    .then(items => resolve(Object.keys(items).map(id => fixAdminUI(items[id] as ioBroker.AdapterObject))))
+                    .then(items =>
+                        resolve(Object.keys(items).map(id => fixAdminUI(items[id] as ioBroker.AdapterObject))),
+                    )
                     .catch(e => reject(e));
             }, TIMEOUT_FOR_ADMIN4);
 
-            this._socket.emit('getAdapterInstances', adapter, (err: string | null, instances: ioBroker.InstanceObject[]) => {
-                if (timeout) {
-                    clearTimeout(timeout);
-                    timeout = null;
-                    err ? reject(err) : resolve(instances);
-                }
-            });
+            this._socket.emit(
+                'getAdapterInstances',
+                adapter,
+                (err: string | null, instances: ioBroker.InstanceObject[]) => {
+                    if (timeout) {
+                        clearTimeout(timeout);
+                        timeout = null;
+                        err ? reject(err) : resolve(instances);
+                    }
+                },
+            );
         });
 
         return this._promises[`instances_${adapter}`] as Promise<ioBroker.InstanceObject[]>;
@@ -1556,11 +1595,7 @@ class Connection {
         this._promises[`adapter_${adapter}`] = new Promise((resolve, reject) => {
             let timeout: ReturnType<typeof setTimeout> | null = setTimeout(() => {
                 timeout = null;
-                this.getObjectView(
-                    `system.adapter.${adapter}.`,
-                    `system.adapter.${adapter}.\u9999`,
-                    'adapter',
-                )
+                this.getObjectView(`system.adapter.${adapter}.`, `system.adapter.${adapter}.\u9999`, 'adapter')
                     .then(items => {
                         resolve(Object.keys(items).map(id => fixAdminUI(items[id] as ioBroker.AdapterObject)));
                     })
@@ -1582,10 +1617,7 @@ class Connection {
     /**
      * Called internally.
      */
-    private _renameGroups(
-        objs: RenameGroupObject[],
-        cb: (err: string | null) => void,
-    ) {
+    private _renameGroups(objs: RenameGroupObject[], cb: (err: string | null) => void) {
         if (!objs || !objs.length) {
             cb && cb(null);
         } else {
@@ -1619,16 +1651,16 @@ class Connection {
         const groups = await this.getGroups(true);
         if (groups.length) {
             // find all elements
-            const groupsToRename: RenameGroupObject[] = (groups as RenameGroupObject[])
-                .filter(group => group._id.startsWith(`${id}.`));
+            const groupsToRename: RenameGroupObject[] = (groups as RenameGroupObject[]).filter(group =>
+                group._id.startsWith(`${id}.`),
+            );
 
             groupsToRename.forEach(group => {
                 group.newId = (newId + group._id.substring(id.length)) as ioBroker.ObjectIDs.Group;
             });
 
             await new Promise((resolve, reject) => {
-                this._renameGroups(groupsToRename, (err: string | null) =>
-                    (err ? reject(err) : resolve(null)));
+                this._renameGroups(groupsToRename, (err: string | null) => (err ? reject(err) : resolve(null)));
             });
             const obj = groups.find(group => group._id === id);
 
@@ -1640,8 +1672,7 @@ class Connection {
                     obj.common.name = newName;
                 }
 
-                return this.setObject(obj._id, obj)
-                    .then(() => this.delObject(id));
+                return this.setObject(obj._id, obj).then(() => this.delObject(id));
             }
         }
 
@@ -1665,7 +1696,8 @@ class Connection {
         }
         return new Promise(resolve => {
             this._socket.emit('sendTo', instance, command, data, (result: { result?: any; error?: string }) =>
-                resolve(result));
+                resolve(result),
+            );
         });
     }
 
@@ -1695,8 +1727,7 @@ class Connection {
         }
 
         return new Promise((resolve, reject) => {
-            this._socket.emit('extendObject', id, obj, (err: string | null) =>
-                ((err ? reject(err) : resolve())));
+            this._socket.emit('extendObject', id, obj, (err: string | null) => (err ? reject(err) : resolve()));
         });
     }
 
@@ -1835,19 +1866,25 @@ class Connection {
         end?: string,
     ): Promise<Record<string, ioBroker.Object>> {
         return new Promise((resolve, reject) => {
-            this._socket.emit('getObjectView', design, type, { startkey: start, endkey: end }, (err: string | null, res: { rows: { value: ioBroker.Object; id: string }[] }) => {
-                if (!err) {
-                    const _res: Record<string, ioBroker.Object> = {};
-                    if (res && res.rows) {
-                        for (let i = 0; i < res.rows.length; i++) {
-                            _res[res.rows[i].id] = res.rows[i].value;
+            this._socket.emit(
+                'getObjectView',
+                design,
+                type,
+                { startkey: start, endkey: end },
+                (err: string | null, res: { rows: { value: ioBroker.Object; id: string }[] }) => {
+                    if (!err) {
+                        const _res: Record<string, ioBroker.Object> = {};
+                        if (res && res.rows) {
+                            for (let i = 0; i < res.rows.length; i++) {
+                                _res[res.rows[i].id] = res.rows[i].value;
+                            }
                         }
+                        resolve(_res);
+                    } else {
+                        reject(err);
                     }
-                    resolve(_res);
-                } else {
-                    reject(err);
-                }
-            });
+                },
+            );
         });
     }
 
@@ -1882,7 +1919,7 @@ class Connection {
         }
 
         start = start || '';
-        end   = end   || '\u9999';
+        end = end || '\u9999';
         return this.getObjectViewCustom('system', type, start, end);
     }
 
@@ -1905,47 +1942,50 @@ class Connection {
             return Promise.reject(NOT_CONNECTED);
         }
 
-        this._promises.cert = this.getObject('system.certificates')
-            .then(res => {
-                const certs: { name: string; type: 'public' | 'private' | 'chained' | '' }[] = [];
-                if (res && res.native && res.native.certificates) {
-                    Object.keys(res.native.certificates).forEach(c => {
-                        const cert: string = res.native.certificates[c];
-                        if (!cert) {
-                            return;
+        this._promises.cert = this.getObject('system.certificates').then(res => {
+            const certs: { name: string; type: 'public' | 'private' | 'chained' | '' }[] = [];
+            if (res && res.native && res.native.certificates) {
+                Object.keys(res.native.certificates).forEach(c => {
+                    const cert: string = res.native.certificates[c];
+                    if (!cert) {
+                        return;
+                    }
+                    const _cert: { name: string; type: 'public' | 'private' | 'chained' | '' } = {
+                        name: c,
+                        type: '',
+                    };
+                    // If it is a filename, it could be everything
+                    if (cert.length < 700 && (cert.includes('/') || cert.includes('\\'))) {
+                        if (c.toLowerCase().includes('private')) {
+                            _cert.type = 'private';
+                        } else if (cert.toLowerCase().includes('private')) {
+                            _cert.type = 'private';
+                        } else if (c.toLowerCase().includes('public')) {
+                            _cert.type = 'public';
+                        } else if (cert.toLowerCase().includes('public')) {
+                            _cert.type = 'public';
                         }
-                        const _cert: { name: string; type: 'public' | 'private' | 'chained' | '' } = {
-                            name: c,
-                            type: '',
-                        };
-                        // If it is a filename, it could be everything
-                        if (cert.length < 700 && (cert.includes('/') || cert.includes('\\'))) {
-                            if (c.toLowerCase().includes('private')) {
-                                _cert.type = 'private';
-                            } else if (cert.toLowerCase().includes('private')) {
-                                _cert.type = 'private';
-                            } else if (c.toLowerCase().includes('public')) {
-                                _cert.type = 'public';
-                            } else if (cert.toLowerCase().includes('public')) {
-                                _cert.type = 'public';
-                            }
-                            certs.push(_cert);
-                        } else {
-                            _cert.type = (cert.substring(0, '-----BEGIN RSA PRIVATE KEY'.length) === '-----BEGIN RSA PRIVATE KEY' || cert.substring(0, '-----BEGIN PRIVATE KEY'.length) === '-----BEGIN PRIVATE KEY') ? 'private' : 'public';
+                        certs.push(_cert);
+                    } else {
+                        _cert.type =
+                            cert.substring(0, '-----BEGIN RSA PRIVATE KEY'.length) === '-----BEGIN RSA PRIVATE KEY' ||
+                            cert.substring(0, '-----BEGIN PRIVATE KEY'.length) === '-----BEGIN PRIVATE KEY'
+                                ? 'private'
+                                : 'public';
 
-                            if (_cert.type === 'public') {
-                                const m = cert.split('-----END CERTIFICATE-----');
-                                if (m.filter((t: string) => t.replace(/\r\n|\r|\n/, '').trim()).length > 1) {
-                                    _cert.type = 'chained';
-                                }
+                        if (_cert.type === 'public') {
+                            const m = cert.split('-----END CERTIFICATE-----');
+                            if (m.filter((t: string) => t.replace(/\r\n|\r|\n/, '').trim()).length > 1) {
+                                _cert.type = 'chained';
                             }
-
-                            certs.push(_cert);
                         }
-                    });
-                }
-                return certs;
-            });
+
+                        certs.push(_cert);
+                    }
+                });
+            }
+            return certs;
+        });
 
         return this._promises.cert;
     }
@@ -1953,10 +1993,7 @@ class Connection {
     /**
      * Get the logs from a host (only for admin connection).
      */
-    getLogs(
-        host: string,
-        linesNumber?: number,
-    ): Promise<string[]> {
+    getLogs(host: string, linesNumber?: number): Promise<string[]> {
         if (Connection.isWeb()) {
             return Promise.reject('Allowed only in admin');
         }
@@ -1966,8 +2003,7 @@ class Connection {
         }
 
         return new Promise(resolve => {
-            this._socket.emit('sendToHost', host, 'getLogs', linesNumber || 200, (lines: string[]) =>
-                resolve(lines));
+            this._socket.emit('sendToHost', host, 'getLogs', linesNumber || 200, (lines: string[]) => resolve(lines));
         });
     }
 
@@ -1983,7 +2019,8 @@ class Connection {
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('readLogs', host, (err: string | null, files: string[]) =>
-                (err ? reject(err) : resolve(files)));
+                err ? reject(err) : resolve(files),
+            );
         });
     }
 
@@ -1999,7 +2036,8 @@ class Connection {
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('sendToHost', host, 'delLogs', null, (error: string | null) =>
-                (error ? reject(error) : resolve()));
+                error ? reject(error) : resolve(),
+            );
         });
     }
 
@@ -2011,8 +2049,19 @@ class Connection {
             return Promise.reject(NOT_CONNECTED);
         }
         return new Promise((resolve, reject) => {
-            this._socket.emit('getObjectView', 'system', 'meta', { startkey: '', endkey: '\u9999' }, (err: string | null, objs: { rows: { value: ioBroker.MetaObject; id: string }[] }) =>
-                (err ? reject(err) : resolve(objs.rows && objs.rows.map((obj: { value: ioBroker.MetaObject; id: string }) => obj.value))));
+            this._socket.emit(
+                'getObjectView',
+                'system',
+                'meta',
+                { startkey: '', endkey: '\u9999' },
+                (err: string | null, objs: { rows: { value: ioBroker.MetaObject; id: string }[] }) =>
+                    err
+                        ? reject(err)
+                        : resolve(
+                              objs.rows &&
+                                  objs.rows.map((obj: { value: ioBroker.MetaObject; id: string }) => obj.value),
+                          ),
+            );
         });
     }
 
@@ -2030,7 +2079,8 @@ class Connection {
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('readDir', adapter, fileName, (err: string | null, files: ioBroker.ReadDirResult[]) =>
-                (err ? reject(err) : resolve(files)));
+                err ? reject(err) : resolve(files),
+            );
         });
     }
 
@@ -2055,20 +2105,22 @@ class Connection {
                 });
             } else {
                 this._socket.emit('readFile64', adapter, fileName, base64, (err: string | null, data: string) =>
-                    (err ? reject(err) : resolve(data)));
+                    err ? reject(err) : resolve(data),
+                );
             }
         });
     }
 
     /**
      * Write a file of an adapter.
+     *
+     * @param adapter The adapter name.
+     * @param fileName The file name.
+     * @param data The data (if it's a Buffer, it will be converted to Base64)
      */
     writeFile64(
-        /** The adapter name. */
         adapter: string,
-        /** The file name. */
         fileName: string,
-        /** The data (if it's a Buffer, it will be converted to Base64). */
         data: Buffer | string,
     ): Promise<void> {
         if (!this.connected) {
@@ -2077,45 +2129,47 @@ class Connection {
         return new Promise((resolve, reject) => {
             if (typeof data === 'string') {
                 this._socket.emit('writeFile', adapter, fileName, data, (err: string | null) =>
-                    (err ? reject(err) : resolve()));
+                    err ? reject(err) : resolve(),
+                );
             } else {
                 const base64 = btoa(
-                    new Uint8Array(data)
-                        .reduce((_data, byte) => _data + String.fromCharCode(byte), ''),
+                    new Uint8Array(data).reduce((_data, byte) => _data + String.fromCharCode(byte), ''),
                 );
 
                 this._socket.emit('writeFile64', adapter, fileName, base64, (err: string | null) =>
-                    (err ? reject(err) : resolve()));
+                    err ? reject(err) : resolve(),
+                );
             }
         });
     }
 
     /**
      * Delete a file of an adapter.
+     *
+     * @param adapter The adapter name.
+     * @param fileName The file name.
      */
     deleteFile(
-        /** The adapter name. */
         adapter: string,
-        /** The file name. */
         fileName: string,
     ): Promise<void> {
         if (!this.connected) {
             return Promise.reject(NOT_CONNECTED);
         }
         return new Promise((resolve, reject) => {
-            this._socket.emit('unlink', adapter, fileName, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+            this._socket.emit('unlink', adapter, fileName, (err: string | null) => (err ? reject(err) : resolve()));
         });
     }
 
     /**
      * Delete a folder of an adapter.
      * All files in folder will be deleted.
+     *
+     * @param adapter The adapter name.
+     * @param folderName The folder name.
      */
     deleteFolder(
-        /** The adapter name. */
         adapter: string,
-        /** The file name. */
         folderName: string,
     ): Promise<void> {
         if (!this.connected) {
@@ -2123,13 +2177,15 @@ class Connection {
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('deleteFolder', adapter, folderName, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+                err ? reject(err) : resolve(),
+            );
         });
     }
 
     /**
      * Get the list of all hosts.
-     * @param {boolean} [update] Force update.
+     *
+     * @param update Force update.
      */
     getHosts(update?: boolean): Promise<ioBroker.HostObject[]> {
         if (Connection.isWeb()) {
@@ -2149,7 +2205,7 @@ class Connection {
                 'system',
                 'host',
                 { startkey: 'system.host.', endkey: 'system.host.\u9999' },
-                (err: string | null, doc: { rows: { value: ioBroker.HostObject; id: string }[]}) => {
+                (err: string | null, doc: { rows: { value: ioBroker.HostObject; id: string }[] }) => {
                     if (err) {
                         reject(err);
                     } else {
@@ -2164,6 +2220,8 @@ class Connection {
 
     /**
      * Get the list of all users.
+     *
+     * @param update Force update.
      */
     getUsers(
         /** Force update. */
@@ -2284,12 +2342,14 @@ class Connection {
 
     /**
      * Get the host information (short version).
+     *
+     * @param host The host name.
+     * @param update Force update.
+     * @param timeoutMs Optional read timeout.
      */
     getHostInfoShort(
         host: string,
-        /** Force update. */
         update?: boolean,
-        /** optional read timeout. */
         timeoutMs?: number,
     ): Promise<HostInfo> {
         if (Connection.isWeb()) {
@@ -2334,13 +2394,16 @@ class Connection {
 
     /**
      * Get the repository.
+     *
+     * @param host The host name.
+     * @param options Options.
+     * @param update Force update.
+     * @param timeoutMs Timeout in ms.
      */
     getRepository(
         host: string,
         options?: { update: boolean; repo: string } | string,
-        /** Force update. */
         update?: boolean,
-        /** timeout in ms. */
         timeoutMs?: number,
     ): Promise<Record<string, ioBroker.AdapterObject>> {
         if (Connection.isWeb()) {
@@ -2366,19 +2429,25 @@ class Connection {
                 }
             }, timeoutMs || this.props.cmdTimeout);
 
-            this._socket.emit('sendToHost', host, 'getRepository', options, (data: string | Record<string, ioBroker.AdapterObject>) => {
-                if (timeout) {
-                    clearTimeout(timeout);
-                    timeout = null;
-                    if (data === PERMISSION_ERROR) {
-                        reject('May not read "getRepository"');
-                    } else if (!data || typeof data !== 'object') {
-                        reject('Cannot read "getRepository"');
-                    } else {
-                        resolve(data);
+            this._socket.emit(
+                'sendToHost',
+                host,
+                'getRepository',
+                options,
+                (data: string | Record<string, ioBroker.AdapterObject>) => {
+                    if (timeout) {
+                        clearTimeout(timeout);
+                        timeout = null;
+                        if (data === PERMISSION_ERROR) {
+                            reject('May not read "getRepository"');
+                        } else if (!data || typeof data !== 'object') {
+                            reject('Cannot read "getRepository"');
+                        } else {
+                            resolve(data);
+                        }
                     }
-                }
-            });
+                },
+            );
         });
 
         return this._promises.repo;
@@ -2386,12 +2455,14 @@ class Connection {
 
     /**
      * Get the installed.
+     *
+     * @param host The host name.
+     * @param update Force update.
+     * @param cmdTimeout Timeout in ms.
      */
     getInstalled(
         host: string,
-        /** Force update. */
         update?: boolean,
-        /** timeout in ms */
         cmdTimeout?: number,
     ): Promise<Record<string, ioBroker.AdapterObject>> {
         if (Connection.isWeb()) {
@@ -2420,19 +2491,25 @@ class Connection {
                 }
             }, cmdTimeout || this.props.cmdTimeout);
 
-            this._socket.emit('sendToHost', host, 'getInstalled', null, (data: string | Record<string, ioBroker.AdapterObject>) => {
-                if (timeout) {
-                    clearTimeout(timeout);
-                    timeout = null;
-                    if (data === PERMISSION_ERROR) {
-                        reject('May not read "getInstalled"');
-                    } else if (!data || typeof data !== 'object') {
-                        reject('Cannot read "getInstalled"');
-                    } else {
-                        resolve(data);
+            this._socket.emit(
+                'sendToHost',
+                host,
+                'getInstalled',
+                null,
+                (data: string | Record<string, ioBroker.AdapterObject>) => {
+                    if (timeout) {
+                        clearTimeout(timeout);
+                        timeout = null;
+                        if (data === PERMISSION_ERROR) {
+                            reject('May not read "getInstalled"');
+                        } else if (!data || typeof data !== 'object') {
+                            reject('Cannot read "getInstalled"');
+                        } else {
+                            resolve(data);
+                        }
                     }
-                }
-            });
+                },
+            );
         });
 
         return this._promises.installed[host] as Promise<Record<string, ioBroker.AdapterObject>>;
@@ -2440,13 +2517,14 @@ class Connection {
 
     /**
      * Rename file or folder in ioBroker DB
+     *
+     * @param adapter Instance name, like `vis-2.0`.
+     * @param oldName The current file name, e.g., main/vis-views.json
+     * @param newName The new file name, e.g., main/vis-views-new.json
      */
     rename(
-        /** instance name */
         adapter: string,
-        /** current file name, e.g., main/vis-views.json */
         oldName: string,
-        /** new file name, e.g., main/vis-views-new.json */
         newName: string,
     ): Promise<void> {
         if (!this.connected) {
@@ -2454,7 +2532,8 @@ class Connection {
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('rename', adapter, oldName, newName, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+                err ? reject(err) : resolve(),
+            );
         });
     }
 
@@ -2474,7 +2553,8 @@ class Connection {
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('renameFile', adapter, oldName, newName, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+                err ? reject(err) : resolve(),
+            );
         });
     }
 
@@ -2503,12 +2583,14 @@ class Connection {
         }
 
         return new Promise((resolve, reject) => {
-            let timeout: ReturnType<typeof setTimeout> | null = cmdTimeout ? setTimeout(() => {
-                if (timeout) {
-                    timeout = null;
-                    reject('cmdExec timeout');
-                }
-            }, cmdTimeout) : null;
+            let timeout: ReturnType<typeof setTimeout> | null = cmdTimeout
+                ? setTimeout(() => {
+                      if (timeout) {
+                          timeout = null;
+                          reject('cmdExec timeout');
+                      }
+                  }, cmdTimeout)
+                : null;
 
             this._socket.emit('cmdExec', host, cmdId, cmd, null, (err: string | null) => {
                 if (!cmdTimeout || timeout) {
@@ -2543,7 +2625,8 @@ class Connection {
 
         this._promises[`supportedFeatures_${feature}`] = new Promise((resolve, reject) => {
             this._socket.emit('checkFeatureSupported', feature, (err: string | null, supported: boolean) =>
-                (err ? reject(err) : resolve(supported)));
+                err ? reject(err) : resolve(supported),
+            );
         });
 
         return this._promises[`supportedFeatures_${feature}`] as Promise<boolean>;
@@ -2573,20 +2656,26 @@ class Connection {
                     host = host.replace(/^system\.host\./, '');
                 }
 
-                this._socket.emit('sendToHost', host, 'readBaseSettings', null, (data: Record<string, any> | string) => {
-                    if (timeout) {
-                        clearTimeout(timeout);
-                        timeout = null;
+                this._socket.emit(
+                    'sendToHost',
+                    host,
+                    'readBaseSettings',
+                    null,
+                    (data: Record<string, any> | string) => {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                            timeout = null;
 
-                        if (data === PERMISSION_ERROR) {
-                            reject('May not read "BaseSettings"');
-                        } else if (!data || typeof data !== 'object') {
-                            reject('Cannot read "BaseSettings"');
-                        } else {
-                            resolve(data);
+                            if (data === PERMISSION_ERROR) {
+                                reject('May not read "BaseSettings"');
+                            } else if (!data || typeof data !== 'object') {
+                                reject('Cannot read "BaseSettings"');
+                            } else {
+                                resolve(data);
+                            }
                         }
-                    }
-                });
+                    },
+                );
             });
         }
         return Promise.reject('Not supported');
@@ -2602,21 +2691,25 @@ class Connection {
         if (Connection.isWeb()) {
             return Promise.reject('Allowed only in admin');
         }
-        return this.checkFeatureSupported('CONTROLLER_READWRITE_BASE_SETTINGS')
-            .then(result => {
-                if (result) {
-                    if (!this.connected) {
-                        return Promise.reject(NOT_CONNECTED);
-                    }
-                    return new Promise((resolve, reject) => {
-                        let timeout: ReturnType<typeof setTimeout> | null = setTimeout(() => {
-                            if (timeout) {
-                                timeout = null;
-                                reject('writeBaseSettings timeout');
-                            }
-                        }, this.props.cmdTimeout);
+        return this.checkFeatureSupported('CONTROLLER_READWRITE_BASE_SETTINGS').then(result => {
+            if (result) {
+                if (!this.connected) {
+                    return Promise.reject(NOT_CONNECTED);
+                }
+                return new Promise((resolve, reject) => {
+                    let timeout: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+                        if (timeout) {
+                            timeout = null;
+                            reject('writeBaseSettings timeout');
+                        }
+                    }, this.props.cmdTimeout);
 
-                        this._socket.emit('sendToHost', host, 'writeBaseSettings', config, (data: { result?: 'ok'; error?: string } | string) => {
+                    this._socket.emit(
+                        'sendToHost',
+                        host,
+                        'writeBaseSettings',
+                        config,
+                        (data: { result?: 'ok'; error?: string } | string) => {
                             if (timeout) {
                                 clearTimeout(timeout);
                                 timeout = null;
@@ -2629,12 +2722,13 @@ class Connection {
                                     resolve(data as { result?: 'ok'; error?: string });
                                 }
                             }
-                        });
-                    });
-                }
+                        },
+                    );
+                });
+            }
 
-                return Promise.reject(new Error('Not supported'));
-            });
+            return Promise.reject(new Error('Not supported'));
+        });
     }
 
     /**
@@ -2657,16 +2751,14 @@ class Connection {
      * @param {string} typeOfDiag one of none, normal, no-city, extended
      * @returns {Promise<any>}
      */
-    getDiagData(
-        host: string,
-        typeOfDiag: 'none' | 'normal' | 'no-city' | 'extended',
-    ): Promise<Record<string, any>> {
+    getDiagData(host: string, typeOfDiag: 'none' | 'normal' | 'no-city' | 'extended'): Promise<Record<string, any>> {
         if (Connection.isWeb()) {
             return Promise.reject('Allowed only in admin');
         }
         return new Promise(resolve => {
             this._socket.emit('sendToHost', host, 'getDiagData', typeOfDiag, (result: Record<string, any>) =>
-                resolve(result));
+                resolve(result),
+            );
         });
     }
 
@@ -2679,14 +2771,21 @@ class Connection {
         }
         if (Connection.isWeb()) {
             return new Promise((resolve, reject) => {
-                this._socket.emit('getStates', pattern || '*', (err: string | null, states: Record<string, ioBroker.State>) =>
-                    (err ? reject(err) : resolve(states)));
+                this._socket.emit(
+                    'getStates',
+                    pattern || '*',
+                    (err: string | null, states: Record<string, ioBroker.State>) =>
+                        err ? reject(err) : resolve(states),
+                );
             });
         }
 
         return new Promise((resolve, reject) => {
-            this._socket.emit('getForeignStates', pattern || '*', (err: string | null, states: Record<string, ioBroker.State>) =>
-                (err ? reject(err) : resolve(states)));
+            this._socket.emit(
+                'getForeignStates',
+                pattern || '*',
+                (err: string | null, states: Record<string, ioBroker.State>) => (err ? reject(err) : resolve(states)),
+            );
         });
     }
 
@@ -2703,8 +2802,12 @@ class Connection {
             return Promise.reject(NOT_CONNECTED);
         }
         return new Promise((resolve, reject) => {
-            this._socket.emit('getForeignObjects', pattern || '*', type, (err: string | null, states: Record<string, ioBroker.State>) =>
-                (err ? reject(err) : resolve(states)));
+            this._socket.emit(
+                'getForeignObjects',
+                pattern || '*',
+                type,
+                (err: string | null, states: Record<string, ioBroker.State>) => (err ? reject(err) : resolve(states)),
+            );
         });
     }
 
@@ -2722,13 +2825,12 @@ class Connection {
             return Promise.reject(NOT_CONNECTED);
         }
 
-        this._promises.systemConfig = this.getObject('system.config')
-            .then(obj => {
-                const systemConfig: ioBroker.SystemConfigObject = (obj || {}) as ioBroker.SystemConfigObject;
-                systemConfig.common = systemConfig.common || {} as ioBroker.SystemConfigCommon;
-                systemConfig.native = systemConfig.native || {};
-                return systemConfig;
-            });
+        this._promises.systemConfig = this.getObject('system.config').then(obj => {
+            const systemConfig: ioBroker.SystemConfigObject = (obj || {}) as ioBroker.SystemConfigObject;
+            systemConfig.common = systemConfig.common || ({} as ioBroker.SystemConfigCommon);
+            systemConfig.native = systemConfig.native || {};
+            return systemConfig;
+        });
 
         return this._promises.systemConfig;
     }
@@ -2736,9 +2838,12 @@ class Connection {
     /**
      * Sets the system configuration.
      */
-    setSystemConfig(obj: ioBroker.SettableObjectWorker<ioBroker.SystemConfigObject>): Promise<ioBroker.SystemConfigObject> {
-        return this.setObject('system.config', obj)
-            .then(() => this._promises.systemConfig = Promise.resolve(obj as ioBroker.SystemConfigObject));
+    setSystemConfig(
+        obj: ioBroker.SettableObjectWorker<ioBroker.SystemConfigObject>,
+    ): Promise<ioBroker.SystemConfigObject> {
+        return this.setObject('system.config', obj).then(
+            () => (this._promises.systemConfig = Promise.resolve(obj as ioBroker.SystemConfigObject)),
+        );
     }
 
     /**
@@ -2751,17 +2856,15 @@ class Connection {
     /**
      * Get the history of a given state.
      */
-    getHistory(
-        id: string,
-        options: ioBroker.GetHistoryOptions,
-    ): Promise<ioBroker.GetHistoryResult> {
+    getHistory(id: string, options: ioBroker.GetHistoryOptions): Promise<ioBroker.GetHistoryResult> {
         if (!this.connected) {
             return Promise.reject(NOT_CONNECTED);
         }
 
         return new Promise((resolve, reject) => {
             this._socket.emit('getHistory', id, options, (err: string | null, values: ioBroker.GetHistoryResult) =>
-                (err ? reject(err) : resolve(values)));
+                err ? reject(err) : resolve(values),
+            );
         });
     }
 
@@ -2777,24 +2880,27 @@ class Connection {
         }
 
         return new Promise((resolve, reject) => {
-            this._socket.emit('getHistory', id, options, (err: string | null, values: ioBroker.GetHistoryResult, stepIgnore: number, sessionId: string) =>
-                (err ? reject(err) : resolve({ values, sessionId, stepIgnore })));
+            this._socket.emit(
+                'getHistory',
+                id,
+                options,
+                (err: string | null, values: ioBroker.GetHistoryResult, stepIgnore: number, sessionId: string) =>
+                    err ? reject(err) : resolve({ values, sessionId, stepIgnore }),
+            );
         });
     }
 
     /**
      * Change the password of the given user.
      */
-    changePassword(
-        user: string,
-        password: string,
-    ): Promise<void> {
+    changePassword(user: string, password: string): Promise<void> {
         if (Connection.isWeb()) {
             return Promise.reject('Allowed only in admin');
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('changePassword', user, password, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+                err ? reject(err) : resolve(),
+            );
         });
     }
 
@@ -2816,8 +2922,7 @@ class Connection {
         if (!update && this._promises[`IPs_${host}`]) {
             return this._promises[`IPs_${host}`] as Promise<string[]>;
         }
-        this._promises[`IPs_${host}`] = this.getObject(host)
-            .then(obj => (obj?.common ? obj.common.address || [] : []));
+        this._promises[`IPs_${host}`] = this.getObject(host).then(obj => (obj?.common ? obj.common.address || [] : []));
 
         return this._promises[`IPs_${host}`] as Promise<string[]>;
     }
@@ -2838,7 +2943,9 @@ class Connection {
         }
 
         if (!update && this._promises[`rIPs_${ipOrHostName}`]) {
-            return this._promises[`rIPs_${ipOrHostName}`] as Promise<{ name: string; address: string; family: 'ipv4' | 'ipv6' }[]>;
+            return this._promises[`rIPs_${ipOrHostName}`] as Promise<
+                { name: string; address: string; family: 'ipv4' | 'ipv6' }[]
+            >;
         }
         this._promises[`rIPs_${ipOrHostName}`] = new Promise(resolve => {
             this._socket.emit('getHostByIp', ipOrHostName, (ip: string, host: any) => {
@@ -2881,7 +2988,9 @@ class Connection {
             });
         });
 
-        return this._promises[`rIPs_${ipOrHostName}`] as Promise<{ name: string; address: string; family: 'ipv4' | 'ipv6' }[]>;
+        return this._promises[`rIPs_${ipOrHostName}`] as Promise<
+            { name: string; address: string; family: 'ipv4' | 'ipv6' }[]
+        >;
     }
 
     /**
@@ -2893,7 +3002,8 @@ class Connection {
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('encrypt', text, (err: string | null, _text: string) =>
-                (err ? reject(err) : resolve(_text)));
+                err ? reject(err) : resolve(_text),
+            );
         });
     }
 
@@ -2906,7 +3016,8 @@ class Connection {
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('decrypt', encryptedText, (err: string | null, text: string) =>
-                (err ? reject(err) : resolve(text)));
+                err ? reject(err) : resolve(text),
+            );
         });
     }
 
@@ -2919,16 +3030,18 @@ class Connection {
             delete this._promises.version;
         }
 
-        this._promises.version = this._promises.version || new Promise((resolve, reject) => {
-            this._socket.emit('getVersion', (err: string | null, version: string, serverName: string) => {
-                // support of old socket.io
-                if (err && !version && typeof err === 'string' && err.match(/\d+\.\d+\.\d+/)) {
-                    resolve({ version: err, serverName: 'socketio' });
-                } else {
-                    err ? reject(err) : resolve({ version, serverName });
-                }
+        this._promises.version =
+            this._promises.version ||
+            new Promise((resolve, reject) => {
+                this._socket.emit('getVersion', (err: string | null, version: string, serverName: string) => {
+                    // support of old socket.io
+                    if (err && !version && typeof err === 'string' && err.match(/\d+\.\d+\.\d+/)) {
+                        resolve({ version: err, serverName: 'socketio' });
+                    } else {
+                        err ? reject(err) : resolve({ version, serverName });
+                    }
+                });
             });
-        });
 
         return this._promises.version;
     }
@@ -2938,10 +3051,13 @@ class Connection {
      * @returns {Promise<string>}
      */
     getWebServerName(): Promise<string> {
-        this._promises.webName = this._promises.webName || new Promise((resolve, reject) => {
-            this._socket.emit('getAdapterName', (err: string | null, name: string) =>
-                (err ? reject(err) : resolve(name)));
-        });
+        this._promises.webName =
+            this._promises.webName ||
+            new Promise((resolve, reject) => {
+                this._socket.emit('getAdapterName', (err: string | null, name: string) =>
+                    err ? reject(err) : resolve(name),
+                );
+            });
 
         return this._promises.webName;
     }
@@ -2974,8 +3090,14 @@ class Connection {
         }
 
         return new Promise((resolve, reject) => {
-            this._socket.emit('chmodFile', adapter, filename, options, (err: string | null, entries: ioBroker.ChownFileResult[], id: string) =>
-                (err ? reject(err) : resolve({ entries, id })));
+            this._socket.emit(
+                'chmodFile',
+                adapter,
+                filename,
+                options,
+                (err: string | null, entries: ioBroker.ChownFileResult[], id: string) =>
+                    err ? reject(err) : resolve({ entries, id }),
+            );
         });
     }
 
@@ -2997,8 +3119,14 @@ class Connection {
         }
 
         return new Promise((resolve, reject) => {
-            this._socket.emit('chownFile', adapter, fileName, options, (err: string | null, entries: ioBroker.ChownFileResult[], id: string) =>
-                (err ? reject(err) : resolve({ entries, id })));
+            this._socket.emit(
+                'chownFile',
+                adapter,
+                fileName,
+                options,
+                (err: string | null, entries: ioBroker.ChownFileResult[], id: string) =>
+                    err ? reject(err) : resolve({ entries, id }),
+            );
         });
     }
 
@@ -3017,7 +3145,8 @@ class Connection {
 
         return new Promise((resolve, reject) => {
             this._socket.emit('fileExists', adapter, fileName, (err: string | null, exists: boolean) =>
-                (err ? reject(err) : resolve(exists)));
+                err ? reject(err) : resolve(exists),
+            );
         });
     }
 
@@ -3025,10 +3154,7 @@ class Connection {
      * Get the alarm notifications from a host (only for admin connection).
      * @returns {Promise<any>}
      */
-    getNotifications(
-        host: string,
-        category?: string,
-    ): Promise<FilteredNotificationInformation> {
+    getNotifications(host: string, category?: string): Promise<FilteredNotificationInformation> {
         if (Connection.isWeb()) {
             return Promise.reject('Allowed only in admin');
         }
@@ -3037,8 +3163,13 @@ class Connection {
             return Promise.reject(NOT_CONNECTED);
         }
         return new Promise(resolve => {
-            this._socket.emit('sendToHost', host, 'getNotifications', { category }, (notifications: FilteredNotificationInformation) =>
-                resolve(notifications));
+            this._socket.emit(
+                'sendToHost',
+                host,
+                'getNotifications',
+                { category },
+                (notifications: FilteredNotificationInformation) => resolve(notifications),
+            );
         });
     }
 
@@ -3048,10 +3179,7 @@ class Connection {
      * @param {string} [category] - optional
      * @returns {Promise<any>}
      */
-    clearNotifications(
-        host: string,
-        category?: string,
-    ): Promise<{ result: 'ok' }> {
+    clearNotifications(host: string, category?: string): Promise<{ result: 'ok' }> {
         if (Connection.isWeb()) {
             return Promise.reject('Allowed only in admin');
         }
@@ -3061,7 +3189,8 @@ class Connection {
         }
         return new Promise(resolve => {
             this._socket.emit('sendToHost', host, 'clearNotifications', { category }, (result: { result: 'ok' }) =>
-                resolve(result));
+                resolve(result),
+            );
         });
     }
 
@@ -3077,7 +3206,8 @@ class Connection {
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('getIsEasyModeStrict', (error: null | string, isStrict: boolean) =>
-                (error ? reject(error) : resolve(isStrict)));
+                error ? reject(error) : resolve(isStrict),
+            );
         });
     }
 
@@ -3094,7 +3224,8 @@ class Connection {
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('getEasyMode', (error: string | null, config: any) =>
-                (error ? reject(error) : resolve(config)));
+                error ? reject(error) : resolve(config),
+            );
         });
     }
 
@@ -3108,8 +3239,7 @@ class Connection {
         }
 
         return new Promise(resolve => {
-            this._socket.emit('authEnabled', (isSecure: boolean, user: string) =>
-                resolve(user));
+            this._socket.emit('authEnabled', (isSecure: boolean, user: string) => resolve(user));
         });
     }
 
@@ -3138,8 +3268,7 @@ class Connection {
                         resolve(json);
                     }
                 })
-                .catch(e =>
-                    reject(`getCurrentSession: ${e}`));
+                .catch(e => reject(`getCurrentSession: ${e}`));
         });
     }
 
@@ -3156,7 +3285,8 @@ class Connection {
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('getRatings', update, (err: string | null, ratings: any) =>
-                (err ? reject(err) : resolve(ratings)));
+                err ? reject(err) : resolve(ratings),
+            );
         });
     }
 
@@ -3168,10 +3298,12 @@ class Connection {
             return Promise.reject(NOT_CONNECTED);
         }
 
-        this._promises.currentInstance = this._promises.currentInstance ||
+        this._promises.currentInstance =
+            this._promises.currentInstance ||
             new Promise((resolve, reject) => {
                 this._socket.emit('getCurrentInstance', (err: string | null, namespace: string) =>
-                    (err ? reject(err) : resolve(namespace)));
+                    err ? reject(err) : resolve(namespace),
+                );
             });
 
         return this._promises.currentInstance;
@@ -3189,8 +3321,11 @@ class Connection {
             return Promise.reject(NOT_CONNECTED);
         }
         this._promises.compactAdapters = new Promise((resolve, reject) => {
-            this._socket.emit('getCompactAdapters', (err: string | null, adapters: Record<string, ioBroker.AdapterObject>) =>
-                (err ? reject(err) : resolve(adapters)));
+            this._socket.emit(
+                'getCompactAdapters',
+                (err: string | null, adapters: Record<string, ioBroker.AdapterObject>) =>
+                    err ? reject(err) : resolve(adapters),
+            );
         });
 
         return this._promises.compactAdapters;
@@ -3215,8 +3350,11 @@ class Connection {
         }
 
         this._promises.compactInstances = new Promise((resolve, reject) => {
-            this._socket.emit('getCompactInstances', (err: string | null, instances: Record<string, ioBroker.InstanceObject>) =>
-                (err ? reject(err) : resolve(instances)));
+            this._socket.emit(
+                'getCompactInstances',
+                (err: string | null, instances: Record<string, ioBroker.InstanceObject>) =>
+                    err ? reject(err) : resolve(instances),
+            );
         });
 
         return this._promises.compactInstances;
@@ -3283,10 +3421,7 @@ class Connection {
 
     // returns very optimized information for adapters to minimize a connection load.
     // reads only version of installed adapter
-    getCompactSystemRepositories(
-        update?: boolean,
-        cmdTimeout?: number,
-    ): Promise<ioBroker.Object> {
+    getCompactSystemRepositories(update?: boolean, cmdTimeout?: number): Promise<ioBroker.Object> {
         if (Connection.isWeb()) {
             return Promise.reject('Allowed only in admin');
         }
@@ -3307,7 +3442,7 @@ class Connection {
                 }
             }, cmdTimeout || this.props.cmdTimeout);
 
-            this._socket.emit('getCompactSystemRepositories', (data: ioBroker.Object | string)  => {
+            this._socket.emit('getCompactSystemRepositories', (data: ioBroker.Object | string) => {
                 if (timeout) {
                     clearTimeout(timeout);
                     timeout = null;
@@ -3336,8 +3471,11 @@ class Connection {
         }
 
         this._promises.systemConfigPromise = new Promise((resolve, reject) => {
-            this._socket.emit('getCompactSystemConfig', (err: string | null, systemConfig: ioBroker.SystemConfigObject) =>
-                (err ? reject(err) : resolve(systemConfig)));
+            this._socket.emit(
+                'getCompactSystemConfig',
+                (err: string | null, systemConfig: ioBroker.SystemConfigObject) =>
+                    err ? reject(err) : resolve(systemConfig),
+            );
         });
 
         return this._promises.systemConfigPromise;
@@ -3379,19 +3517,23 @@ class Connection {
                 }
             }, timeoutMs || this.props.cmdTimeout);
 
-            this._socket.emit('getCompactRepository', host, (data: Record<string, { version: string; icon: string }> | string) => {
-                if (timeout) {
-                    clearTimeout(timeout);
-                    timeout = null;
-                    if (data === PERMISSION_ERROR) {
-                        reject('May not read "getCompactRepository"');
-                    } else if (!data) {
-                        reject('Cannot read "getCompactRepository"');
-                    } else {
-                        resolve(data);
+            this._socket.emit(
+                'getCompactRepository',
+                host,
+                (data: Record<string, { version: string; icon: string }> | string) => {
+                    if (timeout) {
+                        clearTimeout(timeout);
+                        timeout = null;
+                        if (data === PERMISSION_ERROR) {
+                            reject('May not read "getCompactRepository"');
+                        } else if (!data) {
+                            reject('Cannot read "getCompactRepository"');
+                        } else {
+                            resolve(data);
+                        }
                     }
-                }
-            });
+                },
+            );
         });
 
         return this._promises.repoCompact;
@@ -3419,7 +3561,8 @@ class Connection {
 
         this._promises.hostsCompact = new Promise((resolve, reject) => {
             this._socket.emit('getCompactHosts', (err: string | null, hosts: ioBroker.HostObject[]) =>
-                (err ? reject(err) : resolve(hosts)));
+                err ? reject(err) : resolve(hosts),
+            );
         });
 
         return this._promises.hostsCompact;
@@ -3437,8 +3580,7 @@ class Connection {
             return Promise.reject(NOT_CONNECTED);
         }
 
-        this._promises.uuid = this.getObject('system.meta.uuid')
-            .then(obj => obj?.native?.uuid);
+        this._promises.uuid = this.getObject('system.meta.uuid').then(obj => obj?.native?.uuid);
 
         return this._promises.uuid;
     }
@@ -3480,9 +3622,10 @@ class Connection {
                         }
                         // save callback
                         this._instanceSubscriptions[targetInstance] = this._instanceSubscriptions[targetInstance] || [];
-                        if (!this._instanceSubscriptions[targetInstance].find(sub =>
-                            sub.messageType === messageType &&
-                            sub.callback === callback)
+                        if (
+                            !this._instanceSubscriptions[targetInstance].find(
+                                sub => sub.messageType === messageType && sub.callback === callback,
+                            )
                         ) {
                             this._instanceSubscriptions[targetInstance].push({
                                 messageType,
@@ -3514,14 +3657,14 @@ class Connection {
         const promiseResults: Promise<boolean>[] = [];
         do {
             deleted = false;
-            const index = this._instanceSubscriptions[targetInstance]?.findIndex(sub =>
-                (!messageType || sub.messageType === messageType) && (!callback || sub.callback === callback));
+            const index = this._instanceSubscriptions[targetInstance]?.findIndex(
+                sub => (!messageType || sub.messageType === messageType) && (!callback || sub.callback === callback),
+            );
 
             if (index !== undefined && index !== null && index !== -1) {
                 deleted = true;
                 // remember messageType
-                const _messageType =
-                    this._instanceSubscriptions[targetInstance][index].messageType;
+                const _messageType = this._instanceSubscriptions[targetInstance][index].messageType;
 
                 this._instanceSubscriptions[targetInstance].splice(index, 1);
                 if (!this._instanceSubscriptions[targetInstance].length) {
@@ -3529,26 +3672,33 @@ class Connection {
                 }
 
                 // try to find another subscription for this instance and messageType
-                const found = this._instanceSubscriptions[targetInstance] &&
+                const found =
+                    this._instanceSubscriptions[targetInstance] &&
                     this._instanceSubscriptions[targetInstance].find(sub => sub.messageType === _messageType);
 
                 if (!found) {
-                    promiseResults.push(new Promise((resolve, reject) => {
-                        this._socket.emit('clientUnsubscribe', targetInstance, messageType, (err: string | null, wasSubscribed: boolean) => {
-                            if (err) {
-                                reject(err);
-                            } else {
-                                resolve(wasSubscribed);
-                            }
-                        });
-                    }));
+                    promiseResults.push(
+                        new Promise((resolve, reject) => {
+                            this._socket.emit(
+                                'clientUnsubscribe',
+                                targetInstance,
+                                messageType,
+                                (err: string | null, wasSubscribed: boolean) => {
+                                    if (err) {
+                                        reject(err);
+                                    } else {
+                                        resolve(wasSubscribed);
+                                    }
+                                },
+                            );
+                        }),
+                    );
                 }
             }
         } while (deleted && (!callback || !messageType));
 
         if (promiseResults.length) {
-            return Promise.all(promiseResults)
-                .then((results: boolean[]) => results.find(result => result) || false);
+            return Promise.all(promiseResults).then((results: boolean[]) => results.find(result => result) || false);
         }
 
         return Promise.resolve(false);
@@ -3571,14 +3721,14 @@ class Connection {
         }
 
         return new Promise((resolve, reject) => {
-            this._socket.emit('logout', (err: string | null) =>
-                (err ? reject(err) : resolve()));
+            this._socket.emit('logout', (err: string | null) => (err ? reject(err) : resolve()));
         });
     }
 
     /**
      * This is a special method for vis.
      * It is used to not send to server the changes about "nothing_selected" state
+     *
      * @param id The state that has to be ignored by communication
      */
     setStateToIgnore(id?: string | null) {

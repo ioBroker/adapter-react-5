@@ -1,14 +1,6 @@
 import React from 'react';
 
-import {
-    Button,
-    TextField,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-} from '@mui/material';
+import { Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
 import { Close as IconClose, Check as IconCheck } from '@mui/icons-material';
 
@@ -35,7 +27,7 @@ interface TextInputProps {
     rule?: (text: string) => string;
     /** The type of the textbox (default: text) */
     type?: 'text' | 'number' | 'password' | 'email';
-    /** The intial input value when opening the dialog */
+    /** The initial input value when opening the dialog */
     value?: string;
     /** @deprecated Use value. The input when opening the dialog */
     input?: string;
@@ -45,63 +37,63 @@ interface TextInputProps {
 function TextInput(props: TextInputProps) {
     const [text, setText] = React.useState<string>(props.input || props.value || '');
     const [error, setError] = React.useState<string | boolean>('');
-    return <Dialog
-        open={!0}
-        onClose={() => props.onClose(null)}
-        aria-labelledby="form-dialog-title"
-        fullWidth={props.fullWidth !== undefined ? props.fullWidth : false}
-    >
-        <DialogTitle id="form-dialog-title">{props.titleText}</DialogTitle>
-        <DialogContent>
-            <DialogContentText>
-                {props.promptText}
-            </DialogContentText>
-            <TextField
-                variant="standard"
-                autoFocus
-                margin="dense"
-                error={!!error}
-                helperText={error === true || !error ? '' : error}
-                value={text}
-                label={props.labelText || ''}
-                type={props.type || 'text'}
-                onKeyUp={e => e.charCode === 13 && text && props.onClose(text)}
-                onChange={e => {
-                    let _error: string | boolean = '';
-                    if (props.verify) {
-                        _error = !props.verify(e.target.value);
-                    }
+    return (
+        <Dialog
+            open={!0}
+            onClose={() => props.onClose(null)}
+            aria-labelledby="form-dialog-title"
+            fullWidth={props.fullWidth !== undefined ? props.fullWidth : false}
+        >
+            <DialogTitle id="form-dialog-title">{props.titleText}</DialogTitle>
+            <DialogContent>
+                <DialogContentText>{props.promptText}</DialogContentText>
+                <TextField
+                    variant="standard"
+                    autoFocus
+                    margin="dense"
+                    error={!!error}
+                    helperText={error === true || !error ? '' : error}
+                    value={text}
+                    label={props.labelText || ''}
+                    type={props.type || 'text'}
+                    onKeyUp={e => e.code === 'Enter' && text && props.onClose(text)}
+                    onChange={e => {
+                        let _error: string | boolean = '';
+                        if (props.verify) {
+                            _error = !props.verify(e.target.value);
+                        }
 
-                    if (props.rule) {
-                        setText(props.rule(e.target.value));
-                    } else {
-                        setText(e.target.value);
-                    }
-                    setError(_error);
-                }}
-                fullWidth
-            />
-        </DialogContent>
-        <DialogActions>
-            <Button
-                variant="contained"
-                disabled={!text || !!error}
-                onClick={() => props.onClose(text)}
-                color="primary"
-                startIcon={<IconCheck />}
-            >
-                {props.applyText || I18n.t('ra_Ok')}
-            </Button>
-            <Button
-                color="grey"
-                variant="contained"
-                onClick={() => props.onClose(null)}
-                startIcon={<IconClose />}
-            >
-                {props.cancelText || I18n.t('ra_Cancel')}
-            </Button>
-        </DialogActions>
-    </Dialog>;
+                        if (props.rule) {
+                            setText(props.rule(e.target.value));
+                        } else {
+                            setText(e.target.value);
+                        }
+                        setError(_error);
+                    }}
+                    fullWidth
+                />
+            </DialogContent>
+            <DialogActions>
+                <Button
+                    variant="contained"
+                    disabled={!text || !!error}
+                    onClick={() => props.onClose(text)}
+                    color="primary"
+                    startIcon={<IconCheck />}
+                >
+                    {props.applyText || I18n.t('ra_Ok')}
+                </Button>
+                <Button
+                    color="grey"
+                    variant="contained"
+                    onClick={() => props.onClose(null)}
+                    startIcon={<IconClose />}
+                >
+                    {props.cancelText || I18n.t('ra_Cancel')}
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
 }
 
 export default withWidth()(TextInput);

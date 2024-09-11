@@ -12,14 +12,11 @@ import {
     CircularProgress,
 } from '@mui/material';
 
-import {
-    Close as CloseIcon,
-    Clear as ClearIcon,
-} from '@mui/icons-material';
+import { Close as CloseIcon, Clear as ClearIcon } from '@mui/icons-material';
 
 import Icon from './Icon';
 import Utils from './Utils';
-import { Translate } from '../types';
+import { type Translate } from '../types';
 
 // import devices from '../assets/devices/list.json';
 const devices: { _id: string; name: ioBroker.StringOrTranslated; icon: string }[] = [
@@ -45,7 +42,7 @@ const devices: { _id: string; name: ioBroker.StringOrTranslated; icon: string }[
             en: 'Alarm System',
             ru: 'Сигнализация',
             de: 'Alarmanlage',
-            fr: 'Systèmes D\'Alarme',
+            fr: "Systèmes D'Alarme",
             it: 'Sistemi Di Allarme',
             nl: 'Alarm Systems',
             pl: 'Systemy Alarmowe',
@@ -141,7 +138,7 @@ const devices: { _id: string; name: ioBroker.StringOrTranslated; icon: string }[
             en: 'Computer',
             ru: 'Компьютер',
             de: 'Rechner',
-            fr: 'L\'Ordinateur',
+            fr: "L'Ordinateur",
             it: 'Computer',
             nl: 'Computer',
             pl: 'Komputer',
@@ -189,7 +186,7 @@ const devices: { _id: string; name: ioBroker.StringOrTranslated; icon: string }[
             en: 'Power Consumption',
             ru: 'Потребляемая мощность',
             de: 'Stromverbrauch',
-            fr: 'Consommation D\'Énergie',
+            fr: "Consommation D'Énergie",
             it: 'Consumo Di Energia',
             nl: 'Energieverbruik',
             pl: 'Pobór Energii',
@@ -765,7 +762,7 @@ const devices: { _id: string; name: ioBroker.StringOrTranslated; icon: string }[
             en: 'Power Consumption',
             ru: 'Потребляемая мощность',
             de: 'Stromverbrauch',
-            fr: 'Consommation D\'Énergie',
+            fr: "Consommation D'Énergie",
             it: 'Consumo Di Energia',
             nl: 'Energieverbruik',
             pl: 'Pobór Energii',
@@ -957,7 +954,7 @@ const devices: { _id: string; name: ioBroker.StringOrTranslated; icon: string }[
             en: 'Water',
             ru: 'Вода',
             de: 'Wasser',
-            fr: 'L\'Eau',
+            fr: "L'Eau",
             it: 'Acqua',
             nl: 'Water',
             pl: 'Woda',
@@ -989,8 +986,8 @@ const devices: { _id: string; name: ioBroker.StringOrTranslated; icon: string }[
             en: 'Water Consumption',
             ru: 'Потребление воды',
             de: 'Wasserverbrauch',
-            fr: 'Consommation D\'Eau',
-            it: 'Consumo D\'Acqua',
+            fr: "Consommation D'Eau",
+            it: "Consumo D'Acqua",
             nl: 'Waterverbruik',
             pl: 'Konsumpcja Wody',
             pt: 'Consumo De Água',
@@ -1106,7 +1103,7 @@ const rooms: { _id: string; name: ioBroker.StringOrTranslated; icon: string }[] 
             ru: 'На Улице',
             de: 'Außenbereich',
             fr: 'En Plein Air',
-            it: 'All\'Aperto',
+            it: "All'Aperto",
             nl: 'Buitenshuis',
             pl: 'Na Dworze',
             pt: 'Ao Ar Livre',
@@ -1361,7 +1358,7 @@ const rooms: { _id: string; name: ioBroker.StringOrTranslated; icon: string }[] 
             en: 'Summer House',
             ru: 'Дача',
             de: 'Gartenhaus',
-            fr: 'Maison D\'Été',
+            fr: "Maison D'Été",
             it: 'Casa Estiva',
             nl: 'Zomerhuis',
             pl: 'Domek Letniskowy',
@@ -1393,7 +1390,7 @@ const rooms: { _id: string; name: ioBroker.StringOrTranslated; icon: string }[] 
             en: 'Guest Room',
             ru: 'Гостевая Комната',
             de: 'Gästezimmer',
-            fr: 'Chambre D\'Amis',
+            fr: "Chambre D'Amis",
             it: 'Stanza Degli Ospiti',
             nl: 'Guest Room',
             pl: 'Pokój Gościnny',
@@ -1729,7 +1726,7 @@ const rooms: { _id: string; name: ioBroker.StringOrTranslated; icon: string }[] 
             en: 'Equipment Room',
             ru: 'Оборудование Номера',
             de: 'Technikraum',
-            fr: 'Salle D\'Équipement',
+            fr: "Salle D'Équipement",
             it: 'Stanza Degli Attrezzi',
             nl: 'Technische Ruimte',
             pl: 'Wyposażenie Pokoi',
@@ -1777,7 +1774,7 @@ const rooms: { _id: string; name: ioBroker.StringOrTranslated; icon: string }[] 
             en: 'Stairwell',
             ru: 'Лестничная клетка',
             de: 'Treppenhaus',
-            fr: 'Cage D\'Escalier',
+            fr: "Cage D'Escalier",
             it: 'Tromba Delle Scale',
             nl: 'Trappenhuis',
             pl: 'Klatka Schodowa',
@@ -2003,7 +2000,7 @@ class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
         };
     }
 
-    loadAllIcons() {
+    loadAllIcons(): void {
         if (this.state.loading || this.state.icons) {
             return;
         }
@@ -2012,7 +2009,8 @@ class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
             const names: string[] = [];
 
             if (!this.props.icons) {
-                let templates = this.props.onlyRooms || (!this.props.onlyRooms && !this.props.onlyDevices) ? rooms : null;
+                let templates =
+                    this.props.onlyRooms || (!this.props.onlyRooms && !this.props.onlyDevices) ? rooms : null;
 
                 const promises: Promise<void>[] = [];
                 if (templates) {
@@ -2023,51 +2021,65 @@ class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
                         item.name = item.name || item._id;
                     });
 
-                    templates = templates.filter((item, i) => !templates?.find((_item, _i) => i !== _i && _item.icon === item.icon && _item.name === item.name));
+                    templates = templates.filter(
+                        (item, i) =>
+                            !templates?.find(
+                                (_item, _i) => i !== _i && _item.icon === item.icon && _item.name === item.name,
+                            ),
+                    );
 
                     templates.forEach((template, i) => {
                         let image;
                         try {
                             image = require(`../assets/rooms/${template.icon}`);
-                        } catch (e) {
+                        } catch {
                             return;
                         }
 
                         names[i] = template.name as string;
 
-                        promises.push(Utils.getSvg(image)
-                            .then(icon => {
+                        promises.push(
+                            Utils.getSvg(image).then(icon => {
                                 icons[i] = icon;
-                            }));
+                            }),
+                        );
                     });
                 }
 
-                templates = this.props.onlyDevices || (!this.props.onlyRooms && !this.props.onlyDevices) ? devices : null;
+                templates =
+                    this.props.onlyDevices || (!this.props.onlyRooms && !this.props.onlyDevices) ? devices : null;
                 if (templates) {
                     const offset = promises.length;
-                    templates && templates.forEach(item => {
-                        if (item.name && typeof item.name === 'object') {
-                            item.name = item.name[this.props.lang] || item.name.en || item._id;
-                        }
-                        item.name = item.name || item._id;
-                    });
+                    templates &&
+                        templates.forEach(item => {
+                            if (item.name && typeof item.name === 'object') {
+                                item.name = item.name[this.props.lang] || item.name.en || item._id;
+                            }
+                            item.name = item.name || item._id;
+                        });
 
-                    templates = templates.filter((item, i) => !templates?.find((_item, _i) => i !== _i && _item.icon === item.icon && _item.name === item.name));
+                    templates = templates.filter(
+                        (item, i) =>
+                            !templates?.find(
+                                (_item, _i) => i !== _i && _item.icon === item.icon && _item.name === item.name,
+                            ),
+                    );
 
                     templates.forEach((template, i) => {
                         let image;
                         try {
                             image = require(`../assets/devices/${template.icon}`);
-                        } catch (e) {
+                        } catch {
                             return;
                         }
 
                         names[i + offset] = template.name as string;
 
-                        promises.push(Utils.getSvg(image)
-                            .then(icon => {
+                        promises.push(
+                            Utils.getSvg(image).then(icon => {
                                 icons[i + offset] = icon;
-                            }));
+                            }),
+                        );
                     });
                 }
                 Promise.all(promises)
@@ -2077,13 +2089,18 @@ class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
                             loading: false,
                             names,
                             isAnyName: !!names.find(i => i),
-                        }));
+                        }),
+                    )
+                    .catch(e => console.error(e));
             } else {
                 const promises = this.props.icons.map((item, i) => {
                     let href: string;
                     if (typeof item === 'object') {
                         href = item.icon || item.src || item.href || '';
-                        names[i] = typeof item.name === 'object' ? item.name[this.props.lang] || item.name.en || item._id || '' : (item.name || '');
+                        names[i] =
+                            typeof item.name === 'object'
+                                ? item.name[this.props.lang] || item.name.en || item._id || ''
+                                : item.name || '';
                         if (!names[i]) {
                             const parts = href.split('.');
                             parts.pop();
@@ -2098,104 +2115,125 @@ class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
                             icons[i] = href;
                             return Promise.resolve();
                         }
-                        return Utils.getSvg(href)
-                            .then(icon =>
-                                icons[i] = icon);
+                        return Utils.getSvg(href).then(icon => (icons[i] = icon));
                     }
 
                     return Promise.resolve();
                 });
 
                 Promise.all(promises)
+                    .catch(e => console.error(e))
                     .then(() =>
                         this.setState({
                             icons,
                             loading: false,
                             names,
                             isAnyName: !!names.find(i => i),
-                        }));
+                        }),
+                    );
             }
         });
     }
 
-    render() {
+    render(): React.JSX.Element {
         if (this.state.loading) {
             return <CircularProgress />;
         }
 
-        return <>
-            <Button
-                color="grey"
-                variant="outlined"
-                title={this.props.t('ra_Select predefined icon')}
-                onClick={() => this.setState({ opened: true }, () => this.loadAllIcons())}
-                style={{ minWidth: 40, marginRight: 8 }}
-            >
-                ...
-            </Button>
-            {this.state.opened ? <Dialog onClose={() => this.setState({ opened: false })} open={!0}>
-                <DialogTitle>
-                    {this.props.t('ra_Select predefined icon')}
-                    {this.state.isAnyName ? <TextField
-                        variant="standard"
-                        margin="dense"
-                        style={{ marginLeft: 20 }}
-                        value={this.state.filter}
-                        onChange={e => this.setState({ filter: e.target.value.toLowerCase() })}
-                        placeholder={this.props.t('ra_Filter')}
-                        InputProps={{
-                            endAdornment: this.state.filter
-                                ?
-                                <IconButton
-                                    size="small"
-                                    onClick={() => this.setState({ filter: '' })}
-                                >
-                                    <ClearIcon />
-                                </IconButton>
-                                :
-                                undefined,
-                        }}
-                    /> : null}
-                </DialogTitle>
-                <DialogContent>
-                    <div style={{ width: '100%', textAlign: 'center' }}>
-                        {this.state.icons && this.state.icons.map((icon, i) => {
-                            if (!this.state.filter || (this.state.names[i] && this.state.names[i].toLowerCase().includes(this.state.filter))) {
-                                return <Tooltip
-                                    title={this.state.names[i] || ''}
-                                    key={i}
-                                    componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}
-                                >
-                                    <IconButton
-                                        onClick={() => this.setState({ opened: false }, () => {
-                                            const onApply: ((_icon: string) => void) | undefined = this.props.onSelect || this.props.onChange;
-                                            if (onApply) {
-                                                onApply(icon);
-                                            }
-                                        })}
-                                        size="large"
-                                    >
-                                        <Icon src={icon} alt={i.toString()} style={{ width: 32, height: 32, borderRadius: 5 }} />
-                                    </IconButton>
-                                </Tooltip>;
-                            }
-
-                            return null;
-                        })}
-                    </div>
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        color="grey"
-                        variant="contained"
-                        onClick={() => this.setState({ opened: false })}
-                        startIcon={<CloseIcon />}
+        return (
+            <>
+                <Button
+                    color="grey"
+                    variant="outlined"
+                    title={this.props.t('ra_Select predefined icon')}
+                    onClick={() => this.setState({ opened: true }, () => this.loadAllIcons())}
+                    style={{ minWidth: 40, marginRight: 8 }}
+                >
+                    ...
+                </Button>
+                {this.state.opened ? (
+                    <Dialog
+                        onClose={() => this.setState({ opened: false })}
+                        open={!0}
                     >
-                        {this.props.t('ra_Close')}
-                    </Button>
-                </DialogActions>
-            </Dialog> : null}
-        </>;
+                        <DialogTitle>
+                            {this.props.t('ra_Select predefined icon')}
+                            {this.state.isAnyName ? (
+                                <TextField
+                                    variant="standard"
+                                    margin="dense"
+                                    style={{ marginLeft: 20 }}
+                                    value={this.state.filter}
+                                    onChange={e => this.setState({ filter: e.target.value.toLowerCase() })}
+                                    placeholder={this.props.t('ra_Filter')}
+                                    InputProps={{
+                                        endAdornment: this.state.filter ? (
+                                            <IconButton
+                                                size="small"
+                                                onClick={() => this.setState({ filter: '' })}
+                                            >
+                                                <ClearIcon />
+                                            </IconButton>
+                                        ) : undefined,
+                                    }}
+                                />
+                            ) : null}
+                        </DialogTitle>
+                        <DialogContent>
+                            <div style={{ width: '100%', textAlign: 'center' }}>
+                                {this.state.icons &&
+                                    this.state.icons.map((icon, i) => {
+                                        if (
+                                            !this.state.filter ||
+                                            (this.state.names[i] &&
+                                                this.state.names[i].toLowerCase().includes(this.state.filter))
+                                        ) {
+                                            return (
+                                                <Tooltip
+                                                    title={this.state.names[i] || ''}
+                                                    key={i}
+                                                    componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}
+                                                >
+                                                    <IconButton
+                                                        onClick={() =>
+                                                            this.setState({ opened: false }, () => {
+                                                                const onApply: ((_icon: string) => void) | undefined =
+                                                                    this.props.onSelect || this.props.onChange;
+                                                                if (onApply) {
+                                                                    onApply(icon);
+                                                                }
+                                                            })
+                                                        }
+                                                        size="large"
+                                                    >
+                                                        <Icon
+                                                            src={icon}
+                                                            alt={i.toString()}
+                                                            style={{ width: 32, height: 32, borderRadius: 5 }}
+                                                        />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            );
+                                        }
+
+                                        return null;
+                                    })}
+                            </div>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button
+                                color="grey"
+                                variant="contained"
+                                onClick={() => this.setState({ opened: false })}
+                                startIcon={<CloseIcon />}
+                            >
+                                {this.props.t('ra_Close')}
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                ) : null}
+            </>
+        );
     }
 }
 

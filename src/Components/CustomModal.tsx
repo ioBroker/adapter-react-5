@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import {
-    Dialog, DialogActions, DialogContent,
-    DialogTitle, IconButton, TextField, Button,
-} from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField, Button } from '@mui/material';
 
-import {
-    Check as CheckIcon,
-    Close as CloseIcon,
-    Language as LanguageIcon,
-} from '@mui/icons-material';
+import { Check as CheckIcon, Close as CloseIcon, Language as LanguageIcon } from '@mui/icons-material';
 
 import I18n from '../i18n';
-import { IobTheme } from '../types';
+import { type IobTheme } from '../types';
 import Utils from './Utils';
 
 const styles: Record<string, any> = {
@@ -63,7 +56,7 @@ interface CustomModalProps {
     theme: IobTheme;
 }
 
-const CustomModal = (props: CustomModalProps) => {
+const CustomModal = (props: CustomModalProps): React.JSX.Element => {
     const {
         open,
         toggleTranslation,
@@ -98,66 +91,80 @@ const CustomModal = (props: CustomModalProps) => {
         Icon = icon;
     }
 
-    return <Dialog
-        open={open}
-        maxWidth={maxWidth || 'md'}
-        fullWidth={!!fullWidth}
-        disableEscapeKeyDown={false}
-        onClose={onClose}
-        sx={{ '& .MuiDialog-paper': styles.modalDialog }}
-    >
-        {title && <DialogTitle>
-            {icon ? <Icon style={styles.titleIcon} /> : null}
-            {title}
-            {I18n.getLanguage() !== 'en' && toggleTranslation ? <IconButton
-                size="large"
-                sx={Utils.getStyle(props.theme, styles.languageButton, noTranslation && styles.languageButtonActive)}
-                onClick={() => toggleTranslation()}
-                title={I18n.t('Disable/Enable translation')}
-            >
-                <LanguageIcon />
-            </IconButton> : null}
-        </DialogTitle>}
-        <DialogContent
-            style={{ ...styles.content, ...(overflowHidden ? styles.overflowHidden : undefined), paddingTop: 8 }}
+    return (
+        <Dialog
+            open={open}
+            maxWidth={maxWidth || 'md'}
+            fullWidth={!!fullWidth}
+            disableEscapeKeyDown={false}
+            onClose={onClose}
+            sx={{ '& .MuiDialog-paper': styles.modalDialog }}
         >
-            {textInput && <TextField
-                // className={className}
-                autoComplete="off"
-                fullWidth
-                autoFocus
-                variant="outlined"
-                size="medium"
-                // rows={10}
-                multiline
-                value={value}
-                onChange={e => setValue(e.target.value)}
-                // customValue
-            />}
-            {children}
-            {help ? <div>{help}</div> : null}
-        </DialogContent>
-        <DialogActions>
-            {applyButton !== false && <Button
-                startIcon={<CheckIcon />}
-                disabled={progress || (applyDisabled && defaultValue === value)}
-                onClick={() => onApply(textInput ? value : '')}
-                variant="contained"
-                color="primary"
+            {title && (
+                <DialogTitle>
+                    {icon ? <Icon style={styles.titleIcon} /> : null}
+                    {title}
+                    {I18n.getLanguage() !== 'en' && toggleTranslation ? (
+                        <IconButton
+                            size="large"
+                            sx={Utils.getStyle(
+                                props.theme,
+                                styles.languageButton,
+                                noTranslation && styles.languageButtonActive,
+                            )}
+                            onClick={() => toggleTranslation()}
+                            title={I18n.t('Disable/Enable translation')}
+                        >
+                            <LanguageIcon />
+                        </IconButton>
+                    ) : null}
+                </DialogTitle>
+            )}
+            <DialogContent
+                style={{ ...styles.content, ...(overflowHidden ? styles.overflowHidden : undefined), paddingTop: 8 }}
             >
-                {I18n.t(titleButtonApply || 'ra_Ok')}
-            </Button>}
-            <Button
-                color="grey"
-                onClick={onClose}
-                disabled={progress}
-                variant="contained"
-                startIcon={<CloseIcon />}
-            >
-                {I18n.t(titleButtonClose || 'ra_Cancel')}
-            </Button>
-        </DialogActions>
-    </Dialog>;
+                {textInput && (
+                    <TextField
+                        // className={className}
+                        autoComplete="off"
+                        fullWidth
+                        autoFocus
+                        variant="outlined"
+                        size="medium"
+                        // rows={10}
+                        multiline
+                        value={value}
+                        onChange={e => setValue(e.target.value)}
+                        // customValue
+                    />
+                )}
+                {children}
+                {help ? <div>{help}</div> : null}
+            </DialogContent>
+            <DialogActions>
+                {applyButton !== false && (
+                    <Button
+                        startIcon={<CheckIcon />}
+                        disabled={progress || (applyDisabled && defaultValue === value)}
+                        onClick={() => onApply(textInput ? value : '')}
+                        variant="contained"
+                        color="primary"
+                    >
+                        {I18n.t(titleButtonApply || 'ra_Ok')}
+                    </Button>
+                )}
+                <Button
+                    color="grey"
+                    onClick={onClose}
+                    disabled={progress}
+                    variant="contained"
+                    startIcon={<CloseIcon />}
+                >
+                    {I18n.t(titleButtonClose || 'ra_Cancel')}
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
 };
 
 export default CustomModal;

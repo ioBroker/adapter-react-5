@@ -5,10 +5,12 @@
  *
  **/
 
-.logo-background-light, .logo-background-colored {
+.logo-background-light,
+.logo-background-colored {
     background: white;
 }
-.logo-background-dark, .logo-background-blue {
+.logo-background-dark,
+.logo-background-blue {
     background: black;
 }
 .logo-div {
@@ -16,15 +18,15 @@
     top: 50%;
     left: 50%;
     -ms-transform: translateX(-50%) translateY(-50%);
-    -webkit-transform: translate(-50%,-50%);
-    transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
     overflow: hidden;
     border-radius: 50%;
     z-index: 2;
 }
 .logo-border {
     /*border-color: #164477;*/
-    border-top-color: #3399CC;
+    border-top-color: #3399cc;
     border-left-color: #164477;
     border-bottom-color: #164477;
     border-right-color: #164477;
@@ -48,14 +50,14 @@
     height: 60%;
     top: 20%;
     left: 42%;
-    background: #3399CC;
+    background: #3399cc;
 }
 .logo-i-top {
     position: absolute;
     width: 14.5%;
     height: 4%;
     left: 42%;
-    background: #3399CC;
+    background: #3399cc;
     border-radius: 100%;
 }
 .logo-back {
@@ -68,13 +70,13 @@
     0% {
         width: 230px;
         height: 230px;
-        transform: translate(-50%,-50%) scale(1);
-        opacity: 1
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
     }
     99% {
         width: 230px;
         height: 230px;
-        transform: translate(-50%,-50%) scale(10);
+        transform: translate(-50%, -50%) scale(10);
         opacity: 0;
     }
     100% {
@@ -83,13 +85,18 @@
         opacity: 0;
     }
 }
-@keyframes logo-spin { 100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
+@keyframes logo-spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
 @keyframes logo-color-inside-light {
     0% {
-        background: #FEFEFE;
+        background: #fefefe;
     }
     100% {
-        background: #3399CC;
+        background: #3399cc;
     }
 }
 @keyframes logo-color-inside-dark {
@@ -97,15 +104,15 @@
         background: #030303;
     }
     100% {
-        background: #3399CC;
+        background: #3399cc;
     }
 }
 @keyframes logo-color-inside-colored {
     0% {
-        background: #FEFEFE;
+        background: #fefefe;
     }
     100% {
-        background: #3399CC;
+        background: #3399cc;
     }
 }
 @keyframes logo-color-inside-blue {
@@ -113,27 +120,27 @@
         background: #030303;
     }
     100% {
-        background: #3399CC;
+        background: #3399cc;
     }
 }
 
 @keyframes logo-color-outside-light {
     0% {
-        border-color: #FEFEFE;
+        border-color: #fefefe;
     }
     100% {
-        border-top-color: #3399CC;
+        border-top-color: #3399cc;
         border-left-color: #164477;
         border-bottom-color: #164477;
         border-right-color: #164477;
     }
 }
-@keyframes logo-color-outside-dark  {
+@keyframes logo-color-outside-dark {
     0% {
         border-color: #040404;
     }
     100% {
-        border-top-color: #3399CC;
+        border-top-color: #3399cc;
         border-left-color: #164477;
         border-bottom-color: #164477;
         border-right-color: #164477;
@@ -141,21 +148,21 @@
 }
 @keyframes logo-color-outside-colored {
     0% {
-        border-color: #FEFEFE;
+        border-color: #fefefe;
     }
     100% {
-        border-top-color: #3399CC;
+        border-top-color: #3399cc;
         border-left-color: #164477;
         border-bottom-color: #164477;
         border-right-color: #164477;
     }
 }
-@keyframes logo-color-outside-blue  {
+@keyframes logo-color-outside-blue {
     0% {
         border-color: #040404;
     }
     100% {
-        border-top-color: #3399CC;
+        border-top-color: #3399cc;
         border-left-color: #164477;
         border-bottom-color: #164477;
         border-right-color: #164477;
@@ -163,17 +170,19 @@
 }
 
 .logo-animate-wait {
-    animation: logo-color-outside 1.5s, logo-spin 1.5s linear infinite;
+    animation:
+        logo-color-outside 1.5s,
+        logo-spin 1.5s linear infinite;
 }
 
 .logo-animate-grow-light {
-    background: #DDD;
+    background: #ddd;
 }
 .logo-animate-grow-dark {
     background: #1d1d1d;
 }
 .logo-animate-grow-colored {
-    background: #DDD;
+    background: #ddd;
 }
 .logo-animate-grow-blue {
     background: #1d1d1d;
@@ -186,8 +195,8 @@
     top: 50%;
     left: 50%;
     -ms-transform: translateX(-50%) translateY(-50%);
-    -webkit-transform: translate(-50%,-50%);
-    transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
     width: 245px;
     height: 245px;
     border-radius: 50%;

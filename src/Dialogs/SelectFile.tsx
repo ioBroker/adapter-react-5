@@ -7,24 +7,15 @@
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
 
-import {
-    Button,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Dialog,
-} from '@mui/material';
+import { Button, DialogTitle, DialogContent, DialogActions, Dialog } from '@mui/material';
 
-import {
-    Cancel as IconCancel,
-    Check as IconOk,
-} from '@mui/icons-material';
+import { Cancel as IconCancel, Check as IconOk } from '@mui/icons-material';
 
 import type { Connection } from '@iobroker/socket-client';
 
 import I18n from '../i18n';
 import FileBrowser from '../Components/FileBrowser';
-import { IobTheme } from '../types';
+import type { IobTheme } from '../types';
 
 const styles: Record<string, React.CSSProperties> = {
     headerID: {
@@ -115,11 +106,11 @@ interface DialogSelectFileProps {
     filters?: Record<string, string>;
     /** Allow switch views Table<=>Rows */
     showViewTypeButton?: boolean;
-     /** If type selector should be shown */
+    /** If type selector should be shown */
     showTypeSelector?: boolean;
-     /** If defined, allow selecting only files from this folder */
+    /** If defined, allow selecting only files from this folder */
     restrictToFolder?: string;
-     /** If restrictToFolder defined, allow selecting files outside of this folder */
+    /** If restrictToFolder defined, allow selecting files outside of this folder */
     allowNonRestricted?: boolean;
     /** force expert mode */
     expertMode?: boolean;
@@ -145,7 +136,7 @@ class DialogSelectFile extends React.Component<DialogSelectFileProps, DialogSele
 
         try {
             this.filters = JSON.parse(filters);
-        } catch (e) {
+        } catch {
             this.filters = {};
         }
 
@@ -161,7 +152,7 @@ class DialogSelectFile extends React.Component<DialogSelectFileProps, DialogSele
         }
         selected = selected.filter(id => id);
 
-        this.state =  {
+        this.state = {
             selected,
         };
     }
@@ -171,7 +162,11 @@ class DialogSelectFile extends React.Component<DialogSelectFileProps, DialogSele
     }
 
     handleOk() {
-        this.props.onOk(this.props.multiSelect || !Array.isArray(this.state.selected) ? this.state.selected : this.state.selected[0] || '');
+        this.props.onOk(
+            this.props.multiSelect || !Array.isArray(this.state.selected)
+                ? this.state.selected
+                : this.state.selected[0] || '',
+        );
         this.props.onClose();
     }
 
@@ -184,7 +179,10 @@ class DialogSelectFile extends React.Component<DialogSelectFileProps, DialogSele
                         {I18n.t('ra_Selected')}
                         &nbsp;
                     </span>,
-                    <span key="id" style={styles.headerID}>
+                    <span
+                        key="id"
+                        style={styles.headerID}
+                    >
                         {this.state.selected}
                     </span>,
                 ];
@@ -194,7 +192,10 @@ class DialogSelectFile extends React.Component<DialogSelectFileProps, DialogSele
                         {I18n.t('ra_Selected')}
                         &nbsp;
                     </span>,
-                    <span key="id" style={styles.headerID}>
+                    <span
+                        key="id"
+                        style={styles.headerID}
+                    >
                         {I18n.t('%s items', this.state.selected.length)}
                     </span>,
                 ];
@@ -203,67 +204,76 @@ class DialogSelectFile extends React.Component<DialogSelectFileProps, DialogSele
             title = this.props.title || I18n.t('ra_Please select file...');
         }
 
-        return <Dialog
-            onClose={() => {}}
-            maxWidth={false}
-            sx={{ '& .MuiDialog-paper': { ...styles.dialog, ...styles.dialogMobile } }}
-            fullWidth
-            open={!0}
-            aria-labelledby="ar_dialog_selectfile_title"
-        >
-            <DialogTitle id="ar_dialog_selectfile_title" sx={{ '&.MuiDialogTitle-root': styles.titleRoot }}>{title}</DialogTitle>
-            <DialogContent style={{ ...styles.content, ...styles.contentMobile }}>
-                <FileBrowser
-                    ready
-                    imagePrefix={this.props.imagePrefix || this.props.prefix || '../'} // prefix is for back compatibility
-                    allowUpload={!!this.props.allowUpload}
-                    allowDownload={this.props.allowDownload !== false}
-                    allowCreateFolder={!!this.props.allowCreateFolder}
-                    allowDelete={!!this.props.allowDelete}
-                    allowView={this.props.allowView !== false}
-                    showViewTypeButton={this.props.showViewTypeButton !== false}
-                    showToolbar={this.props.showToolbar !== false}
-                    limitPath={this.props.limitPath}
-                    filterFiles={this.props.filterFiles}
-                    filterByType={this.props.filterByType}
-                    selected={this.props.selected}
-                    restrictToFolder={this.props.restrictToFolder}
-                    allowNonRestricted={this.props.allowNonRestricted}
-                    onSelect={(selected: string | string[], isDoubleClick?: boolean, isFolder?: boolean) => {
-                        this.setState({ selected: Array.isArray(selected) ? selected : [selected] }, () =>
-                            isDoubleClick && (!this.props.selectOnlyFolders || isFolder) && this.handleOk());
-                    }}
-                    t={this.props.t || I18n.t}
-                    lang={this.props.lang || I18n.getLanguage()}
-                    socket={this.props.socket}
-                    themeType={this.props.themeType}
-                    themeName={this.props.themeName}
-                    theme={this.props.theme}
-                    showExpertButton={this.props.showExpertButton}
-                    expertMode={this.props.expertMode}
-                    showTypeSelector={this.props.showTypeSelector}
-                />
-            </DialogContent>
-            <DialogActions>
-                <Button
-                    variant="contained"
-                    onClick={() => this.handleOk()}
-                    startIcon={<IconOk />}
-                    disabled={!this.state.selected.length}
-                    color="primary"
+        return (
+            <Dialog
+                onClose={() => {}}
+                maxWidth={false}
+                sx={{ '& .MuiDialog-paper': { ...styles.dialog, ...styles.dialogMobile } }}
+                fullWidth
+                open={!0}
+                aria-labelledby="ar_dialog_selectfile_title"
+            >
+                <DialogTitle
+                    id="ar_dialog_selectfile_title"
+                    sx={{ '&.MuiDialogTitle-root': styles.titleRoot }}
                 >
-                    {this.props.ok || I18n.t('ra_Ok')}
-                </Button>
-                <Button
-                    color="grey"
-                    variant="contained"
-                    onClick={() => this.handleCancel()}
-                    startIcon={<IconCancel />}
-                >
-                    {this.props.cancel || I18n.t('ra_Cancel')}
-                </Button>
-            </DialogActions>
-        </Dialog>;
+                    {title}
+                </DialogTitle>
+                <DialogContent style={{ ...styles.content, ...styles.contentMobile }}>
+                    <FileBrowser
+                        ready
+                        imagePrefix={this.props.imagePrefix || this.props.prefix || '../'} // prefix is for back compatibility
+                        allowUpload={!!this.props.allowUpload}
+                        allowDownload={this.props.allowDownload !== false}
+                        allowCreateFolder={!!this.props.allowCreateFolder}
+                        allowDelete={!!this.props.allowDelete}
+                        allowView={this.props.allowView !== false}
+                        showViewTypeButton={this.props.showViewTypeButton !== false}
+                        showToolbar={this.props.showToolbar !== false}
+                        limitPath={this.props.limitPath}
+                        filterFiles={this.props.filterFiles}
+                        filterByType={this.props.filterByType}
+                        selected={this.props.selected}
+                        restrictToFolder={this.props.restrictToFolder}
+                        allowNonRestricted={this.props.allowNonRestricted}
+                        onSelect={(selected: string | string[], isDoubleClick?: boolean, isFolder?: boolean) => {
+                            this.setState(
+                                { selected: Array.isArray(selected) ? selected : [selected] },
+                                () => isDoubleClick && (!this.props.selectOnlyFolders || isFolder) && this.handleOk(),
+                            );
+                        }}
+                        t={this.props.t || I18n.t}
+                        lang={this.props.lang || I18n.getLanguage()}
+                        socket={this.props.socket}
+                        themeType={this.props.themeType}
+                        themeName={this.props.themeName}
+                        theme={this.props.theme}
+                        showExpertButton={this.props.showExpertButton}
+                        expertMode={this.props.expertMode}
+                        showTypeSelector={this.props.showTypeSelector}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        variant="contained"
+                        onClick={() => this.handleOk()}
+                        startIcon={<IconOk />}
+                        disabled={!this.state.selected.length}
+                        color="primary"
+                    >
+                        {this.props.ok || I18n.t('ra_Ok')}
+                    </Button>
+                    <Button
+                        color="grey"
+                        variant="contained"
+                        onClick={() => this.handleCancel()}
+                        startIcon={<IconCancel />}
+                    >
+                        {this.props.cancel || I18n.t('ra_Cancel')}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
     }
 }
 

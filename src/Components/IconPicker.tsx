@@ -1,11 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-import {
-    InputLabel,
-    FormControl,
-    IconButton,
-} from '@mui/material';
+import { InputLabel, FormControl, IconButton } from '@mui/material';
 import { Clear as ClearIcon } from '@mui/icons-material';
 
 import IconSelector from './IconSelector';
@@ -14,12 +10,12 @@ import I18n from '../i18n';
 import Utils from './Utils';
 
 const styles: Record<string, React.CSSProperties> = {
-    formContainer : {
+    formContainer: {
         display: 'flex',
         justifyContent: 'left',
         alignItems: 'center',
     },
-    formControl : {
+    formControl: {
         display: 'flex',
         padding: 24,
         flexGrow: 1000,
@@ -40,7 +36,7 @@ const styles: Record<string, React.CSSProperties> = {
         borderRadius: 10,
         padding: 4,
     },
-    formIcon : {
+    formIcon: {
         margin: 10,
         opacity: 0.6,
     },
@@ -76,74 +72,92 @@ interface IconPickerProps {
     onlyDevices?: boolean;
 }
 
-const IconPicker = (props: IconPickerProps) => {
+const IconPicker = (props: IconPickerProps): React.JSX.Element => {
     const IconCustom = props.icon;
 
-    const onDrop = useCallback((acceptedFiles: File[]) => {
-        const reader = new FileReader();
+    const onDrop = useCallback(
+        (acceptedFiles: File[]) => {
+            const reader = new FileReader();
 
-        reader.addEventListener('load', () =>
-            props.onChange(reader.result as string), false);
+            reader.addEventListener('load', () => props.onChange(reader.result as string), false);
 
-        if (acceptedFiles[0]) {
-            reader.readAsDataURL(acceptedFiles[0]);
-        }
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+            if (acceptedFiles[0]) {
+                reader.readAsDataURL(acceptedFiles[0]);
+            }
+        },
+        [props.onChange],
+    );
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-    return <div style={styles.formContainer}>
-        {IconCustom ? <IconCustom style={styles.formIcon} /> : null}
-        <FormControl variant="standard" style={{ ...styles.formControl, padding: 3 }}>
-            <InputLabel
-                shrink
-                sx={props.customStyles?.label ? { '&.MuiInputLabel-root': props.customStyles.label } : undefined}
-                classes={{ root: props.customClasses?.label }}
+    return (
+        <div style={styles.formContainer}>
+            {IconCustom ? <IconCustom style={styles.formIcon} /> : null}
+            <FormControl
+                variant="standard"
+                style={{ ...styles.formControl, padding: 3 }}
             >
-                {props.label}
-            </InputLabel>
-            <div style={styles.formContainer}>
-                {props.value ?
-                    <div style={styles.divContainer}>
-                        <Icon
-                            style={{ ...props.previewStyle, ...(props.customStyles?.icon || undefined) }}
-                            src={props.value}
-                            className={Utils.clsx(props.previewClassName, props.customClasses?.icon)}
-                        />
-                        {!props.disabled && <IconButton
-                            style={{ verticalAlign: 'top' }}
-                            title={I18n.t('ra_Clear icon')}
-                            size="small"
-                            onClick={() => props.onChange('')}
-                        >
-                            <ClearIcon />
-                        </IconButton>}
-                    </div>
-                    :
-                    (!props.disabled && <IconSelector
-                        icons={props.icons}
-                        onlyRooms={props.onlyRooms}
-                        onlyDevices={props.onlyDevices}
-                        onSelect={(base64: string) => props.onChange(base64)}
-                        t={I18n.t}
-                        lang={I18n.getLanguage()}
-                    />)}
-
-                {!props.disabled && <div
-                    {...getRootProps()}
-                    style={{
-                        ...styles.dragField,
-                        ...(isDragActive ? { backgroundColor: 'rgba(0, 255, 0, 0.1)' } : { cursor: 'pointer' }),
-                    }}
+                <InputLabel
+                    shrink
+                    sx={props.customStyles?.label ? { '&.MuiInputLabel-root': props.customStyles.label } : undefined}
+                    classes={{ root: props.customClasses?.label }}
                 >
-                    <input {...getInputProps()} />
-                    {isDragActive ?
-                        <span style={styles.text}>{I18n.t('ra_Drop the files here...')}</span> :
-                        <span style={styles.text}>{I18n.t('ra_Drag \'n\' drop some files here, or click to select files')}</span>}
-                </div>}
-            </div>
-        </FormControl>
-    </div>;
+                    {props.label}
+                </InputLabel>
+                <div style={styles.formContainer}>
+                    {props.value ? (
+                        <div style={styles.divContainer}>
+                            <Icon
+                                style={{ ...props.previewStyle, ...(props.customStyles?.icon || undefined) }}
+                                src={props.value}
+                                className={Utils.clsx(props.previewClassName, props.customClasses?.icon)}
+                            />
+                            {!props.disabled && (
+                                <IconButton
+                                    style={{ verticalAlign: 'top' }}
+                                    title={I18n.t('ra_Clear icon')}
+                                    size="small"
+                                    onClick={() => props.onChange('')}
+                                >
+                                    <ClearIcon />
+                                </IconButton>
+                            )}
+                        </div>
+                    ) : (
+                        !props.disabled && (
+                            <IconSelector
+                                icons={props.icons}
+                                onlyRooms={props.onlyRooms}
+                                onlyDevices={props.onlyDevices}
+                                onSelect={(base64: string) => props.onChange(base64)}
+                                t={I18n.t}
+                                lang={I18n.getLanguage()}
+                            />
+                        )
+                    )}
+
+                    {!props.disabled && (
+                        <div
+                            {...getRootProps()}
+                            style={{
+                                ...styles.dragField,
+                                ...(isDragActive ? { backgroundColor: 'rgba(0, 255, 0, 0.1)' } : { cursor: 'pointer' }),
+                            }}
+                        >
+                            <input {...getInputProps()} />
+                            {isDragActive ? (
+                                <span style={styles.text}>{I18n.t('ra_Drop the files here...')}</span>
+                            ) : (
+                                <span style={styles.text}>
+                                    {I18n.t("ra_Drag 'n' drop some files here, or click to select files")}
+                                </span>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </FormControl>
+        </div>
+    );
 };
 
 export default IconPicker;

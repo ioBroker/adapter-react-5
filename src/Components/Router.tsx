@@ -10,15 +10,15 @@ class Router<P, S> extends Component<P, S> {
         this.onHashChangedBound = this.onHashChanged.bind(this);
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         window.addEventListener('hashchange', this.onHashChangedBound);
     }
 
-    componentWillUnmount() {
+    componentWillUnmount(): void {
         window.removeEventListener('hashchange', this.onHashChangedBound);
     }
 
-    onHashChanged() {
+    onHashChanged(): void {
         // override this function
     }
 
@@ -38,10 +38,10 @@ class Router<P, S> extends Component<P, S> {
         });
         // #tabName/dialogName/deviceId
         return {
-            tab:    parts[0] || '',
+            tab: parts[0] || '',
             dialog: parts[1] || '',
-            id:     parts[2] || '',
-            arg:    parts[3] || '',
+            id: parts[2] || '',
+            arg: parts[3] || '',
         };
     }
 
@@ -53,7 +53,7 @@ class Router<P, S> extends Component<P, S> {
         dialog?: string | null,
         id?: string | null,
         arg?: string | null,
-    ) {
+    ): void {
         let hash = '';
         const location = Router.getLocation();
         if (arg !== undefined && !id) {

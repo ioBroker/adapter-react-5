@@ -34,7 +34,9 @@ function deselectCurrent() {
         ranges.push(selection.getRangeAt(i));
     }
 
-    switch (active?.tagName.toUpperCase()) { // .toUpperCase handles XHTML
+    switch (
+        active?.tagName.toUpperCase() // .toUpperCase handles XHTML
+    ) {
         case 'INPUT':
         case 'TEXTAREA':
             active.blur();
@@ -47,8 +49,7 @@ function deselectCurrent() {
 
     selection.removeAllRanges();
     return () => {
-        selection.type === 'Caret' &&
-        selection.removeAllRanges();
+        selection.type === 'Caret' && selection.removeAllRanges();
 
         if (!selection.rangeCount) {
             ranges.forEach(range => selection.addRange(range));
@@ -73,7 +74,16 @@ function format(message: string): string {
     return message.replace(/#{\s*key\s*}/g, copyKey);
 }
 
-function copy(text: string, options?: { debug?: boolean; format?: string; message?: string }) {
+/**
+ * Copy text to clipboard
+ *
+ * @param text Text to copy
+ * @param options Options
+ * @param options.debug Debug mode
+ * @param options.format Format of the data
+ * @param options.message Message to show in prompt
+ */
+function copy(text: string, options?: { debug?: boolean; format?: string; message?: string }): void {
     let reselectPrevious;
     let range;
     let selection;
@@ -100,21 +110,21 @@ function copy(text: string, options?: { debug?: boolean; format?: string; messag
         // used to preserve spaces and line breaks
         mark.style.whiteSpace = 'pre';
         // do not inherit user-select (it may be `none`)
-        mark.style.webkitUserSelect = 'text';
-        mark.style.MozUserSelect = 'text';
-        mark.style.msUserSelect = 'text';
         mark.style.userSelect = 'text';
         mark.addEventListener('copy', e => {
             e.stopPropagation();
             if (options?.format) {
                 e.preventDefault();
-                if (typeof e.clipboardData === 'undefined') { // IE 11
+                if (typeof e.clipboardData === 'undefined') {
+                    // IE 11
                     debug && console.warn('unable to use e.clipboardData');
                     debug && console.warn('trying IE specific stuff');
                     (window as any).clipboardData?.clearData();
+                    // @ts-expect-error special case for IE11
                     const _format = clipboardToIE11Formatting[options.format] || clipboardToIE11Formatting.default;
                     (window as any).clipboardData?.setData(_format, text);
-                } else { // all other browsers
+                } else {
+                    // all other browsers
                     e.clipboardData?.clearData();
                     e.clipboardData?.setData(options.format, text);
                 }
@@ -126,6 +136,7 @@ function copy(text: string, options?: { debug?: boolean; format?: string; messag
         range.selectNodeContents(mark);
         selection?.addRange(range);
 
+        // there is no alternative for execCommand
         const successful = document.execCommand('copy');
         if (!successful) {
             throw new Error('copy command was unsuccessful');
