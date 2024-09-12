@@ -5,9 +5,11 @@
  *
  **/
 
-.logo-background-light, .logo-background-colored {
+.logo-background-light,
+.logo-background-colored {
     background: white;
 }
-.logo-background-dark, .logo-background-blue {
+.logo-background-dark,
+.logo-background-blue {
     background: black;
 }

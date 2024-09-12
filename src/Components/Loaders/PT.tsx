@@ -3,10 +3,10 @@
  *
  * MIT License
  *
- * */
+ */
 import React, { useEffect } from 'react';
 
-import { ThemeType, ThemeName } from '../../types';
+import type { ThemeType, ThemeName } from '../../types';
 
 // import './PT.css'
 const ptStyles = `
@@ -127,7 +127,12 @@ interface LoaderPTProps {
     backgroundImage?: string;
 }
 
-function LoaderPT(props: LoaderPTProps) {
+/**
+ * A loader component with the vendor-specific logo
+ *
+ * @param props Properties of the loader of type LoaderPTProps
+ */
+function LoaderPT(props: LoaderPTProps): React.JSX.Element {
     const size = props.size || 200;
     useEffect(() => {
         if (!window.document.getElementById('pt-iobroker-component')) {
@@ -139,24 +144,39 @@ function LoaderPT(props: LoaderPTProps) {
     }, []);
 
     const themeName = props.themeType || props.themeName || 'light';
-    return <div
-        className={`pt-logo-back logo-background-${themeName}`}
-        style={{
-            backgroundImage: (props.backgroundImage && props.backgroundImage !== '@@loginBackgroundImage@@') ? props.backgroundImage :
-                (window.loadingBackgroundImage && window.loadingBackgroundImage !== '@@loginBackgroundImage@@' ? `url(${window.loadingBackgroundImage})` : undefined),
-            backgroundColor: (props.backgroundColor && props.backgroundColor !== '@@loginBackgroundColor@@') ? props.backgroundColor :
-                (window.loadingBackgroundColor && window.loadingBackgroundColor !== '@@loginBackgroundColor@@' ? window.loadingBackgroundColor : (props.themeType === 'dark' ? '#000' : '#FFF')),
-            backgroundSize: 'cover',
-        }}
-    >
-        <div className="pt-logo-div" style={{ width: size, height: size }}>
-            <div style={{ width: 200, height: 200 }}>
-                <div className="pt-loader-blue pt-loader-block" />
-                <div className="pt-loader-green pt-loader-block" />
-                <div className="pt-loader-red pt-loader-block" />
+    return (
+        <div
+            className={`pt-logo-back logo-background-${themeName}`}
+            style={{
+                backgroundImage:
+                    props.backgroundImage && props.backgroundImage !== '@@loginBackgroundImage@@'
+                        ? props.backgroundImage
+                        : window.loadingBackgroundImage && window.loadingBackgroundImage !== '@@loginBackgroundImage@@'
+                          ? `url(${window.loadingBackgroundImage})`
+                          : undefined,
+                backgroundColor:
+                    props.backgroundColor && props.backgroundColor !== '@@loginBackgroundColor@@'
+                        ? props.backgroundColor
+                        : window.loadingBackgroundColor && window.loadingBackgroundColor !== '@@loginBackgroundColor@@'
+                          ? window.loadingBackgroundColor
+                          : props.themeType === 'dark'
+                            ? '#000'
+                            : '#FFF',
+                backgroundSize: 'cover',
+            }}
+        >
+            <div
+                className="pt-logo-div"
+                style={{ width: size, height: size }}
+            >
+                <div style={{ width: 200, height: 200 }}>
+                    <div className="pt-loader-blue pt-loader-block" />
+                    <div className="pt-loader-green pt-loader-block" />
+                    <div className="pt-loader-red pt-loader-block" />
+                </div>
             </div>
         </div>
-    </div>;
+    );
 }
 
 export default LoaderPT;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type JSX } from 'react';
 import { Box } from '@mui/material';
 
 /*
@@ -26,16 +26,14 @@ const styles: Record<string, any> = {
         fontFamily: "'Inconsolata', Helvetica, sans-serif",
         fontSize: '1.5rem',
         color: 'rgba(128, 175, 255, 0.8)',
-        textShadow:
-            `0 0 1ex rgba(51, 70, 255, 1),
+        textShadow: `0 0 1ex rgba(51, 70, 255, 1),
         0 0 2px rgba(255, 255, 255, 0.8)`,
     },
     overlay: {
         pointerEvents: 'none',
         width: '100%',
         height: '100%',
-        background:
-            `repeating-linear-gradient(
+        background: `repeating-linear-gradient(
                 180deg,
             rgba(0, 0, 0, 0) 0,
             rgba(0, 0, 0, 0.3) 50%,
@@ -88,34 +86,37 @@ const styles: Record<string, any> = {
     },
 };
 
-function Page404() {
-    return <div
-        style={styles.content}
-    >
-        <div
-            style={styles.root}
-        >
-            <Box
-                component="div"
-                sx={styles.overlay}
-            >
-                <div
-                    style={styles.terminal}
+/** Generates the 404 error page */
+function Page404(): JSX.Element {
+    return (
+        <div style={styles.content}>
+            <div style={styles.root}>
+                <Box
+                    component="div"
+                    sx={styles.overlay}
                 >
-                    <h1>
-                        {I18n.t('ra_Error')}
-                        <span style={styles.errorCode}>404</span>
-                    </h1>
-                    <Box component="p" sx={styles.output}>
-                        {I18n.t('ra_The page you are looking for was not found')}
-                    </Box>
-                    <Box component="p" sx={styles.output}>
-                        {I18n.t('ra_Good luck')}
-                    </Box>
-                </div>
-            </Box>
+                    <div style={styles.terminal}>
+                        <h1>
+                            {I18n.t('ra_Error')}
+                            <span style={styles.errorCode}>404</span>
+                        </h1>
+                        <Box
+                            component="p"
+                            sx={styles.output}
+                        >
+                            {I18n.t('ra_The page you are looking for was not found')}
+                        </Box>
+                        <Box
+                            component="p"
+                            sx={styles.output}
+                        >
+                            {I18n.t('ra_Good luck')}
+                        </Box>
+                    </div>
+                </Box>
+            </div>
         </div>
-    </div>;
+    );
 }
 
 export default Page404;

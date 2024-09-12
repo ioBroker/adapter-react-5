@@ -3,9 +3,9 @@
  *
  * MIT License
  *
- * */
+ */
 import React, { useEffect } from 'react';
-import { ThemeName, ThemeType } from '../types';
+import type { ThemeName, ThemeType } from '../types';
 // import './loader.css'
 
 declare global {
@@ -256,7 +256,7 @@ interface LoaderProps {
     backgroundImage?: string;
 }
 
-function Loader(props: LoaderProps) {
+function Loader(props: LoaderProps): React.JSX.Element {
     useEffect(() => {
         if (!window.document.getElementById('loader-iobroker-component')) {
             const style = window.document.createElement('style');
@@ -268,37 +268,61 @@ function Loader(props: LoaderProps) {
 
     const size = props.size || 234;
     const theme = props.themeName || props.theme || props.themeType || 'light';
-    return <div
-        className={`logo-back logo-background-${theme}`}
-        style={{
-            backgroundImage: (props.backgroundImage && props.backgroundImage !== '@@loginBackgroundImage@@') ? props.backgroundImage :
-                (window.loadingBackgroundImage && window.loadingBackgroundImage !== '@@loginBackgroundImage@@' ? `url(${window.loadingBackgroundImage})` : undefined),
-            backgroundColor: (props.backgroundColor && props.backgroundColor !== '@@loginBackgroundColor@@') ? props.backgroundColor :
-                (window.loadingBackgroundColor && window.loadingBackgroundColor !== '@@loginBackgroundColor@@' ? window.loadingBackgroundColor : undefined),
-            backgroundSize: 'cover',
-        }}
-    >
-        {window.loadingHideLogo === 'true' ?
-            null
-            :
-            <>
-                <div className="logo-div" style={{ width: size, height: size }}>
-                    <div className={`logo-top logo-background-${theme}`} style={{ left: '37%' }} />
-                    <div className={`logo-top logo-background-${theme}`} style={{ left: '57%' }} />
+    return (
+        <div
+            className={`logo-back logo-background-${theme}`}
+            style={{
+                backgroundImage:
+                    props.backgroundImage && props.backgroundImage !== '@@loginBackgroundImage@@'
+                        ? props.backgroundImage
+                        : window.loadingBackgroundImage && window.loadingBackgroundImage !== '@@loginBackgroundImage@@'
+                          ? `url(${window.loadingBackgroundImage})`
+                          : undefined,
+                backgroundColor:
+                    props.backgroundColor && props.backgroundColor !== '@@loginBackgroundColor@@'
+                        ? props.backgroundColor
+                        : window.loadingBackgroundColor && window.loadingBackgroundColor !== '@@loginBackgroundColor@@'
+                          ? window.loadingBackgroundColor
+                          : undefined,
+                backgroundSize: 'cover',
+            }}
+        >
+            {window.loadingHideLogo === 'true' ? null : (
+                <>
                     <div
-                        className={`logo-border logo-background-${theme} logo-animate-wait`}
-                        style={{ borderWidth: size * 0.132 }}
+                        className="logo-div"
+                        style={{ width: size, height: size }}
+                    >
+                        <div
+                            className={`logo-top logo-background-${theme}`}
+                            style={{ left: '37%' }}
+                        />
+                        <div
+                            className={`logo-top logo-background-${theme}`}
+                            style={{ left: '57%' }}
+                        />
+                        <div
+                            className={`logo-border logo-background-${theme} logo-animate-wait`}
+                            style={{ borderWidth: size * 0.132 }}
+                        />
+                        <div className={`logo-i logo-animate-color-inside-${theme}`} />
+                        <div
+                            className={`logo-i-top logo-animate-color-inside-${theme}`}
+                            style={{ top: '18%' }}
+                        />
+                        <div
+                            className={`logo-i-top logo-animate-color-inside-${theme}`}
+                            style={{ bottom: '18%' }}
+                        />
+                    </div>
+                    <div
+                        className={`logo-animate-grow logo-animate-grow-${theme}`}
+                        style={{ width: size + 11, height: size + 11 }}
                     />
-                    <div className={`logo-i logo-animate-color-inside-${theme}`} />
-                    <div className={`logo-i-top logo-animate-color-inside-${theme}`} style={{ top: '18%' }} />
-                    <div className={`logo-i-top logo-animate-color-inside-${theme}`} style={{ bottom: '18%' }} />
-                </div>
-                <div
-                    className={`logo-animate-grow logo-animate-grow-${theme}`}
-                    style={{ width: size + 11, height: size + 11 }}
-                />
-            </>}
-    </div>;
+                </>
+            )}
+        </div>
+    );
 }
 
 export default Loader;

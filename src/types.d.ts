@@ -1,10 +1,13 @@
-import React from 'react';
-import { Theme as MuiTheme, Palette as MuiPalette } from '@mui/material/styles';
-import { AdminConnection, Connection } from '@iobroker/socket-client';
-import LegacyConnection from './LegacyConnection';
+import type { JSX, CSSProperties } from 'react';
+import type { Theme as MuiTheme, Palette as MuiPalette } from '@mui/material/styles';
+import type { AdminConnection, Connection } from '@iobroker/socket-client';
+import type LegacyConnection from './LegacyConnection';
 
 export type Translate = (key: string, ...args: (string | number | boolean)[]) => string;
 
+/**
+ * Properties for the connection to the admin or web instance.
+ */
 export interface ConnectionProps {
     /** The socket name. */
     name?: string;
@@ -43,7 +46,11 @@ export interface OldObject {
     type: string;
 }
 
-export type ObjectChangeHandler = (id: string, obj: ioBroker.Object | null | undefined, oldObj: OldObject) => void | Promise<void>;
+export type ObjectChangeHandler = (
+    id: string,
+    obj: ioBroker.Object | null | undefined,
+    oldObj: OldObject,
+) => void | Promise<void>;
 
 export type ThemeName = 'dark' | 'light' | 'colored' | 'blue' | 'PT' | 'DX';
 export type ThemeType = 'dark' | 'light';
@@ -56,7 +63,7 @@ export interface GenericAppProps {
     /** Should the bottom buttons be shown (default: true). */
     bottomButtons?: boolean;
     /** Additional translations. */
-    translations?: { [lang in ioBroker.Languages]?: Record<string, string>; };
+    translations?: { [lang in ioBroker.Languages]?: Record<string, string> };
     /** Fields that should be encrypted/decrypted. */
     encryptedFields?: string[];
     /** Socket.io configuration. */
@@ -101,10 +108,10 @@ interface Palette extends MuiPalette {
 export interface IobTheme extends MuiTheme {
     name: ThemeName;
     palette: Palette;
-    toolbar: React.CSSProperties;
+    toolbar: CSSProperties;
     saveToolbar: {
         background: string;
-        button: React.CSSProperties;
+        button: CSSProperties;
     };
 }
 
@@ -119,16 +126,16 @@ export interface GenericAppState {
     selectedTab: string;
     selectedTabNum: number | undefined;
     native: Record<string, any>;
-    errorText: string | React.JSX.Element;
+    errorText: string | JSX.Element;
     changed: boolean;
     connected: boolean;
     isConfigurationError: string;
-    toast: string | React.JSX.Element;
+    toast: string | JSX.Element;
     bottomButtons: boolean;
     width: Width;
     confirmClose: boolean;
     _alert: boolean;
     _alertType: 'info' | 'warning' | 'error' | 'success';
-    _alertMessage: string | React.JSX.Element;
+    _alertMessage: string | JSX.Element;
     common?: Record<string, any>;
 }

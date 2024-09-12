@@ -1,8 +1,7 @@
 import { Component } from 'react';
 
-interface Router<P = {}, S = {}> extends Component<P, S> {}
-
-class Router<P, S> extends Component<P, S> {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+class Router<P = {}, S = {}> extends Component<P, S> {
     protected onHashChangedBound: () => void;
 
     constructor(props: P) {
@@ -10,15 +9,16 @@ class Router<P, S> extends Component<P, S> {
         this.onHashChangedBound = this.onHashChanged.bind(this);
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         window.addEventListener('hashchange', this.onHashChangedBound);
     }
 
-    componentWillUnmount() {
+    componentWillUnmount(): void {
         window.removeEventListener('hashchange', this.onHashChangedBound);
     }
 
-    onHashChanged() {
+    // eslint-disable-next-line class-methods-use-this
+    onHashChanged(): void {
         // override this function
     }
 
@@ -31,17 +31,17 @@ class Router<P, S> extends Component<P, S> {
         const parts = hash.split('/').map(item => {
             try {
                 return item ? decodeURIComponent(item) : '';
-            } catch (e) {
+            } catch {
                 console.error(`Router: Cannot decode ${item}`);
                 return item || '';
             }
         });
         // #tabName/dialogName/deviceId
         return {
-            tab:    parts[0] || '',
+            tab: parts[0] || '',
             dialog: parts[1] || '',
-            id:     parts[2] || '',
-            arg:    parts[3] || '',
+            id: parts[2] || '',
+            arg: parts[3] || '',
         };
     }
 
@@ -53,7 +53,7 @@ class Router<P, S> extends Component<P, S> {
         dialog?: string | null,
         id?: string | null,
         arg?: string | null,
-    ) {
+    ): void {
         let hash = '';
         const location = Router.getLocation();
         if (arg !== undefined && !id) {

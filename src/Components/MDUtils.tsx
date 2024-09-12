@@ -3,7 +3,7 @@
  *
  * MIT License
  *
- * */
+ */
 import copy from './CopyToClipboard';
 
 class MDUtils {
@@ -13,10 +13,14 @@ class MDUtils {
             text = text.replace(m[0], m[0].replace(/\s/, '&nbsp;'));
         }
 
-        return text.replace(/[^a-zA-Zа-яА-Я0-9]/g, '').trim().replace(/\s/g, '').toLowerCase();
+        return text
+            .replace(/[^a-zA-Zа-яА-Я0-9]/g, '')
+            .trim()
+            .replace(/\s/g, '')
+            .toLowerCase();
     }
 
-    static openLink(url: string, target?: string) {
+    static openLink(url: string, target?: string): void {
         // replace IPv6 Address with [ipv6]:port
         url = url.replace(/\/\/([0-9a-f]*:[0-9a-f]*:[0-9a-f]*:[0-9a-f]*:[0-9a-f]*:[0-9a-f]*)(:\d+)?\//i, '//[$1]$2/');
 
@@ -27,7 +31,7 @@ class MDUtils {
         }
     }
 
-    static getTitle(text: string) {
+    static getTitle(text: string): string {
         const result = MDUtils.extractHeader(text);
         let body = result.body;
         const header = result.header;
@@ -44,7 +48,7 @@ class MDUtils {
             return '';
         }
 
-        return header.title;
+        return header.title.toString();
     }
 
     static extractHeader(text: string): { header: Record<string, string | boolean | number>; body: string } {
@@ -85,7 +89,7 @@ class MDUtils {
     static removeDocsify(text: string): string {
         const m = text.match(/{docsify-[^}]*}/g);
         if (m) {
-            m.forEach(doc => text = text.replace(doc, ''));
+            m.forEach(doc => (text = text.replace(doc, '')));
         }
         return text;
     }

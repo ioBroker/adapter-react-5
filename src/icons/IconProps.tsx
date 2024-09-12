@@ -1,4 +1,4 @@
-import React from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
 
 export default interface IconProps {
     /**  The width in pixels or percentage of the icon. */
@@ -6,10 +6,11 @@ export default interface IconProps {
     /**  The height in pixels or percentage of the icon. */
     height?: number | string;
     /** Click handler. */
-    onClick?: (e: React.MouseEvent) => void;
+    onClick?: (e: MouseEvent) => void;
     /** The class name for the SVG element. */
     className?: string;
     /** Styles for the SVG element. */
-    style?: React.CSSProperties;
+    style?: CSSProperties;
+    /** The font size of the icon. */
     fontSize?: 'small';
 }

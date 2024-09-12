@@ -3,29 +3,60 @@
  *
  * MIT License
  *
- **/
-const fs = require('node:fs');
-const { npmInstall, copyFiles } = require('@iobroker/build-tools');
+ */
+const { writeFileSync, readFileSync, existsSync, mkdirSync, copyFileSync, readdirSync } = require('node:fs');
+const { copyFiles, deleteFoldersRecursive } = require('@iobroker/build-tools');
+const { dirname } = require('node:path');
 
 function patchFiles() {
     const pack = require('./package.json');
-    let readme = fs.readFileSync(`${__dirname}/README.md`).toString('utf8');
-    readme = readme.replace(/"@iobroker\/adapter-react": "\^\d\.\d\.\d",/g, `"@iobroker/adapter-react": "^${pack.version}",`);
-    fs.writeFileSync(`${__dirname}/README.md`, readme);
+    let readme = readFileSync(`${__dirname}/README.md`).toString('utf8');
+    readme = readme.replace(
+        /"@iobroker\/adapter-react-v5": "\^\d\.\d\.\d",/g,
+        `"@iobroker/adapter-react-v5": "^${pack.version}",`,
+    );
+    writeFileSync(`${__dirname}/README.md`, readme);
+}
+
+function createIconSets(folder, destFile) {
+    const files = readdirSync(folder).filter(file => file.endsWith('.svg'));
+    const result = {};
+    for (let f = 0; f < files.length; f++) {
+        let data = readFileSync(`${folder}/${files[f]}`).toString('utf8');
+        result[files[f].replace('.svg', '')] = Buffer.from(data).toString('base64');
+    }
+    existsSync(dirname(destFile)) || mkdirSync(dirname(destFile), { recursive: true });
+    writeFileSync(destFile, JSON.stringify(result));
 }
 
 function copyAllFiles() {
     try {
-        copyFiles(['src/**/*.d.ts'], 'dist');
-        copyFiles(['src/assets/*.*', '!parseNames.js'], 'dist/assets');
-        copyFiles(['README.md'], 'dist');
-        copyFiles(['LICENSE'], 'dist');
+        copyFiles(['src/*.d.ts'], 'dist');
+        copyFiles(
+            ['src/assets/lamp_ceiling.svg', 'src/assets/lamp_table.svg', 'src/assets/no_icon.svg'],
+            'dist/assets',
+        );
+        copyFiles(['README.md', 'LICENSE'], 'dist');
+        copyFileSync('tasksExample.js', 'dist/tasks.js');
         copyFiles(['src/*.css'], 'dist');
-        copyFiles(['src/Components/*.css'], 'dist/Components');
-        copyFiles(['src/Components/**/*.css'], 'dist/Components');
-        copyFiles(['src/Components/assets/*.*'], 'dist/Components/assets');
-        copyFiles(['src/assets/devices/*.*', '!src/assets/devices/parseNames.js', '!src/assets/devices/list.json', '!src/assets/devices/names.txt'], 'dist/assets/devices');
-        copyFiles(['src/assets/rooms/*.*', '!src/assets/rooms/parseNames.js', '!src/assets/rooms/list.json', '!src/assets/rooms/names.txt'], 'dist/assets/rooms');
+        // copyFiles(
+        //     [
+        //         'src/assets/devices/*.*',
+        //         '!src/assets/devices/parseNames.js',
+        //         '!src/assets/devices/list.json',
+        //         '!src/assets/devices/names.txt',
+        //     ],
+        //     'dist/assets/devices',
+        // );
+        // copyFiles(
+        //     [
+        //         'src/assets/rooms/*.*',
+        //         '!src/assets/rooms/parseNames.js',
+        //         '!src/assets/rooms/list.json',
+        //         '!src/assets/rooms/names.txt',
+        //     ],
+        //     'dist/assets/rooms',
+        // );
         copyFiles(['craco-module-federation.js'], 'dist');
         copyFiles(['modulefederation.admin.config.js'], 'dist');
         copyFiles(['src/*/*.tsx', 'src/*/*.css', '!src/assets/devices/parseNames.js'], 'dist/src');
@@ -40,30 +71,21 @@ function copyAllFiles() {
     const packageSrc = require('./src/package.json');
     packageSrc.version = package_.version;
     packageSrc.dependencies = package_.dependencies;
-    !fs.existsSync(`${__dirname}/dist`) && fs.mkdirSync(`${__dirname}/dist`);
-    fs.writeFileSync(`${__dirname}/dist/package.json`, JSON.stringify(packageSrc, null, 2));
+    !existsSync(`${__dirname}/dist`) && mkdirSync(`${__dirname}/dist`);
+    writeFileSync(`${__dirname}/dist/package.json`, JSON.stringify(packageSrc, null, 2));
 }
-
-if (process.argv.find(arg => arg === '--npm')) {
-    if (!fs.existsSync(`${__dirname}/src/node_modules`)) {
-        npmInstall(__dirname)
-            .catch(e => {
-                console.error(`Cannot install: ${e}`);
-                process.exit(1);
-            });
-    }
-} else if (process.argv.find(arg => arg === '--copy')) {
+if (process.argv.find(arg => arg === '--0-clean')) {
+    deleteFoldersRecursive('dist');
+} else if (process.argv.find(arg => arg === '--2-copy')) {
+    createIconSets('src/assets/devices', 'src/assets/devices.json');
+    createIconSets('src/assets/rooms', 'src/assets/rooms.json');
     copyAllFiles();
-} else if (process.argv.find(arg => arg === '--patchReadme')) {
+} else if (process.argv.find(arg => arg === '--3-patchReadme')) {
     patchFiles();
 } else {
-    if (!fs.existsSync(`${__dirname}/src/node_modules`)) {
-        npmInstall(__dirname)
-            .catch(e => {
-                console.error(`Cannot install: ${e}`);
-                process.exit(1);
-            });
-    }
+    deleteFoldersRecursive('dist');
+    createIconSets('src/assets/devices', 'dist/assets/devices.json');
+    createIconSets('src/assets/rooms', 'dist/assets/rooms.json');
     copyAllFiles();
     patchFiles();
 }

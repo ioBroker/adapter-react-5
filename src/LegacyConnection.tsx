@@ -3,10 +3,11 @@
  *
  * MIT License
  *
- * */
+ */
 
 import { type HostInfo } from '@iobroker/js-controller-common-db/build/esm/lib/common/tools';
 import { type FilteredNotificationInformation } from '@iobroker/js-controller-common/build/esm/lib/common/notificationHandler';
+import type { IoBJson } from '@iobroker/types/build/config';
 
 declare global {
     interface Window {
@@ -17,6 +18,32 @@ declare global {
         io: any;
     }
 }
+
+export type CompactSystemRepositoryEntry = {
+    link: string;
+    hash?: string;
+    stable?: boolean;
+    json:
+        | {
+              _repoInfo: {
+                  stable?: boolean;
+                  name?: ioBroker.StringOrTranslated;
+              };
+          }
+        | null
+        | undefined;
+};
+
+export type CompactSystemRepository = {
+    _id: ioBroker.HostObject['_id'];
+    common: {
+        name: ioBroker.HostCommon['name'];
+        dontDelete: boolean;
+    };
+    native: {
+        repositories: Record<string, CompactSystemRepositoryEntry>;
+    };
+};
 
 /** Possible progress states. */
 export const PROGRESS = {
@@ -33,7 +60,7 @@ export const PROGRESS = {
 };
 
 const PERMISSION_ERROR = 'permissionError';
-const NOT_CONNECTED    = 'notConnectedError';
+const NOT_CONNECTED = 'notConnectedError';
 const TIMEOUT_FOR_ADMIN4 = 1300;
 
 export const ERRORS = {
@@ -41,10 +68,7 @@ export const ERRORS = {
     NOT_CONNECTED,
 };
 
-export type BinaryStateChangeHandler = (
-    id: string,
-    base64: string | null,
-) => void;
+export type BinaryStateChangeHandler = (id: string, base64: string | null) => void;
 
 function fixAdminUI(obj: ioBroker.AdapterObject): ioBroker.AdapterObject {
     // @ts-expect-error it is deprecated, but still could appear
@@ -98,7 +122,12 @@ function fixAdminUI(obj: ioBroker.AdapterObject): ioBroker.AdapterObject {
         }
 
         // @ts-expect-error it is deprecated, but still could appear
-        obj.common.adminUI && console.debug(`Please add to "${obj._id.replace(/\.\d+$/, '')}" common.adminUI=${JSON.stringify(obj.common.adminUI)}`);
+        if (obj.common.adminUI) {
+            console.debug(
+                // @ts-expect-error it is deprecated, but still could appear
+                `Please add to "${obj._id.replace(/\.\d+$/, '')}" common.adminUI=${JSON.stringify(obj.common.adminUI)}`,
+            );
+        }
     }
     return obj;
 }
@@ -110,9 +139,7 @@ export function pattern2RegEx(pattern: string): string {
     const startsWithWildcard = pattern[0] === '*';
     const endsWithWildcard = pattern[pattern.length - 1] === '*';
 
-    pattern = pattern
-        .replace(/[-/\\^$+?.()|[\]{}]/g, '\\$&')
-        .replace(/\*/g, '.*');
+    pattern = pattern.replace(/[-/\\^$+?.()|[\]{}]/g, '\\$&').replace(/\*/g, '.*');
 
     return (startsWithWildcard ? '' : '^') + pattern + (endsWithWildcard ? '' : '$');
 }
@@ -166,7 +193,7 @@ export interface ConnectOptions {
     uuid?: string;
 }
 
-export interface SocketClient{
+export interface SocketClient {
     connect(url?: string, options?: ConnectOptions): void;
     close(): void;
     destroy(): void;
@@ -200,7 +227,7 @@ interface Promises {
     cert?: Promise<{ name: string; type: 'public' | 'private' | 'chained' | '' }[]> | null;
     webName?: Promise<string> | null;
     compactInstances?: Promise<Record<string, ioBroker.InstanceObject>> | null;
-    getCompactSystemRepositories?: Promise<ioBroker.Object> | null;
+    getCompactSystemRepositories?: Promise<CompactSystemRepository> | null;
     systemConfigPromise?: Promise<ioBroker.SystemConfigObject> | null;
     hostsCompact?: Promise<ioBroker.HostObject[]> | null;
     uuid?: Promise<string | undefined>;
@@ -229,7 +256,13 @@ class Connection {
 
     private _promises: Promises = {};
 
-    private readonly _instanceSubscriptions: Record<string, {messageType: string; callback: (data: Record<string, any>, sourceInstance: string, messageType: string) => void }[]>;
+    private readonly _instanceSubscriptions: Record<
+        string,
+        {
+            messageType: string;
+            callback: (data: Record<string, any>, sourceInstance: string, messageType: string) => void;
+        }[]
+    >;
 
     private props: ConnectionProps;
 
@@ -251,24 +284,40 @@ class Connection {
 
     private connected: boolean = false;
 
-    private readonly statesSubscribes: Record<string, { reg: RegExp; cbs: (ioBroker.StateChangeHandler | BinaryStateChangeHandler)[] }> = {};
+    private readonly statesSubscribes: Record<
+        string,
+        { reg: RegExp; cbs: (ioBroker.StateChangeHandler | BinaryStateChangeHandler)[] }
+    > = {};
 
-    private readonly objectsSubscribes: Record<string, { reg: RegExp; cbs: ((id: string, obj: ioBroker.Object | null | undefined, oldObj?: ioBroker.Object | null) => void)[] }> = {};
+    private readonly objectsSubscribes: Record<
+        string,
+        {
+            reg: RegExp;
+            cbs: ((id: string, obj: ioBroker.Object | null | undefined, oldObj?: ioBroker.Object | null) => void)[];
+        }
+    > = {};
 
-    private readonly filesSubscribes: Record<string, { regId: RegExp; cbs: ioBroker.FileChangeHandler[]; regFilePattern: RegExp }> = {};
+    private readonly filesSubscribes: Record<
+        string,
+        { regId: RegExp; cbs: ioBroker.FileChangeHandler[]; regFilePattern: RegExp }
+    > = {};
 
     private onConnectionHandlers: ((connected: boolean) => void)[] = [];
 
     private onLogHandlers: ((message: string) => void)[] = [];
 
-    private readonly onProgress: ((progress: number) => void);
+    private readonly onProgress: (progress: number) => void;
 
-    private readonly onError: ((err: string | {
-        message: string;
-        operation: string;
-        type: string;
-        id: string;
-    }) => void);
+    private readonly onError: (
+        err:
+            | string
+            | {
+                  message: string;
+                  operation: string;
+                  type: string;
+                  id: string;
+              },
+    ) => void;
 
     private loaded: boolean = false;
 
@@ -299,34 +348,42 @@ class Connection {
     public systemConfig: ioBroker.SystemConfigObject | null = null;
 
     constructor(props: ConnectionProps) {
-        props                 = props || { protocol: window.location.protocol, host: window.location.hostname };
-        this.props            = props;
+        props = props || { protocol: window.location.protocol, host: window.location.hostname };
+        this.props = props;
 
-        this.autoSubscribes   = this.props.autoSubscribes || [];
+        this.autoSubscribes = this.props.autoSubscribes || [];
         this.autoSubscribeLog = this.props.autoSubscribeLog || false;
 
-        this.props.protocol   = this.props.protocol || window.location.protocol;
-        this.props.host       = this.props.host     || window.location.hostname;
-        this.props.port       = this.props.port     || (window.location.port === '3000' ? (Connection.isWeb() ? 8082 : 8081) : window.location.port);
-        this.props.ioTimeout  = Math.max(this.props.ioTimeout  || 20000, 20000);
+        this.props.protocol = this.props.protocol || window.location.protocol;
+        this.props.host = this.props.host || window.location.hostname;
+        this.props.port =
+            this.props.port ||
+            (window.location.port === '3000' ? (Connection.isWeb() ? 8082 : 8081) : window.location.port);
+        this.props.ioTimeout = Math.max(this.props.ioTimeout || 20000, 20000);
         this.props.cmdTimeout = Math.max(this.props.cmdTimeout || 5000, 5000);
         this._instanceSubscriptions = {};
 
         // breaking change. Do not load all objects by default is true
         this.doNotLoadAllObjects = this.props.doNotLoadAllObjects === undefined ? true : this.props.doNotLoadAllObjects;
-        this.doNotLoadACL        = this.props.doNotLoadACL        === undefined ? true : this.props.doNotLoadACL;
+        this.doNotLoadACL = this.props.doNotLoadACL === undefined ? true : this.props.doNotLoadACL;
 
         this.states = {};
         this._waitForFirstConnection = new Promise(resolve => {
             this._waitForFirstConnectionResolve = resolve;
         });
         this.onProgress = this.props.onProgress || (() => {});
-        this.onError = this.props.onError || ((err: string | {
-            message: string;
-            operation: string;
-            type: string;
-            id: string;
-        }) => console.error(err));
+        this.onError =
+            this.props.onError ||
+            ((
+                err:
+                    | string
+                    | {
+                          message: string;
+                          operation: string;
+                          type: string;
+                          id: string;
+                      },
+            ) => console.error(err));
         this.admin5only = this.props.admin5only || false;
 
         this.startSocket();
@@ -334,15 +391,18 @@ class Connection {
 
     /**
      * Checks if this connection is running in a web adapter and not in an admin.
-     * @returns {boolean} True if running in a web adapter or in a socketio adapter.
+     *
+     * @returns True if running in a web adapter or in a socketio adapter.
      */
     static isWeb(): boolean {
         const adapterName: string | undefined = window.adapterName;
-        return adapterName === 'material' ||
+        return (
+            adapterName === 'material' ||
             adapterName === 'vis' ||
             adapterName?.startsWith('vis-') ||
             adapterName === 'echarts-show' ||
-            window.socketUrl !== undefined;
+            window.socketUrl !== undefined
+        );
     }
 
     /**
@@ -379,15 +439,12 @@ class Connection {
         let protocol = this.props.protocol.replace(':', '');
         let path = window.location.pathname;
 
-        if (
-            window.location.hostname === 'iobroker.net' ||
-            window.location.hostname === 'iobroker.pro'
-        ) {
+        if (window.location.hostname === 'iobroker.net' || window.location.hostname === 'iobroker.pro') {
             path = '';
         } else {
             // if web adapter, socket io could be on another port or even host
             if (window.socketUrl) {
-                const parsed = new URL(window.socketUrl as string);
+                const parsed = new URL((window as any).socketUrl as string);
                 host = parsed.hostname;
                 port = parsed.port;
                 protocol = parsed.protocol.replace(':', '');
@@ -418,23 +475,20 @@ class Connection {
 
         const url = port ? `${protocol}://${host}:${port}${path}` : `${protocol}://${host}${path}`;
 
-        this._socket = window.io.connect(
-            url,
-            {
-                path: path.endsWith('/') ? `${path}socket.io` : `${path}/socket.io`,
-                query: 'ws=true',
-                name: this.props.name,
-                timeout: this.props.ioTimeout,
-                uuid: this.props.uuid,
-            },
-        );
+        this._socket = window.io.connect(url, {
+            path: path.endsWith('/') ? `${path}socket.io` : `${path}/socket.io`,
+            query: 'ws=true',
+            name: this.props.name,
+            timeout: this.props.ioTimeout,
+            uuid: this.props.uuid,
+        });
 
         this._socket.on('connect', (noTimeout: boolean | undefined) => {
             // If the user is not admin, it takes some time to install the handlers, because all rights must be checked
             if (noTimeout !== true) {
-                setTimeout(() =>
-                    this.getVersion()
-                        .then(info => {
+                setTimeout(
+                    () =>
+                        this.getVersion().then(info => {
                             const [major, minor, patch] = info.version.split('.');
                             const v = parseInt(major, 10) * 10000 + parseInt(minor, 10) * 100 + parseInt(patch, 10);
                             if (v < 40102) {
@@ -442,12 +496,18 @@ class Connection {
                                 // possible this is an old version of admin
                                 this.onPreConnect(false, false);
                             } else {
-                                this._socket.emit('authenticate', (isOk: boolean, isSecure: boolean) => this.onPreConnect(isOk, isSecure));
+                                this._socket.emit('authenticate', (isOk: boolean, isSecure: boolean) =>
+                                    this.onPreConnect(isOk, isSecure),
+                                );
                             }
-                        }), 500);
+                        }),
+                    500,
+                );
             } else {
                 // iobroker websocket waits, till all handlers are installed
-                this._socket.emit('authenticate', (isOk: boolean, isSecure: boolean) => this.onPreConnect(isOk, isSecure));
+                this._socket.emit('authenticate', (isOk: boolean, isSecure: boolean) =>
+                    this.onPreConnect(isOk, isSecure),
+                );
             }
         });
 
@@ -464,14 +524,13 @@ class Connection {
         });
 
         this._socket.on('disconnect', () => {
-            this.connected  = false;
+            this.connected = false;
             this.subscribed = false;
             this.onProgress(PROGRESS.CONNECTING);
             this.onConnectionHandlers.forEach(cb => cb(false));
         });
 
-        this._socket.on('reauthenticate', () =>
-            Connection.authenticate());
+        this._socket.on('reauthenticate', () => Connection.authenticate());
 
         this._socket.on('log', message => {
             this.props.onLog && this.props.onLog(message);
@@ -492,8 +551,7 @@ class Connection {
             }
         });
 
-        this._socket.on('connect_error', (err: string) =>
-            console.error(`Connect error: ${err}`));
+        this._socket.on('connect_error', (err: string) => console.error(`Connect error: ${err}`));
 
         this._socket.on('permissionError', (err: { operation: string; type: string; id?: string }) =>
             this.onError({
@@ -501,34 +559,43 @@ class Connection {
                 operation: err.operation,
                 type: err.type,
                 id: err.id || '',
-            }));
+            }),
+        );
 
         this._socket.on('objectChange', (id: string, obj: ioBroker.Object | null) =>
-            setTimeout(() => this.objectChange(id, obj), 0));
+            setTimeout(() => this.objectChange(id, obj), 0),
+        );
 
-        this._socket.on('stateChange', (id: string, state) =>
-            setTimeout(() => this.stateChange(id, state), 0));
+        this._socket.on('stateChange', (id: string, state) => setTimeout(() => this.stateChange(id, state), 0));
 
         this._socket.on('im', (messageType: string, from: string, data) =>
-            setTimeout(() => this.instanceMessage(messageType, from, data), 0));
+            setTimeout(() => this.instanceMessage(messageType, from, data), 0),
+        );
 
         this._socket.on('fileChange', (id: string, fileName: string, size: number | null) =>
-            setTimeout(() => this.fileChange(id, fileName, size), 0));
+            setTimeout(() => this.fileChange(id, fileName, size), 0),
+        );
 
-        this._socket.on('cmdStdout', (id: string, text: string) =>
-            this.onCmdStdoutHandler && this.onCmdStdoutHandler(id, text));
+        this._socket.on(
+            'cmdStdout',
+            (id: string, text: string) => this.onCmdStdoutHandler && this.onCmdStdoutHandler(id, text),
+        );
 
-        this._socket.on('cmdStderr', (id: string, text: string) =>
-            this.onCmdStderrHandler && this.onCmdStderrHandler(id, text));
+        this._socket.on(
+            'cmdStderr',
+            (id: string, text: string) => this.onCmdStderrHandler && this.onCmdStderrHandler(id, text),
+        );
 
-        this._socket.on('cmdExit', (id: string, exitCode: number) =>
-            this.onCmdExitHandler && this.onCmdExitHandler(id, exitCode));
+        this._socket.on(
+            'cmdExit',
+            (id: string, exitCode: number) => this.onCmdExitHandler && this.onCmdExitHandler(id, exitCode),
+        );
     }
 
     /**
      * Called internally.
      */
-    private onPreConnect(isOk: boolean, isSecure: boolean): void {
+    private onPreConnect(_isOk: boolean, isSecure: boolean): void {
         if (this._authTimer) {
             clearTimeout(this._authTimer);
             this._authTimer = null;
@@ -546,12 +613,12 @@ class Connection {
                     this.loadTimer = null;
                     this.loadCounter++;
                     if (this.loadCounter < 10) {
-                        this.onConnect();
+                        void this.onConnect().catch(e => this.onError(e));
                     }
                 }, 1000);
 
                 if (!this.loaded) {
-                    this.onConnect();
+                    void this.onConnect().catch(e => this.onError(e));
                 }
             } else {
                 this.onProgress(PROGRESS.READY);
@@ -571,19 +638,13 @@ class Connection {
      * Checks if running in ioBroker cloud
      */
     static isCloud(): boolean {
-        if (
-            window.location.hostname.includes('amazonaws.com') ||
-            window.location.hostname.includes('iobroker.in')
-        ) {
+        if (window.location.hostname.includes('amazonaws.com') || window.location.hostname.includes('iobroker.in')) {
             return true;
         }
         if (typeof window.socketUrl === 'undefined') {
             return false;
         }
-        return (
-            window.socketUrl.includes('iobroker.in') ||
-            window.socketUrl.includes('amazonaws')
-        );
+        return window.socketUrl.includes('iobroker.in') || window.socketUrl.includes('amazonaws');
     }
 
     /**
@@ -610,19 +671,21 @@ class Connection {
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('getUserPermissions', (err: string | null, acl: Record<string, any> | null) =>
-                (err ? reject(err) : resolve(acl)));
+                err ? reject(new Error(err)) : resolve(acl),
+            );
         });
     }
 
     /**
      * Called internally.
      */
-    private async onConnect() {
+    private async onConnect(): Promise<void> {
         let acl: Record<string, any> | null | undefined;
         try {
             acl = await this._getUserPermissions();
-        } catch (err) {
-            this.onError(`Cannot read user permissions: ${err}`);
+        } catch (e) {
+            const knownError = e as Error;
+            this.onError(`Cannot read user permissions: ${knownError.message}`);
             return;
         }
         if (!this.doNotLoadACL) {
@@ -668,9 +731,7 @@ class Connection {
 
                 if (/^(en|de|ru|pt|nl|fr|it|es|pl|uk)-?/.test(this.systemLang)) {
                     this.systemLang = this.systemLang.substr(0, 2) as ioBroker.Languages;
-                } else if (
-                    !/^(en|de|ru|pt|nl|fr|it|es|pl|uk|zh-cn)$/.test(this.systemLang)
-                ) {
+                } else if (!/^(en|de|ru|pt|nl|fr|it|es|pl|uk|zh-cn)$/.test(this.systemLang)) {
                     this.systemLang = 'en';
                 }
             }
@@ -693,9 +754,8 @@ class Connection {
 
     /**
      * Called internally.
-     * @private
      */
-    static authenticate() {
+    private static authenticate(): void {
         if (window.location.search.includes('&href=')) {
             window.location.href = `${window.location.protocol}//${window.location.host}${window.location.pathname}${window.location.search}${window.location.hash}`;
         } else {
@@ -705,13 +765,14 @@ class Connection {
 
     /**
      * Subscribe to changes of the given state.
+     *
+     * @param id The ioBroker state ID or array of states
+     * @param binary Set to true if the given state is binary and requires Base64 decoding
+     * @param cb The callback
      */
     subscribeState(
-        /** The ioBroker state ID. */
         id: string | string[],
-        /** Set to true if the given state is binary and requires Base64 decoding. */
         binary: boolean | ioBroker.StateChangeHandler | BinaryStateChangeHandler,
-        /** The callback. */
         cb?: ioBroker.StateChangeHandler | BinaryStateChangeHandler,
     ): void {
         if (typeof binary === 'function') {
@@ -749,8 +810,7 @@ class Connection {
                     toSubscribe.push(_id);
                 }
             } else {
-                !this.statesSubscribes[_id].cbs.includes(cb) &&
-                    this.statesSubscribes[_id].cbs.push(cb);
+                !this.statesSubscribes[_id].cbs.includes(cb) && this.statesSubscribes[_id].cbs.push(cb);
             }
         }
 
@@ -770,10 +830,14 @@ class Connection {
                     .catch(e => console.error(`Cannot getBinaryState "${ids[i]}": ${JSON.stringify(e)}`));
             }
         } else {
-            this._socket.emit(Connection.isWeb() ? 'getStates' : 'getForeignStates', id, (err: string | null, states: Record<string, ioBroker.State>) => {
-                err && console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`);
-                states && Object.keys(states).forEach(_id => (cb as ioBroker.StateChangeHandler)(_id, states[_id]));
-            });
+            this._socket.emit(
+                Connection.isWeb() ? 'getStates' : 'getForeignStates',
+                id,
+                (err: string | null, states: Record<string, ioBroker.State>) => {
+                    err && console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`);
+                    states && Object.keys(states).forEach(_id => (cb as ioBroker.StateChangeHandler)(_id, states[_id]));
+                },
+            );
         }
     }
 
@@ -825,11 +889,17 @@ class Connection {
 
         return new Promise((resolve, reject) => {
             if (typeof cb === 'function' && this.connected) {
-                this._socket.emit(Connection.isWeb() ? 'getStates' : 'getForeignStates', id, (err: string | null, states: Record<string, ioBroker.State>) => {
-                    err && console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`);
-                    states && Object.keys(states).forEach(_id => cb(_id, states[_id]));
-                    states ? resolve() : reject(new Error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`));
-                });
+                this._socket.emit(
+                    Connection.isWeb() ? 'getStates' : 'getForeignStates',
+                    id,
+                    (err: string | null, states: Record<string, ioBroker.State>) => {
+                        err && console.error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`);
+                        states && Object.keys(states).forEach(_id => cb(_id, states[_id]));
+                        states
+                            ? resolve()
+                            : reject(new Error(`Cannot getForeignStates "${id}": ${JSON.stringify(err)}`));
+                    },
+                );
             } else {
                 this.connected ? reject(new Error('callback is not a function')) : reject(new Error('not connected'));
             }
@@ -880,13 +950,11 @@ class Connection {
 
     /**
      * Subscribe to changes of the given object.
+     *
+     * @param id The ioBroker object ID or array of objects
+     * @param cb The callback
      */
-    subscribeObject(
-        /** The ioBroker object ID. */
-        id: string | string[],
-        /** The callback. */
-        cb: ioBroker.ObjectChangeHandler,
-    ): Promise<void> {
+    subscribeObject(id: string | string[], cb: ioBroker.ObjectChangeHandler): Promise<void> {
         let ids: string[];
         if (!Array.isArray(id)) {
             ids = [id];
@@ -904,8 +972,7 @@ class Connection {
                 this.objectsSubscribes[_id] = { reg: new RegExp(reg), cbs: [cb] };
                 toSubscribe.push(_id);
             } else {
-                !this.objectsSubscribes[_id].cbs.includes(cb) &&
-                    this.objectsSubscribes[_id].cbs.push(cb);
+                !this.objectsSubscribes[_id].cbs.includes(cb) && this.objectsSubscribes[_id].cbs.push(cb);
             }
         }
         if (this.connected && toSubscribe.length) {
@@ -917,13 +984,11 @@ class Connection {
 
     /**
      * Unsubscribes all or the given callback from changes of the given object.
+     *
+     * @param id The ioBroker object ID or array of objects
+     * @param cb The callback
      */
-    unsubscribeObject(
-        /** The ioBroker object ID. */
-        id: string | string[],
-        /** The callback. */
-        cb?: ioBroker.ObjectChangeHandler,
-    ): Promise<void> {
+    unsubscribeObject(id: string | string[], cb?: ioBroker.ObjectChangeHandler): Promise<void> {
         let ids: string[];
         if (!Array.isArray(id)) {
             ids = [id];
@@ -958,20 +1023,14 @@ class Connection {
     /**
      * Called internally.
      */
-    private fileChange(
-        id: string,
-        fileName: string,
-        size: number | null,
-    ) {
+    private fileChange(id: string, fileName: string, size: number | null): void {
         for (const sub of Object.values(this.filesSubscribes)) {
             if (sub.regId.test(id) && sub.regFilePattern.test(fileName)) {
                 for (const cb of sub.cbs) {
                     try {
                         cb(id, fileName, size);
                     } catch (e) {
-                        console.error(
-                            `Error by callback of fileChange: ${e}`,
-                        );
+                        console.error(`Error by callback of fileChange: ${e}`);
                     }
                 }
             }
@@ -980,9 +1039,10 @@ class Connection {
 
     /**
      * Subscribe to changes of the files.
-     * @param {string} id The ioBroker state ID for meta-object. Could be a pattern
-     * @param {string} filePattern Pattern or file name, like 'main/*' or 'main/visViews.json`
-     * @param {function} cb The callback.
+     *
+     * @param id The ioBroker state ID for meta-object. Could be a pattern
+     * @param filePattern Pattern or file name, like 'main/*' or 'main/visViews.json`
+     * @param cb The callback.
      */
     async subscribeFiles(
         /** The ioBroker state ID for meta-object. Could be a pattern */
@@ -991,7 +1051,7 @@ class Connection {
         filePattern: string | string[],
         /** The callback. */
         cb: ioBroker.FileChangeHandler,
-    ) {
+    ): Promise<void> {
         if (typeof cb !== 'function') {
             throw new Error('The state change handler must be a function!');
         }
@@ -1015,26 +1075,23 @@ class Connection {
 
                 toSubscribe.push(pattern);
             } else {
-                !this.filesSubscribes[key].cbs.includes(cb) &&
-                    this.filesSubscribes[key].cbs.push(cb);
+                !this.filesSubscribes[key].cbs.includes(cb) && this.filesSubscribes[key].cbs.push(cb);
             }
         }
         if (this.connected && toSubscribe.length) {
             this._socket.emit('subscribeFiles', id, toSubscribe);
         }
+        return Promise.resolve();
     }
 
     /**
      * Unsubscribes the given callback from changes of files.
-     * @param {string} id The ioBroker state ID.
-     * @param {string} filePattern Pattern or file name, like 'main/*' or 'main/visViews.json`
-     * @param {function} cb The callback.
+     *
+     * @param id The ioBroker state ID.
+     * @param filePattern Pattern or file name, like 'main/*' or 'main/visViews.json`
+     * @param cb The callback.
      */
-    unsubscribeFiles(
-        id: string,
-        filePattern: string,
-        cb?: ioBroker.FileChangeHandler,
-    ): void {
+    unsubscribeFiles(id: string, filePattern: string, cb?: ioBroker.FileChangeHandler): void {
         let filePatterns: string[];
         if (Array.isArray(filePattern)) {
             filePatterns = filePattern;
@@ -1056,8 +1113,7 @@ class Connection {
 
                 if (!sub.cbs || !sub.cbs.length) {
                     delete this.filesSubscribes[key];
-                    this.connected &&
-                    toUnsubscribe.push(pattern);
+                    this.connected && toUnsubscribe.push(pattern);
                 }
             }
         }
@@ -1070,10 +1126,7 @@ class Connection {
     /**
      * Called internally.
      */
-    private objectChange(
-        id: string,
-        obj: ioBroker.Object | null,
-    ) {
+    private objectChange(id: string, obj: ioBroker.Object | null): void {
         // update main.objects cache
         if (!this.objects) {
             return;
@@ -1112,24 +1165,25 @@ class Connection {
         });
 
         if (changed && this.props.onObjectChange) {
-            this.props.onObjectChange(id, obj);
+            void this.props.onObjectChange(id, obj);
         }
     }
 
     /**
      * Called internally.
      */
-    private stateChange(
-        id: string,
-        state: ioBroker.State | null,
-    ): void {
+    private stateChange(id: string, state: ioBroker.State | null): void {
         for (const task in this.statesSubscribes) {
-            if (Object.prototype.hasOwnProperty.call(this.statesSubscribes, task) && this.statesSubscribes[task].reg.test(id)) {
+            if (
+                Object.prototype.hasOwnProperty.call(this.statesSubscribes, task) &&
+                this.statesSubscribes[task].reg.test(id)
+            ) {
                 this.statesSubscribes[task].cbs.forEach(cb => {
                     try {
-                        (cb as ioBroker.StateChangeHandler)(id, state);
+                        void (cb as ioBroker.StateChangeHandler)(id, state);
                     } catch (e) {
-                        console.error(`Error by callback of stateChange: ${e}`);
+                        const knownError = e as Error;
+                        console.error(`Error by callback of stateChange: ${knownError?.message}`);
                     }
                 });
             }
@@ -1138,11 +1192,12 @@ class Connection {
 
     /**
      * Called internally.
-     * @param {string} messageType
-     * @param {string} sourceInstance
-     * @param {object} data
+     *
+     * @param messageType The message type
+     * @param sourceInstance The source instance
+     * @param data Payload
      */
-    instanceMessage(messageType: string, sourceInstance: string, data: Record<string, any>) {
+    instanceMessage(messageType: string, sourceInstance: string, data: Record<string, any>): void {
         if (this._instanceSubscriptions[sourceInstance]) {
             this._instanceSubscriptions[sourceInstance].forEach(sub => {
                 if (sub.messageType === messageType) {
@@ -1154,15 +1209,13 @@ class Connection {
 
     /**
      * Gets all states.
+     *
+     * @param pattern The pattern to filter states
+     * @param disableProgressUpdate Don't call onProgress() when done
      */
-    getStates(
-        /** The pattern to filter states. */
-        pattern?: string | boolean,
-        /** don't call onProgress() when done */
-        disableProgressUpdate?: boolean,
-    ): Promise<Record<string, ioBroker.State>> {
+    getStates(pattern?: string | boolean, disableProgressUpdate?: boolean): Promise<Record<string, ioBroker.State>> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         if (typeof pattern === 'boolean') {
@@ -1174,83 +1227,79 @@ class Connection {
             this._socket.emit('getStates', pattern, (err: string | null, res: Record<string, ioBroker.State>) => {
                 this.states = res;
                 !disableProgressUpdate && this.onProgress(PROGRESS.STATES_LOADED);
-                err ? reject(err) : resolve(this.states);
+                err ? reject(new Error(err)) : resolve(this.states);
             });
         });
     }
 
     /**
      * Gets the given state.
+     *
+     * @param id The state ID
      */
-    getState(
-        /** The state ID. */
-        id: string,
-    ): Promise<ioBroker.State | null> {
+    getState(id: string): Promise<ioBroker.State | null> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         if (id && id === this.ignoreState) {
-            return Promise.resolve(this.simStates[id] || { val: null, ack: true } as ioBroker.State);
+            return Promise.resolve(this.simStates[id] || ({ val: null, ack: true } as ioBroker.State));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('getState', id, (err: string | null, state: ioBroker.State) =>
-                (err ? reject(err) : resolve(state)));
+                err ? reject(new Error(err)) : resolve(state),
+            );
         });
     }
 
     /**
-     * @deprecated since js-controller 5.0. Use files instead.
      * Get the given binary state.
+     *
+     * @deprecated since js-controller 5.0. Use files instead.
+     * @param id The state ID.
      */
-    getBinaryState(
-        /** The state ID. */
-        id: string,
-    ): Promise<string> {
+    getBinaryState(id: string): Promise<string> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         // the data will come in base64
         return new Promise((resolve, reject) => {
             this._socket.emit('getBinaryState', id, (err: string | null, base64: string) =>
-                (err ? reject(err) : resolve(base64)));
+                err ? reject(new Error(err)) : resolve(base64),
+            );
         });
     }
 
     /**
-     * @deprecated since js-controller 5.0. Use files instead.
      * Set the given binary state.
+     *
+     * @deprecated since js-controller 5.0. Use files instead.
+     * @param id The state ID.
+     * @param base64 The Base64 encoded binary data.
      */
-    setBinaryState(
-        /** The state ID. */
-        id: string,
-        /** The Base64 encoded binary data. */
-        base64: string,
-    ): Promise<void> {
+    setBinaryState(id: string, base64: string): Promise<void> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         // the data will come in base64
         return new Promise((resolve, reject) => {
             this._socket.emit('setBinaryState', id, base64, (err: string | null) =>
-                ((err ? reject(err) : resolve())));
+                err ? reject(new Error(err)) : resolve(),
+            );
         });
     }
 
     /**
      * Sets the given state value.
+     *
+     * @param id The state ID
+     * @param val The state value
+     * @param ack The acknowledgment flag
      */
-    setState(
-        /** The state ID. */
-        id: string,
-        /** The state value. */
-        val: string | number | boolean | ioBroker.SettableState | null,
-        /** The acknowledgment flag. */
-        ack?: boolean,
-    ): Promise<void> {
+    setState(id: string, val: string | number | boolean | ioBroker.SettableState | null, ack?: boolean): Promise<void> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         // extra handling for "nothing_selected" state for vis
@@ -1276,11 +1325,9 @@ class Connection {
             if (this.statesSubscribes[id]) {
                 for (const cb of this.statesSubscribes[id].cbs) {
                     try {
-                        (cb as ioBroker.StateChangeHandler)(id, state as ioBroker.State);
+                        void (cb as ioBroker.StateChangeHandler)(id, state);
                     } catch (e) {
-                        console.error(
-                            `Error by callback of stateChanged: ${e}`,
-                        );
+                        console.error(`Error by callback of stateChanged: ${e}`);
                     }
                 }
             }
@@ -1289,50 +1336,50 @@ class Connection {
         }
 
         return new Promise((resolve, reject) => {
-            this._socket.emit('setState', id, val, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+            this._socket.emit('setState', id, val, (err: string | null) => (err ? reject(new Error(err)) : resolve()));
         });
     }
 
     /**
      * Gets all objects.
+     *
+     * @param update Set to true to retrieve all objects from the server (instead of using the local cache)
+     * @param disableProgressUpdate Don't call onProgress() when done
      */
-    getObjects(
-        /** Set to true to retrieve all objects from the server (instead of using the local cache). */
-        update?: boolean,
-        /** don't call onProgress() when done */
-        disableProgressUpdate?: boolean,
-    ): Promise<Record<string, ioBroker.Object>> {
+    getObjects(update?: boolean, disableProgressUpdate?: boolean): Promise<Record<string, ioBroker.Object>> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             if (!update && this.objects) {
                 resolve(this.objects);
             } else {
-                this._socket.emit(Connection.isWeb() ? 'getObjects' : 'getAllObjects', (err: string | null, res: Record<string, ioBroker.Object>) => {
-                    this.objects = res;
-                    disableProgressUpdate && this.onProgress(PROGRESS.OBJECTS_LOADED);
-                    err ? reject(err) : resolve(this.objects);
-                });
+                this._socket.emit(
+                    Connection.isWeb() ? 'getObjects' : 'getAllObjects',
+                    (err: string | null, res: Record<string, ioBroker.Object>) => {
+                        this.objects = res;
+                        disableProgressUpdate && this.onProgress(PROGRESS.OBJECTS_LOADED);
+                        err ? reject(new Error(err)) : resolve(this.objects);
+                    },
+                );
             }
         });
     }
 
     /**
      * Gets objects by list of IDs.
+     *
+     * @param list Array of object IDs to retrieve
      */
-    getObjectsById(
-        /** Array of object IDs to retrieve. */
-        list: string[],
-    ): Promise<Record<string, ioBroker.Object>> {
+    getObjectsById(list: string[]): Promise<Record<string, ioBroker.Object>> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         return new Promise((resolve, reject) => {
             this._socket.emit('getObjects', list, (err: string | null, res: Record<string, ioBroker.Object>) =>
-                (err ? reject(err) : resolve(res)));
+                err ? reject(new Error(err)) : resolve(res),
+            );
         });
     }
 
@@ -1350,11 +1397,16 @@ class Connection {
             // re-subscribe states
             const ids = Object.keys(this.statesSubscribes);
             ids.forEach(id => this._socket.emit('subscribe', id));
-            ids.length && this._socket.emit(Connection.isWeb() ? 'getStates' : 'getForeignStates', ids, (err: string | null, states: Record<string, ioBroker.State>) => {
-                err && console.error(`Cannot getForeignStates: ${JSON.stringify(err)}`);
-                // inform about states
-                states && Object.keys(states).forEach(id => this.stateChange(id, states[id]));
-            });
+            ids.length &&
+                this._socket.emit(
+                    Connection.isWeb() ? 'getStates' : 'getForeignStates',
+                    ids,
+                    (err: string | null, states: Record<string, ioBroker.State>) => {
+                        err && console.error(`Cannot getForeignStates: ${JSON.stringify(err)}`);
+                        // inform about states
+                        states && Object.keys(states).forEach(id => this.stateChange(id, states[id]));
+                    },
+                );
         } else if (!isEnable && this.subscribed) {
             this.subscribed = false;
             // un-subscribe objects
@@ -1370,53 +1422,51 @@ class Connection {
 
     /**
      * Requests log updates.
+     *
+     * @param isEnabled Set to true to get logs
      */
-    requireLog(
-        /**  Set to true to get logs. */
-        isEnabled: boolean,
-    ): Promise<void> {
+    requireLog(isEnabled: boolean): Promise<void> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('requireLog', isEnabled, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+                err ? reject(new Error(err)) : resolve(),
+            );
         });
     }
 
     /**
      * Deletes the given object.
+     *
+     * @param id The object ID
+     * @param maintenance Force deletion of non-conform IDs
      */
-    delObject(
-        /** The object ID. */
-        id: string,
-        /** Force deletion of non-conform IDs. */
-        maintenance?: boolean,
-    ): Promise<void> {
+    delObject(id: string, maintenance?: boolean): Promise<void> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('delObject', id, { maintenance: !!maintenance }, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+                err ? reject(new Error(err)) : resolve(),
+            );
         });
     }
 
     /**
      * Deletes the given object and all its children.
+     *
+     * @param id The object ID
+     * @param maintenance Force deletion of non-conform IDs
      */
-    delObjects(
-        /** The object ID. */
-        id: string,
-        /** Force deletion of non-conform IDs. */
-        maintenance?: boolean,
-    ): Promise<void> {
+    delObjects(id: string, maintenance?: boolean): Promise<void> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('delObjects', id, { maintenance: !!maintenance }, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+                err ? reject(new Error(err)) : resolve(),
+            );
         });
     }
 
@@ -1425,11 +1475,11 @@ class Connection {
      */
     setObject(id: string, obj: ioBroker.SettableObject): Promise<void> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         if (!obj) {
-            return Promise.reject('Null object is not allowed');
+            return Promise.reject(new Error('Null object is not allowed'));
         }
 
         obj = JSON.parse(JSON.stringify(obj));
@@ -1445,8 +1495,7 @@ class Connection {
         }
 
         return new Promise((resolve, reject) => {
-            this._socket.emit('setObject', id, obj, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+            this._socket.emit('setObject', id, obj, (err: string | null) => (err ? reject(new Error(err)) : resolve()));
         });
     }
 
@@ -1455,7 +1504,7 @@ class Connection {
      */
     getObject(id: string): Promise<ioBroker.Object> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         if (id && id === this.ignoreState) {
             return Promise.resolve({
@@ -1474,19 +1523,18 @@ class Connection {
 
         return new Promise((resolve, reject) => {
             this._socket.emit('getObject', id, (err: string | null, obj: ioBroker.Object) =>
-                (err ? reject(err) : resolve(obj)));
+                err ? reject(new Error(err)) : resolve(obj),
+            );
         });
     }
 
     /**
      * Get all instances of the given adapter or all instances of all adapters.
+     *
+     * @param adapter The name of the adapter
+     * @param update Force update
      */
-    getAdapterInstances(
-        /** The name of the adapter. */
-        adapter?: string | boolean,
-        /** Force update. */
-        update?: boolean,
-    ): Promise<ioBroker.InstanceObject[]> {
+    getAdapterInstances(adapter?: string | boolean, update?: boolean): Promise<ioBroker.InstanceObject[]> {
         if (typeof adapter === 'boolean') {
             update = adapter;
             adapter = '';
@@ -1498,7 +1546,7 @@ class Connection {
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         this._promises[`instances_${adapter}`] = new Promise((resolve, reject) => {
@@ -1509,17 +1557,23 @@ class Connection {
                     `system.adapter.${adapter ? `${adapter}.` : ''}\u9999`,
                     'instance',
                 )
-                    .then(items => resolve(Object.keys(items).map(id => fixAdminUI(items[id] as ioBroker.AdapterObject))))
-                    .catch(e => reject(e));
+                    .then(items =>
+                        resolve(Object.keys(items).map(id => fixAdminUI(items[id] as ioBroker.AdapterObject))),
+                    )
+                    .catch(e => reject(new Error(e)));
             }, TIMEOUT_FOR_ADMIN4);
 
-            this._socket.emit('getAdapterInstances', adapter, (err: string | null, instances: ioBroker.InstanceObject[]) => {
-                if (timeout) {
-                    clearTimeout(timeout);
-                    timeout = null;
-                    err ? reject(err) : resolve(instances);
-                }
-            });
+            this._socket.emit(
+                'getAdapterInstances',
+                adapter,
+                (err: string | null, instances: ioBroker.InstanceObject[]) => {
+                    if (timeout) {
+                        clearTimeout(timeout);
+                        timeout = null;
+                        err ? reject(new Error(err)) : resolve(instances);
+                    }
+                },
+            );
         });
 
         return this._promises[`instances_${adapter}`] as Promise<ioBroker.InstanceObject[]>;
@@ -1527,15 +1581,13 @@ class Connection {
 
     /**
      * Get adapters with the given name or all adapters.
+     *
+     * @param adapter The name of the adapter
+     * @param update Force update
      */
-    getAdapters(
-        /** The name of the adapter. */
-        adapter?: string | boolean,
-        /** Force update. */
-        update?: boolean,
-    ): Promise<ioBroker.AdapterObject[]> {
+    getAdapters(adapter?: string | boolean, update?: boolean): Promise<ioBroker.AdapterObject[]> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
 
         if (typeof adapter === 'boolean') {
@@ -1550,28 +1602,24 @@ class Connection {
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         this._promises[`adapter_${adapter}`] = new Promise((resolve, reject) => {
             let timeout: ReturnType<typeof setTimeout> | null = setTimeout(() => {
                 timeout = null;
-                this.getObjectView(
-                    `system.adapter.${adapter}.`,
-                    `system.adapter.${adapter}.\u9999`,
-                    'adapter',
-                )
+                this.getObjectView(`system.adapter.${adapter}.`, `system.adapter.${adapter}.\u9999`, 'adapter')
                     .then(items => {
                         resolve(Object.keys(items).map(id => fixAdminUI(items[id] as ioBroker.AdapterObject)));
                     })
-                    .catch(e => reject(e));
+                    .catch(e => reject(new Error(e)));
             }, TIMEOUT_FOR_ADMIN4);
 
             this._socket.emit('getAdapters', adapter, (err: string | null, adapters: ioBroker.AdapterObject[]) => {
                 if (timeout) {
                     clearTimeout(timeout);
                     timeout = null;
-                    err ? reject(err) : resolve(adapters);
+                    err ? reject(new Error(err)) : resolve(adapters);
                 }
             });
         });
@@ -1582,10 +1630,7 @@ class Connection {
     /**
      * Called internally.
      */
-    private _renameGroups(
-        objs: RenameGroupObject[],
-        cb: (err: string | null) => void,
-    ) {
+    private _renameGroups(objs: RenameGroupObject[], cb: (err: string | null) => void): void {
         if (!objs || !objs.length) {
             cb && cb(null);
         } else {
@@ -1607,20 +1652,22 @@ class Connection {
 
     /**
      * Rename a group.
+     *
      * @param id The id.
-     * @param  newId The new id.
-     * @param {string | { [lang in ioBroker.Languages]?: string; }} newName The new name.
+     * @param newId The new id.
+     * @param newName The new name.
      */
     async renameGroup(id: string, newId: string, newName: ioBroker.StringOrTranslated): Promise<void> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
 
         const groups = await this.getGroups(true);
         if (groups.length) {
             // find all elements
-            const groupsToRename: RenameGroupObject[] = (groups as RenameGroupObject[])
-                .filter(group => group._id.startsWith(`${id}.`));
+            const groupsToRename: RenameGroupObject[] = (groups as RenameGroupObject[]).filter(group =>
+                group._id.startsWith(`${id}.`),
+            );
 
             groupsToRename.forEach(group => {
                 group.newId = (newId + group._id.substring(id.length)) as ioBroker.ObjectIDs.Group;
@@ -1628,7 +1675,8 @@ class Connection {
 
             await new Promise((resolve, reject) => {
                 this._renameGroups(groupsToRename, (err: string | null) =>
-                    (err ? reject(err) : resolve(null)));
+                    err ? reject(new Error(err)) : resolve(null),
+                );
             });
             const obj = groups.find(group => group._id === id);
 
@@ -1640,8 +1688,7 @@ class Connection {
                     obj.common.name = newName;
                 }
 
-                return this.setObject(obj._id, obj)
-                    .then(() => this.delObject(id));
+                return this.setObject(obj._id, obj).then(() => this.delObject(id));
             }
         }
 
@@ -1650,36 +1697,31 @@ class Connection {
 
     /**
      * Sends a message to a specific instance or all instances of some specific adapter.
-     * @returns {Promise<ioBroker.Message | undefined>}
+     *
+     * @param instance The instance to send this message to.
+     * @param command Command name of the target instance.
+     * @param data The message data to send.
      */
-    sendTo(
-        /** The instance to send this message to. */
-        instance: string,
-        /** Command name of the target instance. */
-        command: string,
-        /** The message data to send. */
-        data: any,
-    ): Promise<{ result?: any; error?: string }> {
+    sendTo(instance: string, command: string, data: any): Promise<{ result?: any; error?: string }> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise(resolve => {
             this._socket.emit('sendTo', instance, command, data, (result: { result?: any; error?: string }) =>
-                resolve(result));
+                resolve(result),
+            );
         });
     }
 
     /**
      * Extend an object and create it if it might not exist.
+     *
+     * @param id The id.
+     * @param obj The object.
      */
-    extendObject(
-        /** The id. */
-        id: string,
-        /** The object. */
-        obj: ioBroker.PartialObject,
-    ): Promise<void> {
+    extendObject(id: string, obj: ioBroker.PartialObject): Promise<void> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         obj = JSON.parse(JSON.stringify(obj));
@@ -1696,7 +1738,8 @@ class Connection {
 
         return new Promise((resolve, reject) => {
             this._socket.emit('extendObject', id, obj, (err: string | null) =>
-                ((err ? reject(err) : resolve())));
+                err ? reject(new Error(err)) : resolve(),
+            );
         });
     }
 
@@ -1732,7 +1775,8 @@ class Connection {
 
     /**
      * Set the handler for standard output of a command.
-     * @param {(id: string, text: string) => void} handler The handler.
+     *
+     * @param handler The handler.
      */
     registerCmdStdoutHandler(handler: (id: string, text: string) => void): void {
         this.onCmdStdoutHandler = handler;
@@ -1747,7 +1791,8 @@ class Connection {
 
     /**
      * Set the handler for standard error of a command.
-     * @param {(id: string, text: string) => void} handler The handler.
+     *
+     * @param handler The handler.
      */
     registerCmdStderrHandler(handler: (id: string, text: string) => void): void {
         this.onCmdStderrHandler = handler;
@@ -1756,7 +1801,7 @@ class Connection {
     /**
      * Unset the handler for standard error of a command.
      */
-    unregisterCmdStderrHandler() {
+    unregisterCmdStderrHandler(): void {
         this.onCmdStderrHandler = undefined;
     }
 
@@ -1788,7 +1833,7 @@ class Connection {
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         this._promises[`enums_${_enum || 'all'}`] = new Promise((resolve, reject) => {
@@ -1807,8 +1852,10 @@ class Connection {
                             _res[res.rows[i].id] = res.rows[i].value;
                         }
                         resolve(_res);
+                    } else if (err) {
+                        reject(new Error(err));
                     } else {
-                        reject(err);
+                        reject(new Error('Invalid response while getting enums'));
                     }
                 },
             );
@@ -1819,10 +1866,11 @@ class Connection {
 
     /**
      * Query a predefined object view.
+     *
      * @param design design - 'system' or other designs like `custom`.
      * @param type The type of object.
      * @param start The start ID.
-     * @param [end] The end ID.
+     * @param end The end ID.
      */
     getObjectViewCustom(
         /** The design: 'system' or other designs like `custom`. */
@@ -1835,34 +1883,38 @@ class Connection {
         end?: string,
     ): Promise<Record<string, ioBroker.Object>> {
         return new Promise((resolve, reject) => {
-            this._socket.emit('getObjectView', design, type, { startkey: start, endkey: end }, (err: string | null, res: { rows: { value: ioBroker.Object; id: string }[] }) => {
-                if (!err) {
-                    const _res: Record<string, ioBroker.Object> = {};
-                    if (res && res.rows) {
-                        for (let i = 0; i < res.rows.length; i++) {
-                            _res[res.rows[i].id] = res.rows[i].value;
+            this._socket.emit(
+                'getObjectView',
+                design,
+                type,
+                { startkey: start, endkey: end },
+                (err: string | null, res: { rows: { value: ioBroker.Object; id: string }[] }) => {
+                    if (!err) {
+                        const _res: Record<string, ioBroker.Object> = {};
+                        if (res && res.rows) {
+                            for (let i = 0; i < res.rows.length; i++) {
+                                _res[res.rows[i].id] = res.rows[i].value;
+                            }
                         }
+                        resolve(_res);
+                    } else {
+                        reject(new Error(err));
                     }
-                    resolve(_res);
-                } else {
-                    reject(err);
-                }
-            });
+                },
+            );
         });
     }
 
     /**
      * Query a predefined object view.
+     *
      * @param type The type of object.
      * @param start The start ID.
-     * @param [end] The end ID.
+     * @param end The end ID.
      */
     getObjectViewSystem(
-        /** The type of object. */
         type: ioBroker.ObjectType,
-        /** The start ID. */
         start: string,
-        /** The end ID. */
         end?: string,
     ): Promise<Record<string, ioBroker.Object>> {
         return this.getObjectViewCustom('system', type, start, end);
@@ -1870,31 +1922,30 @@ class Connection {
 
     /**
      * @deprecated since version 1.1.15, cause parameter order does not match backend
+     *
      * Query a predefined object view.
-     * @param {string} start The start ID.
-     * @param {string} end The end ID.
-     * @param {string} type The type of object.
-     * @returns {Promise<Record<string, ioBroker.Object>>}
+     * @param start The start ID.
+     * @param end The end ID.
+     * @param type The type of object.
      */
     getObjectView(start: string, end: string, type: ioBroker.ObjectType): Promise<Record<string, ioBroker.Object>> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         start = start || '';
-        end   = end   || '\u9999';
+        end = end || '\u9999';
         return this.getObjectViewCustom('system', type, start, end);
     }
 
     /**
      * Get the stored certificates.
+     *
+     * @param update Force update.
      */
-    getCertificates(
-        /** Force update. */
-        update?: boolean,
-    ): Promise<{ name: string; type: 'public' | 'private' | 'chained' | '' }[]> {
+    getCertificates(update?: boolean): Promise<{ name: string; type: 'public' | 'private' | 'chained' | '' }[]> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
 
         if (this._promises.cert && !update) {
@@ -1902,50 +1953,53 @@ class Connection {
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
-        this._promises.cert = this.getObject('system.certificates')
-            .then(res => {
-                const certs: { name: string; type: 'public' | 'private' | 'chained' | '' }[] = [];
-                if (res && res.native && res.native.certificates) {
-                    Object.keys(res.native.certificates).forEach(c => {
-                        const cert: string = res.native.certificates[c];
-                        if (!cert) {
-                            return;
+        this._promises.cert = this.getObject('system.certificates').then(res => {
+            const certs: { name: string; type: 'public' | 'private' | 'chained' | '' }[] = [];
+            if (res && res.native && res.native.certificates) {
+                Object.keys(res.native.certificates).forEach(c => {
+                    const cert: string = res.native.certificates[c];
+                    if (!cert) {
+                        return;
+                    }
+                    const _cert: { name: string; type: 'public' | 'private' | 'chained' | '' } = {
+                        name: c,
+                        type: '',
+                    };
+                    // If it is a filename, it could be everything
+                    if (cert.length < 700 && (cert.includes('/') || cert.includes('\\'))) {
+                        if (c.toLowerCase().includes('private')) {
+                            _cert.type = 'private';
+                        } else if (cert.toLowerCase().includes('private')) {
+                            _cert.type = 'private';
+                        } else if (c.toLowerCase().includes('public')) {
+                            _cert.type = 'public';
+                        } else if (cert.toLowerCase().includes('public')) {
+                            _cert.type = 'public';
                         }
-                        const _cert: { name: string; type: 'public' | 'private' | 'chained' | '' } = {
-                            name: c,
-                            type: '',
-                        };
-                        // If it is a filename, it could be everything
-                        if (cert.length < 700 && (cert.includes('/') || cert.includes('\\'))) {
-                            if (c.toLowerCase().includes('private')) {
-                                _cert.type = 'private';
-                            } else if (cert.toLowerCase().includes('private')) {
-                                _cert.type = 'private';
-                            } else if (c.toLowerCase().includes('public')) {
-                                _cert.type = 'public';
-                            } else if (cert.toLowerCase().includes('public')) {
-                                _cert.type = 'public';
-                            }
-                            certs.push(_cert);
-                        } else {
-                            _cert.type = (cert.substring(0, '-----BEGIN RSA PRIVATE KEY'.length) === '-----BEGIN RSA PRIVATE KEY' || cert.substring(0, '-----BEGIN PRIVATE KEY'.length) === '-----BEGIN PRIVATE KEY') ? 'private' : 'public';
+                        certs.push(_cert);
+                    } else {
+                        _cert.type =
+                            cert.substring(0, '-----BEGIN RSA PRIVATE KEY'.length) === '-----BEGIN RSA PRIVATE KEY' ||
+                            cert.substring(0, '-----BEGIN PRIVATE KEY'.length) === '-----BEGIN PRIVATE KEY'
+                                ? 'private'
+                                : 'public';
 
-                            if (_cert.type === 'public') {
-                                const m = cert.split('-----END CERTIFICATE-----');
-                                if (m.filter((t: string) => t.replace(/\r\n|\r|\n/, '').trim()).length > 1) {
-                                    _cert.type = 'chained';
-                                }
+                        if (_cert.type === 'public') {
+                            const m = cert.split('-----END CERTIFICATE-----');
+                            if (m.filter((t: string) => t.replace(/\r\n|\r|\n/, '').trim()).length > 1) {
+                                _cert.type = 'chained';
                             }
-
-                            certs.push(_cert);
                         }
-                    });
-                }
-                return certs;
-            });
+
+                        certs.push(_cert);
+                    }
+                });
+            }
+            return certs;
+        });
 
         return this._promises.cert;
     }
@@ -1953,21 +2007,17 @@ class Connection {
     /**
      * Get the logs from a host (only for admin connection).
      */
-    getLogs(
-        host: string,
-        linesNumber?: number,
-    ): Promise<string[]> {
+    getLogs(host: string, linesNumber?: number): Promise<string[]> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         return new Promise(resolve => {
-            this._socket.emit('sendToHost', host, 'getLogs', linesNumber || 200, (lines: string[]) =>
-                resolve(lines));
+            this._socket.emit('sendToHost', host, 'getLogs', linesNumber || 200, (lines: string[]) => resolve(lines));
         });
     }
 
@@ -1976,14 +2026,15 @@ class Connection {
      */
     getLogsFiles(host: string): Promise<string[]> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('readLogs', host, (err: string | null, files: string[]) =>
-                (err ? reject(err) : resolve(files)));
+                err ? reject(new Error(err)) : resolve(files),
+            );
         });
     }
 
@@ -1992,14 +2043,15 @@ class Connection {
      */
     delLogs(host: string): Promise<void> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('sendToHost', host, 'delLogs', null, (error: string | null) =>
-                (error ? reject(error) : resolve()));
+                error ? reject(new Error(error)) : resolve(),
+            );
         });
     }
 
@@ -2008,139 +2060,144 @@ class Connection {
      */
     readMetaItems(): Promise<ioBroker.MetaObject[]> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
-            this._socket.emit('getObjectView', 'system', 'meta', { startkey: '', endkey: '\u9999' }, (err: string | null, objs: { rows: { value: ioBroker.MetaObject; id: string }[] }) =>
-                (err ? reject(err) : resolve(objs.rows && objs.rows.map((obj: { value: ioBroker.MetaObject; id: string }) => obj.value))));
+            this._socket.emit(
+                'getObjectView',
+                'system',
+                'meta',
+                { startkey: '', endkey: '\u9999' },
+                (err: string | null, objs: { rows: { value: ioBroker.MetaObject; id: string }[] }) =>
+                    err
+                        ? reject(new Error(err))
+                        : resolve(
+                              objs.rows &&
+                                  objs.rows.map((obj: { value: ioBroker.MetaObject; id: string }) => obj.value),
+                          ),
+            );
         });
     }
 
     /**
      * Read the directory of an adapter.
+     *
+     * @param adapter The adapter name.
+     * @param fileName The directory name.
      */
-    readDir(
-        /** The adapter name. */
-        adapter: string,
-        /** The directory name. */
-        fileName: string,
-    ): Promise<ioBroker.ReadDirResult[]> {
+    readDir(adapter: string, fileName: string): Promise<ioBroker.ReadDirResult[]> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('readDir', adapter, fileName, (err: string | null, files: ioBroker.ReadDirResult[]) =>
-                (err ? reject(err) : resolve(files)));
+                err ? reject(new Error(err)) : resolve(files),
+            );
         });
     }
 
     /**
      * Read a file of an adapter.
+     *
+     * @param adapter The adapter name.
+     * @param fileName The file name.
+     * @param base64 If it must be a base64 format.
      */
-    readFile(
-        /** The adapter name. */
-        adapter: string,
-        /** The file name. */
-        fileName: string,
-        /** If it must be a base64 format */
-        base64?: boolean,
-    ): Promise<string | { data: string; type: string }> {
+    readFile(adapter: string, fileName: string, base64?: boolean): Promise<string | { data: string; type: string }> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             if (!base64) {
                 this._socket.emit('readFile', adapter, fileName, (err: string | null, data: string, type: string) => {
-                    err ? reject(err) : resolve({ data, type });
+                    err ? reject(new Error(err)) : resolve({ data, type });
                 });
             } else {
                 this._socket.emit('readFile64', adapter, fileName, base64, (err: string | null, data: string) =>
-                    (err ? reject(err) : resolve(data)));
+                    err ? reject(new Error(err)) : resolve(data),
+                );
             }
         });
     }
 
     /**
      * Write a file of an adapter.
+     *
+     * @param adapter The adapter name.
+     * @param fileName The file name.
+     * @param data The data (if it's a Buffer, it will be converted to Base64)
      */
-    writeFile64(
-        /** The adapter name. */
-        adapter: string,
-        /** The file name. */
-        fileName: string,
-        /** The data (if it's a Buffer, it will be converted to Base64). */
-        data: Buffer | string,
-    ): Promise<void> {
+    writeFile64(adapter: string, fileName: string, data: Buffer | string): Promise<void> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             if (typeof data === 'string') {
                 this._socket.emit('writeFile', adapter, fileName, data, (err: string | null) =>
-                    (err ? reject(err) : resolve()));
+                    err ? reject(new Error(err)) : resolve(),
+                );
             } else {
                 const base64 = btoa(
-                    new Uint8Array(data)
-                        .reduce((_data, byte) => _data + String.fromCharCode(byte), ''),
+                    new Uint8Array(data).reduce((_data, byte) => _data + String.fromCharCode(byte), ''),
                 );
 
                 this._socket.emit('writeFile64', adapter, fileName, base64, (err: string | null) =>
-                    (err ? reject(err) : resolve()));
+                    err ? reject(new Error(err)) : resolve(),
+                );
             }
         });
     }
 
     /**
      * Delete a file of an adapter.
+     *
+     * @param adapter The adapter name.
+     * @param fileName The file name.
      */
-    deleteFile(
-        /** The adapter name. */
-        adapter: string,
-        /** The file name. */
-        fileName: string,
-    ): Promise<void> {
+    deleteFile(adapter: string, fileName: string): Promise<void> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('unlink', adapter, fileName, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+                err ? reject(new Error(err)) : resolve(),
+            );
         });
     }
 
     /**
      * Delete a folder of an adapter.
      * All files in folder will be deleted.
+     *
+     * @param adapter The adapter name.
+     * @param folderName The folder name.
      */
-    deleteFolder(
-        /** The adapter name. */
-        adapter: string,
-        /** The file name. */
-        folderName: string,
-    ): Promise<void> {
+    deleteFolder(adapter: string, folderName: string): Promise<void> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('deleteFolder', adapter, folderName, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+                err ? reject(new Error(err)) : resolve(),
+            );
         });
     }
 
     /**
      * Get the list of all hosts.
-     * @param {boolean} [update] Force update.
+     *
+     * @param update Force update.
      */
     getHosts(update?: boolean): Promise<ioBroker.HostObject[]> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!update && this._promises.hosts) {
             return this._promises.hosts;
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         this._promises.hosts = new Promise((resolve, reject) => {
@@ -2149,9 +2206,9 @@ class Connection {
                 'system',
                 'host',
                 { startkey: 'system.host.', endkey: 'system.host.\u9999' },
-                (err: string | null, doc: { rows: { value: ioBroker.HostObject; id: string }[]}) => {
+                (err: string | null, doc: { rows: { value: ioBroker.HostObject; id: string }[] }) => {
                     if (err) {
-                        reject(err);
+                        reject(new Error(err));
                     } else {
                         resolve(doc.rows.map(item => item.value));
                     }
@@ -2164,19 +2221,18 @@ class Connection {
 
     /**
      * Get the list of all users.
+     *
+     * @param update Force update.
      */
-    getUsers(
-        /** Force update. */
-        update?: boolean,
-    ): Promise<ioBroker.UserObject[]> {
+    getUsers(update?: boolean): Promise<ioBroker.UserObject[]> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!update && this._promises.users) {
             return this._promises.users;
         }
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         this._promises.users = new Promise((resolve, reject) => {
@@ -2187,7 +2243,7 @@ class Connection {
                 { startkey: 'system.user.', endkey: 'system.user.\u9999' },
                 (err: string | null, doc: { rows: { value: ioBroker.UserObject; id: string }[] }) => {
                     if (err) {
-                        reject(err);
+                        reject(new Error(err));
                     } else {
                         resolve(doc.rows.map(item => item.value));
                     }
@@ -2200,16 +2256,15 @@ class Connection {
 
     /**
      * Get the list of all groups.
+     *
+     * @param update Force update.
      */
-    getGroups(
-        /** Force update. */
-        update?: boolean,
-    ): Promise<ioBroker.GroupObject[]> {
+    getGroups(update?: boolean): Promise<ioBroker.GroupObject[]> {
         if (!update && this._promises.groups) {
             return this._promises.groups;
         }
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         this._promises.groups = new Promise((resolve, reject) => {
@@ -2220,7 +2275,7 @@ class Connection {
                 { startkey: 'system.group.', endkey: 'system.group.\u9999' },
                 (err: string | null, doc: { rows: { value: ioBroker.GroupObject; id: string }[] }) => {
                     if (err) {
-                        reject(err);
+                        reject(new Error(err));
                     } else {
                         resolve(doc.rows.map(item => item.value));
                     }
@@ -2233,16 +2288,14 @@ class Connection {
 
     /**
      * Get the host information.
+     *
+     * @param host The host name.
+     * @param update Force update.
+     * @param timeoutMs Optional read timeout.
      */
-    getHostInfo(
-        host: string,
-        /** Force update. */
-        update?: boolean,
-        /** optional read timeout. */
-        timeoutMs?: number,
-    ): Promise<HostInfo> {
+    getHostInfo(host: string, update?: boolean, timeoutMs?: number): Promise<HostInfo> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!host.startsWith('system.host.')) {
             host += `system.host.${host}`;
@@ -2253,14 +2306,14 @@ class Connection {
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         this._promises[`hostInfo_${host}`] = new Promise((resolve, reject) => {
             let timeout: ReturnType<typeof setTimeout> | null = setTimeout(() => {
                 if (timeout) {
                     timeout = null;
-                    reject('getHostInfo timeout');
+                    reject(new Error('getHostInfo timeout'));
                 }
             }, timeoutMs || this.props.cmdTimeout);
 
@@ -2269,9 +2322,9 @@ class Connection {
                     clearTimeout(timeout);
                     timeout = null;
                     if (data === PERMISSION_ERROR) {
-                        reject('May not read "getHostInfo"');
+                        reject(new Error('May not read "getHostInfo"'));
                     } else if (!data || typeof data !== 'object') {
-                        reject('Cannot read "getHostInfo"');
+                        reject(new Error('Cannot read "getHostInfo"'));
                     } else {
                         resolve(data);
                     }
@@ -2284,16 +2337,14 @@ class Connection {
 
     /**
      * Get the host information (short version).
+     *
+     * @param host The host name.
+     * @param update Force update.
+     * @param timeoutMs Optional read timeout.
      */
-    getHostInfoShort(
-        host: string,
-        /** Force update. */
-        update?: boolean,
-        /** optional read timeout. */
-        timeoutMs?: number,
-    ): Promise<HostInfo> {
+    getHostInfoShort(host: string, update?: boolean, timeoutMs?: number): Promise<HostInfo> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!host.startsWith('system.host.')) {
             host += `system.host.${host}`;
@@ -2303,14 +2354,14 @@ class Connection {
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         this._promises[`hostInfoShort_${host}`] = new Promise((resolve, reject) => {
             let timeout: ReturnType<typeof setTimeout> | null = setTimeout(() => {
                 if (timeout) {
                     timeout = null;
-                    reject('hostInfoShort timeout');
+                    reject(new Error('hostInfoShort timeout'));
                 }
             }, timeoutMs || this.props.cmdTimeout);
 
@@ -2319,9 +2370,9 @@ class Connection {
                     clearTimeout(timeout);
                     timeout = null;
                     if (data === PERMISSION_ERROR) {
-                        reject('May not read "getHostInfoShort"');
+                        reject(new Error('May not read "getHostInfoShort"'));
                     } else if (!data || typeof data !== 'object') {
-                        reject('Cannot read "getHostInfoShort"');
+                        reject(new Error('Cannot read "getHostInfoShort"'));
                     } else {
                         resolve(data);
                     }
@@ -2334,24 +2385,27 @@ class Connection {
 
     /**
      * Get the repository.
+     *
+     * @param host The host name.
+     * @param options Options.
+     * @param update Force update.
+     * @param timeoutMs Timeout in ms.
      */
     getRepository(
         host: string,
         options?: { update: boolean; repo: string } | string,
-        /** Force update. */
         update?: boolean,
-        /** timeout in ms. */
         timeoutMs?: number,
     ): Promise<Record<string, ioBroker.AdapterObject>> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!update && this._promises.repo) {
             return this._promises.repo;
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         if (!host.startsWith('system.host.')) {
@@ -2362,23 +2416,29 @@ class Connection {
             let timeout: ReturnType<typeof setTimeout> | null = setTimeout(() => {
                 if (timeout) {
                     timeout = null;
-                    reject('getRepository timeout');
+                    reject(new Error('getRepository timeout'));
                 }
             }, timeoutMs || this.props.cmdTimeout);
 
-            this._socket.emit('sendToHost', host, 'getRepository', options, (data: string | Record<string, ioBroker.AdapterObject>) => {
-                if (timeout) {
-                    clearTimeout(timeout);
-                    timeout = null;
-                    if (data === PERMISSION_ERROR) {
-                        reject('May not read "getRepository"');
-                    } else if (!data || typeof data !== 'object') {
-                        reject('Cannot read "getRepository"');
-                    } else {
-                        resolve(data);
+            this._socket.emit(
+                'sendToHost',
+                host,
+                'getRepository',
+                options,
+                (data: string | Record<string, ioBroker.AdapterObject>) => {
+                    if (timeout) {
+                        clearTimeout(timeout);
+                        timeout = null;
+                        if (data === PERMISSION_ERROR) {
+                            reject(new Error('May not read "getRepository"'));
+                        } else if (!data || typeof data !== 'object') {
+                            reject(new Error('Cannot read "getRepository"'));
+                        } else {
+                            resolve(data);
+                        }
                     }
-                }
-            });
+                },
+            );
         });
 
         return this._promises.repo;
@@ -2386,16 +2446,14 @@ class Connection {
 
     /**
      * Get the installed.
+     *
+     * @param host The host name.
+     * @param update Force update.
+     * @param cmdTimeout Timeout in ms.
      */
-    getInstalled(
-        host: string,
-        /** Force update. */
-        update?: boolean,
-        /** timeout in ms */
-        cmdTimeout?: number,
-    ): Promise<Record<string, ioBroker.AdapterObject>> {
+    getInstalled(host: string, update?: boolean, cmdTimeout?: number): Promise<Record<string, ioBroker.AdapterObject>> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
 
         this._promises.installed = this._promises.installed || {};
@@ -2405,7 +2463,7 @@ class Connection {
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         if (!host.startsWith('system.host.')) {
@@ -2416,23 +2474,29 @@ class Connection {
             let timeout: ReturnType<typeof setTimeout> | null = setTimeout(() => {
                 if (timeout) {
                     timeout = null;
-                    reject('getInstalled timeout');
+                    reject(new Error('getInstalled timeout'));
                 }
             }, cmdTimeout || this.props.cmdTimeout);
 
-            this._socket.emit('sendToHost', host, 'getInstalled', null, (data: string | Record<string, ioBroker.AdapterObject>) => {
-                if (timeout) {
-                    clearTimeout(timeout);
-                    timeout = null;
-                    if (data === PERMISSION_ERROR) {
-                        reject('May not read "getInstalled"');
-                    } else if (!data || typeof data !== 'object') {
-                        reject('Cannot read "getInstalled"');
-                    } else {
-                        resolve(data);
+            this._socket.emit(
+                'sendToHost',
+                host,
+                'getInstalled',
+                null,
+                (data: string | Record<string, ioBroker.AdapterObject>) => {
+                    if (timeout) {
+                        clearTimeout(timeout);
+                        timeout = null;
+                        if (data === PERMISSION_ERROR) {
+                            reject(new Error('May not read "getInstalled"'));
+                        } else if (!data || typeof data !== 'object') {
+                            reject(new Error('Cannot read "getInstalled"'));
+                        } else {
+                            resolve(data);
+                        }
                     }
-                }
-            });
+                },
+            );
         });
 
         return this._promises.installed[host] as Promise<Record<string, ioBroker.AdapterObject>>;
@@ -2440,21 +2504,19 @@ class Connection {
 
     /**
      * Rename file or folder in ioBroker DB
+     *
+     * @param adapter Instance name, like `vis-2.0`.
+     * @param oldName The current file name, e.g., main/vis-views.json
+     * @param newName The new file name, e.g., main/vis-views-new.json
      */
-    rename(
-        /** instance name */
-        adapter: string,
-        /** current file name, e.g., main/vis-views.json */
-        oldName: string,
-        /** new file name, e.g., main/vis-views-new.json */
-        newName: string,
-    ): Promise<void> {
+    rename(adapter: string, oldName: string, newName: string): Promise<void> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('rename', adapter, oldName, newName, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+                err ? reject(new Error(err)) : resolve(),
+            );
         });
     }
 
@@ -2470,11 +2532,12 @@ class Connection {
         newName: string,
     ): Promise<void> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('renameFile', adapter, oldName, newName, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+                err ? reject(new Error(err)) : resolve(),
+            );
         });
     }
 
@@ -2492,10 +2555,10 @@ class Connection {
         cmdTimeout: number,
     ): Promise<void> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         if (!host.startsWith(host)) {
@@ -2503,19 +2566,21 @@ class Connection {
         }
 
         return new Promise((resolve, reject) => {
-            let timeout: ReturnType<typeof setTimeout> | null = cmdTimeout ? setTimeout(() => {
-                if (timeout) {
-                    timeout = null;
-                    reject('cmdExec timeout');
-                }
-            }, cmdTimeout) : null;
+            let timeout: ReturnType<typeof setTimeout> | null = cmdTimeout
+                ? setTimeout(() => {
+                      if (timeout) {
+                          timeout = null;
+                          reject(new Error('cmdExec timeout'));
+                      }
+                  }, cmdTimeout)
+                : null;
 
             this._socket.emit('cmdExec', host, cmdId, cmd, null, (err: string | null) => {
                 if (!cmdTimeout || timeout) {
                     timeout && clearTimeout(timeout);
                     timeout = null;
                     if (err) {
-                        reject(err);
+                        reject(new Error(err));
                     } else {
                         resolve();
                     }
@@ -2538,12 +2603,13 @@ class Connection {
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         this._promises[`supportedFeatures_${feature}`] = new Promise((resolve, reject) => {
             this._socket.emit('checkFeatureSupported', feature, (err: string | null, supported: boolean) =>
-                (err ? reject(err) : resolve(supported)));
+                err ? reject(new Error(err)) : resolve(supported),
+            );
         });
 
         return this._promises[`supportedFeatures_${feature}`] as Promise<boolean>;
@@ -2554,18 +2620,18 @@ class Connection {
      */
     async readBaseSettings(host: string): Promise<Record<string, any>> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         const result = await this.checkFeatureSupported('CONTROLLER_READWRITE_BASE_SETTINGS');
         if (result) {
             if (!this.connected) {
-                return Promise.reject(NOT_CONNECTED);
+                return Promise.reject(new Error(NOT_CONNECTED));
             }
             return new Promise((resolve, reject) => {
                 let timeout: ReturnType<typeof setTimeout> | null = setTimeout(() => {
                     if (timeout) {
                         timeout = null;
-                        reject('readBaseSettings timeout');
+                        reject(new Error('readBaseSettings timeout'));
                     }
                 }, this.props.cmdTimeout);
 
@@ -2573,50 +2639,60 @@ class Connection {
                     host = host.replace(/^system\.host\./, '');
                 }
 
-                this._socket.emit('sendToHost', host, 'readBaseSettings', null, (data: Record<string, any> | string) => {
-                    if (timeout) {
-                        clearTimeout(timeout);
-                        timeout = null;
+                this._socket.emit(
+                    'sendToHost',
+                    host,
+                    'readBaseSettings',
+                    null,
+                    (data: Record<string, any> | string) => {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                            timeout = null;
 
-                        if (data === PERMISSION_ERROR) {
-                            reject('May not read "BaseSettings"');
-                        } else if (!data || typeof data !== 'object') {
-                            reject('Cannot read "BaseSettings"');
-                        } else {
-                            resolve(data);
+                            if (data === PERMISSION_ERROR) {
+                                reject(new Error('May not read "BaseSettings"'));
+                            } else if (!data || typeof data !== 'object') {
+                                reject(new Error('Cannot read "BaseSettings"'));
+                            } else {
+                                resolve(data);
+                            }
                         }
-                    }
-                });
+                    },
+                );
             });
         }
-        return Promise.reject('Not supported');
+        return Promise.reject(new Error('Not supported'));
     }
 
     /**
      * Write the base settings of a given host.
-     * @param {string} host
-     * @param {any} config
-     * @returns {Promise<any>}
+     *
+     * @param host The host name.
+     * @param config The new base settings.
      */
-    writeBaseSettings(host: string, config: Record<string, any>): Promise<{ result?: 'ok'; error?: string }> {
+    writeBaseSettings(host: string, config: IoBJson): Promise<{ result?: 'ok'; error?: string }> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
-        return this.checkFeatureSupported('CONTROLLER_READWRITE_BASE_SETTINGS')
-            .then(result => {
-                if (result) {
-                    if (!this.connected) {
-                        return Promise.reject(NOT_CONNECTED);
-                    }
-                    return new Promise((resolve, reject) => {
-                        let timeout: ReturnType<typeof setTimeout> | null = setTimeout(() => {
-                            if (timeout) {
-                                timeout = null;
-                                reject('writeBaseSettings timeout');
-                            }
-                        }, this.props.cmdTimeout);
+        return this.checkFeatureSupported('CONTROLLER_READWRITE_BASE_SETTINGS').then(result => {
+            if (result) {
+                if (!this.connected) {
+                    return Promise.reject(new Error(NOT_CONNECTED));
+                }
+                return new Promise((resolve, reject) => {
+                    let timeout: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+                        if (timeout) {
+                            timeout = null;
+                            reject(new Error('writeBaseSettings timeout'));
+                        }
+                    }, this.props.cmdTimeout);
 
-                        this._socket.emit('sendToHost', host, 'writeBaseSettings', config, (data: { result?: 'ok'; error?: string } | string) => {
+                    this._socket.emit(
+                        'sendToHost',
+                        host,
+                        'writeBaseSettings',
+                        config,
+                        (data: { result?: 'ok'; error?: string } | string) => {
                             if (timeout) {
                                 clearTimeout(timeout);
                                 timeout = null;
@@ -2629,12 +2705,13 @@ class Connection {
                                     resolve(data as { result?: 'ok'; error?: string });
                                 }
                             }
-                        });
-                    });
-                }
+                        },
+                    );
+                });
+            }
 
-                return Promise.reject(new Error('Not supported'));
-            });
+            return Promise.reject(new Error('Not supported'));
+        });
     }
 
     /**
@@ -2642,31 +2719,29 @@ class Connection {
      */
     restartController(host: string): Promise<boolean> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('sendToHost', host, 'restartController', null, (error: string | null) => {
-                error ? reject(error) : resolve(true);
+                error ? reject(new Error(error)) : resolve(true);
             });
         });
     }
 
     /**
      * Read statistics information from host
-     * @param {string} host
-     * @param {string} typeOfDiag one of none, normal, no-city, extended
-     * @returns {Promise<any>}
+     *
+     * @param host Host name
+     * @param typeOfDiag one of none, normal, no-city, extended
      */
-    getDiagData(
-        host: string,
-        typeOfDiag: 'none' | 'normal' | 'no-city' | 'extended',
-    ): Promise<Record<string, any>> {
+    getDiagData(host: string, typeOfDiag: 'none' | 'normal' | 'no-city' | 'extended'): Promise<Record<string, any>> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         return new Promise(resolve => {
             this._socket.emit('sendToHost', host, 'getDiagData', typeOfDiag, (result: Record<string, any>) =>
-                resolve(result));
+                resolve(result),
+            );
         });
     }
 
@@ -2675,43 +2750,55 @@ class Connection {
      */
     getForeignStates(pattern?: string): Promise<Record<string, ioBroker.State>> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         if (Connection.isWeb()) {
             return new Promise((resolve, reject) => {
-                this._socket.emit('getStates', pattern || '*', (err: string | null, states: Record<string, ioBroker.State>) =>
-                    (err ? reject(err) : resolve(states)));
+                this._socket.emit(
+                    'getStates',
+                    pattern || '*',
+                    (err: string | null, states: Record<string, ioBroker.State>) =>
+                        err ? reject(new Error(err)) : resolve(states),
+                );
             });
         }
 
         return new Promise((resolve, reject) => {
-            this._socket.emit('getForeignStates', pattern || '*', (err: string | null, states: Record<string, ioBroker.State>) =>
-                (err ? reject(err) : resolve(states)));
+            this._socket.emit(
+                'getForeignStates',
+                pattern || '*',
+                (err: string | null, states: Record<string, ioBroker.State>) =>
+                    err ? reject(new Error(err)) : resolve(states),
+            );
         });
     }
 
     /**
      * Get foreign objects by pattern, by specific type and resolve their enums. (Only admin)
-     * @returns {ioBroker.GetObjectsPromise}
      */
     getForeignObjects(pattern: string, type?: ioBroker.ObjectType): Promise<Record<string, ioBroker.State>> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
-            this._socket.emit('getForeignObjects', pattern || '*', type, (err: string | null, states: Record<string, ioBroker.State>) =>
-                (err ? reject(err) : resolve(states)));
+            this._socket.emit(
+                'getForeignObjects',
+                pattern || '*',
+                type,
+                (err: string | null, states: Record<string, ioBroker.State>) =>
+                    err ? reject(new Error(err)) : resolve(states),
+            );
         });
     }
 
     /**
      * Gets the system configuration.
-     * @param {boolean} [update] Force update.
-     * @returns {Promise<ioBroker.OtherObject>}
+     *
+     * @param update Force update.
      */
     getSystemConfig(update?: boolean): Promise<ioBroker.SystemConfigObject> {
         if (!update && this._promises.systemConfig) {
@@ -2719,16 +2806,15 @@ class Connection {
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
-        this._promises.systemConfig = this.getObject('system.config')
-            .then(obj => {
-                const systemConfig: ioBroker.SystemConfigObject = (obj || {}) as ioBroker.SystemConfigObject;
-                systemConfig.common = systemConfig.common || {} as ioBroker.SystemConfigCommon;
-                systemConfig.native = systemConfig.native || {};
-                return systemConfig;
-            });
+        this._promises.systemConfig = this.getObject('system.config').then(obj => {
+            const systemConfig: ioBroker.SystemConfigObject = (obj || {}) as ioBroker.SystemConfigObject;
+            systemConfig.common = systemConfig.common || ({} as ioBroker.SystemConfigCommon);
+            systemConfig.native = systemConfig.native || {};
+            return systemConfig;
+        });
 
         return this._promises.systemConfig;
     }
@@ -2736,9 +2822,12 @@ class Connection {
     /**
      * Sets the system configuration.
      */
-    setSystemConfig(obj: ioBroker.SettableObjectWorker<ioBroker.SystemConfigObject>): Promise<ioBroker.SystemConfigObject> {
-        return this.setObject('system.config', obj)
-            .then(() => this._promises.systemConfig = Promise.resolve(obj as ioBroker.SystemConfigObject));
+    setSystemConfig(
+        obj: ioBroker.SettableObjectWorker<ioBroker.SystemConfigObject>,
+    ): Promise<ioBroker.SystemConfigObject> {
+        return this.setObject('system.config', obj).then(
+            () => (this._promises.systemConfig = Promise.resolve(obj as ioBroker.SystemConfigObject)),
+        );
     }
 
     /**
@@ -2751,17 +2840,15 @@ class Connection {
     /**
      * Get the history of a given state.
      */
-    getHistory(
-        id: string,
-        options: ioBroker.GetHistoryOptions,
-    ): Promise<ioBroker.GetHistoryResult> {
+    getHistory(id: string, options: ioBroker.GetHistoryOptions): Promise<ioBroker.GetHistoryResult> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         return new Promise((resolve, reject) => {
             this._socket.emit('getHistory', id, options, (err: string | null, values: ioBroker.GetHistoryResult) =>
-                (err ? reject(err) : resolve(values)));
+                err ? reject(new Error(err)) : resolve(values),
+            );
         });
     }
 
@@ -2773,28 +2860,31 @@ class Connection {
         options: ioBroker.GetHistoryOptions,
     ): Promise<{ values: ioBroker.GetHistoryResult; sessionId: string; stepIgnore: number }> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         return new Promise((resolve, reject) => {
-            this._socket.emit('getHistory', id, options, (err: string | null, values: ioBroker.GetHistoryResult, stepIgnore: number, sessionId: string) =>
-                (err ? reject(err) : resolve({ values, sessionId, stepIgnore })));
+            this._socket.emit(
+                'getHistory',
+                id,
+                options,
+                (err: string | null, values: ioBroker.GetHistoryResult, stepIgnore: number, sessionId: string) =>
+                    err ? reject(new Error(err)) : resolve({ values, sessionId, stepIgnore }),
+            );
         });
     }
 
     /**
      * Change the password of the given user.
      */
-    changePassword(
-        user: string,
-        password: string,
-    ): Promise<void> {
+    changePassword(user: string, password: string): Promise<void> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('changePassword', user, password, (err: string | null) =>
-                (err ? reject(err) : resolve()));
+                err ? reject(new Error(err)) : resolve(),
+            );
         });
     }
 
@@ -2807,7 +2897,7 @@ class Connection {
         update?: boolean,
     ): Promise<string[]> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!host.startsWith('system.host.')) {
             host = `system.host.${host}`;
@@ -2816,8 +2906,7 @@ class Connection {
         if (!update && this._promises[`IPs_${host}`]) {
             return this._promises[`IPs_${host}`] as Promise<string[]>;
         }
-        this._promises[`IPs_${host}`] = this.getObject(host)
-            .then(obj => (obj?.common ? obj.common.address || [] : []));
+        this._promises[`IPs_${host}`] = this.getObject(host).then(obj => (obj?.common ? obj.common.address || [] : []));
 
         return this._promises[`IPs_${host}`] as Promise<string[]>;
     }
@@ -2831,14 +2920,16 @@ class Connection {
         update?: boolean,
     ): Promise<{ name: string; address: string; family: 'ipv4' | 'ipv6' }[]> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (ipOrHostName.startsWith('system.host.')) {
             ipOrHostName = ipOrHostName.replace(/^system\.host\./, '');
         }
 
         if (!update && this._promises[`rIPs_${ipOrHostName}`]) {
-            return this._promises[`rIPs_${ipOrHostName}`] as Promise<{ name: string; address: string; family: 'ipv4' | 'ipv6' }[]>;
+            return this._promises[`rIPs_${ipOrHostName}`] as Promise<
+                { name: string; address: string; family: 'ipv4' | 'ipv6' }[]
+            >;
         }
         this._promises[`rIPs_${ipOrHostName}`] = new Promise(resolve => {
             this._socket.emit('getHostByIp', ipOrHostName, (ip: string, host: any) => {
@@ -2881,7 +2972,9 @@ class Connection {
             });
         });
 
-        return this._promises[`rIPs_${ipOrHostName}`] as Promise<{ name: string; address: string; family: 'ipv4' | 'ipv6' }[]>;
+        return this._promises[`rIPs_${ipOrHostName}`] as Promise<
+            { name: string; address: string; family: 'ipv4' | 'ipv6' }[]
+        >;
     }
 
     /**
@@ -2889,11 +2982,12 @@ class Connection {
      */
     encrypt(text: string): Promise<string> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('encrypt', text, (err: string | null, _text: string) =>
-                (err ? reject(err) : resolve(_text)));
+                err ? reject(new Error(err)) : resolve(_text),
+            );
         });
     }
 
@@ -2902,52 +2996,57 @@ class Connection {
      */
     decrypt(encryptedText: string): Promise<string> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('decrypt', encryptedText, (err: string | null, text: string) =>
-                (err ? reject(err) : resolve(text)));
+                err ? reject(new Error(err)) : resolve(text),
+            );
         });
     }
 
     /**
      * Gets the version.
-     * @returns {Promise<{version: string; serverName: string}>}
      */
     getVersion(update?: boolean): Promise<{ version: string; serverName: string }> {
         if (update && this._promises.version) {
             delete this._promises.version;
         }
 
-        this._promises.version = this._promises.version || new Promise((resolve, reject) => {
-            this._socket.emit('getVersion', (err: string | null, version: string, serverName: string) => {
-                // support of old socket.io
-                if (err && !version && typeof err === 'string' && err.match(/\d+\.\d+\.\d+/)) {
-                    resolve({ version: err, serverName: 'socketio' });
-                } else {
-                    err ? reject(err) : resolve({ version, serverName });
-                }
+        this._promises.version =
+            this._promises.version ||
+            new Promise((resolve, reject) => {
+                this._socket.emit('getVersion', (err: string | null, version: string, serverName: string) => {
+                    // support of old socket.io
+                    if (err && !version && typeof err === 'string' && err.match(/\d+\.\d+\.\d+/)) {
+                        resolve({ version: err, serverName: 'socketio' });
+                    } else {
+                        err ? reject(new Error(err)) : resolve({ version, serverName });
+                    }
+                });
             });
-        });
 
         return this._promises.version;
     }
 
     /**
      * Gets the web server name.
-     * @returns {Promise<string>}
      */
     getWebServerName(): Promise<string> {
-        this._promises.webName = this._promises.webName || new Promise((resolve, reject) => {
-            this._socket.emit('getAdapterName', (err: string | null, name: string) =>
-                (err ? reject(err) : resolve(name)));
-        });
+        this._promises.webName =
+            this._promises.webName ||
+            new Promise((resolve, reject) => {
+                this._socket.emit('getAdapterName', (err: string | null, name: string) =>
+                    err ? reject(new Error(err)) : resolve(name),
+                );
+            });
 
         return this._promises.webName;
     }
 
     /**
      * Gets the admin version.
+     *
      * @deprecated use getVersion()
      */
     getAdminVersion(): Promise<{ version: string; serverName: string }> {
@@ -2956,112 +3055,128 @@ class Connection {
     }
 
     /**
-     * Change access rights for file
+     * Change access rights for a file
+     *
+     * @param adapter The adapter name.
+     * @param fileName file name with a full path. It could be like vis.0/*
+     * @param options like {mode: 0x644}
+     * @param options.mode Access rights. Default is 0x644
      */
     chmodFile(
-        /** adapter name */
         adapter: string,
-        /** file name with a full path. It could be like vis.0/* */
-        filename: string,
-        /** like {mode: 0x644} */
+        fileName: string,
         options?: { mode: number },
     ): Promise<{ entries: ioBroker.ChownFileResult[]; id: string }> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         return new Promise((resolve, reject) => {
-            this._socket.emit('chmodFile', adapter, filename, options, (err: string | null, entries: ioBroker.ChownFileResult[], id: string) =>
-                (err ? reject(err) : resolve({ entries, id })));
+            this._socket.emit(
+                'chmodFile',
+                adapter,
+                fileName,
+                options,
+                (err: string | null, entries: ioBroker.ChownFileResult[], id: string) =>
+                    err ? reject(new Error(err)) : resolve({ entries, id }),
+            );
         });
     }
 
     /**
-     * Change an owner or/and owner group for file
+     * Change an owner or/and owner group for a file
+     *
+     * @param adapter The adapter name.
+     * @param fileName file name with a full path. It could be like vis.0/*
+     * @param options like {owner: 'user', ownerGroup: 'group'}
+     * @param options.owner User name
+     * @param options.ownerGroup Group name
      */
     chownFile(
-        /** adapter name */
         adapter: string,
-        /** file name with a full path. It could be like vis.0/* */
         fileName: string,
         options: { owner?: string; ownerGroup?: string },
     ): Promise<{ entries: ioBroker.ChownFileResult[]; id: string }> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         return new Promise((resolve, reject) => {
-            this._socket.emit('chownFile', adapter, fileName, options, (err: string | null, entries: ioBroker.ChownFileResult[], id: string) =>
-                (err ? reject(err) : resolve({ entries, id })));
+            this._socket.emit(
+                'chownFile',
+                adapter,
+                fileName,
+                options,
+                (err: string | null, entries: ioBroker.ChownFileResult[], id: string) =>
+                    err ? reject(new Error(err)) : resolve({ entries, id }),
+            );
         });
     }
 
     /**
      * Check if the file exists
+     *
+     * @param adapter The adapter name.
+     * @param fileName file name with a full path. It could be like vis.0/*
      */
-    fileExists(
-        /** adapter name */
-        adapter: string,
-        /** file name with a full path. It could be like vis.0/* */
-        fileName: string,
-    ): Promise<boolean> {
+    fileExists(adapter: string, fileName: string): Promise<boolean> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         return new Promise((resolve, reject) => {
             this._socket.emit('fileExists', adapter, fileName, (err: string | null, exists: boolean) =>
-                (err ? reject(err) : resolve(exists)));
+                err ? reject(new Error(err)) : resolve(exists),
+            );
         });
     }
 
     /**
      * Get the alarm notifications from a host (only for admin connection).
-     * @returns {Promise<any>}
      */
-    getNotifications(
-        host: string,
-        category?: string,
-    ): Promise<FilteredNotificationInformation> {
+    getNotifications(host: string, category?: string): Promise<FilteredNotificationInformation> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise(resolve => {
-            this._socket.emit('sendToHost', host, 'getNotifications', { category }, (notifications: FilteredNotificationInformation) =>
-                resolve(notifications));
+            this._socket.emit(
+                'sendToHost',
+                host,
+                'getNotifications',
+                { category },
+                (notifications: FilteredNotificationInformation) => resolve(notifications),
+            );
         });
     }
 
     /**
      * Clear the alarm notifications on a host (only for admin connection).
-     * @param {string} host
-     * @param {string} [category] - optional
-     * @returns {Promise<any>}
+     *
+     * @param host The host name.
+     * @param category optional
      */
-    clearNotifications(
-        host: string,
-        category?: string,
-    ): Promise<{ result: 'ok' }> {
+    clearNotifications(host: string, category?: string): Promise<{ result: 'ok' }> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise(resolve => {
             this._socket.emit('sendToHost', host, 'clearNotifications', { category }, (result: { result: 'ok' }) =>
-                resolve(result));
+                resolve(result),
+            );
         });
     }
 
@@ -3070,52 +3185,51 @@ class Connection {
      */
     getIsEasyModeStrict(): Promise<boolean> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('getIsEasyModeStrict', (error: null | string, isStrict: boolean) =>
-                (error ? reject(error) : resolve(isStrict)));
+                error ? reject(new Error(error)) : resolve(isStrict),
+            );
         });
     }
 
     /**
      * Read easy mode configuration (only for admin connection).
-     * @returns {Promise<any>}
      */
     getEasyMode(): Promise<any> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('getEasyMode', (error: string | null, config: any) =>
-                (error ? reject(error) : resolve(config)));
+                error ? reject(new Error(error)) : resolve(config),
+            );
         });
     }
 
     /**
      * Read current user
-     * @returns {Promise<string>}
      */
     getCurrentUser(): Promise<string> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         return new Promise(resolve => {
-            this._socket.emit('authEnabled', (isSecure: boolean, user: string) =>
-                resolve(user));
+            this._socket.emit('authEnabled', (isSecure: boolean, user: string) => resolve(user));
         });
     }
 
-    getCurrentSession(cmdTimeout?: number) {
+    getCurrentSession(cmdTimeout?: number): Promise<{ expireInSec: number }> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         return new Promise((resolve, reject) => {
@@ -3125,7 +3239,7 @@ class Connection {
                 if (timeout) {
                     timeout = null;
                     controller.abort();
-                    reject('getCurrentSession timeout');
+                    reject(new Error('getCurrentSession timeout'));
                 }
             }, cmdTimeout || 5000);
 
@@ -3138,25 +3252,24 @@ class Connection {
                         resolve(json);
                     }
                 })
-                .catch(e =>
-                    reject(`getCurrentSession: ${e}`));
+                .catch(e => reject(new Error(`getCurrentSession: ${e}`)));
         });
     }
 
     /**
      * Read adapter ratings
-     * @returns {Promise<any>}
      */
     getRatings(update?: boolean): Promise<any> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit('getRatings', update, (err: string | null, ratings: any) =>
-                (err ? reject(err) : resolve(ratings)));
+                err ? reject(new Error(err)) : resolve(ratings),
+            );
         });
     }
 
@@ -3165,13 +3278,15 @@ class Connection {
      */
     getCurrentInstance(): Promise<string> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
-        this._promises.currentInstance = this._promises.currentInstance ||
+        this._promises.currentInstance =
+            this._promises.currentInstance ||
             new Promise((resolve, reject) => {
                 this._socket.emit('getCurrentInstance', (err: string | null, namespace: string) =>
-                    (err ? reject(err) : resolve(namespace)));
+                    err ? reject(new Error(err)) : resolve(namespace),
+                );
             });
 
         return this._promises.currentInstance;
@@ -3180,17 +3295,20 @@ class Connection {
     // returns very optimized information for adapters to minimize a connection load
     getCompactAdapters(update?: boolean): Promise<Record<string, ioBroker.AdapterObject>> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!update && this._promises.compactAdapters) {
             return this._promises.compactAdapters;
         }
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         this._promises.compactAdapters = new Promise((resolve, reject) => {
-            this._socket.emit('getCompactAdapters', (err: string | null, adapters: Record<string, ioBroker.AdapterObject>) =>
-                (err ? reject(err) : resolve(adapters)));
+            this._socket.emit(
+                'getCompactAdapters',
+                (err: string | null, adapters: Record<string, ioBroker.AdapterObject>) =>
+                    err ? reject(new Error(err)) : resolve(adapters),
+            );
         });
 
         return this._promises.compactAdapters;
@@ -3205,24 +3323,27 @@ class Connection {
     // returns very optimized information for adapters to minimize a connection load
     getCompactInstances(update?: boolean): Promise<Record<string, ioBroker.InstanceObject>> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!update && this._promises.compactInstances) {
             return this._promises.compactInstances;
         }
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         this._promises.compactInstances = new Promise((resolve, reject) => {
-            this._socket.emit('getCompactInstances', (err: string | null, instances: Record<string, ioBroker.InstanceObject>) =>
-                (err ? reject(err) : resolve(instances)));
+            this._socket.emit(
+                'getCompactInstances',
+                (err: string | null, instances: Record<string, ioBroker.InstanceObject>) =>
+                    err ? reject(new Error(err)) : resolve(instances),
+            );
         });
 
         return this._promises.compactInstances;
     }
 
-    getAdapternInstancesResetCache(adapter?: string) {
+    getAdapternInstancesResetCache(adapter?: string): void {
         adapter = adapter || '';
         delete this._promises.compactInstances;
         delete this._promises[`instances_${adapter}`];
@@ -3238,7 +3359,7 @@ class Connection {
         cmdTimeout?: number,
     ): Promise<Record<string, ioBroker.AdapterObject>> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
 
         this._promises.installedCompact = this._promises.installedCompact || {};
@@ -3248,7 +3369,7 @@ class Connection {
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         if (!host.startsWith('system.host.')) {
@@ -3259,7 +3380,7 @@ class Connection {
             let timeout: ReturnType<typeof setTimeout> | null = setTimeout(() => {
                 if (timeout) {
                     timeout = null;
-                    reject('getCompactInstalled timeout');
+                    reject(new Error('getCompactInstalled timeout'));
                 }
             }, cmdTimeout || this.props.cmdTimeout);
 
@@ -3268,9 +3389,9 @@ class Connection {
                     clearTimeout(timeout);
                     timeout = null;
                     if (data === PERMISSION_ERROR) {
-                        reject('May not read "getCompactInstalled"');
+                        reject(new Error('May not read "getCompactInstalled"'));
                     } else if (!data || typeof data !== 'object') {
-                        reject('Cannot read "getCompactInstalled"');
+                        reject(new Error('Cannot read "getCompactInstalled"'));
                     } else {
                         resolve(data);
                     }
@@ -3283,38 +3404,35 @@ class Connection {
 
     // returns very optimized information for adapters to minimize a connection load.
     // reads only version of installed adapter
-    getCompactSystemRepositories(
-        update?: boolean,
-        cmdTimeout?: number,
-    ): Promise<ioBroker.Object> {
+    getCompactSystemRepositories(update?: boolean, cmdTimeout?: number): Promise<CompactSystemRepository> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
 
         if (!update && this._promises.getCompactSystemRepositories) {
-            return this._promises.getCompactSystemRepositories as Promise<ioBroker.Object>;
+            return this._promises.getCompactSystemRepositories;
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         this._promises.getCompactSystemRepositories = new Promise((resolve, reject) => {
             let timeout: ReturnType<typeof setTimeout> | null = setTimeout(() => {
                 if (timeout) {
                     timeout = null;
-                    reject('getCompactSystemRepositories timeout');
+                    reject(new Error('getCompactSystemRepositories timeout'));
                 }
             }, cmdTimeout || this.props.cmdTimeout);
 
-            this._socket.emit('getCompactSystemRepositories', (data: ioBroker.Object | string)  => {
+            this._socket.emit('getCompactSystemRepositories', (data: CompactSystemRepository | string) => {
                 if (timeout) {
                     clearTimeout(timeout);
                     timeout = null;
                     if (data === PERMISSION_ERROR) {
-                        reject('May not read "getCompactSystemRepositories"');
+                        reject(new Error('May not read "getCompactSystemRepositories"'));
                     } else if (!data || typeof data !== 'object') {
-                        reject('Cannot read "getCompactSystemRepositories"');
+                        reject(new Error('Cannot read "getCompactSystemRepositories"'));
                     } else {
                         resolve(data);
                     }
@@ -3332,12 +3450,15 @@ class Connection {
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         this._promises.systemConfigPromise = new Promise((resolve, reject) => {
-            this._socket.emit('getCompactSystemConfig', (err: string | null, systemConfig: ioBroker.SystemConfigObject) =>
-                (err ? reject(err) : resolve(systemConfig)));
+            this._socket.emit(
+                'getCompactSystemConfig',
+                (err: string | null, systemConfig: ioBroker.SystemConfigObject) =>
+                    err ? reject(new Error(err)) : resolve(systemConfig),
+            );
         });
 
         return this._promises.systemConfigPromise;
@@ -3345,10 +3466,10 @@ class Connection {
 
     /**
      * Get the repository in compact form (only version and icon).
-     * @param {string} host
-     * @param {boolean} [update] Force update.
-     * @param {number} [timeoutMs] timeout in ms.
-     * @returns {Promise<any>}
+     *
+     * @param host The host name.
+     * @param update Force update.
+     * @param timeoutMs timeout in ms.
      */
     getCompactRepository(
         host: string,
@@ -3356,7 +3477,7 @@ class Connection {
         timeoutMs?: number,
     ): Promise<Record<string, { version: string; icon: string }>> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
 
         if (!update && this._promises.repoCompact) {
@@ -3364,7 +3485,7 @@ class Connection {
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         if (!host.startsWith('system.host.')) {
@@ -3375,29 +3496,33 @@ class Connection {
             let timeout: ReturnType<typeof setTimeout> | null = setTimeout(() => {
                 if (timeout) {
                     timeout = null;
-                    reject('getCompactRepository timeout');
+                    reject(new Error('getCompactRepository timeout'));
                 }
             }, timeoutMs || this.props.cmdTimeout);
 
-            this._socket.emit('getCompactRepository', host, (data: Record<string, { version: string; icon: string }> | string) => {
-                if (timeout) {
-                    clearTimeout(timeout);
-                    timeout = null;
-                    if (data === PERMISSION_ERROR) {
-                        reject('May not read "getCompactRepository"');
-                    } else if (!data) {
-                        reject('Cannot read "getCompactRepository"');
-                    } else {
-                        resolve(data);
+            this._socket.emit(
+                'getCompactRepository',
+                host,
+                (data: Record<string, { version: string; icon: string }> | string) => {
+                    if (timeout) {
+                        clearTimeout(timeout);
+                        timeout = null;
+                        if (data === PERMISSION_ERROR) {
+                            reject(new Error('May not read "getCompactRepository"'));
+                        } else if (!data) {
+                            reject(new Error('Cannot read "getCompactRepository"'));
+                        } else {
+                            resolve(data);
+                        }
                     }
-                }
-            });
+                },
+            );
         });
 
         return this._promises.repoCompact;
     }
 
-    getInstalledResetCache() {
+    getInstalledResetCache(): void {
         delete this._promises.repoCompact;
         delete this._promises.repo;
     }
@@ -3407,19 +3532,20 @@ class Connection {
      */
     getCompactHosts(update?: boolean): Promise<ioBroker.HostObject[]> {
         if (Connection.isWeb()) {
-            return Promise.reject('Allowed only in admin');
+            return Promise.reject(new Error('Allowed only in admin'));
         }
         if (!update && this._promises.hostsCompact) {
             return this._promises.hostsCompact;
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         this._promises.hostsCompact = new Promise((resolve, reject) => {
             this._socket.emit('getCompactHosts', (err: string | null, hosts: ioBroker.HostObject[]) =>
-                (err ? reject(err) : resolve(hosts)));
+                err ? reject(new Error(err)) : resolve(hosts),
+            );
         });
 
         return this._promises.hostsCompact;
@@ -3434,34 +3560,30 @@ class Connection {
         }
 
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
-        this._promises.uuid = this.getObject('system.meta.uuid')
-            .then(obj => obj?.native?.uuid);
+        this._promises.uuid = this.getObject('system.meta.uuid').then(obj => obj?.native?.uuid);
 
         return this._promises.uuid;
     }
 
     /**
      * Subscribe on instance message
-     * @param {string} [targetInstance] instance, like 'cameras.0'
-     * @param {string} [messageType] message type like 'startCamera/cam3'
-     * @param {object} [data] optional data object
-     * @param {function} [callback] message handler
-     * @returns {Promise<null>}
+     *
+     * @param targetInstance instance, like 'cameras.0'
+     * @param  messageType message type like 'startCamera/cam3'
+     * @param data optional data object
+     * @param callback message handler
      */
     subscribeOnInstance(
-        /** instance, like 'cameras.0' */
         targetInstance: string,
-        /** message type like 'startCamera/cam3' */
         messageType: string,
         data: any,
-        /** message handler. Could be null if all callbacks for this messageType should be unsubscribed */
         callback: (_data: Record<string, any>, sourceInstance: string, _messageType: string) => void,
-    ) {
+    ): Promise<{ error?: string; accepted?: boolean; heartbeat?: number }> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
         return new Promise((resolve, reject) => {
             this._socket.emit(
@@ -3471,18 +3593,19 @@ class Connection {
                 data,
                 (err: string | null, result: { error?: string; accepted?: boolean; heartbeat?: number }) => {
                     if (err) {
-                        reject(err);
-                    } else if (result && result.error) {
-                        reject(result.error);
+                        reject(new Error(err));
+                    } else if (result?.error) {
+                        reject(new Error(result.error));
                     } else {
                         if (!targetInstance.startsWith('system.adapter.')) {
                             targetInstance = `system.adapter.${targetInstance}`;
                         }
                         // save callback
                         this._instanceSubscriptions[targetInstance] = this._instanceSubscriptions[targetInstance] || [];
-                        if (!this._instanceSubscriptions[targetInstance].find(sub =>
-                            sub.messageType === messageType &&
-                            sub.callback === callback)
+                        if (
+                            !this._instanceSubscriptions[targetInstance].find(
+                                sub => sub.messageType === messageType && sub.callback === callback,
+                            )
                         ) {
                             this._instanceSubscriptions[targetInstance].push({
                                 messageType,
@@ -3498,13 +3621,14 @@ class Connection {
 
     /**
      * Unsubscribe from instance message
+     *
+     * @param targetInstance instance, like 'cameras.0'
+     * @param messageType message type like 'startCamera/cam3'
+     * @param callback message handler. Could be null if all callbacks for this messageType should be unsubscribed
      */
     unsubscribeFromInstance(
-        /** instance, like 'cameras.0' */
         targetInstance: string,
-        /** message type like 'startCamera/cam3' */
         messageType?: string,
-        /** message handler. Could be null if all callbacks for this messageType should be unsubscribed */
         callback?: (data: Record<string, any>, sourceInstance: string, _messageType: string) => void,
     ): Promise<boolean> {
         if (!targetInstance.startsWith('system.adapter.')) {
@@ -3514,14 +3638,14 @@ class Connection {
         const promiseResults: Promise<boolean>[] = [];
         do {
             deleted = false;
-            const index = this._instanceSubscriptions[targetInstance]?.findIndex(sub =>
-                (!messageType || sub.messageType === messageType) && (!callback || sub.callback === callback));
+            const index = this._instanceSubscriptions[targetInstance]?.findIndex(
+                sub => (!messageType || sub.messageType === messageType) && (!callback || sub.callback === callback),
+            );
 
             if (index !== undefined && index !== null && index !== -1) {
                 deleted = true;
                 // remember messageType
-                const _messageType =
-                    this._instanceSubscriptions[targetInstance][index].messageType;
+                const _messageType = this._instanceSubscriptions[targetInstance][index].messageType;
 
                 this._instanceSubscriptions[targetInstance].splice(index, 1);
                 if (!this._instanceSubscriptions[targetInstance].length) {
@@ -3529,26 +3653,33 @@ class Connection {
                 }
 
                 // try to find another subscription for this instance and messageType
-                const found = this._instanceSubscriptions[targetInstance] &&
+                const found =
+                    this._instanceSubscriptions[targetInstance] &&
                     this._instanceSubscriptions[targetInstance].find(sub => sub.messageType === _messageType);
 
                 if (!found) {
-                    promiseResults.push(new Promise((resolve, reject) => {
-                        this._socket.emit('clientUnsubscribe', targetInstance, messageType, (err: string | null, wasSubscribed: boolean) => {
-                            if (err) {
-                                reject(err);
-                            } else {
-                                resolve(wasSubscribed);
-                            }
-                        });
-                    }));
+                    promiseResults.push(
+                        new Promise((resolve, reject) => {
+                            this._socket.emit(
+                                'clientUnsubscribe',
+                                targetInstance,
+                                messageType,
+                                (err: string | null, wasSubscribed: boolean) => {
+                                    if (err) {
+                                        reject(new Error(err));
+                                    } else {
+                                        resolve(wasSubscribed);
+                                    }
+                                },
+                            );
+                        }),
+                    );
                 }
             }
         } while (deleted && (!callback || !messageType));
 
         if (promiseResults.length) {
-            return Promise.all(promiseResults)
-                .then((results: boolean[]) => results.find(result => result) || false);
+            return Promise.all(promiseResults).then((results: boolean[]) => results.find(result => result) || false);
         }
 
         return Promise.resolve(false);
@@ -3563,25 +3694,24 @@ class Connection {
 
     /**
      * Logout current user
-     * @returns {Promise<null>}
      */
     logout(): Promise<void> {
         if (!this.connected) {
-            return Promise.reject(NOT_CONNECTED);
+            return Promise.reject(new Error(NOT_CONNECTED));
         }
 
         return new Promise((resolve, reject) => {
-            this._socket.emit('logout', (err: string | null) =>
-                (err ? reject(err) : resolve()));
+            this._socket.emit('logout', (err: string | null) => (err ? reject(new Error(err)) : resolve()));
         });
     }
 
     /**
      * This is a special method for vis.
      * It is used to not send to server the changes about "nothing_selected" state
+     *
      * @param id The state that has to be ignored by communication
      */
-    setStateToIgnore(id?: string | null) {
+    setStateToIgnore(id?: string | null): void {
         this.ignoreState = id || '';
     }
 }

@@ -9,10 +9,7 @@ import 'cronstrue/locales/uk';
 import 'cronstrue/locales/pt_BR';
 import 'cronstrue/locales/pl';
 
-function convertCronToText(
-    cron: string,
-    lang?: ioBroker.Languages,
-) {
+function convertCronToText(cron: string, lang?: ioBroker.Languages): string {
     return cronstrue.toString(cron, { locale: lang });
 }
 

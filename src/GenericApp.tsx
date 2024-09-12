@@ -3,9 +3,9 @@
  *
  * MIT License
  *
- * */
-import React from 'react';
-import { PROGRESS, Connection, AdminConnection } from '@iobroker/socket-client';
+ */
+import React, { type JSX } from 'react';
+import { PROGRESS, Connection, type AdminConnection } from '@iobroker/socket-client';
 import * as Sentry from '@sentry/browser';
 
 import { Snackbar, IconButton } from '@mui/material';
@@ -21,7 +21,7 @@ import SaveCloseButtons from './Components/SaveCloseButtons';
 import ConfirmDialog from './Dialogs/Confirm';
 import I18n from './i18n';
 import DialogError from './Dialogs/Error';
-import {
+import type {
     GenericAppProps,
     GenericAppState,
     GenericAppSettings,
@@ -30,6 +30,18 @@ import {
     IobTheme,
     Width,
 } from './types';
+
+import langEn from './i18n/en.json';
+import langDe from './i18n/de.json';
+import langRu from './i18n/ru.json';
+import langPt from './i18n/pt.json';
+import langNl from './i18n/nl.json';
+import langFr from './i18n/fr.json';
+import langIt from './i18n/it.json';
+import langEs from './i18n/es.json';
+import langPl from './i18n/pl.json';
+import langUk from './i18n/uk.json';
+import langZhCn from './i18n/zh-cn.json';
 
 declare global {
     /** If config has been changed */
@@ -101,7 +113,10 @@ body {
 }
 `;
 
-class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extends GenericAppState = GenericAppState> extends Router<TProps, TState> {
+class GenericApp<
+    TProps extends GenericAppProps = GenericAppProps,
+    TState extends GenericAppState = GenericAppState,
+> extends Router<TProps, TState> {
     protected socket: AdminConnection;
 
     protected readonly instance: number;
@@ -134,7 +149,9 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
     private resizeTimer: ReturnType<typeof setTimeout> | null = null;
 
     constructor(props: TProps, settings?: GenericAppSettings) {
-        const ConnectionClass = (props.Connection || settings?.Connection || Connection) as unknown as typeof AdminConnection;
+        const ConnectionClass = (props.Connection ||
+            settings?.Connection ||
+            Connection) as unknown as typeof AdminConnection;
         // const ConnectionClass = props.Connection === 'admin' || settings.Connection = 'admin' ? AdminConnection : (props.Connection || settings.Connection || Connection);
 
         if (!window.document.getElementById('generic-app-iobroker-component')) {
@@ -150,7 +167,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                 const io = new window.SocketClient();
                 delete window.io;
                 window.io = io;
-            } catch (e) {
+            } catch {
                 // ignore
             }
         }
@@ -161,78 +178,98 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
         const query = (window.location.search || '').replace(/^\?/, '').replace(/#.*$/, '');
         const args: Record<string, string | boolean> = {};
-        query.trim().split('&').filter(t => t.trim()).forEach(b => {
-            const parts = b.split('=');
-            args[parts[0]] = parts.length === 2 ? parts[1] : true;
-            if (args[parts[0]] === 'true') {
-                args[parts[0]] = true;
-            } else if (args[parts[0]] === 'false') {
-                args[parts[0]] = false;
-            }
-        });
+        query
+            .trim()
+            .split('&')
+            .filter(t => t.trim())
+            .forEach(b => {
+                const parts = b.split('=');
+                args[parts[0]] = parts.length === 2 ? parts[1] : true;
+                if (args[parts[0]] === 'true') {
+                    args[parts[0]] = true;
+                } else if (args[parts[0]] === 'false') {
+                    args[parts[0]] = false;
+                }
+            });
 
         // extract instance from URL
-        this.instance = settings?.instance ?? props.instance ?? (args.instance !== undefined ? parseInt(args.instance as string, 10) || 0 : (parseInt(window.location.search.slice(1), 10) || 0));
+        this.instance =
+            settings?.instance ??
+            props.instance ??
+            (args.instance !== undefined
+                ? parseInt(args.instance as string, 10) || 0
+                : parseInt(window.location.search.slice(1), 10) || 0);
         // extract adapter name from URL
         const tmp = window.location.pathname.split('/');
-        this.adapterName = settings?.adapterName || props.adapterName || window.adapterName || tmp[tmp.length - 2] || 'iot';
-        this.instanceId  = `system.adapter.${this.adapterName}.${this.instance}`;
+        this.adapterName =
+            settings?.adapterName || props.adapterName || window.adapterName || tmp[tmp.length - 2] || 'iot';
+        this.instanceId = `system.adapter.${this.adapterName}.${this.instance}`;
         this.newReact = args.newReact === true; // it is admin5
 
         const location = Router.getLocation();
-        location.tab = location.tab || ((window as any)._localStorage || window.localStorage).getItem(`${this.adapterName}-adapter`) || '';
+        location.tab =
+            location.tab ||
+            ((window as any)._localStorage || window.localStorage).getItem(`${this.adapterName}-adapter`) ||
+            '';
 
         const themeInstance = this.createTheme();
 
         this.state = {
             ...(this.state || {}), // keep the existing state
-            selectedTab:    ((window as any)._localStorage || window.localStorage).getItem(`${this.adapterName}-adapter`) || '',
+            selectedTab:
+                ((window as any)._localStorage || window.localStorage).getItem(`${this.adapterName}-adapter`) || '',
             selectedTabNum: -1,
-            native:         {},
-            errorText:      '',
-            changed:        false,
-            connected:      false,
-            loaded:         false,
+            native: {},
+            errorText: '',
+            changed: false,
+            connected: false,
+            loaded: false,
             isConfigurationError: '',
-            expertMode:     false,
-            toast:          '',
-            theme:          themeInstance,
-            themeName:      this.getThemeName(themeInstance),
-            themeType:      this.getThemeType(themeInstance),
-            bottomButtons:  (settings && settings.bottomButtons) === false ? false : (props?.bottomButtons !== false),
-            width:          GenericApp.getWidth(),
-            confirmClose:   false,
-            _alert:         false,
-            _alertType:     'info',
-            _alertMessage:  '',
+            expertMode: false,
+            toast: '',
+            theme: themeInstance,
+            themeName: this.getThemeName(themeInstance),
+            themeType: this.getThemeType(themeInstance),
+            bottomButtons: (settings && settings.bottomButtons) === false ? false : props?.bottomButtons !== false,
+            width: GenericApp.getWidth(),
+            confirmClose: false,
+            _alert: false,
+            _alertType: 'info',
+            _alertMessage: '',
         } satisfies GenericAppState as TState;
 
         // init translations
         const translations: Record<ioBroker.Languages, Record<string, string>> = {
-            en: require('./i18n/en.json'),
-            de: require('./i18n/de.json'),
-            ru: require('./i18n/ru.json'),
-            pt: require('./i18n/pt.json'),
-            nl: require('./i18n/nl.json'),
-            fr: require('./i18n/fr.json'),
-            it: require('./i18n/it.json'),
-            es: require('./i18n/es.json'),
-            pl: require('./i18n/pl.json'),
-            uk: require('./i18n/uk.json'),
-            'zh-cn': require('./i18n/zh-cn.json'),
+            en: langEn,
+            de: langDe,
+            ru: langRu,
+            pt: langPt,
+            nl: langNl,
+            fr: langFr,
+            it: langIt,
+            es: langEs,
+            pl: langPl,
+            uk: langUk,
+            'zh-cn': langZhCn,
         };
 
         // merge together
         if (settings && settings.translations) {
             Object.keys(settings.translations).forEach(lang => {
                 if (settings.translations) {
-                    translations[lang as ioBroker.Languages] = Object.assign(translations[lang as ioBroker.Languages], settings.translations[lang as ioBroker.Languages] || {});
+                    translations[lang as ioBroker.Languages] = Object.assign(
+                        translations[lang as ioBroker.Languages],
+                        settings.translations[lang as ioBroker.Languages] || {},
+                    );
                 }
             });
         } else if (props.translations) {
             Object.keys(props.translations).forEach(lang => {
                 if (props.translations) {
-                    translations[lang as ioBroker.Languages] = Object.assign(translations[lang as ioBroker.Languages], props.translations[lang as ioBroker.Languages] || {});
+                    translations[lang as ioBroker.Languages] = Object.assign(
+                        translations[lang as ioBroker.Languages],
+                        props.translations[lang as ioBroker.Languages] || {},
+                    );
                 }
             });
         }
@@ -288,18 +325,25 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                 I18n.setLanguage(this.socket.systemLang);
 
                 // subscribe because of language and expert mode
-                this.socket.subscribeObject('system.config', this.onSystemConfigChanged)
+                this.socket
+                    .subscribeObject('system.config', this.onSystemConfigChanged)
                     .then(() => this.getSystemConfig())
                     .then(obj => {
-                        this._secret = (typeof obj !== 'undefined' && obj.native && obj.native.secret) || 'Zgfr56gFe87jJOM';
+                        this._secret =
+                            (typeof obj !== 'undefined' && obj.native && obj.native.secret) || 'Zgfr56gFe87jJOM';
                         this._systemConfig = obj?.common || ({} as ioBroker.SystemConfigCommon);
                         return this.socket.getObject(this.instanceId);
                     })
                     .then(async obj => {
                         let waitPromise;
-                        const instanceObj: ioBroker.InstanceObject | null | undefined = obj as ioBroker.InstanceObject | null | undefined;
+                        const instanceObj: ioBroker.InstanceObject | null | undefined = obj as
+                            | ioBroker.InstanceObject
+                            | null
+                            | undefined;
 
-                        const sentryPluginEnabled = (await this.socket.getState(`${this.instanceId}.plugins.sentry.enabled`))?.val;
+                        const sentryPluginEnabled = (
+                            await this.socket.getState(`${this.instanceId}.plugins.sentry.enabled`)
+                        )?.val;
 
                         const sentryEnabled =
                             sentryPluginEnabled !== false &&
@@ -309,7 +353,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                             instanceObj.common.version &&
                             // @ts-expect-error will be extended in js-controller TODO: (BF: 2024.05.30) this is redundant to state `${this.instanceId}.plugins.sentry.enabled`, remove this in future when admin sets the state correctly
                             !instanceObj.common.disableDataReporting &&
-                                window.location.host !== 'localhost:3000';
+                            window.location.host !== 'localhost:3000';
 
                         // activate sentry plugin
                         if (!this.sentryStarted && this.sentryDSN && sentryEnabled) {
@@ -318,9 +362,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                             Sentry.init({
                                 dsn: this.sentryDSN,
                                 release: `iobroker.${instanceObj.common.name}@${instanceObj.common.version}`,
-                                integrations: [
-                                    Sentry.dedupeIntegration(),
-                                ],
+                                integrations: [Sentry.dedupeIntegration()],
                             });
 
                             console.log('Sentry initialized');
@@ -331,37 +373,37 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                         if (!this.sentryInited && sentryEnabled) {
                             this.sentryInited = true;
 
-                            waitPromise = this.socket.getObject('system.meta.uuid')
-                                .then(uuidObj => {
-                                    if (uuidObj && uuidObj.native && uuidObj.native.uuid) {
-                                        const scope = Sentry.getCurrentScope();
-                                        scope.setUser({ id: uuidObj.native.uuid });
-                                    }
-                                });
+                            waitPromise = this.socket.getObject('system.meta.uuid').then(uuidObj => {
+                                if (uuidObj && uuidObj.native && uuidObj.native.uuid) {
+                                    const scope = Sentry.getCurrentScope();
+                                    scope.setUser({ id: uuidObj.native.uuid });
+                                }
+                            });
                         }
 
                         waitPromise = waitPromise || Promise.resolve();
 
-                        waitPromise
-                            .then(() => {
-                                if (instanceObj) {
-                                    this.common = instanceObj?.common;
-                                    this.onPrepareLoad(instanceObj.native, instanceObj.encryptedNative); // decode all secrets
-                                    this.savedNative = JSON.parse(JSON.stringify(instanceObj.native));
-                                    this.setState({ native: instanceObj.native, loaded: true, expertMode: this.getExpertMode() }, () =>
-                                        this.onConnectionReady && this.onConnectionReady());
-                                } else {
-                                    console.warn('Cannot load instance settings');
-                                    this.setState(
-                                        {
-                                            native: {},
-                                            loaded: true,
-                                            expertMode: this.getExpertMode(),
-                                        },
-                                        () => this.onConnectionReady && this.onConnectionReady(),
-                                    );
-                                }
-                            });
+                        void waitPromise.then(() => {
+                            if (instanceObj) {
+                                this.common = instanceObj?.common;
+                                this.onPrepareLoad(instanceObj.native, instanceObj.encryptedNative); // decode all secrets
+                                this.savedNative = JSON.parse(JSON.stringify(instanceObj.native));
+                                this.setState(
+                                    { native: instanceObj.native, loaded: true, expertMode: this.getExpertMode() },
+                                    () => this.onConnectionReady && this.onConnectionReady(),
+                                );
+                            } else {
+                                console.warn('Cannot load instance settings');
+                                this.setState(
+                                    {
+                                        native: {},
+                                        loaded: true,
+                                        expertMode: this.getExpertMode(),
+                                    },
+                                    () => this.onConnectionReady && this.onConnectionReady(),
+                                );
+                            }
+                        });
                     })
                     .catch(e => window.alert(`Cannot settings: ${e}`));
             },
@@ -374,13 +416,14 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     /**
      * Checks if this connection is running in a web adapter and not in an admin.
+     *
      * @returns True if running in a web adapter or in a socketio adapter.
      */
     static isWeb(): boolean {
         return window.socketUrl !== undefined;
     }
 
-    showAlert(message: string, type?: 'info' | 'warning' | 'error' | 'success') {
+    showAlert(message: string, type?: 'info' | 'warning' | 'error' | 'success'): void {
         if (type !== 'error' && type !== 'warning' && type !== 'info' && type !== 'success') {
             type = 'info';
         }
@@ -392,21 +435,27 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
         });
     }
 
-    renderAlertSnackbar() {
+    renderAlertSnackbar(): JSX.Element {
         this.alertDialogRendered = true;
 
-        return <Snackbar
-            style={this.state._alertType === 'error' ?
-                { backgroundColor: '#f44336' } :
-                (this.state._alertType === 'success' ? { backgroundColor: '#4caf50' } : undefined)}
-            open={this.state._alert}
-            autoHideDuration={6000}
-            onClose={(_e, reason) => reason !== 'clickaway' && this.setState({ _alert: false })}
-            message={this.state._alertMessage}
-        />;
+        return (
+            <Snackbar
+                style={
+                    this.state._alertType === 'error'
+                        ? { backgroundColor: '#f44336' }
+                        : this.state._alertType === 'success'
+                          ? { backgroundColor: '#4caf50' }
+                          : undefined
+                }
+                open={this.state._alert}
+                autoHideDuration={6000}
+                onClose={(_e, reason) => reason !== 'clickaway' && this.setState({ _alert: false })}
+                message={this.state._alertMessage}
+            />
+        );
     }
 
-    onSystemConfigChanged = (id: string, obj: ioBroker.AnyObject | null | undefined) => {
+    onSystemConfigChanged = (id: string, obj: ioBroker.AnyObject | null | undefined): void => {
         if (obj && id === 'system.config') {
             if (this.socket.systemLang !== (obj as ioBroker.SystemConfigObject)?.common.language) {
                 this.socket.systemLang = (obj as ioBroker.SystemConfigObject)?.common.language || 'en';
@@ -414,10 +463,12 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
             }
 
             if (this._systemConfig?.expertMode !== !!(obj as ioBroker.SystemConfigObject)?.common?.expertMode) {
-                this._systemConfig = (obj as ioBroker.SystemConfigObject)?.common || ({} as ioBroker.SystemConfigCommon);
+                this._systemConfig =
+                    (obj as ioBroker.SystemConfigObject)?.common || ({} as ioBroker.SystemConfigCommon);
                 this.setState({ expertMode: this.getExpertMode() });
             } else {
-                this._systemConfig = (obj as ioBroker.SystemConfigObject)?.common || ({} as ioBroker.SystemConfigCommon);
+                this._systemConfig =
+                    (obj as ioBroker.SystemConfigObject)?.common || ({} as ioBroker.SystemConfigCommon);
             }
         }
     };
@@ -425,7 +476,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
     /**
      * Called immediately after a component is mounted. Setting state here will trigger re-rendering.
      */
-    componentDidMount() {
+    componentDidMount(): void {
         window.addEventListener('resize', this.onResize, true);
         window.addEventListener('message', this.onReceiveMessage, false);
         super.componentDidMount();
@@ -434,13 +485,13 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
     /**
      * Called immediately before a component is destroyed.
      */
-    componentWillUnmount() {
+    componentWillUnmount(): void {
         window.removeEventListener('resize', this.onResize, true);
         window.removeEventListener('message', this.onReceiveMessage, false);
         super.componentWillUnmount();
     }
 
-    onReceiveMessage = (message: { data: string } | null) => {
+    onReceiveMessage = (message: { data: string } | null): void => {
         if (message?.data) {
             if (message.data === 'updateTheme') {
                 const newThemeName = Utils.getThemeName();
@@ -448,24 +499,29 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
                 const newTheme = this.createTheme(newThemeName);
 
-                this.setState({
-                    theme: newTheme,
-                    themeName: this.getThemeName(newTheme),
-                    themeType: this.getThemeType(newTheme),
-                }, () => {
-                    this.props.onThemeChange && this.props.onThemeChange(newThemeName);
-                    this.onThemeChanged && this.onThemeChanged(newThemeName);
-                });
+                this.setState(
+                    {
+                        theme: newTheme,
+                        themeName: this.getThemeName(newTheme),
+                        themeType: this.getThemeType(newTheme),
+                    },
+                    () => {
+                        this.props.onThemeChange && this.props.onThemeChange(newThemeName);
+                        this.onThemeChanged && this.onThemeChanged(newThemeName);
+                    },
+                );
             } else if (message.data === 'updateExpertMode') {
                 this.onToggleExpertMode && this.onToggleExpertMode(this.getExpertMode());
-            } else if (message.data !== 'chartReady') { // if not "echart ready" message
-                // eslint-disable-next-line no-console
-                console.debug(`Received unknown message: "${JSON.stringify(message.data)}". May be it will be processed later`);
+            } else if (message.data !== 'chartReady') {
+                // if not "echart ready" message
+                console.debug(
+                    `Received unknown message: "${JSON.stringify(message.data)}". May be it will be processed later`,
+                );
             }
         }
     };
 
-    private onResize = () => {
+    private onResize = (): void => {
         this.resizeTimer && clearTimeout(this.resizeTimer);
         this.resizeTimer = setTimeout(() => {
             this.resizeTimer = null;
@@ -475,7 +531,6 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     /**
      * Gets the width depending on the window inner width.
-     * @returns {import('./types').Width}
      */
     static getWidth(): Width {
         /**
@@ -500,15 +555,18 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     /**
      * Get a theme
+     *
      * @param name Theme name
      */
-    createTheme(name?: ThemeName | null | undefined): IobTheme {
+    // eslint-disable-next-line class-methods-use-this
+    createTheme(name?: ThemeName | null): IobTheme {
         return Theme(Utils.getThemeName(name));
     }
 
     /**
      * Get the theme name
      */
+    // eslint-disable-next-line class-methods-use-this
     getThemeName(currentTheme: IobTheme): ThemeName {
         return currentTheme.name;
     }
@@ -516,50 +574,57 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
     /**
      * Get the theme type
      */
+    // eslint-disable-next-line class-methods-use-this
     getThemeType(currentTheme: IobTheme): ThemeType {
         return currentTheme.palette.mode;
     }
 
-    onThemeChanged(_newThemeName: string) {
+    // eslint-disable-next-line class-methods-use-this
+    onThemeChanged(_newThemeName: string): void {}
 
-    }
-
-    onToggleExpertMode(_expertMode: boolean) {
-
-    }
+    // eslint-disable-next-line class-methods-use-this
+    onToggleExpertMode(_expertMode: boolean): void {}
 
     /**
      * Changes the current theme
-     * */
-    toggleTheme(newThemeName?: ThemeName) {
+     */
+    toggleTheme(newThemeName?: ThemeName): void {
         const themeName = this.state.themeName;
 
         // dark => blue => colored => light => dark
-        newThemeName = newThemeName || (themeName === 'dark' ? 'blue' :
-            (themeName === 'blue' ? 'colored' :
-                (themeName === 'colored' ? 'light' : 'dark')));
+        newThemeName =
+            newThemeName ||
+            (themeName === 'dark'
+                ? 'light'
+                : themeName === 'blue'
+                  ? 'light'
+                  : themeName === 'colored'
+                    ? 'light'
+                    : 'dark');
 
         if (newThemeName !== themeName) {
             Utils.setThemeName(newThemeName);
 
             const newTheme = this.createTheme(newThemeName);
 
-            this.setState({
-                theme: newTheme,
-                themeName: this.getThemeName(newTheme),
-                themeType: this.getThemeType(newTheme),
-            }, () => {
-                this.props.onThemeChange && this.props.onThemeChange(newThemeName || 'light');
-                this.onThemeChanged && this.onThemeChanged(newThemeName || 'light');
-            });
+            this.setState(
+                {
+                    theme: newTheme,
+                    themeName: this.getThemeName(newTheme),
+                    themeType: this.getThemeType(newTheme),
+                },
+                () => {
+                    this.props.onThemeChange && this.props.onThemeChange(newThemeName || 'light');
+                    this.onThemeChanged && this.onThemeChanged(newThemeName || 'light');
+                },
+            );
         }
     }
 
     /**
      * Gets the system configuration.
-     * @returns {Promise<ioBroker.OtherObject>}
      */
-    getSystemConfig() {
+    getSystemConfig(): Promise<ioBroker.SystemConfigObject> {
         return this.socket.getSystemConfig();
     }
 
@@ -574,8 +639,8 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
      * Gets called when the socket.io connection is ready.
      * You can overload this function to execute own commands.
      */
-    onConnectionReady() {
-    }
+    // eslint-disable-next-line class-methods-use-this
+    onConnectionReady(): void {}
 
     /**
      * Encrypts a string.
@@ -584,8 +649,9 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
         let result = '';
         if (this._secret) {
             for (let i = 0; i < value.length; i++) {
-                // eslint-disable-next-line no-bitwise
-                result += String.fromCharCode(this._secret[i % this._secret.length].charCodeAt(0) ^ value.charCodeAt(i));
+                result += String.fromCharCode(
+                    this._secret[i % this._secret.length].charCodeAt(0) ^ value.charCodeAt(i),
+                );
             }
         }
         return result;
@@ -598,8 +664,9 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
         let result = '';
         if (this._secret) {
             for (let i = 0; i < value.length; i++) {
-                // eslint-disable-next-line no-bitwise
-                result += String.fromCharCode(this._secret[i % this._secret.length].charCodeAt(0) ^ value.charCodeAt(i));
+                result += String.fromCharCode(
+                    this._secret[i % this._secret.length].charCodeAt(0) ^ value.charCodeAt(i),
+                );
             }
         }
         return result;
@@ -609,7 +676,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
      * Gets called when the navigation hash changes.
      * You may override this if needed.
      */
-    onHashChanged() {
+    onHashChanged(): void {
         const location = Router.getLocation();
         if (location.tab !== this.state.selectedTab) {
             this.selectTab(location.tab);
@@ -619,7 +686,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
     /**
      * Selects the given tab.
      */
-    selectTab(tab: string, index?: number) {
+    selectTab(tab: string, index?: number): void {
         ((window as any)._localStorage || window.localStorage).setItem(`${this.adapterName}-adapter`, tab);
         this.setState({ selectedTab: tab, selectedTabNum: index });
     }
@@ -630,11 +697,12 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
      */
     onPrepareSave(settings: Record<string, any>): boolean {
         // here you can encode values
-        this.encryptedFields && this.encryptedFields.forEach(attr => {
-            if (settings[attr]) {
-                settings[attr] = this.encrypt(settings[attr]);
-            }
-        });
+        this.encryptedFields &&
+            this.encryptedFields.forEach(attr => {
+                if (settings[attr]) {
+                    settings[attr] = this.encrypt(settings[attr]);
+                }
+            });
 
         return true;
     }
@@ -642,33 +710,40 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
     /**
      * Gets called after the settings are loaded.
      * You may override this if needed.
+     *
+     * @param settings instance settings from native part
      * @param encryptedNative optional list of fields to be decrypted
      */
-    onPrepareLoad(settings: Record<string, any>, encryptedNative?: string[]) {
+    onPrepareLoad(settings: Record<string, any>, encryptedNative?: string[]): void {
         // here you can encode values
-        this.encryptedFields && this.encryptedFields.forEach(attr => {
-            if (settings[attr]) {
-                settings[attr] = this.decrypt(settings[attr]);
-            }
-        });
-        encryptedNative && encryptedNative.forEach(attr => {
-            this.encryptedFields = this.encryptedFields || [];
-            !this.encryptedFields.includes(attr) && this.encryptedFields.push(attr);
-            if (settings[attr]) {
-                settings[attr] = this.decrypt(settings[attr]);
-            }
-        });
+        this.encryptedFields &&
+            this.encryptedFields.forEach(attr => {
+                if (settings[attr]) {
+                    settings[attr] = this.decrypt(settings[attr]);
+                }
+            });
+        encryptedNative &&
+            encryptedNative.forEach(attr => {
+                this.encryptedFields = this.encryptedFields || [];
+                !this.encryptedFields.includes(attr) && this.encryptedFields.push(attr);
+                if (settings[attr]) {
+                    settings[attr] = this.decrypt(settings[attr]);
+                }
+            });
     }
 
     /**
      * Gets the extendable instances.
-     * @returns {Promise<any[]>}
      */
     async getExtendableInstances(): Promise<ioBroker.InstanceObject[]> {
         try {
-            const instances = await this.socket.getObjectViewSystem('instance', 'system.adapter.', 'system.adapter.\u9999');
+            const instances = await this.socket.getObjectViewSystem(
+                'instance',
+                'system.adapter.',
+                'system.adapter.\u9999',
+            );
             return Object.values(instances).filter(instance => !!instance?.common?.webExtendable);
-        } catch (e) {
+        } catch {
             return [];
         }
     }
@@ -692,16 +767,18 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     /**
      * Saves the settings to the server.
+     *
      * @param isClose True if the user is closing the dialog.
      */
-    onSave(isClose?: boolean) {
+    onSave(isClose?: boolean): void {
         let oldObj: ioBroker.InstanceObject;
         if (this.state.isConfigurationError) {
             this.setState({ errorText: this.state.isConfigurationError });
             return;
         }
 
-        this.socket.getObject(this.instanceId)
+        this.socket
+            .getObject(this.instanceId)
             .then(_oldObj => {
                 oldObj = (_oldObj || {}) as ioBroker.InstanceObject;
 
@@ -722,7 +799,9 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                         if (this.state.common[b] === null) {
                             (oldObj as Record<string, any>).common[b] = null;
                         } else if (this.state.common[b] !== undefined) {
-                            (oldObj as Record<string, any>).common[b] = JSON.parse(JSON.stringify(this.state.common[b]));
+                            (oldObj as Record<string, any>).common[b] = JSON.parse(
+                                JSON.stringify(this.state.common[b]),
+                            );
                         } else {
                             delete (oldObj as Record<string, any>).common[b];
                         }
@@ -740,7 +819,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                 globalThis.changed = false;
                 try {
                     window.parent.postMessage('nochange', '*');
-                } catch (e) {
+                } catch {
                     // ignore
                 }
 
@@ -753,40 +832,42 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
     /**
      * Renders the toast.
      */
-    renderToast() {
+    renderToast(): JSX.Element | null {
         if (!this.state.toast) {
             return null;
         }
 
-        return <Snackbar
-            anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-            }}
-            open={!0}
-            autoHideDuration={6000}
-            onClose={() => this.setState({ toast: '' })}
-            ContentProps={{ 'aria-describedby': 'message-id' }}
-            message={<span id="message-id">{this.state.toast}</span>}
-            action={[
-                <IconButton
-                    key="close"
-                    aria-label="Close"
-                    color="inherit"
-                    className={this.props.classes?.close}
-                    onClick={() => this.setState({ toast: '' })}
-                    size="large"
-                >
-                    <IconClose />
-                </IconButton>,
-            ]}
-        />;
+        return (
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                open={!0}
+                autoHideDuration={6000}
+                onClose={() => this.setState({ toast: '' })}
+                ContentProps={{ 'aria-describedby': 'message-id' }}
+                message={<span id="message-id">{this.state.toast}</span>}
+                action={[
+                    <IconButton
+                        key="close"
+                        aria-label="Close"
+                        color="inherit"
+                        className={this.props.classes?.close}
+                        onClick={() => this.setState({ toast: '' })}
+                        size="large"
+                    >
+                        <IconClose />
+                    </IconButton>,
+                ]}
+            />
+        );
     }
 
     /**
      * Closes the dialog.
      */
-    static onClose() {
+    static onClose(): void {
         if (typeof window.parent !== 'undefined' && window.parent) {
             try {
                 if (window.parent.$iframeDialog && typeof window.parent.$iframeDialog.close === 'function') {
@@ -794,7 +875,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
                 } else {
                     window.parent.postMessage('close', '*');
                 }
-            } catch (e) {
+            } catch {
                 window.parent.postMessage('close', '*');
             }
         }
@@ -808,16 +889,22 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
             return null;
         }
 
-        return <DialogError text={this.state.errorText} onClose={() => this.setState({ errorText: '' })} />;
+        return (
+            <DialogError
+                text={this.state.errorText}
+                onClose={() => this.setState({ errorText: '' })}
+            />
+        );
     }
 
     /**
      * Checks if the configuration has changed.
-     * @param {Record<string, any>} [native] the new state
+     *
+     * @param native the new state
      */
     getIsChanged(native: Record<string, any>): boolean {
         native = native || this.state.native;
-        const isChanged =  JSON.stringify(native) !== JSON.stringify(this.savedNative);
+        const isChanged = JSON.stringify(native) !== JSON.stringify(this.savedNative);
 
         globalThis.changed = isChanged;
 
@@ -826,9 +913,10 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     /**
      * Gets called when loading the configuration.
+     *
      * @param newNative The new configuration object.
      */
-    onLoadConfig(newNative: Record<string, any>) {
+    onLoadConfig(newNative: Record<string, any>): void {
         if (JSON.stringify(newNative) !== JSON.stringify(this.state.native)) {
             this.setState({ native: newNative, changed: this.getIsChanged(newNative) });
         }
@@ -837,7 +925,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
     /**
      * Sets the configuration error.
      */
-    setConfigurationError(errorText: string) {
+    setConfigurationError(errorText: string): void {
         if (this.state.isConfigurationError !== errorText) {
             this.setState({ isConfigurationError: errorText });
         }
@@ -851,31 +939,37 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
             return null;
         }
 
-        return <>
-            {this.state.bottomButtons ? <SaveCloseButtons
-                theme={this.state.theme}
-                newReact={this.newReact}
-                noTextOnButtons={this.state.width === 'xs' || this.state.width === 'sm' || this.state.width === 'md'}
-                changed={this.state.changed}
-                onSave={isClose => this.onSave(isClose)}
-                onClose={() => {
-                    if (this.state.changed) {
-                        this.setState({ confirmClose: true });
-                    } else {
-                        GenericApp.onClose();
-                    }
-                }}
-            /> : null}
-            {this.state.confirmClose ? <ConfirmDialog
-                title={I18n.t('ra_Please confirm')}
-                text={I18n.t('ra_Some data are not stored. Discard?')}
-                ok={I18n.t('ra_Discard')}
-                cancel={I18n.t('ra_Cancel')}
-                onClose={isYes =>
-                    this.setState({ confirmClose: false }, () =>
-                        isYes && GenericApp.onClose())}
-            /> : null}
-        </>;
+        return (
+            <>
+                {this.state.bottomButtons ? (
+                    <SaveCloseButtons
+                        theme={this.state.theme}
+                        newReact={this.newReact}
+                        noTextOnButtons={
+                            this.state.width === 'xs' || this.state.width === 'sm' || this.state.width === 'md'
+                        }
+                        changed={this.state.changed}
+                        onSave={isClose => this.onSave(isClose)}
+                        onClose={() => {
+                            if (this.state.changed) {
+                                this.setState({ confirmClose: true });
+                            } else {
+                                GenericApp.onClose();
+                            }
+                        }}
+                    />
+                ) : null}
+                {this.state.confirmClose ? (
+                    <ConfirmDialog
+                        title={I18n.t('ra_Please confirm')}
+                        text={I18n.t('ra_Some data are not stored. Discard?')}
+                        ok={I18n.t('ra_Discard')}
+                        cancel={I18n.t('ra_Cancel')}
+                        onClose={isYes => this.setState({ confirmClose: false }, () => isYes && GenericApp.onClose())}
+                    />
+                ) : null}
+            </>
+        );
     }
 
     private _updateNativeValue(obj: Record<string, any>, attrs: string | string[], value: any): boolean {
@@ -908,11 +1002,12 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
 
     /**
      * Update the native value
+     *
      * @param attr The attribute name with dots as delimiter.
      * @param value The new value.
      * @param cb Callback which will be called upon completion.
      */
-    updateNativeValue(attr: string, value: any, cb?: () => void) {
+    updateNativeValue(attr: string, value: any, cb?: () => void): void {
         const native = JSON.parse(JSON.stringify(this.state.native));
         if (this._updateNativeValue(native, attr, value)) {
             const changed = this.getIsChanged(native);
@@ -920,7 +1015,7 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
             if (changed !== this.state.changed) {
                 try {
                     window.parent.postMessage(changed ? 'change' : 'nochange', '*');
-                } catch (e) {
+                } catch {
                     // ignore
                 }
             }
@@ -932,13 +1027,14 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
     /**
      * Set the error text to be shown.
      */
-    showError(text: string | React.JSX.Element) {
+    showError(text: string | React.JSX.Element): void {
         this.setState({ errorText: text });
     }
 
     /**
      * Sets the toast to be shown.
-     * @param {string} toast
+     *
+     * @param toast Text to be shown.
      */
     showToast(toast: string | React.JSX.Element): void {
         this.setState({ toast });
@@ -948,12 +1044,14 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
      * Renders helper dialogs
      */
     renderHelperDialogs(): React.JSX.Element {
-        return <>
-            {this.renderError()}
-            {this.renderToast()}
-            {this.renderSaveCloseButtons()}
-            {this.renderAlertSnackbar()}
-        </>;
+        return (
+            <>
+                {this.renderError()}
+                {this.renderToast()}
+                {this.renderSaveCloseButtons()}
+                {this.renderAlertSnackbar()}
+            </>
+        );
     }
 
     /**
@@ -964,12 +1062,14 @@ class GenericApp<TProps extends GenericAppProps = GenericAppProps, TState extend
             return <Loader themeType={this.state.themeType} />;
         }
 
-        return <div className="App">
-            {this.renderError()}
-            {this.renderToast()}
-            {this.renderSaveCloseButtons()}
-            {this.renderAlertSnackbar()}
-        </div>;
+        return (
+            <div className="App">
+                {this.renderError()}
+                {this.renderToast()}
+                {this.renderSaveCloseButtons()}
+                {this.renderAlertSnackbar()}
+            </div>
+        );
     }
 }
 

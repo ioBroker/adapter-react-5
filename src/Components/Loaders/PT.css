@@ -1,23 +1,23 @@
 /**
- * Copyright 2021-2023 ioBroker GmbH
+ * Copyright 2021-2024 ioBroker GmbH
  *
  * MIT License
  *
  **/
 
-.logo-background-light, .logo-background-colored {
+.logo-background-light,
+.logo-background-colored {
     background: white;
 }
-.logo-background-dark, .logo-background-blue {
+.logo-background-dark,
+.logo-background-blue {
     background: black;
 }
 .pt-logo-div {
     position: absolute;
     top: 50%;
     left: 50%;
-    -ms-transform: translateX(-50%) translateY(-50%);
-    -webkit-transform: translate(-50%,-50%);
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     z-index: 2;
 }
 .pt-logo-border {
@@ -35,21 +35,21 @@
     box-sizing: content-box;
 }
 .pt-loader-blue {
-    border: 9px solid #0F99DE;
+    border: 9px solid #0f99de;
     transform: rotate(5grad);
     left: 93px;
     top: 0;
     animation: spin-blue 5s ease-in-out infinite;
 }
 .pt-loader-green {
-    border: 9px solid #88A536;
+    border: 9px solid #88a536;
     transform: rotate(-6grad);
     left: 70px;
     top: 58px;
     animation: spin-green 5s ease-in-out infinite;
 }
 .pt-loader-red {
-    border: 9px solid #BD1B24;
+    border: 9px solid #bd1b24;
     transform: rotate(-15grad);
     left: 24px;
     top: 100px;

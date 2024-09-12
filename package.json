@@ -1,85 +1,84 @@
 {
-  "name": "@iobroker/adapter-react-v5",
-  "version": "7.0.2",
-  "description": "React classes to develop admin interfaces for ioBroker with react.",
-  "author": {
-    "name": "bluefox",
-    "email": "dogafox@gmail.com"
-  },
-  "scripts": {
-    "prepublishOnly": "echo \"Error: publish from dist directory and write 'npm run build'\" && exit 1",
-    "build:ts": "tsc -p tsconfig.build.json",
-    "build": "npm run build:ts && node tasks",
-    "release": "release-script --noPush --yes --lf",
-    "release-patch": "release-script patch --yes --lf",
-    "release-minor": "release-script minor --yes --lf",
-    "release-major": "release-script major --yes --lf",
-    "update-packages": "ncu --upgrade",
-    "npm": "npm i -f",
-    "lint": "eslint src",
-    "test": "ts-node test/testSchema.ts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ioBroker/adapter-react-v5.git"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "module": "./index.js",
-  "keywords": [
-    "iobroker",
-    "adapter",
-    "iot"
-  ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ioBroker/adapter-react-v5/issues"
-  },
-  "homepage": "https://github.com/ioBroker/adapter-react-v5#readme",
-  "dependencies": {
-    "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
-    "@iobroker/socket-client": "^2.4.18",
-    "@iobroker/types": "^6.0.11",
-    "@iobroker/js-controller-common": "^6.0.11",
-    "@iobroker/js-controller-common-db": "^6.0.11",
-    "@mui/icons-material": "^6.0.2",
-    "@mui/material": "^6.0.2",
-    "@mui/x-date-pickers": "^7.16.0",
-    "@sentry/browser": "^8.29.0",
-    "cronstrue": "^2.50.0",
-    "react-color": "^2.19.3",
-    "react-colorful": "^5.6.1",
-    "react-cropper": "^2.3.3",
-    "react-dropzone": "^14.2.3",
-    "react-icons": "^5.3.0",
-    "react-inlinesvg": "^4.1.3"
-  },
-  "devDependencies": {
-    "@alcalzone/release-script": "^3.8.0",
-    "@alcalzone/release-script-plugin-license": "^3.7.0",
-    "@iobroker/build-tools": "^1.0.2",
-    "@babel/core": "^7.25.2",
-    "@babel/plugin-proposal-class-properties": "^7.18.6",
-    "@babel/plugin-transform-runtime": "^7.25.4",
-    "@babel/preset-env": "^7.25.4",
-    "@babel/preset-flow": "^7.24.7",
-    "@babel/preset-react": "^7.24.7",
-    "@types/node": "^22.5.4",
-    "@types/react": "^18.3.5",
-    "@types/react-color": "^3.0.12",
-    "@typescript-eslint/eslint-plugin": "^8.5.0",
-    "ajv": "^8.17.1",
-    "eslint": "^8.57.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-plugin-eqeqeq-fix": "^1.0.3",
-    "eslint-plugin-import": "^2.30.0",
-    "eslint-plugin-jsx-a11y": "^6.10.0",
-    "eslint-plugin-only-warn": "^1.1.0",
-    "eslint-plugin-react": "^7.35.2",
-    "eslint-plugin-react-hooks": "^4.6.2",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.6.2"
-  }
+    "name": "@iobroker/adapter-react-v5",
+    "version": "7.0.2",
+    "description": "React classes to develop admin interfaces for ioBroker with react.",
+    "author": {
+        "name": "bluefox",
+        "email": "dogafox@gmail.com"
+    },
+    "scripts": {
+        "prepublishOnly": "echo \"Error: publish from dist directory and write 'npm run build'\" && exit 1",
+        "build:ts": "tsc -p tsconfig.build.json",
+        "build": "node tasks --0-clean && npm run build:ts && node tasks --2-copy && node tasks --3-patchReadme",
+        "release": "release-script --noPush --yes --lf",
+        "release-patch": "release-script patch --yes --lf",
+        "release-minor": "release-script minor --yes --lf",
+        "release-major": "release-script major --yes --lf",
+        "update-packages": "ncu --upgrade",
+        "0-clean": "node tasks --0-clean",
+        "1-build": "tsc -p tsconfig.build.json",
+        "2-copy": "node tasks --2-copy",
+        "3-patchReadme": "node tasks --3-patchReadme",
+        "npm": "npm i -f",
+        "lint": "eslint -c eslint.config.mjs src",
+        "test": "ts-node test/testSchema.ts"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ioBroker/adapter-react-v5.git"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "module": "./index.js",
+    "keywords": [
+        "iobroker",
+        "adapter",
+        "iot"
+    ],
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/ioBroker/adapter-react-v5/issues"
+    },
+    "homepage": "https://github.com/ioBroker/adapter-react-v5#readme",
+    "dependencies": {
+        "@emotion/react": "^11.13.3",
+        "@emotion/styled": "^11.13.0",
+        "@iobroker/socket-client": "^2.4.18",
+        "@iobroker/types": "^6.0.11",
+        "@iobroker/js-controller-common": "^6.0.11",
+        "@iobroker/js-controller-common-db": "^6.0.11",
+        "@mui/icons-material": "^6.0.2",
+        "@mui/material": "^6.0.2",
+        "@mui/x-date-pickers": "^7.16.0",
+        "@sentry/browser": "^8.29.0",
+        "cronstrue": "^2.50.0",
+        "react-color": "^2.19.3",
+        "react-colorful": "^5.6.1",
+        "react-cropper": "^2.3.3",
+        "react-dropzone": "^14.2.3",
+        "react-icons": "^5.3.0",
+        "react-inlinesvg": "^4.1.3"
+    },
+    "devDependencies": {
+        "@alcalzone/release-script": "^3.8.0",
+        "@alcalzone/release-script-plugin-license": "^3.7.0",
+        "@iobroker/build-tools": "^1.0.2",
+        "@iobroker/eslint-config": "^0.1.4",
+        "@babel/core": "^7.25.2",
+        "@babel/plugin-proposal-class-properties": "^7.18.6",
+        "@babel/plugin-transform-runtime": "^7.25.4",
+        "@babel/preset-env": "^7.25.4",
+        "@babel/preset-flow": "^7.24.7",
+        "@babel/preset-react": "^7.24.7",
+        "@types/node": "^22.5.4",
+        "@types/react": "^18.3.5",
+        "@types/react-color": "^3.0.12",
+        "ajv": "^8.17.1",
+        "eslint": "^9.10.0",
+        "eslint-plugin-react": "^7.35.2",
+        "eslint-plugin-react-hooks": "^5.1.0-rc-fb9a90fa48-20240614",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.6.2"
+    }
 }

@@ -1,16 +1,7 @@
-import React from 'react';
-import {
-    Button,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Dialog,
-} from '@mui/material';
+import React, { type JSX } from 'react';
+import { Button, DialogTitle, DialogContent, DialogActions, Dialog } from '@mui/material';
 
-import {
-    Check as IconOk,
-    Cancel as IconCancel,
-} from '@mui/icons-material';
+import { Check as IconOk, Cancel as IconCancel } from '@mui/icons-material';
 
 import SimpleCron from '../Components/SimpleCron';
 
@@ -51,49 +42,58 @@ class DialogSimpleCron extends React.Component<DialogCronProps, DialogCronState>
             }
         }
 
-        this.state =  {
+        this.state = {
             cron,
         };
     }
 
-    handleCancel() {
+    handleCancel(): void {
         this.props.onClose();
     }
 
-    handleOk() {
+    handleOk(): void {
         this.props.onOk(this.state.cron);
         this.props.onClose();
     }
 
-    render() {
-        return <Dialog
-            onClose={() => {}}
-            maxWidth="md"
-            fullWidth
-            sx={{ '& .MuiDialog-paper': styles.dialogPaper }}
-            open={!0}
-            aria-labelledby="cron-dialog-title"
-        >
-            <DialogTitle id="cron-dialog-title">{this.props.title || I18n.t('ra_Define CRON...')}</DialogTitle>
-            <DialogContent style={{ height: '100%', overflow: 'hidden' }}>
-                <SimpleCron
-                    cronExpression={this.state.cron}
-                    onChange={cron => this.setState({ cron })}
-                    language={I18n.getLanguage()}
-                />
-            </DialogContent>
-            <DialogActions>
-                <Button variant="contained" onClick={() => this.handleOk()} color="primary" startIcon={<IconOk />}>{this.props.ok || I18n.t('ra_Ok')}</Button>
-                <Button
-                    variant="contained"
-                    onClick={() => this.handleCancel()}
-                    color="grey"
-                    startIcon={<IconCancel />}
-                >
-                    {this.props.cancel || I18n.t('ra_Cancel')}
-                </Button>
-            </DialogActions>
-        </Dialog>;
+    render(): JSX.Element {
+        return (
+            <Dialog
+                onClose={() => {}}
+                maxWidth="md"
+                fullWidth
+                sx={{ '& .MuiDialog-paper': styles.dialogPaper }}
+                open={!0}
+                aria-labelledby="cron-dialog-title"
+            >
+                <DialogTitle id="cron-dialog-title">{this.props.title || I18n.t('ra_Define CRON...')}</DialogTitle>
+                <DialogContent style={{ height: '100%', overflow: 'hidden' }}>
+                    <SimpleCron
+                        cronExpression={this.state.cron}
+                        onChange={cron => this.setState({ cron })}
+                        language={I18n.getLanguage()}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        variant="contained"
+                        onClick={() => this.handleOk()}
+                        color="primary"
+                        startIcon={<IconOk />}
+                    >
+                        {this.props.ok || I18n.t('ra_Ok')}
+                    </Button>
+                    <Button
+                        variant="contained"
+                        onClick={() => this.handleCancel()}
+                        color="grey"
+                        startIcon={<IconCancel />}
+                    >
+                        {this.props.cancel || I18n.t('ra_Cancel')}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
     }
 }
 

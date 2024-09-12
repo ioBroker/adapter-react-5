@@ -1,4 +1,4 @@
-// this is service script that extracts names from names.txt and places them into list.json
+// this is a service script that extracts names from names.txt and places them into list.json
 /*
 const fs = require('fs');
 

@@ -1,15 +1,10 @@
-import React, { Component, createRef } from 'react';
+import React, { Component, createRef, type JSX } from 'react';
 import Dropzone from 'react-dropzone';
-import { Cropper, ReactCropperElement } from 'react-cropper';
+import { Cropper, type ReactCropperElement } from 'react-cropper';
 
-import {
-    Menu, MenuItem, Tooltip, IconButton,
-} from '@mui/material';
+import { Menu, MenuItem, Tooltip, IconButton } from '@mui/material';
 
-import {
-    Close as IconClose,
-    Crop as CropIcon,
-} from '@mui/icons-material';
+import { Close as IconClose, Crop as CropIcon } from '@mui/icons-material';
 import { FaFileUpload as UploadIcon } from 'react-icons/fa';
 
 import I18n from '../i18n';
@@ -329,9 +324,7 @@ const styles: Record<string, React.CSSProperties> = {
         height: 100,
         position: 'relative',
     },
-    dropZoneEmpty: {
-
-    },
+    dropZoneEmpty: {},
     image: {
         objectFit: 'contain',
         margin: 'auto',
@@ -382,7 +375,6 @@ const styles: Record<string, React.CSSProperties> = {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-
     },
     disabledOpacity: {
         opacity: 0.3,
@@ -443,7 +435,7 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
         }
     }
 
-    onDrop(acceptedFiles: File[]) {
+    onDrop(acceptedFiles: File[]): void {
         const onChange = this.props.onChange;
         const maxSize = this.props.maxSize || 10 * 1024;
 
@@ -467,8 +459,10 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
                 window.alert(I18n.t('ra_File is too big. Max %sk allowed. Try use SVG.', Math.round(maxSize / 1024)));
             } else {
                 const base64 = `data:${ext};base64,${btoa(
-                    new Uint8Array(reader.result as ArrayBufferLike)
-                        .reduce((data, byte) => data + String.fromCharCode(byte), ''),
+                    new Uint8Array(reader.result as ArrayBufferLike).reduce(
+                        (data, byte) => data + String.fromCharCode(byte),
+                        '',
+                    ),
                 )}`;
 
                 if (onChange) {
@@ -481,118 +475,156 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
         reader.readAsArrayBuffer(file);
     }
 
-    render() {
-        const {
-            disabled, icon, removeIconFunc, error, crop, onChange,
-        } = this.props;
+    render(): JSX.Element {
+        const { disabled, icon, removeIconFunc, error, crop, onChange } = this.props;
         const maxSize = this.props.maxSize || 10 * 1024;
         const accept = this.props.accept || { 'image/*': [] };
         const { uploadFile, anchorEl, cropHandler } = this.state;
-        return <Dropzone
-            disabled={!!disabled || cropHandler}
-            key="dropzone"
-            multiple={false}
-            accept={accept}
-            maxSize={maxSize}
-            onDragEnter={() => this.setState({ uploadFile: 'dragging' })}
-            onDragLeave={() => this.setState({ uploadFile: true })}
-            onDrop={(acceptedFiles: File[], errors) => {
-                this.setState({ uploadFile: false });
-                if (!acceptedFiles.length) {
-                    window.alert((errors && errors[0] && errors[0].errors && errors[0].errors[0] && errors[0].errors[0].message) || I18n.t('ra_Cannot upload'));
-                } else {
-                    this.onDrop(acceptedFiles);
-                }
-            }}
-        >
-            {({ getRootProps, getInputProps }) => <div
-                style={{
-                    ...styles.uploadDiv,
-                    ...(uploadFile === 'dragging' ? styles.uploadDivDragging : undefined),
-                    ...styles.dropZone,
-                    ...(disabled ? styles.disabledOpacity : undefined),
-                    ...(!icon ? styles.dropZoneEmpty : undefined),
+        return (
+            <Dropzone
+                disabled={!!disabled || cropHandler}
+                key="dropzone"
+                multiple={false}
+                accept={accept}
+                maxSize={maxSize}
+                onDragEnter={() => this.setState({ uploadFile: 'dragging' })}
+                onDragLeave={() => this.setState({ uploadFile: true })}
+                onDrop={(acceptedFiles: File[], errors) => {
+                    this.setState({ uploadFile: false });
+                    if (!acceptedFiles.length) {
+                        window.alert(
+                            (errors &&
+                                errors[0] &&
+                                errors[0].errors &&
+                                errors[0].errors[0] &&
+                                errors[0].errors[0].message) ||
+                                I18n.t('ra_Cannot upload'),
+                        );
+                    } else {
+                        this.onDrop(acceptedFiles);
+                    }
                 }}
-                {...getRootProps()}
             >
-                <input {...getInputProps()} />
-                <div style={{ ...styles.uploadCenterDiv, ...(error ? styles.error : undefined) }}>
-                    {!icon ? <div style={styles.uploadCenterTextAndIcon}>
-                        <UploadIcon style={styles.uploadCenterIcon} />
-                        <div style={styles.uploadCenterText}>
-                            {uploadFile === 'dragging' ? I18n.t('ra_Drop file here') :
-                                I18n.t('ra_Place your files here or click here to open the browse dialog')}
+                {({ getRootProps, getInputProps }) => (
+                    <div
+                        style={{
+                            ...styles.uploadDiv,
+                            ...(uploadFile === 'dragging' ? styles.uploadDivDragging : undefined),
+                            ...styles.dropZone,
+                            ...(disabled ? styles.disabledOpacity : undefined),
+                            ...(!icon ? styles.dropZoneEmpty : undefined),
+                        }}
+                        {...getRootProps()}
+                    >
+                        <input {...getInputProps()} />
+                        <div style={{ ...styles.uploadCenterDiv, ...(error ? styles.error : undefined) }}>
+                            {!icon ? (
+                                <div style={styles.uploadCenterTextAndIcon}>
+                                    <UploadIcon style={styles.uploadCenterIcon} />
+                                    <div style={styles.uploadCenterText}>
+                                        {uploadFile === 'dragging'
+                                            ? I18n.t('ra_Drop file here')
+                                            : I18n.t(
+                                                  'ra_Place your files here or click here to open the browse dialog',
+                                              )}
+                                    </div>
+                                </div>
+                            ) : (
+                                removeIconFunc &&
+                                !cropHandler && (
+                                    <div style={styles.buttonRemoveWrapper}>
+                                        <Tooltip
+                                            title={I18n.t('ra_Clear')}
+                                            componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}
+                                        >
+                                            <IconButton
+                                                size="large"
+                                                onClick={e => {
+                                                    removeIconFunc && removeIconFunc();
+                                                    e.stopPropagation();
+                                                }}
+                                            >
+                                                <IconClose />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </div>
+                                )
+                            )}
+                            {icon && crop && (
+                                <div style={styles.buttonCropWrapper}>
+                                    <Tooltip
+                                        title={I18n.t('ra_Crop')}
+                                        componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}
+                                    >
+                                        <IconButton
+                                            size="large"
+                                            onClick={e => {
+                                                if (!cropHandler) {
+                                                    this.setState({ cropHandler: true });
+                                                } else {
+                                                    this.setState({ anchorEl: e.currentTarget });
+                                                }
+                                                e.stopPropagation();
+                                            }}
+                                        >
+                                            <CropIcon color={cropHandler ? 'primary' : 'inherit'} />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Menu
+                                        anchorEl={anchorEl}
+                                        keepMounted
+                                        open={Boolean(anchorEl)}
+                                        onClose={() => this.setState({ anchorEl: null })}
+                                    >
+                                        <MenuItem
+                                            onClick={() =>
+                                                this.setState({ anchorEl: null, cropHandler: false }, () => {
+                                                    const imageElement = this.cropperRef?.current?.cropper;
+                                                    if (imageElement) {
+                                                        if (onChange) {
+                                                            onChange(imageElement.getCroppedCanvas().toDataURL());
+                                                        } else {
+                                                            console.log(imageElement.getCroppedCanvas().toDataURL());
+                                                        }
+                                                    }
+                                                })
+                                            }
+                                        >
+                                            {I18n.t('ra_Save')}
+                                        </MenuItem>
+                                        <MenuItem onClick={() => this.setState({ anchorEl: null, cropHandler: false })}>
+                                            {I18n.t('ra_Close')}
+                                        </MenuItem>
+                                    </Menu>
+                                </div>
+                            )}
+                            {icon && !cropHandler ? (
+                                <Icon
+                                    src={icon}
+                                    style={styles.image}
+                                    alt="icon"
+                                />
+                            ) : null}
+
+                            {icon && crop && cropHandler ? (
+                                <Cropper
+                                    ref={this.cropperRef}
+                                    style={styles.image}
+                                    src={icon}
+                                    initialAspectRatio={1}
+                                    viewMode={1}
+                                    guides={false}
+                                    minCropBoxHeight={10}
+                                    minCropBoxWidth={10}
+                                    background={false}
+                                    checkOrientation={false}
+                                />
+                            ) : null}
                         </div>
                     </div>
-                        :
-                        removeIconFunc && !cropHandler && <div style={styles.buttonRemoveWrapper}>
-                            <Tooltip title={I18n.t('ra_Clear')} componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}>
-                                <IconButton
-                                    size="large"
-                                    onClick={e => {
-                                        removeIconFunc && removeIconFunc();
-                                        e.stopPropagation();
-                                    }}
-                                >
-                                    <IconClose />
-                                </IconButton>
-                            </Tooltip>
-                        </div>}
-                    {icon && crop && <div style={styles.buttonCropWrapper}>
-                        <Tooltip title={I18n.t('ra_Crop')} componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}>
-                            <IconButton
-                                size="large"
-                                onClick={e => {
-                                    if (!cropHandler) {
-                                        this.setState({ cropHandler: true });
-                                    } else {
-                                        this.setState({ anchorEl: e.currentTarget });
-                                    }
-                                    e.stopPropagation();
-                                }}
-                            >
-                                <CropIcon color={cropHandler ? 'primary' : 'inherit'} />
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            anchorEl={anchorEl}
-                            keepMounted
-                            open={Boolean(anchorEl)}
-                            onClose={() => this.setState({ anchorEl: null })}
-                        >
-                            <MenuItem onClick={() => this.setState({ anchorEl: null, cropHandler: false }, () => {
-                                const imageElement = this.cropperRef?.current?.cropper;
-                                if (imageElement) {
-                                    if (onChange) {
-                                        onChange(imageElement.getCroppedCanvas().toDataURL());
-                                    } else {
-                                        console.log(imageElement.getCroppedCanvas().toDataURL());
-                                    }
-                                }
-                            })}
-                            >
-                                {I18n.t('ra_Save')}
-                            </MenuItem>
-                            <MenuItem onClick={() => this.setState({ anchorEl: null, cropHandler: false })}>{I18n.t('ra_Close')}</MenuItem>
-                        </Menu>
-                    </div>}
-                    {icon && !cropHandler ? <Icon src={icon} style={styles.image} alt="icon" /> : null}
-
-                    {icon && crop && cropHandler ? <Cropper
-                        ref={this.cropperRef}
-                        style={styles.image}
-                        src={icon}
-                        initialAspectRatio={1}
-                        viewMode={1}
-                        guides={false}
-                        minCropBoxHeight={10}
-                        minCropBoxWidth={10}
-                        background={false}
-                        checkOrientation={false}
-                    /> : null}
-                </div>
-            </div>}
-        </Dropzone>;
+                )}
+            </Dropzone>
+        );
     }
 }
 

@@ -1,15 +1,12 @@
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
-import React from 'react';
+import React, { type JSX } from 'react';
 
 import { Fab, Toolbar } from '@mui/material';
 
-import {
-    Save as IconSave,
-    Close as IconClose,
-} from '@mui/icons-material';
+import { Save as IconSave, Close as IconClose } from '@mui/icons-material';
 
 import I18n from '../i18n';
-import { IobTheme } from '../types';
+import type { IobTheme } from '../types';
 
 const styles: Record<string, React.CSSProperties> = {
     buttonIcon: {
@@ -48,17 +45,17 @@ class SaveCloseButtons extends React.Component<SaveCloseButtonsProps> {
         } else {
             try {
                 this.isIFrame = !newReact && window.self !== window.top;
-            } catch (e) {
+            } catch {
                 this.isIFrame = !newReact;
             }
         }
     }
 
-    render() {
+    render(): JSX.Element {
         const noTextOnButtons = this.props.noTextOnButtons;
         const buttonStyle: React.CSSProperties = {
             borderRadius: this.props.theme.saveToolbar.button.borderRadius || 3,
-            height:       this.props.theme.saveToolbar.button.height       || 32,
+            height: this.props.theme.saveToolbar.button.height || 32,
         };
 
         const style: React.CSSProperties = {
@@ -76,37 +73,44 @@ class SaveCloseButtons extends React.Component<SaveCloseButtonsProps> {
             buttonStyle.border = '1px solid red';
         }
 
-        return <Toolbar
-            // position="absolute"
-            style={style}
-        >
-            <Fab
-                variant="extended"
-                aria-label="Save"
-                disabled={!this.props.changed || this.props.error}
-                onClick={() => this.props.onSave(false)}
-                style={buttonStyle}
+        return (
+            <Toolbar
+                // position="absolute"
+                style={style}
             >
-                <IconSave style={!noTextOnButtons ? styles.buttonIcon : undefined} />
-                {!noTextOnButtons && I18n.t('ra_Save')}
-            </Fab>
-            <Fab
-                variant="extended"
-                aria-label="Save and close"
-                disabled={!this.props.changed || this.props.error}
-                onClick={() => this.props.onSave(true)}
-                style={{ ...buttonStyle, ...{ marginLeft: 10 } }}
-            >
-                <IconSave style={!noTextOnButtons ? styles.buttonIcon : undefined} />
-                {!noTextOnButtons ? I18n.t('ra_Save and close') : '+'}
-                {noTextOnButtons && <IconClose />}
-            </Fab>
-            <div style={{ flexGrow: 1 }} />
-            <Fab variant="extended" aria-label="Close" onClick={() => this.props.onClose()} style={buttonStyle}>
-                <IconClose style={!noTextOnButtons ? styles.buttonIcon : undefined} />
-                {!noTextOnButtons && I18n.t('ra_Close')}
-            </Fab>
-        </Toolbar>;
+                <Fab
+                    variant="extended"
+                    aria-label="Save"
+                    disabled={!this.props.changed || this.props.error}
+                    onClick={() => this.props.onSave(false)}
+                    style={buttonStyle}
+                >
+                    <IconSave style={!noTextOnButtons ? styles.buttonIcon : undefined} />
+                    {!noTextOnButtons && I18n.t('ra_Save')}
+                </Fab>
+                <Fab
+                    variant="extended"
+                    aria-label="Save and close"
+                    disabled={!this.props.changed || this.props.error}
+                    onClick={() => this.props.onSave(true)}
+                    style={{ ...buttonStyle, ...{ marginLeft: 10 } }}
+                >
+                    <IconSave style={!noTextOnButtons ? styles.buttonIcon : undefined} />
+                    {!noTextOnButtons ? I18n.t('ra_Save and close') : '+'}
+                    {noTextOnButtons && <IconClose />}
+                </Fab>
+                <div style={{ flexGrow: 1 }} />
+                <Fab
+                    variant="extended"
+                    aria-label="Close"
+                    onClick={() => this.props.onClose()}
+                    style={buttonStyle}
+                >
+                    <IconClose style={!noTextOnButtons ? styles.buttonIcon : undefined} />
+                    {!noTextOnButtons && I18n.t('ra_Close')}
+                </Fab>
+            </Toolbar>
+        );
     }
 }
 

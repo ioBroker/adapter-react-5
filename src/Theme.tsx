@@ -1,10 +1,10 @@
-import React from 'react';
-import { createTheme, alpha, PaletteOptions as PaletteOptionsMui } from '@mui/material/styles';
+import { type CSSProperties } from 'react';
+import { createTheme, alpha, type PaletteOptions as PaletteOptionsMui } from '@mui/material/styles';
 import { orange, grey } from '@mui/material/colors';
 
-import { SimplePaletteColorOptions } from '@mui/material/styles/createPalette';
-import { ThemeOptions as ThemeOptionsMui } from '@mui/material/styles/createTheme';
-import { type IobTheme, type ThemeName, ThemeType } from './types';
+import type { SimplePaletteColorOptions } from '@mui/material/styles/createPalette';
+import type { ThemeOptions as ThemeOptionsMui } from '@mui/material/styles/createTheme';
+import type { IobTheme, ThemeName, ThemeType } from './types';
 
 const step = (16 - 5) / 23 / 100;
 
@@ -63,14 +63,12 @@ function getElevation(
 
 /**
  * Get all 24 elevations of the given color and overlay.
+ *
+ * @param color color in the format '#rrggbb' or '#rgb'
+ * @param overlay overlay color in the format '#rrggbb' or '#rgb'
  */
-function getElevations(
-    /** color in the format '#rrggbb' or '#rgb' */
-    color: string,
-    /** overlay color in the format '#rrggbb' or '#rgb' */
-    overlay: string,
-): Record<string, React.CSSProperties> {
-    const elevations: Record<string, React.CSSProperties> = {};
+function getElevations(color: string, overlay: string): Record<string, CSSProperties> {
+    const elevations: Record<string, CSSProperties> = {};
 
     for (let i = 1; i <= 24; i++) {
         elevations[`elevation${i}`] = {
@@ -167,10 +165,10 @@ interface PaletteOptions extends PaletteOptionsMui {
 interface ThemeOptions extends ThemeOptionsMui {
     name: ThemeName;
     palette?: PaletteOptions;
-    toolbar?: React.CSSProperties;
+    toolbar?: CSSProperties;
     saveToolbar?: {
         background: string;
-        button: React.CSSProperties;
+        button: CSSProperties;
     };
 }
 
@@ -261,7 +259,6 @@ function customTheme(type: ThemeName, overrides?: Record<string, any>): IobTheme
                     secondary: '#ffffff',
                 },
             },
-
         };
     } else if (type === 'colored') {
         localOverrides = {
@@ -327,7 +324,6 @@ function customTheme(type: ThemeName, overrides?: Record<string, any>): IobTheme
                 },
                 expert: '#BD1B24',
             },
-
         };
     } else if (type === 'DX') {
         localOverrides = {
@@ -365,7 +361,6 @@ function customTheme(type: ThemeName, overrides?: Record<string, any>): IobTheme
                     disabled: '#007AFEAA',
                 },
             },
-
         };
     } else {
         localOverrides = {
@@ -419,7 +414,7 @@ function customTheme(type: ThemeName, overrides?: Record<string, any>): IobTheme
 
     const theme: IobTheme = createTheme(options) as IobTheme;
 
-    const palette: PaletteOptions = (theme.palette as PaletteOptions);
+    const palette: PaletteOptions = theme.palette as PaletteOptions;
 
     return createTheme(theme, {
         ...(overrides || undefined),
@@ -431,25 +426,23 @@ function customTheme(type: ThemeName, overrides?: Record<string, any>): IobTheme
                         props: { variant: 'contained', color: 'grey' },
                         style: {
                             backgroundColor: palette.grey?.[300],
-                            color: palette.getContrastText && palette.grey?.[300]? palette.getContrastText(palette.grey[300]) : undefined,
+                            color:
+                                palette.getContrastText && palette.grey?.[300]
+                                    ? palette.getContrastText(palette.grey[300])
+                                    : undefined,
                         },
                     },
                     {
                         props: { variant: 'outlined', color: 'grey' },
                         style: {
                             color: palette.text?.primary,
-                            borderColor:
-                                palette.mode === 'light'
-                                    ? 'rgba(0, 0, 0, 0.23)'
-                                    : 'rgba(255, 255, 255, 0.23)',
+                            borderColor: palette.mode === 'light' ? 'rgba(0, 0, 0, 0.23)' : 'rgba(255, 255, 255, 0.23)',
                             '&.Mui-disabled': {
                                 border: `1px solid ${palette.action?.disabledBackground}`,
                             },
                             '&:hover': {
                                 borderColor:
-                                    palette.mode === 'light'
-                                        ? 'rgba(0, 0, 0, 0.23)'
-                                        : 'rgba(255, 255, 255, 0.23)',
+                                    palette.mode === 'light' ? 'rgba(0, 0, 0, 0.23)' : 'rgba(255, 255, 255, 0.23)',
                                 backgroundColor: alpha(
                                     palette.text?.primary || '',
                                     palette.action?.hoverOpacity || 0.04,

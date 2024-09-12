@@ -3,11 +3,11 @@
  *
  * MIT License
  *
- * */
+ */
 import React, { useEffect } from 'react';
 import { CircularProgress } from '@mui/material';
 
-import { ThemeType, ThemeName } from '../../types';
+import type { ThemeType, ThemeName } from '../../types';
 
 // import './Vendor.css'
 const vendorStyles = `
@@ -32,7 +32,7 @@ interface LoaderVendorProps {
     backgroundImage?: string;
 }
 
-function LoaderVendor(props: LoaderVendorProps) {
+function LoaderVendor(props: LoaderVendorProps): React.JSX.Element {
     useEffect(() => {
         if (!window.document.getElementById('vendor-iobroker-component')) {
             const style = window.document.createElement('style');
@@ -43,25 +43,41 @@ function LoaderVendor(props: LoaderVendorProps) {
     }, []);
 
     const theme = props.themeType || props.themeName || 'light';
-    return <div
-        className={`vendor-logo-back logo-background-${theme}`}
-        style={{
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100%',
-            width: '10%',
-            margin: 'auto',
-            backgroundImage: (props.backgroundImage && props.backgroundImage !== '@@loginBackgroundImage@@') ? props.backgroundImage :
-                (window.loadingBackgroundImage && window.loadingBackgroundImage !== '@@loginBackgroundImage@@' ? `url(${window.loadingBackgroundImage})` : undefined),
-            backgroundColor: (props.backgroundColor && props.backgroundColor !== '@@loginBackgroundColor@@') ? props.backgroundColor :
-                (window.loadingBackgroundColor && window.loadingBackgroundColor !== '@@loginBackgroundColor@@' ? window.loadingBackgroundColor : (props.themeType === 'dark' ? '#000' : '#FFF')),
-            backgroundSize: 'cover',
-        }}
-    >
-        <div style={{ flexGrow: 1 }} />
-        <CircularProgress color="secondary" size={props.size || 200} thickness={5} />
-        <div style={{ flexGrow: 1 }} />
-    </div>;
+    return (
+        <div
+            className={`vendor-logo-back logo-background-${theme}`}
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+                width: '10%',
+                margin: 'auto',
+                backgroundImage:
+                    props.backgroundImage && props.backgroundImage !== '@@loginBackgroundImage@@'
+                        ? props.backgroundImage
+                        : window.loadingBackgroundImage && window.loadingBackgroundImage !== '@@loginBackgroundImage@@'
+                          ? `url(${window.loadingBackgroundImage})`
+                          : undefined,
+                backgroundColor:
+                    props.backgroundColor && props.backgroundColor !== '@@loginBackgroundColor@@'
+                        ? props.backgroundColor
+                        : window.loadingBackgroundColor && window.loadingBackgroundColor !== '@@loginBackgroundColor@@'
+                          ? window.loadingBackgroundColor
+                          : props.themeType === 'dark'
+                            ? '#000'
+                            : '#FFF',
+                backgroundSize: 'cover',
+            }}
+        >
+            <div style={{ flexGrow: 1 }} />
+            <CircularProgress
+                color="secondary"
+                size={props.size || 200}
+                thickness={5}
+            />
+            <div style={{ flexGrow: 1 }} />
+        </div>
+    );
 }
 
 export default LoaderVendor;

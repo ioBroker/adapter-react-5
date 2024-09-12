@@ -1,6 +1,6 @@
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
 import React from 'react';
-import { Grid } from '@mui/material';
+import { Grid2 } from '@mui/material';
 
 const styles: Record<string, React.CSSProperties> = {
     root: {
@@ -21,17 +21,18 @@ interface TabContentProps {
     style?: React.CSSProperties;
 }
 
-function TabContent(props: TabContentProps) {
-    return <Grid
-        item
-        sx={{
-            ...styles.root,
-            ...(props?.style || undefined),
-            ...(props.overflow === 'auto' ? styles.overflowAuto : undefined),
-        }}
-    >
-        {props.children}
-    </Grid>;
+function TabContent(props: TabContentProps): React.JSX.Element {
+    return (
+        <Grid2
+            sx={{
+                ...styles.root,
+                ...(props?.style || undefined),
+                ...(props.overflow === 'auto' ? styles.overflowAuto : undefined),
+            }}
+        >
+            {props.children}
+        </Grid2>
+    );
 }
 
 export default TabContent;

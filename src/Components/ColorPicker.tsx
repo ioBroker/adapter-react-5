@@ -13,23 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { Component } from 'react';
+import React, { Component, type CSSProperties } from 'react';
 import { ChromePicker, type RGBColor } from 'react-color';
 
-import {
-    TextField, Menu,
-    IconButton, Button,
-    Box,
-} from '@mui/material';
+import { TextField, Menu, IconButton, Button, Box } from '@mui/material';
 
-import {
-    Delete as IconDelete,
-    Close as IconClose,
-} from '@mui/icons-material';
+import { Delete as IconDelete, Close as IconClose } from '@mui/icons-material';
 
 import I18n from '../i18n';
 
-import { IobTheme } from '../types';
+import type { IobTheme } from '../types';
 
 const styles: Record<string, any> = {
     color: {
@@ -111,7 +104,7 @@ interface ColorPickerProps {
     /** @deprecated TLabel of the color picker use label */
     name?: string;
     /** Additional styling for this component. */
-    style?: React.CSSProperties;
+    style?: CSSProperties;
     /** The CSS class name. */
     className?: string;
     customPalette?: string[];
@@ -127,7 +120,15 @@ interface ColorPickerState {
     anchorEl: HTMLDivElement | null;
 }
 
+/**
+ * A color picker component.
+ */
 class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
+    /**
+     * Constructor for the color picker.
+     *
+     * @param props The properties.
+     */
     constructor(props: ColorPickerProps) {
         super(props);
         this.state = {
@@ -137,26 +138,25 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
         };
     }
 
-    private handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    private handleClick = (e: React.MouseEvent<HTMLDivElement>): void => {
         this.setState({
             displayColorPicker: !this.state.displayColorPicker,
             anchorEl: this.state.displayColorPicker ? null : e.currentTarget,
         });
     };
 
-    private handleClose = () => {
+    private handleClose = (): void => {
         this.setState({ displayColorPicker: false, anchorEl: null });
     };
 
     /**
      * Convert the given color to hex ('#rrggbb') or rgba ('rgba(r,g,b,a)') format.
+     *
+     * @param color The color to convert.
+     * @param isHex If true, the color will be converted to hex format.
      * @returns the hex or rgba representation of the given color.
      */
-    static getColor(
-        color: string | { rgb: RGBColor } | RGBColor,
-        /** The returning string should be in hex format */
-        isHex?: boolean,
-    ): string {
+    static getColor(color: string | { rgb: RGBColor } | RGBColor, isHex?: boolean): string {
         if (color && typeof color === 'object') {
             const oColor = color as { rgb: RGBColor };
             if (oColor.rgb) {
@@ -171,11 +171,16 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
             }
             return `rgba(${rColor.r},${rColor.g},${rColor.b},${rColor.a})`;
         }
-        return isHex ? ColorPicker.rgb2hex(color as string || '') : color as string || '';
+        if (typeof color === 'string') {
+            return isHex ? ColorPicker.rgb2hex(color || '') : color || '';
+        }
+        return '';
     }
 
     /**
      * Convert rgb() or rgba() format to hex format #rrggbb.
+     *
+     * @param rgb The color in rgb() or rgba() format. if not in this format, the color will be returned as is.
      */
     static rgb2hex(rgb: string): string {
         const m = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
@@ -190,15 +195,17 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
         return rgb;
     }
 
-    private handleChange = (color: string | RGBColor) => {
-        this.setState({ color }, () =>
-            this.props.onChange && this.props.onChange(ColorPicker.getColor(color)));
+    private handleChange = (color: string | RGBColor): void => {
+        this.setState({ color }, () => this.props.onChange && this.props.onChange(ColorPicker.getColor(color)));
     };
 
     /**
-     * IF the props are updated from outside, they should override the state
+     * If the props are updated from outside, they should override the state
+     *
+     * @param _prevProps The previous properties.
+     * @param prevState The previous state.
      */
-    componentDidUpdate(_prevProps: ColorPickerProps, prevState: ColorPickerState) {
+    componentDidUpdate(_prevProps: ColorPickerProps, prevState: ColorPickerState): void {
         const color = ColorPicker.getColor(this.props.color || this.props.value || '');
 
         if (color !== prevState.color) {
@@ -206,109 +213,130 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
         }
     }
 
-    renderCustomPalette() {
+    renderCustomPalette(): React.JSX.Element | null {
         if (!this.props.customPalette) {
             return null;
         }
-        return <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-            {this.props.customPalette.map(color => <Button
-                style={styles.button}
-                key={color}
-                onClick={() => {
-                    this.handleChange(color);
-                    setTimeout(() => this.handleClose(), 300);
-                }}
-            >
-                <div
-                    style={{ ...styles.iconButton, background: color }}
-                />
-            </Button>)}
-        </div>;
+        return (
+            <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap' }}>
+                {this.props.customPalette.map(color => (
+                    <Button
+                        style={styles.button}
+                        key={color}
+                        onClick={() => {
+                            this.handleChange(color);
+                            setTimeout(() => this.handleClose(), 300);
+                        }}
+                    >
+                        <div style={{ ...styles.iconButton, background: color }} />
+                    </Button>
+                ))}
+            </div>
+        );
     }
 
-    render() {
+    render(): React.JSX.Element {
         const style = { ...(this.props.style || {}) };
         style.position = 'relative';
         const { color } = this.state;
 
-        return <Box
-            component="div"
-            style={style}
-            sx={this.props.sx || undefined}
-            className={this.props.className || ''}
-        >
-            {this.props.noInputField ? null : <TextField
-                disabled={this.props.disabled}
-                variant="standard"
-                id="ar_color_picker_name"
-                label={this.props.label || this.props.name}
-                value={color || ''}
-                margin="dense"
-                sx={{
-                    '&.MuiFormControl-root': styles.textDense,
-                    width: color ? 'calc(100% - 80px)' : 'calc(100% - 56px)',
-                    mr: color ? undefined : 1,
-                }}
-                onChange={e => this.handleChange(e.target.value)}
-            />}
-            {!this.props.noInputField && color ? <IconButton
-                disabled={this.props.disabled}
-                onClick={() => this.handleChange('')}
-                size="small"
-                style={{ ...(this.props.label || this.props.name ? styles.delButton : undefined), ...(color ? undefined : { opacity: 0, cursor: 'default' }) }}
-            >
-                <IconDelete />
-            </IconButton> : null}
+        return (
             <Box
                 component="div"
-                onClick={e => !this.props.disabled && this.handleClick(e)}
-                title={I18n.t('ra_Select color')}
-                sx={{
-                    ...styles.swatch,
-                    ...(this.props.disabled ? styles.swatchDisabled : undefined),
-                    background: color ? undefined : 'transparent',
-                    border: color ? undefined : '1px dashed #ccc',
-                    boxSizing: 'border-box',
-                    marginTop: this.props.noInputField || !(this.props.label || this.props.name) ? 0 : undefined,
-                }}
+                style={style}
+                sx={this.props.sx || undefined}
+                className={this.props.className || ''}
             >
-                <div
-                    style={{
-                        ...styles.color,
-                        background: ColorPicker.getColor(color),
-                        width: this.props.noInputField ? (this.props.barWidth || 16) : this.props.barWidth || 36,
+                {this.props.noInputField ? null : (
+                    <TextField
+                        disabled={this.props.disabled}
+                        variant="standard"
+                        id="ar_color_picker_name"
+                        label={this.props.label || this.props.name}
+                        value={color || ''}
+                        margin="dense"
+                        sx={{
+                            '&.MuiFormControl-root': styles.textDense,
+                            width: color ? 'calc(100% - 80px)' : 'calc(100% - 56px)',
+                            mr: color ? undefined : 1,
+                        }}
+                        onChange={e => this.handleChange(e.target.value)}
+                    />
+                )}
+                {!this.props.noInputField && color ? (
+                    <IconButton
+                        disabled={this.props.disabled}
+                        onClick={() => this.handleChange('')}
+                        size="small"
+                        style={{
+                            ...(this.props.label || this.props.name ? styles.delButton : undefined),
+                            ...(color ? undefined : { opacity: 0, cursor: 'default' }),
+                        }}
+                    >
+                        <IconDelete />
+                    </IconButton>
+                ) : null}
+                <Box
+                    component="div"
+                    onClick={e => !this.props.disabled && this.handleClick(e)}
+                    title={I18n.t('ra_Select color')}
+                    sx={{
+                        ...styles.swatch,
+                        ...(this.props.disabled ? styles.swatchDisabled : undefined),
+                        background: color ? undefined : 'transparent',
+                        border: color ? undefined : '1px dashed #ccc',
+                        boxSizing: 'border-box',
+                        marginTop: this.props.noInputField || !(this.props.label || this.props.name) ? 0 : undefined,
                     }}
-                />
+                >
+                    <div
+                        style={{
+                            ...styles.color,
+                            background: ColorPicker.getColor(color),
+                            width: this.props.noInputField ? this.props.barWidth || 16 : this.props.barWidth || 36,
+                        }}
+                    />
+                </Box>
+                {this.state.displayColorPicker && !this.props.disabled ? (
+                    <Menu
+                        sx={{
+                            ...styles.popover,
+                            '&. MuiMenu-list': styles.popoverList,
+                        }}
+                        anchorEl={this.state.anchorEl}
+                        open={!0}
+                        onClose={() => this.handleClose()}
+                    >
+                        <ChromePicker
+                            color={this.state.color || undefined}
+                            onChangeComplete={(_color: { rgb: RGBColor }) => this.handleChange(_color.rgb)}
+                            styles={{
+                                default: {
+                                    picker: {
+                                        backgroundColor: this.props.theme?.palette.background.paper || '#888',
+                                    },
+                                },
+                            }}
+                        />
+                        {color && this.props.noInputField ? (
+                            <IconButton
+                                sx={styles.closeButton}
+                                onClick={() => this.handleChange('')}
+                            >
+                                <IconDelete />
+                            </IconButton>
+                        ) : null}
+                        <IconButton
+                            sx={styles.closeButton}
+                            onClick={() => this.handleClose()}
+                        >
+                            <IconClose />
+                        </IconButton>
+                        {this.renderCustomPalette()}
+                    </Menu>
+                ) : null}
             </Box>
-            {this.state.displayColorPicker && !this.props.disabled ? <Menu
-                sx={{
-                    ...styles.popover,
-                    '&. MuiMenu-list': styles.popoverList,
-                }}
-                anchorEl={this.state.anchorEl}
-                open={!0}
-                onClose={() => this.handleClose()}
-            >
-                <ChromePicker
-                    color={this.state.color || undefined}
-                    onChangeComplete={(_color: { rgb: RGBColor }) => this.handleChange(_color.rgb)}
-                    styles={{
-                        default: {
-                            picker: {
-                                backgroundColor: this.props.theme?.palette.background.paper || '#888',
-                            },
-                        },
-                    }}
-                />
-                {color && this.props.noInputField ? <IconButton sx={styles.closeButton} onClick={() => this.handleChange('')}>
-                    <IconDelete />
-                </IconButton> : null}
-                <IconButton sx={styles.closeButton} onClick={() => this.handleClose()}>
-                    <IconClose />
-                </IconButton>
-                {this.renderCustomPalette()}
-            </Menu> : null}
-        </Box>;
+        );
     }
 }
 

@@ -1,16 +1,6 @@
 import React, { Component } from 'react';
 
-import {
-    Checkbox,
-    Button,
-    MenuItem,
-    Select,
-    FormControlLabel,
-    AppBar,
-    Tabs,
-    Tab,
-    TextField, Box,
-} from '@mui/material';
+import { Checkbox, Button, MenuItem, Select, FormControlLabel, AppBar, Tabs, Tab, TextField } from '@mui/material';
 
 import I18n from '../i18n';
 import convertCronToText from './SimpleCron/cronText';
@@ -48,16 +38,7 @@ const styles: Record<string, React.CSSProperties> = {
     },
 };
 
-const WEEKDAYS = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
-];
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const MONTHS = [
     'January',
     'February',
@@ -120,7 +101,7 @@ function convertMinusIntoArray(value: string | false | undefined, max: number): 
 }
 
 // [5,6,7,9,10,11] => 5-7,9-11
-function convertArrayIntoMinus(value: number | number [], max: number): string {
+function convertArrayIntoMinus(value: number | number[], max: number): string {
     if (typeof value !== 'object') {
         value = [value];
     }
@@ -197,8 +178,10 @@ interface ComplexCronState {
 class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
     constructor(props: ComplexCronProps) {
         super(props);
-        let cron = typeof this.props.cronExpression === 'string' ?
-            this.props.cronExpression.replace(/^["']/, '').replace(/["']\n?$/, '') : '';
+        let cron =
+            typeof this.props.cronExpression === 'string'
+                ? this.props.cronExpression.replace(/^["']/, '').replace(/["']\n?$/, '')
+                : '';
         if (cron[0] === '{') {
             cron = '';
         }
@@ -258,15 +241,14 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
         return text;
     }
 
-    recalcCron() {
+    recalcCron(): void {
         const cron = ComplexCron.state2cron(this.state);
         if (cron !== this.state.cron) {
-            this.setState({ cron }, () =>
-                this.props.onChange && this.props.onChange(this.state.cron));
+            this.setState({ cron }, () => this.props.onChange && this.props.onChange(this.state.cron));
         }
     }
 
-    onToggle(i: boolean | number, type: CronNames, max: number) {
+    onToggle(i: boolean | number, type: CronNames, max: number): void {
         if (i === true) {
             this.setCronAttr(type, '*');
         } else if (i === false) {
@@ -288,7 +270,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
         }
     }
 
-    getDigitsSelector(type: CronNames, max: number) {
+    getDigitsSelector(type: CronNames, max: number): React.JSX.Element[] {
         let values = [];
         if (max === 7) {
             values = [1, 2, 3, 4, 5, 6, 0];
@@ -326,13 +308,17 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                 {I18n.t('ra_Select all')}
             </Button>,
             <div key="all">
-                {values.map(i =>
-                    [((max === 7 && i === 4) ||
+                {values.map(i => [
+                    (max === 7 && i === 4) ||
                     (max === 12 && i === 7) ||
                     (max === 31 && !((i - 1) % 10)) ||
                     (max === 60 && i && !(i % 10)) ||
-                    (max === 24 && i && !(i % 6))) ?
-                        <div key={`allInner${i}`} style={{ width: '100%' }} /> : null,
+                    (max === 24 && i && !(i % 6)) ? (
+                        <div
+                            key={`allInner${i}`}
+                            style={{ width: '100%' }}
+                        />
+                    ) : null,
                     <Button
                         key={`_${i}`}
                         variant={parts.indexOf(i) !== -1 ? 'contained' : 'outlined'}
@@ -340,9 +326,9 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                         color={parts.indexOf(i) !== -1 ? 'secondary' : 'primary'}
                         onClick={() => this.onToggle(i, type, max)}
                     >
-                        {max === 7 ? I18n.t(WEEKDAYS[i]) : (max === 12 ? MONTHS[i - 1] : i)}
+                        {max === 7 ? I18n.t(WEEKDAYS[i]) : max === 12 ? MONTHS[i - 1] : i}
                     </Button>,
-                    ])}
+                ])}
             </div>,
         ];
     }
@@ -353,7 +339,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
         let everyN = value === undefined || value === null ? false : value.toString().includes('/');
         let select;
         if (this.state.modes[type] === null) {
-            select = every ? 'every' : (everyN ? 'everyN' : 'specific');
+            select = every ? 'every' : everyN ? 'everyN' : 'specific';
             const modes = JSON.parse(JSON.stringify(this.state.modes));
             modes[type] = select;
             setTimeout(() => this.setState({ modes }, () => this.recalcCron()), 100);
@@ -369,49 +355,75 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
             valueNumber = parseInt(value.replace('*/', ''), 10) || 1;
         }
 
-        return <div>
-            <Select
-                variant="standard"
-                style={{ ...styles.periodSelect, verticalAlign: 'bottom' }}
-                value={select}
-                onChange={e => {
-                    const modes = JSON.parse(JSON.stringify(this.state.modes));
-                    modes[type] = e.target.value;
-                    if (e.target.value === 'every') {
-                        this.setCronAttr(type, '*', modes);
-                    } else if (e.target.value === 'everyN') {
-                        const num = parseInt((this.state[type] || '').toString().replace('*/', ''), 10) || 1;
-                        this.setCronAttr(type, `*/${num}`, modes);
-                    } else if (e.target.value === 'specific') {
-                        let num = parseInt((this.state[type] || '').toString().split(',')[0], 10) || 0;
-                        if (!num && (type === 'months' || type === 'dates')) {
-                            num = 1;
+        return (
+            <div>
+                <Select
+                    variant="standard"
+                    style={{ ...styles.periodSelect, verticalAlign: 'bottom' }}
+                    value={select}
+                    onChange={e => {
+                        const modes = JSON.parse(JSON.stringify(this.state.modes));
+                        modes[type] = e.target.value;
+                        if (e.target.value === 'every') {
+                            this.setCronAttr(type, '*', modes);
+                        } else if (e.target.value === 'everyN') {
+                            const num = parseInt((this.state[type] || '').toString().replace('*/', ''), 10) || 1;
+                            this.setCronAttr(type, `*/${num}`, modes);
+                        } else if (e.target.value === 'specific') {
+                            let num = parseInt((this.state[type] || '').toString().split(',')[0], 10) || 0;
+                            if (!num && (type === 'months' || type === 'dates')) {
+                                num = 1;
+                            }
+                            this.setCronAttr(type, convertArrayIntoMinus(num, max), modes);
                         }
-                        this.setCronAttr(type, convertArrayIntoMinus(num, max), modes);
-                    }
-                }}
-            >
-                <MenuItem key="every" value="every">{I18n.t(`sc_every_${type}`)}</MenuItem>
-                <MenuItem key="everyN" value="everyN">{I18n.t(`sc_everyN_${type}`)}</MenuItem>
-                <MenuItem key="specific" value="specific">{I18n.t(`sc_specific_${type}`)}</MenuItem>
-            </Select>
-            {everyN && false && <span>{value}</span>}
-            {everyN && <TextField
-                variant="standard"
-                key="interval"
-                label={I18n.t(`sc_${type}`)}
-                value={valueNumber}
-                inputProps={{ min: 1, max }}
-                onChange={e => {
-                    // @ts-expect-error is allowed
-                    this.setState({ [type]: `*/${e.target.value}` }, () => this.recalcCron());
-                }}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-                margin="normal"
-            />}
-            {!every && !everyN && this.getDigitsSelector(type, max)}
-        </div>;
+                    }}
+                >
+                    <MenuItem
+                        key="every"
+                        value="every"
+                    >
+                        {I18n.t(`sc_every_${type}`)}
+                    </MenuItem>
+                    <MenuItem
+                        key="everyN"
+                        value="everyN"
+                    >
+                        {I18n.t(`sc_everyN_${type}`)}
+                    </MenuItem>
+                    <MenuItem
+                        key="specific"
+                        value="specific"
+                    >
+                        {I18n.t(`sc_specific_${type}`)}
+                    </MenuItem>
+                </Select>
+                {/* everyN && false && <span>{value}</span> */}
+                {everyN && (
+                    <TextField
+                        variant="standard"
+                        key="interval"
+                        label={I18n.t(`sc_${type}`)}
+                        value={valueNumber}
+                        slotProps={{
+                            htmlInput: {
+                                min: 1,
+                                max,
+                            },
+                            inputLabel: {
+                                shrink: true,
+                            },
+                        }}
+                        onChange={e => {
+                            // @ts-expect-error is allowed
+                            this.setState({ [type]: `*/${e.target.value}` }, () => this.recalcCron());
+                        }}
+                        type="number"
+                        margin="normal"
+                    />
+                )}
+                {!every && !everyN && this.getDigitsSelector(type, max)}
+            </div>
+        );
     }
 
     static convertCronToText(cron: string, lang: ioBroker.Languages): string {
@@ -421,86 +433,111 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
         return convertCronToText(cron, lang);
     }
 
-    setCronAttr(attr: CronNames, value: string, modes?: CronProps) {
+    setCronAttr(attr: CronNames, value: string, modes?: CronProps): void {
         if (modes) {
             if (attr === 'seconds') {
-                this.setState({ seconds: value, modes }, () =>
-                    this.recalcCron());
+                this.setState({ seconds: value, modes }, () => this.recalcCron());
             } else if (attr === 'minutes') {
-                this.setState({ minutes: value, modes }, () =>
-                    this.recalcCron());
+                this.setState({ minutes: value, modes }, () => this.recalcCron());
             } else if (attr === 'hours') {
-                this.setState({ hours: value, modes }, () =>
-                    this.recalcCron());
+                this.setState({ hours: value, modes }, () => this.recalcCron());
             } else if (attr === 'dates') {
-                this.setState({ dates: value, modes }, () =>
-                    this.recalcCron());
+                this.setState({ dates: value, modes }, () => this.recalcCron());
             } else if (attr === 'months') {
-                this.setState({ months: value, modes }, () =>
-                    this.recalcCron());
+                this.setState({ months: value, modes }, () => this.recalcCron());
             } else if (attr === 'dow') {
-                this.setState({ dow: value, modes }, () =>
-                    this.recalcCron());
+                this.setState({ dow: value, modes }, () => this.recalcCron());
             } else {
-                this.setState({ modes }, () =>
-                    this.recalcCron());
+                this.setState({ modes }, () => this.recalcCron());
             }
         } else if (attr === 'seconds') {
-            this.setState({ seconds: value }, () =>
-                this.recalcCron());
+            this.setState({ seconds: value }, () => this.recalcCron());
         } else if (attr === 'minutes') {
-            this.setState({ minutes: value }, () =>
-                this.recalcCron());
+            this.setState({ minutes: value }, () => this.recalcCron());
         } else if (attr === 'hours') {
-            this.setState({ hours: value }, () =>
-                this.recalcCron());
+            this.setState({ hours: value }, () => this.recalcCron());
         } else if (attr === 'dates') {
-            this.setState({ dates: value }, () =>
-                this.recalcCron());
+            this.setState({ dates: value }, () => this.recalcCron());
         } else if (attr === 'months') {
-            this.setState({ months: value }, () =>
-                this.recalcCron());
+            this.setState({ months: value }, () => this.recalcCron());
         } else if (attr === 'dow') {
-            this.setState({ dow: value }, () =>
-                this.recalcCron());
+            this.setState({ dow: value }, () => this.recalcCron());
         }
     }
 
-    render() {
+    render(): React.JSX.Element {
         const tab = this.state.seconds !== false ? this.state.tab : this.state.tab + 1;
-        return <div style={styles.mainDiv}>
-            <div style={{ paddingLeft: 8, width: '100%' }}><TextField variant="standard" style={{ width: '100%' }} value={this.state.cron} disabled /></div>
-            <div style={{ paddingLeft: 8, width: '100%', height: 60 }}>{ComplexCron.convertCronToText(this.state.cron, this.props.language || 'en')}</div>
-            <FormControlLabel
-                control={<Checkbox
-                    checked={!!this.state.seconds}
-                    onChange={e => this.setState({ seconds: e.target.checked ? '*' : false }, () => this.recalcCron())}
-                />}
-                label={I18n.t('ra_use seconds')}
-            />
-            <AppBar position="static" sx={{ '&.MuiAppBar-root': styles.appBar }} color="secondary">
-                <Tabs
-                    value={this.state.tab}
-                    style={styles.appBar}
+        return (
+            <div style={styles.mainDiv}>
+                <div style={{ paddingLeft: 8, width: '100%' }}>
+                    <TextField
+                        variant="standard"
+                        style={{ width: '100%' }}
+                        value={this.state.cron}
+                        disabled
+                    />
+                </div>
+                <div style={{ paddingLeft: 8, width: '100%', height: 60 }}>
+                    {ComplexCron.convertCronToText(this.state.cron, this.props.language || 'en')}
+                </div>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={!!this.state.seconds}
+                            onChange={e =>
+                                this.setState({ seconds: e.target.checked ? '*' : false }, () => this.recalcCron())
+                            }
+                        />
+                    }
+                    label={I18n.t('ra_use seconds')}
+                />
+                <AppBar
+                    position="static"
+                    sx={{ '&.MuiAppBar-root': styles.appBar }}
                     color="secondary"
-                    onChange={(active, _tab) =>
-                        this.setState({ tab: _tab })}
                 >
-                    {this.state.seconds !== false && <Tab id="sc_seconds" label={I18n.t('sc_seconds')} />}
-                    <Tab id="minutes" label={I18n.t('sc_minutes')} />
-                    <Tab id="hours" label={I18n.t('sc_hours')} />
-                    <Tab id="dates" label={I18n.t('sc_dates')} />
-                    <Tab id="months" label={I18n.t('sc_months')} />
-                    <Tab id="dow" label={I18n.t('sc_dows')} />
-                </Tabs>
-            </AppBar>
-            {tab === 0 && <div style={styles.tabContent}>{this.getPeriodsTab('seconds', 60)}</div>}
-            {tab === 1 && <div style={styles.tabContent}>{this.getPeriodsTab('minutes', 60)}</div>}
-            {tab === 2 && <div style={styles.tabContent}>{this.getPeriodsTab('hours', 24)}</div>}
-            {tab === 3 && <div style={styles.tabContent}>{this.getPeriodsTab('dates', 31)}</div>}
-            {tab === 4 && <div style={styles.tabContent}>{this.getPeriodsTab('months', 12)}</div>}
-            {tab === 5 && <div style={styles.tabContent}>{this.getPeriodsTab('dow', 7)}</div>}
-        </div>;
+                    <Tabs
+                        value={this.state.tab}
+                        style={styles.appBar}
+                        color="secondary"
+                        onChange={(active, _tab) => this.setState({ tab: _tab })}
+                    >
+                        {this.state.seconds !== false && (
+                            <Tab
+                                id="sc_seconds"
+                                label={I18n.t('sc_seconds')}
+                            />
+                        )}
+                        <Tab
+                            id="minutes"
+                            label={I18n.t('sc_minutes')}
+                        />
+                        <Tab
+                            id="hours"
+                            label={I18n.t('sc_hours')}
+                        />
+                        <Tab
+                            id="dates"
+                            label={I18n.t('sc_dates')}
+                        />
+                        <Tab
+                            id="months"
+                            label={I18n.t('sc_months')}
+                        />
+                        <Tab
+                            id="dow"
+                            label={I18n.t('sc_dows')}
+                        />
+                    </Tabs>
+                </AppBar>
+                {tab === 0 && <div style={styles.tabContent}>{this.getPeriodsTab('seconds', 60)}</div>}
+                {tab === 1 && <div style={styles.tabContent}>{this.getPeriodsTab('minutes', 60)}</div>}
+                {tab === 2 && <div style={styles.tabContent}>{this.getPeriodsTab('hours', 24)}</div>}
+                {tab === 3 && <div style={styles.tabContent}>{this.getPeriodsTab('dates', 31)}</div>}
+                {tab === 4 && <div style={styles.tabContent}>{this.getPeriodsTab('months', 12)}</div>}
+                {tab === 5 && <div style={styles.tabContent}>{this.getPeriodsTab('dow', 7)}</div>}
+            </div>
+        );
     }
 }
 

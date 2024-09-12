@@ -1,4 +1,4 @@
-import React, { ReactEventHandler } from 'react';
+import React, { type ReactEventHandler } from 'react';
 import SVG from 'react-inlinesvg';
 
 import { Box } from '@mui/material';
@@ -17,6 +17,11 @@ import {
 import IconAlias from '../icons/IconAlias';
 import Utils from './Utils';
 
+/**
+ * Get icon by object type (state, channel, device, ...).
+ *
+ * @param obj Object
+ */
 export function getSystemIcon(obj: ioBroker.Object | null): React.JSX.Element | null {
     let icon;
     const id = obj?._id;
@@ -26,7 +31,7 @@ export function getSystemIcon(obj: ioBroker.Object | null): React.JSX.Element | 
     }
 
     // system or design has special icons
-    if (id.startsWith('_design/') || (id === 'system')) {
+    if (id.startsWith('_design/') || id === 'system') {
         icon = <IconSystem className="iconOwn" />;
     } else if (id === '0_userdata' || id === '0_userdata.0') {
         icon = <IconPhoto className="iconOwn" />;
@@ -51,6 +56,12 @@ export function getSystemIcon(obj: ioBroker.Object | null): React.JSX.Element | 
     return icon || null;
 }
 
+/**
+ * Get icon from the object.
+ *
+ * @param obj Object
+ * @param imagePrefix Prefix for image
+ */
 export function getSelectIdIcon(obj: ioBroker.Object | null, imagePrefix?: string): string | null {
     imagePrefix = imagePrefix || '.'; // http://localhost:8081';
     let src = '';
@@ -63,7 +74,7 @@ export function getSelectIdIcon(obj: ioBroker.Object | null, imagePrefix?: strin
                 if (cIcon.includes('.')) {
                     let instance;
                     if (obj.type === 'instance' || obj.type === 'adapter') {
-                        src = `${imagePrefix}/adapter/${common.name}/${cIcon}`;
+                        src = `${imagePrefix}/adapter/${common.name as string}/${cIcon}`;
                     } else if (obj._id && obj._id.startsWith('system.adapter.')) {
                         instance = obj._id.split('.', 3);
                         if (cIcon[0] === '/') {
@@ -101,12 +112,15 @@ interface IconProps {
     className?: string;
     /** Style for image */
     style?: React.CSSProperties;
+    /** Styles for mui */
     sx?: Record<string, any>;
     /** Tooltip */
     title?: string;
     /** Styles for utf-8 characters */
     styleUTF8?: React.CSSProperties;
+    /** On error handler */
     onError?: ReactEventHandler<HTMLImageElement>;
+    /** Reference to image */
     ref?: React.RefObject<HTMLImageElement>;
     /** Alternative text for image */
     alt?: string;
@@ -115,39 +129,45 @@ interface IconProps {
 const REMOTE_SERVER = window.location.hostname.endsWith('iobroker.in');
 const REMOTE_PREFIX = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
 
-export default function Icon(props: IconProps) {
+export default function Icon(props: IconProps): React.JSX.Element | null {
     if (props.src) {
         if (typeof props.src === 'string') {
             if (props.src.length < 3) {
                 // utf-8 char
                 if (props.sx) {
-                    return <Box
-                        component="span"
-                        sx={props.sx}
+                    return (
+                        <Box
+                            component="span"
+                            sx={props.sx}
+                            title={props.title || undefined}
+                            style={{ height: 27, marginTop: -8, ...(props.styleUTF8 || props.style) }}
+                            className={Utils.clsx(props.className, 'iconOwn')}
+                        >
+                            {props.src}
+                        </Box>
+                    );
+                }
+                return (
+                    <span
                         title={props.title || undefined}
                         style={{ height: 27, marginTop: -8, ...(props.styleUTF8 || props.style) }}
                         className={Utils.clsx(props.className, 'iconOwn')}
                     >
                         {props.src}
-                    </Box>;
-                }
-                return <span
-                    title={props.title || undefined}
-                    style={{ height: 27, marginTop: -8, ...(props.styleUTF8 || props.style) }}
-                    className={Utils.clsx(props.className, 'iconOwn')}
-                >
-                    {props.src}
-                </span>;
+                    </span>
+                );
             }
             if (props.src.startsWith('data:image/svg')) {
-                return <SVG
-                    title={props.title || undefined}
-                    src={props.src}
-                    className={Utils.clsx(props.className, 'iconOwn')}
-                    width={props.style?.width || 28}
-                    height={props.style?.height || props.style?.width || 28}
-                    style={props.style || {}}
-                />;
+                return (
+                    <SVG
+                        title={props.title || undefined}
+                        src={props.src}
+                        className={Utils.clsx(props.className, 'iconOwn')}
+                        width={props.style?.width || 28}
+                        height={props.style?.height || props.style?.width || 28}
+                        style={props.style || {}}
+                    />
+                );
             }
             if (REMOTE_SERVER && !props.src.startsWith('http://') && !props.src.startsWith('https://')) {
                 let src = props.src;
@@ -158,9 +178,22 @@ export default function Icon(props: IconProps) {
                 }
 
                 if (props.sx) {
-                    return <Box
-                        component="img"
-                        sx={props.sx}
+                    return (
+                        <Box
+                            component="img"
+                            sx={props.sx}
+                            title={props.title || undefined}
+                            style={props.style || {}}
+                            className={Utils.clsx(props.className, 'iconOwn')}
+                            src={`https://remote-files.iobroker.in${src}`}
+                            alt={props.alt || undefined}
+                            ref={props.ref}
+                            onError={e => props.onError && props.onError(e)}
+                        />
+                    );
+                }
+                return (
+                    <img
                         title={props.title || undefined}
                         style={props.style || {}}
                         className={Utils.clsx(props.className, 'iconOwn')}
@@ -168,22 +201,26 @@ export default function Icon(props: IconProps) {
                         alt={props.alt || undefined}
                         ref={props.ref}
                         onError={e => props.onError && props.onError(e)}
-                    />;
-                }
-                return <img
-                    title={props.title || undefined}
-                    style={props.style || {}}
-                    className={Utils.clsx(props.className, 'iconOwn')}
-                    src={`https://remote-files.iobroker.in${src}`}
-                    alt={props.alt || undefined}
-                    ref={props.ref}
-                    onError={e => props.onError && props.onError(e)}
-                />;
+                    />
+                );
             }
             if (props.sx) {
-                return <Box
-                    component="img"
-                    sx={props.sx}
+                return (
+                    <Box
+                        component="img"
+                        sx={props.sx}
+                        title={props.title || undefined}
+                        style={props.style || {}}
+                        className={Utils.clsx(props.className, 'iconOwn')}
+                        src={props.src}
+                        alt={props.alt || undefined}
+                        ref={props.ref}
+                        onError={props.onError}
+                    />
+                );
+            }
+            return (
+                <img
                     title={props.title || undefined}
                     style={props.style || {}}
                     className={Utils.clsx(props.className, 'iconOwn')}
@@ -191,17 +228,8 @@ export default function Icon(props: IconProps) {
                     alt={props.alt || undefined}
                     ref={props.ref}
                     onError={props.onError}
-                />;
-            }
-            return <img
-                title={props.title || undefined}
-                style={props.style || {}}
-                className={Utils.clsx(props.className, 'iconOwn')}
-                src={props.src}
-                alt={props.alt || undefined}
-                ref={props.ref}
-                onError={props.onError}
-            />;
+                />
+            );
         }
 
         return props.src;

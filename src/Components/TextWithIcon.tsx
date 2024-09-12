@@ -2,7 +2,7 @@ import React from 'react';
 
 import Icon from './Icon';
 import Utils from './Utils';
-import { ThemeType } from '../types';
+import type { ThemeType } from '../types';
 
 const styles: Record<string, React.CSSProperties> = {
     div: {
@@ -53,7 +53,7 @@ interface TextWithIconItem {
     color?: string;
 }
 
-const TextWithIcon = (props: TextWithIconProps) => {
+const TextWithIcon = (props: TextWithIconProps): React.JSX.Element => {
     const value = props.value;
     let item: TextWithIconItem;
     const prefix = props.removePrefix || '';
@@ -125,24 +125,35 @@ const TextWithIcon = (props: TextWithIconProps) => {
         };
     }
 
-    const style = item?.color ? {
-        border:`1px solid ${Utils.invertColor(item?.color)}`,
-        color: Utils.getInvertedColor(item?.color, props.themeType || 'light', true) || undefined,
-        backgroundColor: item?.color,
-    } : {};
+    const style = item?.color
+        ? {
+              border: `1px solid ${Utils.invertColor(item?.color)}`,
+              color: Utils.getInvertedColor(item?.color, props.themeType || 'light', true) || undefined,
+              backgroundColor: item?.color,
+          }
+        : {};
 
-    return <div
-        style={{ ...(props.style || undefined), ...styles.div, ...(style || undefined) }}
-        className={Utils.clsx(props.className, props.moreClasses?.root)}
-        title={props.title || item.value}
-    >
-        {item?.icon ? <Icon
-            src={item?.icon}
-            className={props.moreClasses?.icon}
-            style={styles.icon}
-        /> : null}
-        <div style={styles.text} className={props.moreClasses?.text}>{item?.name}</div>
-    </div>;
+    return (
+        <div
+            style={{ ...(props.style || undefined), ...styles.div, ...(style || undefined) }}
+            className={Utils.clsx(props.className, props.moreClasses?.root)}
+            title={props.title || item.value}
+        >
+            {item?.icon ? (
+                <Icon
+                    src={item?.icon}
+                    className={props.moreClasses?.icon}
+                    style={styles.icon}
+                />
+            ) : null}
+            <div
+                style={styles.text}
+                className={props.moreClasses?.text}
+            >
+                {item?.name}
+            </div>
+        </div>
+    );
 };
 
 export default TextWithIcon;

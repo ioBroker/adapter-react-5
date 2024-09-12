@@ -3,29 +3,20 @@
  *
  * MIT License
  *
- * */
+ */
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
-import React, { Component } from 'react';
+import React, { Component, type JSX } from 'react';
 
-import {
-    Button,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Dialog,
-} from '@mui/material';
+import { Button, DialogTitle, DialogContent, DialogActions, Dialog } from '@mui/material';
 
-import {
-    Cancel as IconCancel,
-    Check as IconOk,
-} from '@mui/icons-material';
+import { Cancel as IconCancel, Check as IconOk } from '@mui/icons-material';
 
 import type Connection from '../Connection';
 
 import I18n from '../i18n';
-import ObjectBrowser, { ObjectBrowserFilter } from '../Components/ObjectBrowser';
-import { ObjectBrowserColumn, ObjectBrowserCustomFilter, ObjectBrowserType } from '../Components/types';
-import { IobTheme } from '../types';
+import ObjectBrowser, { type ObjectBrowserFilter } from '../Components/ObjectBrowser';
+import type { ObjectBrowserColumn, ObjectBrowserCustomFilter, ObjectBrowserType } from '../Components/types';
+import type { IobTheme } from '../types';
 
 export interface SelectIDFilters {
     id?: string;
@@ -48,7 +39,7 @@ interface DialogSelectIDProps {
     foldersFirst?: boolean;
     /** Path prefix for images (default: '.') */
     imagePrefix?: string;
-    /** @deprecated: same as imagePrefix */
+    /** @deprecated same as imagePrefix */
     prefix?: string;
     /** Show the expert button */
     showExpertButton?: boolean;
@@ -86,10 +77,12 @@ interface DialogSelectIDProps {
     onClose: () => void;
     /** Handler that is called when the user presses OK. */
     onOk: (selected: string | string[] | undefined, name: string) => void;
-    /** Function to filter out all unnecessary objects. Can be string or function.
-       It cannot be used together with "types".
-       Example for function: `obj => obj.common?.type === 'boolean'` to show only boolean states
-       In case of string, it must look like `obj.common && obj.common.type === 'boolean'` */
+    /**
+     * Function to filter out all unnecessary objects. Can be string or function.
+     * It cannot be used together with "types".
+     * Example for function: `obj => obj.common?.type === 'boolean'` to show only boolean states
+     * In case of string, it must look like `obj.common && obj.common.type === 'boolean'`
+     */
     filterFunc?: string | ((obj: ioBroker.Object) => boolean);
     /** predefined filter fields, like {"id":"","name":"","room":"","func":"","role":"level","type":"","custom":""} */
     filters?: SelectIDFilters;
@@ -118,7 +111,7 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
 
         try {
             this.filters = JSON.parse(filters);
-        } catch (e) {
+        } catch {
             this.filters = {};
         }
 
@@ -135,9 +128,8 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
         if (props.filterFunc) {
             if (typeof props.filterFunc === 'string') {
                 try {
-                    // eslint-disable-next-line no-new-func
                     this.filterFunc = new Function('obj', props.filterFunc) as (obj: ioBroker.Object) => boolean;
-                } catch (e) {
+                } catch {
                     console.error(`Cannot parse filter function: "obj => ${props.filterFunc}"`);
                     this.filterFunc = undefined;
                 }
@@ -146,22 +138,22 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
             }
         }
 
-        this.state =  {
+        this.state = {
             selected,
             name: '',
         };
     }
 
-    handleCancel() {
+    handleCancel(): void {
         this.props.onClose();
     }
 
-    handleOk() {
+    handleOk(): void {
         this.props.onOk(this.props.multiSelect ? this.state.selected : this.state.selected[0] || '', this.state.name);
         this.props.onClose();
     }
 
-    render() {
+    render(): JSX.Element {
         let title;
         if (this.state.name || this.state.selected.length) {
             if (this.state.selected.length === 1) {
@@ -170,8 +162,12 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
                         {I18n.t('ra_Selected')}
                         &nbsp;
                     </span>,
-                    <span key="id" style={{ fontWeight: 'bold', fontStyle: 'italic' }}>
-                        {(this.state.name || this.state.selected) + (this.state.name ? ` [${this.state.selected}]` : '')}
+                    <span
+                        key="id"
+                        style={{ fontWeight: 'bold', fontStyle: 'italic' }}
+                    >
+                        {(this.state.name || this.state.selected[0]) +
+                            (this.state.name ? ` [${this.state.selected[0]}]` : '')}
                     </span>,
                 ];
             } else {
@@ -180,7 +176,10 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
                         {I18n.t('ra_Selected')}
                         &nbsp;
                     </span>,
-                    <span key="id" style={{ fontWeight: 'bold', fontStyle: 'italic' }}>
+                    <span
+                        key="id"
+                        style={{ fontWeight: 'bold', fontStyle: 'italic' }}
+                    >
                         {I18n.t('%s items', this.state.selected.length.toString())}
                     </span>,
                 ];
@@ -189,109 +188,122 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
             title = this.props.title || I18n.t('ra_Please select object ID...');
         }
 
-        return <Dialog
-            onClose={() => {}}
-            maxWidth={false}
-            sx={{
-                '& .MuiDialog-paper': {
-                    height: '95%',
-                    p: '4px',
-                    width: '100%',
-                    maxWidth: '100%',
-                    maxHeight: 'calc(100% - 16px)',
-                },
-            }}
-            fullWidth
-            open={!0}
-            aria-labelledby="ar_dialog_selectid_title"
-        >
-            <DialogTitle
-                id="ar_dialog_selectid_title"
-                style={{
-                    whiteSpace: 'nowrap',
-                    width: 'calc(100% - 72px)',
-                    overflow: 'hidden',
-                    display: 'inline-block',
-                    textOverflow: 'ellipsis',
+        return (
+            <Dialog
+                onClose={() => {}}
+                maxWidth={false}
+                sx={{
+                    '& .MuiDialog-paper': {
+                        height: '95%',
+                        p: '4px',
+                        width: '100%',
+                        maxWidth: '100%',
+                        maxHeight: 'calc(100% - 16px)',
+                    },
                 }}
+                fullWidth
+                open={!0}
+                aria-labelledby="ar_dialog_selectid_title"
             >
-                {title}
-            </DialogTitle>
-            <DialogContent
-                style={{
-                    height: '100%',
-                    overflow: 'hidden',
-                    padding: '8px 4px',
-                }}
-            >
-                <ObjectBrowser
-                    foldersFirst={this.props.foldersFirst}
-                    imagePrefix={this.props.imagePrefix || this.props.prefix} // prefix is for back compatibility
-                    dateFormat={this.props.dateFormat}
-                    defaultFilters={this.filters}
-                    dialogName={this.dialogName}
-                    isFloatComma={this.props.isFloatComma}
-                    showExpertButton={this.props.showExpertButton !== undefined ? this.props.showExpertButton : true}
-                    expertMode={this.props.expertMode}
-                    // style={{ width: '100%', height: '100%' }}
-                    columns={this.props.columns || ['name', 'type', 'role', 'room', 'func', 'val']}
-                    types={this.props.types ? (Array.isArray(this.props.types) ? this.props.types : [this.props.types]) : ['state']}
-                    root={this.props.root}
-                    t={I18n.t}
-                    lang={this.props.lang || I18n.getLanguage()}
-                    socket={this.props.socket}
-                    selected={this.state.selected}
-                    multiSelect={this.props.multiSelect}
-                    notEditable={this.props.notEditable === undefined ? true : this.props.notEditable}
-                    // name={this.state.name}
-                    themeName={this.props.themeName}
-                    themeType={this.props.themeType}
-                    theme={this.props.theme}
-                    customFilter={this.props.customFilter}
-                    onFilterChanged={(filterConfig: ObjectBrowserFilter) => {
-                        this.filters = filterConfig;
-                        ((window as any)._localStorage || window.localStorage).setItem(this.dialogName, JSON.stringify(filterConfig));
+                <DialogTitle
+                    id="ar_dialog_selectid_title"
+                    style={{
+                        whiteSpace: 'nowrap',
+                        width: 'calc(100% - 72px)',
+                        overflow: 'hidden',
+                        display: 'inline-block',
+                        textOverflow: 'ellipsis',
                     }}
-                    onSelect={(_selected: string | string[], name: string, isDouble?: boolean) => {
-                        let selected: string[];
-                        if (!Array.isArray(_selected)) {
-                            selected = [_selected];
-                        } else {
-                            selected = _selected;
-                        }
-                        if (JSON.stringify(selected) !== JSON.stringify(this.state.selected)) {
-                            this.setState({ selected, name }, () => isDouble && this.handleOk());
-                        } else if (isDouble) {
-                            this.handleOk();
-                        }
+                >
+                    {title}
+                </DialogTitle>
+                <DialogContent
+                    style={{
+                        height: '100%',
+                        overflow: 'hidden',
+                        padding: '8px 4px',
                     }}
-                    filterFunc={this.filterFunc}
-                    title=""
-                    classes={{ }}
-                />
-            </DialogContent>
-            <DialogActions>
-                <Button
-                    id={`ar_dialog_selectid_ok_${this.props.dialogName || ''}`}
-                    variant="contained"
-                    onClick={() => this.handleOk()}
-                    startIcon={<IconOk />}
-                    disabled={!this.state.selected.length}
-                    color="primary"
                 >
-                    {this.props.ok || I18n.t('ra_Ok')}
-                </Button>
-                <Button
-                    id={`ar_dialog_selectid_cancel_${this.props.dialogName || ''}`}
-                    color="grey"
-                    variant="contained"
-                    onClick={() => this.handleCancel()}
-                    startIcon={<IconCancel />}
-                >
-                    {this.props.cancel || I18n.t('ra_Cancel')}
-                </Button>
-            </DialogActions>
-        </Dialog>;
+                    <ObjectBrowser
+                        foldersFirst={this.props.foldersFirst}
+                        imagePrefix={this.props.imagePrefix || this.props.prefix} // prefix is for back compatibility
+                        dateFormat={this.props.dateFormat}
+                        defaultFilters={this.filters}
+                        dialogName={this.dialogName}
+                        isFloatComma={this.props.isFloatComma}
+                        showExpertButton={
+                            this.props.showExpertButton !== undefined ? this.props.showExpertButton : true
+                        }
+                        expertMode={this.props.expertMode}
+                        // style={{ width: '100%', height: '100%' }}
+                        columns={this.props.columns || ['name', 'type', 'role', 'room', 'func', 'val']}
+                        types={
+                            this.props.types
+                                ? Array.isArray(this.props.types)
+                                    ? this.props.types
+                                    : [this.props.types]
+                                : ['state']
+                        }
+                        root={this.props.root}
+                        t={I18n.t}
+                        lang={this.props.lang || I18n.getLanguage()}
+                        socket={this.props.socket}
+                        selected={this.state.selected}
+                        multiSelect={this.props.multiSelect}
+                        notEditable={this.props.notEditable === undefined ? true : this.props.notEditable}
+                        // name={this.state.name}
+                        themeName={this.props.themeName}
+                        themeType={this.props.themeType}
+                        theme={this.props.theme}
+                        customFilter={this.props.customFilter}
+                        onFilterChanged={(filterConfig: ObjectBrowserFilter) => {
+                            this.filters = filterConfig;
+                            ((window as any)._localStorage || window.localStorage).setItem(
+                                this.dialogName,
+                                JSON.stringify(filterConfig),
+                            );
+                        }}
+                        onSelect={(_selected: string | string[], name: string, isDouble?: boolean) => {
+                            let selected: string[];
+                            if (!Array.isArray(_selected)) {
+                                selected = [_selected];
+                            } else {
+                                selected = _selected;
+                            }
+                            if (JSON.stringify(selected) !== JSON.stringify(this.state.selected)) {
+                                this.setState({ selected, name }, () => isDouble && this.handleOk());
+                            } else if (isDouble) {
+                                this.handleOk();
+                            }
+                        }}
+                        filterFunc={this.filterFunc}
+                        title=""
+                        classes={{}}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        id={`ar_dialog_selectid_ok_${this.props.dialogName || ''}`}
+                        variant="contained"
+                        onClick={() => this.handleOk()}
+                        startIcon={<IconOk />}
+                        disabled={!this.state.selected.length}
+                        color="primary"
+                    >
+                        {this.props.ok || I18n.t('ra_Ok')}
+                    </Button>
+                    <Button
+                        id={`ar_dialog_selectid_cancel_${this.props.dialogName || ''}`}
+                        color="grey"
+                        variant="contained"
+                        onClick={() => this.handleCancel()}
+                        startIcon={<IconCancel />}
+                    >
+                        {this.props.cancel || I18n.t('ra_Cancel')}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
     }
 }
 

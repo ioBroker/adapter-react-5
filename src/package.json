@@ -1,30 +1,30 @@
 {
-  "name": "@iobroker/adapter-react-v5",
-  "version": "-.-.-",
-  "description": "React classes to develop admin interfaces for ioBroker with react.",
-  "author": {
-    "name": "Denis Haev (bluefox)",
-    "email": "dogafox@gmail.com"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ioBroker/adapter-react-v5.git"
-  },
-  "module": "./index.js",
-  "keywords": [
-    "iobroker",
-    "adapter",
-    "iot"
-  ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ioBroker/adapter-react-v5/issues"
-  },
-  "homepage": "https://github.com/ioBroker/adapter-react-v5#readme",
-  "devDependencies": {},
-  "dependencies": {}
+    "name": "@iobroker/adapter-react-v5",
+    "version": "-.-.-",
+    "description": "React classes to develop admin interfaces for ioBroker with react.",
+    "author": {
+        "name": "Denis Haev (bluefox)",
+        "email": "dogafox@gmail.com"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {},
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ioBroker/adapter-react-v5.git"
+    },
+    "module": "./index.js",
+    "keywords": [
+        "iobroker",
+        "adapter",
+        "iot"
+    ],
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/ioBroker/adapter-react-v5/issues"
+    },
+    "homepage": "https://github.com/ioBroker/adapter-react-v5#readme",
+    "devDependencies": {},
+    "dependencies": {}
 }
