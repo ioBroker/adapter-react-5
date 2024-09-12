@@ -678,6 +678,10 @@ You can find the migration instructions:
 - (bluefox) Optimized the icon picker
 - (bluefox) Used common eslint-config
 
+### 7.0.2 (2024-09-10)
+* (bluefox) Showed the context menu under cursor position in the object browser
+* (bluefox) Added links to aliases in the object browser
+
 ### 7.0.1 (2024-08-29)
 
 - (bluefox) Updated the object browser
