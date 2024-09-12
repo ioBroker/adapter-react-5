@@ -24,3 +24,5 @@ Before:
     }}
 />
 ``` 
+## SelectID dialog
+`SelectID` dialog now requires `theme` property. Without this property, the dialog will crash.

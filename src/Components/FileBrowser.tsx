@@ -1174,7 +1174,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                         () => this.props.onSelect && this.props.onSelect(''),
                     ),
                 )
-                .catch(e => console.error(`Cannot read folder: ${e.message}`));
+                .catch(_e => console.error(`Cannot read folder: ${_e.message}`));
             return;
         }
 

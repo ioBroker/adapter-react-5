@@ -673,6 +673,10 @@ You can find the migration instructions:
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+
+- (bluefox) Optimized the icon picker
+- (bluefox) Used common eslint-config
 
 ### 7.0.1 (2024-08-29)
 
