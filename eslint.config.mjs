@@ -25,6 +25,7 @@ config.push({
         'react/no-unused-class-component-methods': 'warn',
         'react/prop-types': 'off',
         '@typescript-eslint/restrict-template-expressions': 'off',
+        'react/no-is-mounted': 'off',
     },
     languageOptions: {
         parserOptions: {

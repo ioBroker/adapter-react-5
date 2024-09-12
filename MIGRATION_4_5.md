@@ -33,19 +33,17 @@ If you still have questions, try to find an answer [here](https://mui.com/guides
 -   Look for calls of custom like
 
 ```jsx
-this.props.socket._socket.emit('getObjectView', 'system', 'custom', {startKey: '', endKey:'\u9999'}, (err, objs) => {
-    (objs?.rows || [])
-        .forEach(item => console.log(item.id, item.value));
+this.props.socket._socket.emit('getObjectView', 'system', 'custom', { startKey: '', endKey: '\u9999' }, (err, objs) => {
+    (objs?.rows || []).forEach(item => console.log(item.id, item.value));
 });
 ```
 
 to
 
 ```jsx
-socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey')
-   .then(objects => {
-      Object.keys(objects).forEach(obj => console.log(obj._id));
-   });
+socket.getObjectViewCustom('custom', 'state', 'startKey', 'endKey').then(objects => {
+    Object.keys(objects).forEach(obj => console.log(obj._id));
+});
 ```
 
 -   Replace all `socket.log.error('text')` to `socket.log('text', 'error')`
