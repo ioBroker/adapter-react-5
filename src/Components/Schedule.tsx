@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, type JSX } from 'react';
 
 import { Input, Radio, FormControlLabel, FormGroup, Checkbox, MenuItem, Select, TextField, Box } from '@mui/material';
 
@@ -289,7 +289,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
         }
     }
 
-    onChange(schedule: ScheduleConfig, force?: boolean) {
+    onChange(schedule: ScheduleConfig, force?: boolean): void {
         const isDiff = JSON.stringify(schedule) !== JSON.stringify(this.state.schedule);
         if (force || isDiff) {
             isDiff && this.setState({ schedule, desc: Schedule.state2text(schedule) });
@@ -586,7 +586,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
         return desc.join(' ');
     }
 
-    getTimePeriodElements() {
+    getTimePeriodElements(): JSX.Element {
         const schedule = this.state.schedule;
         let wholeDay = false;
         let day = false;
@@ -752,7 +752,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
         );
     }
 
-    getTimeExactElements() {
+    getTimeExactElements(): JSX.Element {
         const isAstro = ASTRO.includes(this.state.schedule.time.start);
 
         return (
@@ -825,11 +825,11 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
         );
     }
 
-    static getDivider() {
+    static getDivider(): JSX.Element {
         return <hr style={styles.hr} />;
     }
 
-    getPeriodModes() {
+    getPeriodModes(): JSX.Element[] {
         const schedule = this.state.schedule;
         const isOnce =
             !schedule.period.dows &&
@@ -1173,7 +1173,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
         ];
     }
 
-    getPeriodSettingsMinutes() {
+    getPeriodSettingsMinutes(): JSX.Element {
         return (
             <div style={{ display: 'inline-block' }}>
                 <label>{I18n.t('sch_every')}</label>
@@ -1204,7 +1204,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
         );
     }
 
-    getPeriodSettingsWeekdays() {
+    getPeriodSettingsWeekdays(): JSX.Element[] {
         // || this.state.schedule.period.dows === '[1, 2, 3, 4, 5]' || this.state.schedule.period.dows === '[0, 6]'
         const schedule = this.state.schedule;
         const isSpecific =
@@ -1316,7 +1316,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
         ];
     }
 
-    getPeriodSettingsDaily() {
+    getPeriodSettingsDaily(): JSX.Element[] | null {
         if (!this.state.schedule.period.days) {
             return null;
         }
@@ -1380,7 +1380,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
         ];
     }
 
-    getPeriodSettingsWeekly() {
+    getPeriodSettingsWeekly(): JSX.Element[] | null {
         if (!this.state.schedule.period.weeks) {
             return null;
         }
@@ -1441,7 +1441,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
         ];
     }
 
-    getPeriodSettingsDates() {
+    getPeriodSettingsDates(): JSX.Element | null {
         if (!this.state.schedule.period.dates) {
             return null;
         }
@@ -1542,7 +1542,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                                     let _dates;
                                     try {
                                         _dates = JSON.parse(_schedule.period.dates);
-                                    } catch (err) {
+                                    } catch {
                                         _dates = [];
                                     }
                                     if (e.target.checked && !_dates.includes(i)) {
@@ -1575,7 +1575,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
         );
     }
 
-    getPeriodSettingsMonthly() {
+    getPeriodSettingsMonthly(): JSX.Element[] | null {
         if (!this.state.schedule.period.months) {
             return null;
         }
@@ -1720,6 +1720,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                         <div />
                         {MONTHS.map((month, i) => (
                             <FormControlLabel
+                                key={`month_${i}`}
                                 style={styles.inputGroupElement}
                                 control={
                                     <Checkbox
@@ -1734,7 +1735,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                                             let months;
                                             try {
                                                 months = JSON.parse(_schedule.period.months);
-                                            } catch (err) {
+                                            } catch {
                                                 months = [];
                                             }
                                             if (e.target.checked && !months.includes(i + 1)) {
@@ -1757,7 +1758,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
         ];
     }
 
-    getPeriodSettingsYearly() {
+    getPeriodSettingsYearly(): JSX.Element[] | null {
         if (!this.state.schedule.period.years) {
             return null;
         }
@@ -1839,7 +1840,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
         return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
     }
 
-    getValidSettings() {
+    getValidSettings(): JSX.Element {
         const schedule = this.state.schedule;
         // ----- from ---
         return (
@@ -1939,7 +1940,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
         );
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <div style={{ height: 'calc(100% - 48px)', width: '100%', overflow: 'hidden' }}>
                 <div>{this.state.desc}</div>

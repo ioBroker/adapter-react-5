@@ -5,7 +5,7 @@
  *
  */
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
-import React, { JSX } from 'react';
+import React, { type JSX } from 'react';
 
 import { Button, DialogTitle, DialogContent, DialogActions, Dialog } from '@mui/material';
 

@@ -1,6 +1,6 @@
-import { Translate, Width } from '../types';
-import Connection from '../Connection';
-import Router from './Router';
+import type { Translate, Width } from '../types';
+import type Connection from '../Connection';
+import type Router from './Router';
 
 export interface ObjectBrowserTableFilter {
     id?: string;
@@ -22,6 +22,7 @@ export interface ObjectBrowserCustomFilter {
         // If "_dataSources" - only data sources (history, sql, influxdb, ...)
         // Else "telegram." or something like this
         // `true` - If common.custom not empty
+        // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
         readonly custom?: '_' | '_dataSources' | true | string;
     };
 }
@@ -72,7 +73,7 @@ export interface ObjectBrowserProps {
     /** Custom object editor React component to use */
     objectBrowserEditObject?: any;
     /** Router */
-    router?: Router<{}, {}>;
+    router?: Router;
     /** Object types to show */
     types?: ObjectBrowserType[];
     /** Columns to display */

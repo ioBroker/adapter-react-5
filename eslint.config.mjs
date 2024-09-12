@@ -24,6 +24,7 @@ config.push({
         ...reactHooksPlugin.configs.recommended.rules,
         'react/no-unused-class-component-methods': 'warn',
         'react/prop-types': 'off',
+        '@typescript-eslint/restrict-template-expressions': 'off',
     },
     languageOptions: {
         parserOptions: {

@@ -128,7 +128,6 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
         if (props.filterFunc) {
             if (typeof props.filterFunc === 'string') {
                 try {
-                    // eslint-disable-next-line no-new-func
                     this.filterFunc = new Function('obj', props.filterFunc) as (obj: ioBroker.Object) => boolean;
                 } catch {
                     console.error(`Cannot parse filter function: "obj => ${props.filterFunc}"`);
@@ -167,8 +166,8 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
                         key="id"
                         style={{ fontWeight: 'bold', fontStyle: 'italic' }}
                     >
-                        {(this.state.name || this.state.selected) +
-                            (this.state.name ? ` [${this.state.selected}]` : '')}
+                        {(this.state.name || this.state.selected[0]) +
+                            (this.state.name ? ` [${this.state.selected[0]}]` : '')}
                     </span>,
                 ];
             } else {

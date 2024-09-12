@@ -53,11 +53,11 @@ class TableResize extends Component<TableResizeProps> {
         this.resizerCurrentWidths = [];
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         this.resizerInstall();
     }
 
-    componentWillUnmount() {
+    componentWillUnmount(): void {
         this.resizerUninstall();
     }
 

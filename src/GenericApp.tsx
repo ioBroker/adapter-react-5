@@ -514,7 +514,6 @@ class GenericApp<
                 this.onToggleExpertMode && this.onToggleExpertMode(this.getExpertMode());
             } else if (message.data !== 'chartReady') {
                 // if not "echart ready" message
-                // eslint-disable-next-line no-console
                 console.debug(
                     `Received unknown message: "${JSON.stringify(message.data)}". May be it will be processed later`,
                 );
@@ -1035,7 +1034,7 @@ class GenericApp<
     /**
      * Sets the toast to be shown.
      *
-     * @param {string} toast
+     * @param toast Text to be shown.
      */
     showToast(toast: string | React.JSX.Element): void {
         this.setState({ toast });

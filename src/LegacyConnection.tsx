@@ -25,19 +25,19 @@ export type CompactSystemRepositoryEntry = {
     stable?: boolean;
     json:
         | {
-        _repoInfo: {
-            stable?: boolean;
-            name?: ioBroker.StringOrTranslated;
-        };
-    }
+              _repoInfo: {
+                  stable?: boolean;
+                  name?: ioBroker.StringOrTranslated;
+              };
+          }
         | null
         | undefined;
 };
 
 export type CompactSystemRepository = {
-    _id: ioBroker.HostObject["_id"];
+    _id: ioBroker.HostObject['_id'];
     common: {
-        name: ioBroker.HostCommon["name"];
+        name: ioBroker.HostCommon['name'];
         dontDelete: boolean;
     };
     native: {
@@ -1081,6 +1081,7 @@ class Connection {
         if (this.connected && toSubscribe.length) {
             this._socket.emit('subscribeFiles', id, toSubscribe);
         }
+        return Promise.resolve();
     }
 
     /**
@@ -1164,7 +1165,7 @@ class Connection {
         });
 
         if (changed && this.props.onObjectChange) {
-            this.props.onObjectChange(id, obj);
+            void this.props.onObjectChange(id, obj);
         }
     }
 
@@ -1179,7 +1180,7 @@ class Connection {
             ) {
                 this.statesSubscribes[task].cbs.forEach(cb => {
                     try {
-                        (cb as ioBroker.StateChangeHandler)(id, state);
+                        void (cb as ioBroker.StateChangeHandler)(id, state);
                     } catch (e) {
                         const knownError = e as Error;
                         console.error(`Error by callback of stateChange: ${knownError?.message}`);
@@ -1192,9 +1193,9 @@ class Connection {
     /**
      * Called internally.
      *
-     * @param messageType
-     * @param sourceInstance
-     * @param data
+     * @param messageType The message type
+     * @param sourceInstance The source instance
+     * @param data Payload
      */
     instanceMessage(messageType: string, sourceInstance: string, data: Record<string, any>): void {
         if (this._instanceSubscriptions[sourceInstance]) {
@@ -1324,7 +1325,7 @@ class Connection {
             if (this.statesSubscribes[id]) {
                 for (const cb of this.statesSubscribes[id].cbs) {
                     try {
-                        (cb as ioBroker.StateChangeHandler)(id, state);
+                        void (cb as ioBroker.StateChangeHandler)(id, state);
                     } catch (e) {
                         console.error(`Error by callback of stateChanged: ${e}`);
                     }
@@ -2730,7 +2731,7 @@ class Connection {
     /**
      * Read statistics information from host
      *
-     * @param host
+     * @param host Host name
      * @param typeOfDiag one of none, normal, no-city, extended
      */
     getDiagData(host: string, typeOfDiag: 'none' | 'normal' | 'no-city' | 'extended'): Promise<Record<string, any>> {
@@ -3059,6 +3060,7 @@ class Connection {
      * @param adapter The adapter name.
      * @param fileName file name with a full path. It could be like vis.0/*
      * @param options like {mode: 0x644}
+     * @param options.mode Access rights. Default is 0x644
      */
     chmodFile(
         adapter: string,
@@ -3090,6 +3092,8 @@ class Connection {
      * @param adapter The adapter name.
      * @param fileName file name with a full path. It could be like vis.0/*
      * @param options like {owner: 'user', ownerGroup: 'group'}
+     * @param options.owner User name
+     * @param options.ownerGroup Group name
      */
     chownFile(
         adapter: string,

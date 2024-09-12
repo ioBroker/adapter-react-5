@@ -1,8 +1,8 @@
-import React, { JSXElementConstructor } from 'react';
+import React, { type JSXElementConstructor, type JSX } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Breakpoint, useMediaQuery } from '@mui/material';
+import { type Breakpoint, useMediaQuery } from '@mui/material';
 
-function useWidth() {
+function useWidth(): Breakpoint {
     const theme = useTheme();
     const keys = [...theme.breakpoints.keys].reverse();
     return (
@@ -15,14 +15,18 @@ function useWidth() {
 }
 
 // FIXME checkout https://mui.com/components/use-media-query/#migrating-from-withwidth
-const withWidth = () => (WrappedComponent: JSXElementConstructor<any>) => (props: Record<string, any>) => {
-    const width = useWidth();
-    return (
-        <WrappedComponent
-            {...props}
-            width={width}
-        />
-    );
-};
+function withWidth() {
+    return (WrappedComponent: JSXElementConstructor<any>) => {
+        return function AnyComponent(props: Record<string, any>): JSX.Element {
+            const width = useWidth();
+            return (
+                <WrappedComponent
+                    {...props}
+                    width={width}
+                />
+            );
+        };
+    };
+}
 
 export default withWidth;

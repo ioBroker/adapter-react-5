@@ -1,8 +1,7 @@
 import { Component } from 'react';
 
-interface Router<P = {}, S = {}> extends Component<P, S> {}
-
-class Router<P, S> extends Component<P, S> {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+class Router<P = {}, S = {}> extends Component<P, S> {
     protected onHashChangedBound: () => void;
 
     constructor(props: P) {

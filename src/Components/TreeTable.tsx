@@ -494,7 +494,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         );
     }
 
-    renderSelectIdDialog(): JSX.Element | null{
+    renderSelectIdDialog(): JSX.Element | null {
         if (this.state.showSelectId && this.props.socket) {
             return (
                 <DialogSelectID
@@ -773,9 +773,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         );
 
         if (!level && opened) {
-            const items: JSX.Element[] = children.map(it =>
-                this.renderLine(it, level + 1),
-            ) as JSX.Element[];
+            const items: JSX.Element[] = children.map(it => this.renderLine(it, level + 1)) as JSX.Element[];
             items.unshift(row);
             return items;
         }

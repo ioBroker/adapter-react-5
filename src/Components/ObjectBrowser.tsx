@@ -1121,6 +1121,7 @@ function getName(name: ioBroker.StringOrTranslated, lang: ioBroker.Languages): s
 export function getSelectIdIconFromObjects(
     objects: Record<string, ioBroker.Object>,
     id: string,
+    lang: ioBroker.Languages,
     imagePrefix?: string,
 ): string | JSX.Element | null {
     // `admin` has prefix '.' and `web` has '../..'
@@ -1132,7 +1133,12 @@ export function getSelectIdIconFromObjects(
         // if not BASE64
         if (!aIcon.startsWith('data:image/')) {
             if (aIcon.includes('.')) {
-                src = `${imagePrefix}/adapter/${objects[_id_].common.name}/${aIcon}`;
+                const name = objects[_id_].common.name;
+                if (typeof name === 'object') {
+                    src = `${imagePrefix}/adapter/${name[lang] || name.en}/${aIcon}`;
+                } else {
+                    src = `${imagePrefix}/adapter/${name}/${aIcon}`;
+                }
             } else if (aIcon && aIcon.length < 3) {
                 return aIcon; // utf-8
             } else {
@@ -1160,7 +1166,11 @@ export function getSelectIdIconFromObjects(
                     if (cIcon.includes('.')) {
                         let instance;
                         if (objects[id].type === 'instance' || objects[id].type === 'adapter') {
-                            src = `${imagePrefix}/adapter/${common.name}/${cIcon}`;
+                            if (typeof common.name === 'object') {
+                                src = `${imagePrefix}/adapter/${common.name[lang] || common.name.en}/${cIcon}`;
+                            } else {
+                                src = `${imagePrefix}/adapter/${common.name}/${cIcon}`;
+                            }
                         } else if (id && id.startsWith('system.adapter.')) {
                             instance = id.split('.', 3);
                             if (cIcon[0] === '/') {
@@ -1451,6 +1461,7 @@ function getSystemIcon(
     id: string,
     level: number,
     themeType: ThemeType,
+    lang: ioBroker.Languages,
     imagePrefix?: string,
 ): string | JSX.Element | null {
     let icon;
@@ -1499,7 +1510,7 @@ function getSystemIcon(
     } else if (level < 2) {
         // detect "cloud.0"
         if (objects[`system.adapter.${id}`]) {
-            icon = getSelectIdIconFromObjects(objects, `system.adapter.${id}`, imagePrefix);
+            icon = getSelectIdIconFromObjects(objects, `system.adapter.${id}`, lang, imagePrefix);
         }
     }
 
@@ -1673,7 +1684,14 @@ function buildTree(
                                     id: curPath,
                                     obj: objects[curPath],
                                     level: k,
-                                    icon: getSystemIcon(objects, curPath, k, options.themeType, imagePrefix),
+                                    icon: getSystemIcon(
+                                        objects,
+                                        curPath,
+                                        k,
+                                        options.themeType,
+                                        options.lang,
+                                        imagePrefix,
+                                    ),
                                     generated: true,
                                 },
                             };
@@ -1695,8 +1713,8 @@ function buildTree(
                         obj,
                         parent: cRoot,
                         icon:
-                            getSelectIdIconFromObjects(objects, id, imagePrefix) ||
-                            getSystemIcon(objects, id, 0, options.themeType, imagePrefix),
+                            getSelectIdIconFromObjects(objects, id, options.lang, imagePrefix) ||
+                            getSystemIcon(objects, id, 0, options.themeType, options.lang, imagePrefix),
                         id,
                         hasCustoms: !!(obj.common?.custom && Object.keys(obj.common.custom).length),
                         level: parts.length - 1,
@@ -2604,7 +2622,7 @@ interface ObjectBrowserState {
     excludeTranslations: boolean;
     updating?: boolean;
     modalNewObj?: null | { id: string; initialType?: ioBroker.ObjectType; initialStateType?: ioBroker.CommonType };
-    error?: undefined | any;
+    error?: any;
     modalEditOfAccess?: boolean;
     modalEditOfAccessObjData?: TreeItemData;
     updateOpened?: boolean;
@@ -2615,7 +2633,18 @@ interface ObjectBrowserState {
 
 export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrowserState> {
     // do not define the type as null to save the performance, so we must check it every time
-    private info: TreeInfo;
+    private info: TreeInfo = {
+        funcEnums: [],
+        roomEnums: [],
+        roles: [],
+        ids: [],
+        types: [],
+        objects: {},
+        customs: [],
+        enums: [],
+        hasSomeCustoms: false,
+        aliasesMap: {},
+    };
 
     private localStorage: Storage = ((window as any)._localStorage as Storage) || window.localStorage;
 
@@ -2717,7 +2746,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         lastChange?: number;
         val?: number;
         buttons?: number;
-    };
+    } = {};
 
     private changedIds: null | string[] = null;
 
@@ -2762,6 +2791,8 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
         const lastSelectedItemStr: string =
             this.localStorage.getItem(`${props.dialogName || 'App'}.objectSelected`) || '';
+
+        this.selectFirst = '';
 
         if (lastSelectedItemStr.startsWith('[')) {
             try {
@@ -3280,7 +3311,9 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         if (this.props.objectsWorker) {
             this.props.objectsWorker.unregisterHandler(this.onObjectChangeFromWorker, true);
         } else {
-            this.props.socket.unsubscribeObject('*', this.onObjectChange);
+            void this.props.socket
+                .unsubscribeObject('*', this.onObjectChange)
+                .catch(e => console.error(`Cannot unsubscribe *: ${e}`));
         }
 
         // remove all subscribes
@@ -3349,7 +3382,9 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
         this.subscribes = [];
 
-        this.loadAllObjects(true).then(() => console.log('updated!'));
+        this.loadAllObjects(true)
+            .then(() => console.log('updated!'))
+            .catch(e => this.showError(e));
     }
 
     /**
@@ -3798,9 +3833,9 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 cColumns = (columns as (string | ioBroker.CustomAdminColumn)[])
                     .map((_item: string | ioBroker.CustomAdminColumn) => {
                         if (typeof _item !== 'object') {
-                            return { path: _item, name: (_item as string).split('.').pop() };
+                            return { path: _item, name: _item.split('.').pop() };
                         }
-                        const item: ioBroker.CustomAdminColumn = _item as ioBroker.CustomAdminColumn;
+                        const item: ioBroker.CustomAdminColumn = _item;
                         // string => array
                         if (item.objTypes && typeof item.objTypes !== 'object') {
                             item.objTypes = [item.objTypes];
@@ -4048,7 +4083,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
         Object.keys(this.filterRefs).forEach(_name => {
             if (this.filterRefs[_name] && this.filterRefs[_name].current) {
-                const filterRef: HTMLSelectElement = this.filterRefs[_name].current as HTMLSelectElement;
+                const filterRef: HTMLSelectElement = this.filterRefs[_name].current;
                 for (let i = 0; i < filterRef.children.length; i++) {
                     if (filterRef.children[i].tagName === 'INPUT') {
                         (filter as Record<string, string>)[_name] = (filterRef.children[i] as HTMLInputElement).value;
@@ -4079,7 +4114,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
         Object.keys(this.filterRefs).forEach(name => {
             if (this.filterRefs[name] && this.filterRefs[name].current) {
-                const filterRef: HTMLSelectElement = this.filterRefs[name].current as HTMLSelectElement;
+                const filterRef: HTMLSelectElement = this.filterRefs[name].current;
                 for (let i = 0; i < filterRef.childNodes.length; i++) {
                     const item = filterRef.childNodes[i];
                     if ((item as HTMLInputElement).tagName === 'INPUT') {
@@ -4183,12 +4218,12 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                         let _name: string;
                         let icon: null | JSX.Element | undefined;
                         if (typeof item === 'object') {
-                            id = (item as InputSelectItem).value;
-                            _name = (item as InputSelectItem).name;
-                            icon = (item as InputSelectItem).icon;
+                            id = item.value;
+                            _name = item.name;
+                            icon = item.icon;
                         } else {
-                            id = item as string;
-                            _name = item as string;
+                            id = item;
+                            _name = item;
                         }
                         return (
                             <MenuItem
@@ -4264,7 +4299,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                             src={this.objects[id]?.common?.icon || ''}
                             style={styles.selectIcon}
                         />
-                    ) as JSX.Element,
+                    ),
                 }) as InputSelectItem,
         );
 
@@ -4281,7 +4316,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         return this.getFilterSelect('type', types);
     }
 
-    private getFilterSelectCustoms(): JSX.Element {
+    private getFilterSelectCustoms(): JSX.Element | null {
         if (this.info.customs.length > 1) {
             const customs = this.info.customs.map(id => ({
                 name: id === '_' ? this.texts.filterCustomsWithout : id,
@@ -4289,7 +4324,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 icon:
                     id === '_' ? null : (
                         <Icon
-                            src={getSelectIdIconFromObjects(this.objects, id, this.imagePrefix) || ''}
+                            src={getSelectIdIconFromObjects(this.objects, id, this.props.lang, this.imagePrefix) || ''}
                             style={styles.selectIcon}
                         />
                     ),
@@ -4403,10 +4438,10 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
             // some admin version delivered enums as string
             if (typeof item === 'object') {
-                newObj = item as ioBroker.EnumObject;
+                newObj = item;
                 id = newObj._id;
             } else {
-                id = item as string;
+                id = item;
             }
 
             let oldObj: ioBroker.EnumObject | undefined = this.objects[id] as ioBroker.EnumObject | undefined;
@@ -5264,10 +5299,9 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             },
         ];
         const arrayTooltipText = [];
-        const funcRenderStateObject = (value: 'object' | 'state') => {
+        const funcRenderStateObject = (value: 'object' | 'state'): void => {
             const rights: number = acl[value];
             check.forEach((el, i) => {
-                // eslint-disable-next-line no-bitwise
                 if (rights & el.valueNum) {
                     arrayTooltipText.push(
                         <span key={value + i}>
@@ -5831,7 +5865,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             }
         }
 
-        Promise.all(promises).then(() => {
+        void Promise.all(promises).then(() => {
             setTimeout(() => this._syncEnum(id, enumIds, newArray, cb), 0);
         });
     }
@@ -5860,7 +5894,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             .map(id => ({
                 name: getName(this.objects[id]?.common?.name || id.split('.').pop() || '', this.props.lang),
                 value: id,
-                icon: getSelectIdIconFromObjects(this.objects, id, this.imagePrefix),
+                icon: getSelectIdIconFromObjects(this.objects, id, this.props.lang, this.imagePrefix),
             }))
             .sort((a, b) => (a.name > b.name ? 1 : -1));
 
@@ -5969,7 +6003,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                     socket={this.props.socket}
                     t={this.props.t}
                     roles={this.info.roles}
-                    onClose={(obj?: ioBroker.Object | null | undefined) => {
+                    onClose={(obj?: ioBroker.Object | null) => {
                         if (obj) {
                             this.info.objects[this.state.roleDialog as string] = obj;
                         }
@@ -6453,7 +6487,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             }
         }
 
-        let readWriteAlias: boolean = false;
+        let readWriteAlias = false;
         let alias: JSX.Element | null = null;
         if (id.startsWith('alias.') && common?.alias?.id) {
             readWriteAlias = typeof common.alias.id === 'object';
@@ -6694,7 +6728,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         const q = checkVisibleObjectType ? Utils.quality2text(this.states[id]?.q || 0).join(', ') : null;
 
         let name: JSX.Element[] | string = item.data?.title || '';
-        let useDesc: boolean = false;
+        let useDesc = false;
         if (this.state.showDescription) {
             const oTooltip: string | null = getObjectTooltip(item.data, this.props.lang);
             if (oTooltip) {
@@ -7095,7 +7129,6 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                                       // return;
                                   } else if (common?.type === 'file') {
                                       this.setState({ viewFileDialog: id });
-                                      // eslint-disable-next-line brace-style
                                   } else if (!this.state.filter.expertMode && item.data.button) {
                                       // in non-expert mode control button directly
                                       this.props.socket
@@ -7147,7 +7180,10 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                         return null;
                     }
                     return (
-                        <div style={styles.cellDetailsLine}>
+                        <div
+                            key={it.type}
+                            style={styles.cellDetailsLine}
+                        >
                             <span style={styles.cellDetailsName}>{this.texts[it.type]}:</span>
                             {it.el}
                             <div style={{ flexGrow: 1 }} />
