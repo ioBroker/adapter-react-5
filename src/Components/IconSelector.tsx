@@ -16,6 +16,8 @@ import { Close as CloseIcon, Clear as ClearIcon } from '@mui/icons-material';
 
 import Icon from './Icon';
 import Utils from './Utils';
+import devicesIcons from '../assets/devices.json';
+import roomsIcons from '../assets/rooms.json';
 import { type Translate } from '../types';
 
 // import devices from '../assets/devices/list.json';
@@ -1990,6 +1992,7 @@ interface IconSelectorState {
 class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
     constructor(props: IconSelectorProps) {
         super(props);
+
         this.state = {
             opened: false,
             names: [],
@@ -2009,10 +2012,10 @@ class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
             const names: string[] = [];
 
             if (!this.props.icons) {
+                // load rooms
                 let templates =
                     this.props.onlyRooms || (!this.props.onlyRooms && !this.props.onlyDevices) ? rooms : null;
 
-                const promises: Promise<void>[] = [];
                 if (templates) {
                     templates.forEach(item => {
                         if (item.name && typeof item.name === 'object') {
@@ -2029,27 +2032,17 @@ class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
                     );
 
                     templates.forEach((template, i) => {
-                        let image;
-                        try {
-                            image = require(`../assets/rooms/${template.icon}`);
-                        } catch {
-                            return;
-                        }
-
                         names[i] = template.name as string;
-
-                        promises.push(
-                            Utils.getSvg(image).then(icon => {
-                                icons[i] = icon;
-                            }),
-                        );
+                        icons[i] =
+                            `data:image/svg+xml;base64,${(roomsIcons as Record<string, string>)[template.icon.replace(/\.svg$/, '')]}`;
                     });
                 }
 
+                // load devices
                 templates =
                     this.props.onlyDevices || (!this.props.onlyRooms && !this.props.onlyDevices) ? devices : null;
                 if (templates) {
-                    const offset = promises.length;
+                    const offset = icons.length;
                     templates &&
                         templates.forEach(item => {
                             if (item.name && typeof item.name === 'object') {
@@ -2066,32 +2059,17 @@ class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
                     );
 
                     templates.forEach((template, i) => {
-                        let image;
-                        try {
-                            image = require(`../assets/devices/${template.icon}`);
-                        } catch {
-                            return;
-                        }
-
                         names[i + offset] = template.name as string;
-
-                        promises.push(
-                            Utils.getSvg(image).then(icon => {
-                                icons[i + offset] = icon;
-                            }),
-                        );
+                        icons[i + offset] =
+                            `data:image/svg+xml;base64,${(devicesIcons as Record<string, string>)[template.icon.replace(/\.svg$/, '')]}`;
                     });
                 }
-                Promise.all(promises)
-                    .then(() =>
-                        this.setState({
-                            icons,
-                            loading: false,
-                            names,
-                            isAnyName: !!names.find(i => i),
-                        }),
-                    )
-                    .catch(e => console.error(e));
+                this.setState({
+                    icons,
+                    loading: false,
+                    names,
+                    isAnyName: !!names.find(i => i),
+                });
             } else {
                 const promises = this.props.icons.map((item, i) => {
                     let href: string;
@@ -2121,8 +2099,8 @@ class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
                     return Promise.resolve();
                 });
 
-                Promise.all(promises)
-                    .catch(e => console.error(e))
+                void Promise.all(promises)
+                    .catch((e: Error) => console.error(e))
                     .then(() =>
                         this.setState({
                             icons,
@@ -2166,15 +2144,17 @@ class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
                                     value={this.state.filter}
                                     onChange={e => this.setState({ filter: e.target.value.toLowerCase() })}
                                     placeholder={this.props.t('ra_Filter')}
-                                    InputProps={{
-                                        endAdornment: this.state.filter ? (
-                                            <IconButton
-                                                size="small"
-                                                onClick={() => this.setState({ filter: '' })}
-                                            >
-                                                <ClearIcon />
-                                            </IconButton>
-                                        ) : undefined,
+                                    slotProps={{
+                                        input: {
+                                            endAdornment: this.state.filter ? (
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={() => this.setState({ filter: '' })}
+                                                >
+                                                    <ClearIcon />
+                                                </IconButton>
+                                            ) : undefined,
+                                        },
                                     }}
                                 />
                             ) : null}
@@ -2192,7 +2172,7 @@ class IconSelector extends Component<IconSelectorProps, IconSelectorState> {
                                                 <Tooltip
                                                     title={this.state.names[i] || ''}
                                                     key={i}
-                                                    componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}
+                                                    slotProps={{ popper: { sx: { pointerEvents: 'none' } } }}
                                                 >
                                                     <IconButton
                                                         onClick={() =>

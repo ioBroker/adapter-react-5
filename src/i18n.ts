@@ -42,8 +42,9 @@ class I18n {
 
     /**
      * Set the language to display
+     *
      * @param lang The default language for translations.
-     **/
+     */
     static setLanguage(lang: ioBroker.Languages): void {
         if (lang) {
             I18n.lang = lang;
@@ -140,7 +141,7 @@ class I18n {
                     });
                 }
             }
-        } catch (e: Error | any) {
+        } catch (e: any) {
             console.error(`Cannot apply translations: ${e}`);
         }
     }
@@ -229,6 +230,7 @@ class I18n {
     /**
      * Disable warning about non-translated words
      * Required during development
+     *
      * @param disable Whether to disable the warning
      */
     static disableWarning(disable: boolean): void {

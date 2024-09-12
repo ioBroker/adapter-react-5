@@ -3,10 +3,10 @@
  *
  * MIT License
  *
- * */
+ */
 
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
-import React, { Component } from 'react';
+import React, { Component, type JSX } from 'react';
 
 import {
     Button,
@@ -87,21 +87,25 @@ class DialogConfirm extends Component<DialogConfirmProps, DialogConfirmState> {
         };
     }
 
-    handleOk() {
+    handleOk(): void {
         if (this.state.suppress) {
             ((window as any)._localStorage || window.localStorage).setItem(
                 this.props.dialogName,
                 Date.now() + (this.props.suppressQuestionMinutes || 2) * 60000,
             );
         }
-        this.props.onClose && this.props.onClose(true);
+        if (this.props.onClose) {
+            this.props.onClose(true);
+        }
     }
 
-    handleCancel() {
-        this.props.onClose && this.props.onClose(false);
+    handleCancel(): void {
+        if (this.props.onClose) {
+            this.props.onClose(false);
+        }
     }
 
-    render() {
+    render(): JSX.Element | null {
         if (typeof this.state.suppress === 'number') {
             setTimeout(() => this.props.onClose && this.props.onClose(true), 100);
             return null;

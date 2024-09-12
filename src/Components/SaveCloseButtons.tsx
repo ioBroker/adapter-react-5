@@ -1,5 +1,5 @@
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
-import React from 'react';
+import React, { type JSX } from 'react';
 
 import { Fab, Toolbar } from '@mui/material';
 
@@ -51,7 +51,7 @@ class SaveCloseButtons extends React.Component<SaveCloseButtonsProps> {
         }
     }
 
-    render() {
+    render(): JSX.Element {
         const noTextOnButtons = this.props.noTextOnButtons;
         const buttonStyle: React.CSSProperties = {
             borderRadius: this.props.theme.saveToolbar.button.borderRadius || 3,

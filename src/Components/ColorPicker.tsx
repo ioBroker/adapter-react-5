@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { Component } from 'react';
+import React, { Component, type CSSProperties } from 'react';
 import { ChromePicker, type RGBColor } from 'react-color';
 
 import { TextField, Menu, IconButton, Button, Box } from '@mui/material';
@@ -104,7 +104,7 @@ interface ColorPickerProps {
     /** @deprecated TLabel of the color picker use label */
     name?: string;
     /** Additional styling for this component. */
-    style?: React.CSSProperties;
+    style?: CSSProperties;
     /** The CSS class name. */
     className?: string;
     customPalette?: string[];
@@ -125,9 +125,10 @@ interface ColorPickerState {
  */
 class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
     /**
-    * Constructor for the color picker.
-    * @param props The properties.
-    */
+     * Constructor for the color picker.
+     *
+     * @param props The properties.
+     */
     constructor(props: ColorPickerProps) {
         super(props);
         this.state = {
@@ -150,6 +151,7 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
 
     /**
      * Convert the given color to hex ('#rrggbb') or rgba ('rgba(r,g,b,a)') format.
+     *
      * @param color The color to convert.
      * @param isHex If true, the color will be converted to hex format.
      * @returns the hex or rgba representation of the given color.
@@ -169,11 +171,15 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
             }
             return `rgba(${rColor.r},${rColor.g},${rColor.b},${rColor.a})`;
         }
-        return isHex ? ColorPicker.rgb2hex((color as string) || '') : (color as string) || '';
+        if (typeof color === 'string') {
+            return isHex ? ColorPicker.rgb2hex(color || '') : color || '';
+        }
+        return '';
     }
 
     /**
      * Convert rgb() or rgba() format to hex format #rrggbb.
+     *
      * @param rgb The color in rgb() or rgba() format. if not in this format, the color will be returned as is.
      */
     static rgb2hex(rgb: string): string {
@@ -195,6 +201,7 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
 
     /**
      * If the props are updated from outside, they should override the state
+     *
      * @param _prevProps The previous properties.
      * @param prevState The previous state.
      */

@@ -124,7 +124,7 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
             this.props.socket
                 .readFile(adapter, name)
                 .then((data: { data: Buffer; type: string } | { file: string; mimeType: string }) => {
-                    let fileData: string = '';
+                    let fileData = '';
                     if ((data as { file: string; mimeType: string }).file !== undefined) {
                         fileData = (data as { file: string; mimeType: string }).file;
                     }
@@ -180,7 +180,9 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
         const name = parts.splice(1).join('/');
 
         if (this.props.supportSubscribes) {
-            this.props.socket.subscribeFiles(adapter, name, this.onFileChanged);
+            this.props.socket
+                .subscribeFiles(adapter, name, this.onFileChanged)
+                .catch(e => window.alert(`Cannot subscribe on file: ${e}`));
         }
     }
 
@@ -194,7 +196,9 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
         const adapter = parts[0];
         const name = parts.splice(1).join('/');
         if (this.props.supportSubscribes) {
-            this.props.socket.subscribeFiles(adapter, name, this.onFileChanged);
+            this.props.socket
+                .subscribeFiles(adapter, name, this.onFileChanged)
+                .catch(e => window.alert(`Cannot subscribe on file: ${e}`));
         }
     }
 
@@ -217,7 +221,7 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
     };
 
     // eslint-disable-next-line class-methods-use-this
-    writeFile64 = () => {
+    writeFile64 = (): void => {
         /*
         // File viewer in adapter-react does not support write
         const parts = this.props.href.split('/');
@@ -277,7 +281,6 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
                         alignItems: 'center',
                     }}
                 >
-                    {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                     <audio
                         style={{ width: '100%' }}
                         src={this.props.href}
@@ -297,7 +300,6 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
                         alignItems: 'center',
                     }}
                 >
-                    {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                     <video
                         style={{ width: '100%', height: '100%' }}
                         controls

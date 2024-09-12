@@ -3,10 +3,10 @@
  *
  * MIT License
  *
- * */
+ */
 
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
-import React, { Component } from 'react';
+import React, { Component, type JSX } from 'react';
 
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
@@ -30,11 +30,13 @@ interface DialogMessageProps {
 }
 
 class DialogMessage extends Component<DialogMessageProps> {
-    handleOk() {
-        this.props.onClose && this.props.onClose();
+    handleOk(): void {
+        if (this.props.onClose) {
+            this.props.onClose();
+        }
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <Dialog
                 open={!0}

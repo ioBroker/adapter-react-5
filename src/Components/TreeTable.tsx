@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, type JSX } from 'react';
 
 import { HexColorPicker as ColorPicker } from 'react-colorful';
 
@@ -319,7 +319,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         return { data: props.data };
     }
 
-    renderCellEdit(item: Record<string, any>, col: Column) {
+    renderCellEdit(item: Record<string, any>, col: Column): JSX.Element | null {
         let val = getAttr(item, col.field);
         if (Array.isArray(val)) {
             val = val[0];
@@ -347,7 +347,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         return this.renderCellEditString(col, val);
     }
 
-    onChange(col: Column, oldValue: string | number | boolean, newValue: string | number | boolean) {
+    onChange(col: Column, oldValue: string | number | boolean, newValue: string | number | boolean): void {
         const editData = this.state.editData ? { ...this.state.editData } : {};
         if (newValue === oldValue) {
             delete editData[col.field];
@@ -357,7 +357,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         this.setState({ editData });
     }
 
-    renderCellEditSelect(col: Column, val: string | number) {
+    renderCellEditSelect(col: Column, val: string | number): JSX.Element {
         return (
             <Select
                 variant="standard"
@@ -377,7 +377,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         );
     }
 
-    renderCellEditString(col: Column, val: string) {
+    renderCellEditString(col: Column, val: string): JSX.Element {
         return (
             <TextField
                 variant="standard"
@@ -393,7 +393,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         );
     }
 
-    renderCellEditNumber(col: Column, val: number) {
+    renderCellEditNumber(col: Column, val: number): JSX.Element {
         return (
             <TextField
                 variant="standard"
@@ -410,7 +410,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         );
     }
 
-    renderCellEditCustom(col: Column, val: any, item: Record<string, any>) {
+    renderCellEditCustom(col: Column, val: any, item: Record<string, any>): JSX.Element | null {
         const EditComponent = col.editComponent;
 
         // use new value if exists
@@ -429,7 +429,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         ) : null;
     }
 
-    renderCellEditBoolean(col: Column, val: boolean) {
+    renderCellEditBoolean(col: Column, val: boolean): JSX.Element {
         return (
             <Checkbox
                 checked={
@@ -443,7 +443,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         );
     }
 
-    renderSelectColorDialog() {
+    renderSelectColorDialog(): JSX.Element {
         return (
             <Dialog
                 sx={{
@@ -466,7 +466,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         );
     }
 
-    renderCellEditColor(col: Column, val: string) {
+    renderCellEditColor(col: Column, val: string): JSX.Element {
         const _val =
             this.state.editData && this.state.editData[col.field] !== undefined ? this.state.editData[col.field] : val;
         return (
@@ -494,7 +494,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         );
     }
 
-    renderSelectIdDialog() {
+    renderSelectIdDialog(): JSX.Element | null{
         if (this.state.showSelectId && this.props.socket) {
             return (
                 <DialogSelectID
@@ -503,7 +503,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
                     dialogName={this.props.adapterName}
                     themeType={this.props.themeType}
                     theme={this.props.theme}
-                    socket={this.props.socket as Connection}
+                    socket={this.props.socket}
                     selected={this.state.selectIdValue as string}
                     onClose={() => this.setState({ showSelectId: false })}
                     onOk={(selected /* , name */) => {
@@ -518,7 +518,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         return null;
     }
 
-    renderCellEditObjectID(col: Column, val: string) {
+    renderCellEditObjectID(col: Column, val: string): JSX.Element {
         return (
             <div style={styles.fieldEdit}>
                 <TextField
@@ -547,7 +547,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         );
     }
 
-    static renderCellNonEdit(item: Record<string, any>, col: Column) {
+    static renderCellNonEdit(item: Record<string, any>, col: Column): JSX.Element | string | number | null {
         let val = getAttr(item, col.field, col.lookup);
         if (Array.isArray(val)) {
             val = val[0];
@@ -566,7 +566,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         return val;
     }
 
-    renderCell(item: Record<string, any>, col: Column, level: number, i: number) {
+    renderCell(item: Record<string, any>, col: Column, level: number, i: number): JSX.Element {
         if (this.state.editMode === i && col.editable !== 'never' && col.editable !== false) {
             return (
                 <TableCell
@@ -589,7 +589,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         );
     }
 
-    static renderCellWithSubField(item: Record<string, any>, col: Column) {
+    static renderCellWithSubField(item: Record<string, any>, col: Column): JSX.Element {
         const main = getAttr(item, col.field, col.lookup);
         if (col.subField) {
             const sub = getAttr(item, col.subField, col.subLookup);
@@ -607,7 +607,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         );
     }
 
-    renderLine(item: Record<string, any>, level?: number): React.JSX.Element | React.JSX.Element[] | null {
+    renderLine(item: Record<string, any>, level?: number): JSX.Element | JSX.Element[] | null {
         const levelShift = this.props.levelShift === undefined ? 24 : this.props.levelShift;
 
         level = level || 0;
@@ -773,21 +773,21 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         );
 
         if (!level && opened) {
-            const items: React.JSX.Element[] = children.map(it =>
+            const items: JSX.Element[] = children.map(it =>
                 this.renderLine(it, level + 1),
-            ) as React.JSX.Element[];
+            ) as JSX.Element[];
             items.unshift(row);
             return items;
         }
         return row;
     }
 
-    handleRequestSort(property: string) {
+    handleRequestSort(property: string): void {
         const isAsc = this.state.orderBy === property && this.state.order === 'asc';
         this.setState({ order: isAsc ? 'desc' : 'asc', orderBy: property });
     }
 
-    renderHead() {
+    renderHead(): JSX.Element {
         return (
             <TableHead>
                 <TableRow key="headerRow">
@@ -889,7 +889,7 @@ class TreeTable extends Component<TreeTableProps, TreeTableState> {
         );
     }
 
-    render() {
+    render(): JSX.Element | null {
         const col = this.props.columns.find(_col => _col.field === this.state.orderBy);
         if (col) {
             const lookup = col.lookup;

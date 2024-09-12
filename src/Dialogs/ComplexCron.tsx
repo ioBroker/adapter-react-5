@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type JSX } from 'react';
 
 import { Button, DialogTitle, DialogContent, DialogActions, Dialog } from '@mui/material';
 
@@ -55,21 +55,21 @@ class DialogComplexCron extends React.Component<DialogCronProps, DialogCronState
         };
     }
 
-    handleCancel() {
+    handleCancel(): void {
         this.props.onClose();
     }
 
-    handleOk() {
+    handleOk(): void {
         this.props.onOk(this.state.cron);
         this.props.onClose();
     }
 
-    handleClear() {
+    handleClear(): void {
         this.props.onOk(false);
         this.props.onClose();
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <Dialog
                 onClose={() => {}}

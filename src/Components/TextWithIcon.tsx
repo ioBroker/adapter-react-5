@@ -2,7 +2,7 @@ import React from 'react';
 
 import Icon from './Icon';
 import Utils from './Utils';
-import { ThemeType } from '../types';
+import type { ThemeType } from '../types';
 
 const styles: Record<string, React.CSSProperties> = {
     div: {

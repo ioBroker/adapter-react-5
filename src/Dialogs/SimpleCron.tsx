@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type JSX } from 'react';
 import { Button, DialogTitle, DialogContent, DialogActions, Dialog } from '@mui/material';
 
 import { Check as IconOk, Cancel as IconCancel } from '@mui/icons-material';
@@ -47,16 +47,16 @@ class DialogSimpleCron extends React.Component<DialogCronProps, DialogCronState>
         };
     }
 
-    handleCancel() {
+    handleCancel(): void {
         this.props.onClose();
     }
 
-    handleOk() {
+    handleOk(): void {
         this.props.onOk(this.state.cron);
         this.props.onClose();
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <Dialog
                 onClose={() => {}}

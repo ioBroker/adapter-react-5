@@ -1,4 +1,4 @@
-import type React from 'react';
+import type { JSX, CSSProperties } from 'react';
 import type { Theme as MuiTheme, Palette as MuiPalette } from '@mui/material/styles';
 import type { AdminConnection, Connection } from '@iobroker/socket-client';
 import type LegacyConnection from './LegacyConnection';
@@ -108,10 +108,10 @@ interface Palette extends MuiPalette {
 export interface IobTheme extends MuiTheme {
     name: ThemeName;
     palette: Palette;
-    toolbar: React.CSSProperties;
+    toolbar: CSSProperties;
     saveToolbar: {
         background: string;
-        button: React.CSSProperties;
+        button: CSSProperties;
     };
 }
 
@@ -126,16 +126,16 @@ export interface GenericAppState {
     selectedTab: string;
     selectedTabNum: number | undefined;
     native: Record<string, any>;
-    errorText: string | React.JSX.Element;
+    errorText: string | JSX.Element;
     changed: boolean;
     connected: boolean;
     isConfigurationError: string;
-    toast: string | React.JSX.Element;
+    toast: string | JSX.Element;
     bottomButtons: boolean;
     width: Width;
     confirmClose: boolean;
     _alert: boolean;
     _alertType: 'info' | 'warning' | 'error' | 'success';
-    _alertMessage: string | React.JSX.Element;
+    _alertMessage: string | JSX.Element;
     common?: Record<string, any>;
 }

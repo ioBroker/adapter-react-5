@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { type JSX } from 'react';
+import { Component } from 'react';
 
 import IconNoIcon from '../icons/IconNoIcon';
 
@@ -62,7 +63,7 @@ interface ImageState {
  * A component for displaying an image.
  */
 class Image extends Component<ImageProps, ImageState> {
-    private svg: React.JSX.Element | null;
+    private svg: JSX.Element | null;
 
     static REMOTE_SERVER: boolean = window.location.hostname.includes('iobroker.in');
 
@@ -82,7 +83,7 @@ class Image extends Component<ImageProps, ImageState> {
         this.svg = this.state.svg && this.state.src ? this.getSvgFromData(this.state.src) : null;
     }
 
-    static getDerivedStateFromProps(props: ImageProps, state: ImageState): void {
+    static getDerivedStateFromProps(props: ImageProps, state: ImageState): Partial<ImageState> | null {
         const newState: ImageState = {};
         let changed = false;
 
@@ -107,7 +108,7 @@ class Image extends Component<ImageProps, ImageState> {
         return changed ? newState : null;
     }
 
-    getSvgFromData(src: string): React.JSX.Element | null {
+    getSvgFromData(src: string): JSX.Element | null {
         const len = 'data:image/svg+xml;base64,';
         if (!src.startsWith(len)) {
             return null;
@@ -126,7 +127,6 @@ class Image extends Component<ImageProps, ImageState> {
                     className={this.props.className}
                     style={this.state.color ? { color: this.state.color } : {}}
                     {...svgProps}
-                    // eslint-disable-next-line react/no-danger
                     dangerouslySetInnerHTML={{ __html: inner }}
                 />
             );
@@ -136,7 +136,7 @@ class Image extends Component<ImageProps, ImageState> {
         return null;
     }
 
-    render(): React.JSX.Element | null {
+    render(): JSX.Element | null {
         if (this.state.svg) {
             if (!this.state.created) {
                 setTimeout(() => {

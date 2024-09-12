@@ -796,8 +796,8 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         } else {
             const folder = foldersList.shift();
             if (folder) {
-                this.browseFolder(folder, newFoldersNotNull)
-                    .catch((e: Error) => console.error(`Cannot read folder ${folder}: ${e}`))
+                void this.browseFolder(folder, newFoldersNotNull)
+                    .catch((e: Error) => console.error(`Cannot read folder ${folder}: ${e.message}`))
                     .then(() => {
                         setTimeout(() => this.browseFoldersCb(foldersList, newFoldersNotNull, cb), 0);
                     });
@@ -1010,9 +1010,10 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                             .map(item => this.browseFolder(item.id, newFoldersNotNull, true).catch(() => undefined)),
                     ).then(() => newFoldersNotNull);
                 }
-            } catch (e) {
+            } catch (e: unknown) {
+                const knownError = e as Error;
                 if (this.initialReadFinished) {
-                    window.alert(`Cannot read meta items: ${e}`);
+                    window.alert(`Cannot read meta items: ${knownError.message}`);
                 }
                 newFoldersNotNull[folderId || '/'] = [];
             }
@@ -1078,9 +1079,10 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                         .map(item => this.browseFolder(item.id, newFoldersNotNull, true)),
                 ).then(() => newFoldersNotNull);
             }
-        } catch (e) {
+        } catch (e: unknown) {
+            const knownError = e as Error;
             if (this.initialReadFinished) {
-                window.alert(`Cannot read ${adapter}${relPath ? `/${relPath}` : ''}: ${e}`);
+                window.alert(`Cannot read ${adapter}${relPath ? `/${relPath}` : ''}: ${knownError?.message}`);
             }
             newFoldersNotNull[folderId] = [];
         }
@@ -1132,7 +1134,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
             this._tempTimeout[folder] = setTimeout(() => {
                 delete this._tempTimeout[folder];
 
-                this.browseFolder(folder, null, false, true).then(folders => this.setState({ folders }));
+                this.browseFolder(folder, null, false, true)
+                    .then(folders => this.setState({ folders }))
+                    .catch(e => console.error(`Cannot read folder: ${e.message}`));
             }, 300);
         }
     };
@@ -1157,18 +1161,21 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         }
 
         if (_folder && !this.state.folders[_folder]) {
-            return this.browseFolder(_folder).then(folders =>
-                this.setState(
-                    {
-                        folders,
-                        path: _folder,
-                        currentDir: _folder,
-                        selected: _folder,
-                        pathFocus: false,
-                    },
-                    () => this.props.onSelect && this.props.onSelect(''),
-                ),
-            );
+            this.browseFolder(_folder)
+                .then(folders =>
+                    this.setState(
+                        {
+                            folders,
+                            path: _folder,
+                            currentDir: _folder,
+                            selected: _folder,
+                            pathFocus: false,
+                        },
+                        () => this.props.onSelect && this.props.onSelect(''),
+                    ),
+                )
+                .catch(e => console.error(`Cannot read folder: ${e.message}`));
+            return;
         }
 
         return this.setState(
@@ -1955,7 +1962,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         if (!folders[parentFolder]) {
             return null;
         }
-        return folders[parentFolder].find(item => item.id === id);
+        return folders[parentFolder].find(item => item.id === id) || null;
     }
 
     renderInputDialog(): React.JSX.Element | null {
@@ -2061,8 +2068,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         const adapterName = parts.shift();
         try {
             await this.props.socket.writeFile64(adapterName || '', parts.join('/'), data);
-        } catch (e) {
-            window.alert(`Cannot write file: ${e}`);
+        } catch (e: unknown) {
+            const knownError = e as Error;
+            window.alert(`Cannot write file: ${knownError?.message}`);
         }
     }
 
@@ -2098,7 +2106,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                                 } else {
                                     const id = `${parentFolder}/${file.name}`;
 
-                                    this.uploadFile(id, reader.result as string).then(() => {
+                                    void this.uploadFile(id, reader.result as string).then(() => {
                                         if (!--count) {
                                             this.setState({ uploadFile: false }, () => {
                                                 if (this.supportSubscribes) {
@@ -2190,7 +2198,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                 if (item.level >= 1) {
                     const parts = id.split('/');
                     const adapter = parts.shift();
-                    this.props.socket.deleteFolder(adapter || '', parts.join('/')).then(() => {
+                    void this.props.socket.deleteFolder(adapter || '', parts.join('/')).then(() => {
                         // remove this folder
                         const folders = JSON.parse(JSON.stringify(this.state.folders));
                         delete folders[item.id];
@@ -2254,9 +2262,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
 
                     this.setState(newState as FileBrowserState, () =>
                         setTimeout(() => {
-                            (this.browseFolders([...this.state.expanded], folders)).then(_folders =>
-                                this.setState({ folders: _folders }),
-                            );
+                            this.browseFolders([...this.state.expanded], folders)
+                                .then(_folders => this.setState({ folders: _folders }))
+                                .catch(e => console.error(e));
                         }, 200),
                     );
                 } else {
@@ -2311,7 +2319,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                 </Dialog>
             );
         }
-        return false;
+        return null;
     }
 
     renderViewDialog(): React.JSX.Element | null {
@@ -2394,10 +2402,13 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                     } else {
                         resolve(true);
                     }
-                }).then(
-                    result =>
-                        result && this.setState({ selected: this.state.path, currentDir: folder, pathFocus: false }),
-                );
+                })
+                    .then(
+                        result =>
+                            result &&
+                            this.setState({ selected: this.state.path, currentDir: folder, pathFocus: false }),
+                    )
+                    .catch(e => console.error(e));
             } else if (!this.lastSelect || Date.now() - this.lastSelect > 100) {
                 this.setState({ pathFocus: false });
             }

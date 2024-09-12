@@ -3,9 +3,9 @@
  *
  * MIT License
  *
- * */
+ */
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
-import React, { Component } from 'react';
+import React, { Component, type JSX } from 'react';
 
 import { Button, DialogTitle, DialogContent, DialogActions, Dialog } from '@mui/material';
 
@@ -14,8 +14,8 @@ import { Cancel as IconCancel, Check as IconOk } from '@mui/icons-material';
 import type Connection from '../Connection';
 
 import I18n from '../i18n';
-import ObjectBrowser, { ObjectBrowserFilter } from '../Components/ObjectBrowser';
-import { ObjectBrowserColumn, ObjectBrowserCustomFilter, ObjectBrowserType } from '../Components/types';
+import ObjectBrowser, { type ObjectBrowserFilter } from '../Components/ObjectBrowser';
+import type { ObjectBrowserColumn, ObjectBrowserCustomFilter, ObjectBrowserType } from '../Components/types';
 import type { IobTheme } from '../types';
 
 export interface SelectIDFilters {
@@ -39,7 +39,7 @@ interface DialogSelectIDProps {
     foldersFirst?: boolean;
     /** Path prefix for images (default: '.') */
     imagePrefix?: string;
-    /** @deprecated: same as imagePrefix */
+    /** @deprecated same as imagePrefix */
     prefix?: string;
     /** Show the expert button */
     showExpertButton?: boolean;
@@ -77,10 +77,12 @@ interface DialogSelectIDProps {
     onClose: () => void;
     /** Handler that is called when the user presses OK. */
     onOk: (selected: string | string[] | undefined, name: string) => void;
-    /** Function to filter out all unnecessary objects. Can be string or function.
-       It cannot be used together with "types".
-       Example for function: `obj => obj.common?.type === 'boolean'` to show only boolean states
-       In case of string, it must look like `obj.common && obj.common.type === 'boolean'` */
+    /**
+     * Function to filter out all unnecessary objects. Can be string or function.
+     * It cannot be used together with "types".
+     * Example for function: `obj => obj.common?.type === 'boolean'` to show only boolean states
+     * In case of string, it must look like `obj.common && obj.common.type === 'boolean'`
+     */
     filterFunc?: string | ((obj: ioBroker.Object) => boolean);
     /** predefined filter fields, like {"id":"","name":"","room":"","func":"","role":"level","type":"","custom":""} */
     filters?: SelectIDFilters;
@@ -143,16 +145,16 @@ class DialogSelectID extends Component<DialogSelectIDProps, DialogSelectIDState>
         };
     }
 
-    handleCancel() {
+    handleCancel(): void {
         this.props.onClose();
     }
 
-    handleOk() {
+    handleOk(): void {
         this.props.onOk(this.props.multiSelect ? this.state.selected : this.state.selected[0] || '', this.state.name);
         this.props.onClose();
     }
 
-    render() {
+    render(): JSX.Element {
         let title;
         if (this.state.name || this.state.selected.length) {
             if (this.state.selected.length === 1) {

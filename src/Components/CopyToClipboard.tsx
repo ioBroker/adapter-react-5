@@ -83,7 +83,10 @@ function format(message: string): string {
  * @param options.format Format of the data
  * @param options.message Message to show in prompt
  */
-function copy(text: string, options?: { debug?: boolean; format?: string; message?: string }): void {
+function copy(
+    text: string,
+    options?: { debug?: boolean; format?: 'text/plain' | 'text/html'; message?: string },
+): boolean {
     let reselectPrevious;
     let range;
     let selection;
@@ -120,7 +123,6 @@ function copy(text: string, options?: { debug?: boolean; format?: string; messag
                     debug && console.warn('unable to use e.clipboardData');
                     debug && console.warn('trying IE specific stuff');
                     (window as any).clipboardData?.clearData();
-                    // @ts-expect-error special case for IE11
                     const _format = clipboardToIE11Formatting[options.format] || clipboardToIE11Formatting.default;
                     (window as any).clipboardData?.setData(_format, text);
                 } else {

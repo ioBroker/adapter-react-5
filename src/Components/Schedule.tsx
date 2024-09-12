@@ -657,7 +657,9 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                                                 _schedule.time.start = e.target.value;
                                                 this.onChange(_schedule);
                                             }}
-                                            InputLabelProps={{ shrink: true }}
+                                            slotProps={{
+                                                inputLabel: { shrink: true },
+                                            }}
                                             label={I18n.t('sch_from')}
                                             margin="normal"
                                         />,
@@ -673,7 +675,9 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                                                 _schedule.time.end = e.target.value;
                                                 this.onChange(_schedule);
                                             }}
-                                            InputLabelProps={{ shrink: true }}
+                                            slotProps={{
+                                                inputLabel: { shrink: true },
+                                            }}
                                             label={I18n.t('sch_to')}
                                             margin="normal"
                                         />,
@@ -1129,8 +1133,12 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                                 onChange={e => {
                                     const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                                     _schedule.period.yearDate = parseInt(e.target.value, 10);
-                                    if (_schedule.period.yearDate < 1) _schedule.period.yearDate = 31;
-                                    if (_schedule.period.yearDate > 31) _schedule.period.yearDate = 1;
+                                    if (_schedule.period.yearDate < 1) {
+                                        _schedule.period.yearDate = 31;
+                                    }
+                                    if (_schedule.period.yearDate > 31) {
+                                        _schedule.period.yearDate = 1;
+                                    }
                                     this.onChange(_schedule);
                                 }}
                             />
@@ -1282,7 +1290,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                                             let daysOfWeek: number[];
                                             try {
                                                 daysOfWeek = JSON.parse(_schedule.period.dows);
-                                            } catch (err) {
+                                            } catch {
                                                 daysOfWeek = [];
                                             }
                                             if (e.target.checked && !daysOfWeek.includes(i)) {
@@ -1617,7 +1625,9 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                             onChange={e => {
                                 const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                                 _schedule.period.months = parseInt(e.target.value, 10);
-                                if (_schedule.period.months < 1) _schedule.period.months = 1;
+                                if (_schedule.period.months < 1) {
+                                    _schedule.period.months = 1;
+                                }
                                 this.onChange(_schedule);
                             }}
                         />,
@@ -1794,7 +1804,9 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                         onChange={e => {
                             const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                             _schedule.period.years = parseInt(e.target.value, 10);
-                            if (_schedule.period.years < 1) _schedule.period.years = 1;
+                            if (_schedule.period.years < 1) {
+                                _schedule.period.years = 1;
+                            }
                             this.onChange(_schedule);
                         }}
                     />,

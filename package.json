@@ -9,12 +9,16 @@
     "scripts": {
         "prepublishOnly": "echo \"Error: publish from dist directory and write 'npm run build'\" && exit 1",
         "build:ts": "tsc -p tsconfig.build.json",
-        "build": "npm run build:ts && node tasks",
+        "build": "node tasks --0-clean && npm run build:ts && node tasks --2-copy && node tasks --3-patchReadme",
         "release": "release-script --noPush --yes --lf",
         "release-patch": "release-script patch --yes --lf",
         "release-minor": "release-script minor --yes --lf",
         "release-major": "release-script major --yes --lf",
         "update-packages": "ncu --upgrade",
+        "0-clean": "node tasks --0-clean",
+        "1-build": "tsc -p tsconfig.build.json",
+        "2-copy": "node tasks --2-copy",
+        "3-patchReadme": "node tasks --3-patchReadme",
         "npm": "npm i -f",
         "lint": "eslint -c eslint.config.mjs src",
         "test": "ts-node test/testSchema.ts"
@@ -72,6 +76,8 @@
         "@types/react-color": "^3.0.12",
         "ajv": "^8.17.1",
         "eslint": "^9.10.0",
+        "eslint-plugin-react": "^7.35.2",
+        "eslint-plugin-react-hooks": "^5.1.0-rc-fb9a90fa48-20240614",
         "ts-node": "^10.9.2",
         "typescript": "^5.6.2"
     }

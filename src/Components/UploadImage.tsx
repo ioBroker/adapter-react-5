@@ -1,6 +1,6 @@
-import React, { Component, createRef } from 'react';
+import React, { Component, createRef, type JSX } from 'react';
 import Dropzone from 'react-dropzone';
-import { Cropper, ReactCropperElement } from 'react-cropper';
+import { Cropper, type ReactCropperElement } from 'react-cropper';
 
 import { Menu, MenuItem, Tooltip, IconButton } from '@mui/material';
 
@@ -435,7 +435,7 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
         }
     }
 
-    onDrop(acceptedFiles: File[]) {
+    onDrop(acceptedFiles: File[]): void {
         const onChange = this.props.onChange;
         const maxSize = this.props.maxSize || 10 * 1024;
 
@@ -475,7 +475,7 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
         reader.readAsArrayBuffer(file);
     }
 
-    render() {
+    render(): JSX.Element {
         const { disabled, icon, removeIconFunc, error, crop, onChange } = this.props;
         const maxSize = this.props.maxSize || 10 * 1024;
         const accept = this.props.accept || { 'image/*': [] };

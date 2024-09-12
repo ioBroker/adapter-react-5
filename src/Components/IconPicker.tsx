@@ -75,17 +75,19 @@ interface IconPickerProps {
 const IconPicker = (props: IconPickerProps): React.JSX.Element => {
     const IconCustom = props.icon;
 
+    const onChange = props.onChange;
+
     const onDrop = useCallback(
         (acceptedFiles: File[]) => {
             const reader = new FileReader();
 
-            reader.addEventListener('load', () => props.onChange(reader.result as string), false);
+            reader.addEventListener('load', () => onChange(reader.result as string), false);
 
             if (acceptedFiles[0]) {
                 reader.readAsDataURL(acceptedFiles[0]);
             }
         },
-        [props.onChange],
+        [onChange],
     );
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });

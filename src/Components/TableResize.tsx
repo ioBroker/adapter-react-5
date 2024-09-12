@@ -87,7 +87,6 @@ class TableResize extends Component<TableResizeProps> {
                     const tableWidth = this.resizerRefTable.current.offsetWidth;
                     let storedWidth: number | null = 0;
                     for (let w = 0; w < this.resizerCurrentWidths.length; w++) {
-                        // eslint-disable-next-line no-restricted-properties
                         if (window.isFinite(this.resizerCurrentWidths[w] as number)) {
                             storedWidth += this.resizerCurrentWidths[w] as number;
                         } else {

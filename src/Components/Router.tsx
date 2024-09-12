@@ -18,6 +18,7 @@ class Router<P, S> extends Component<P, S> {
         window.removeEventListener('hashchange', this.onHashChangedBound);
     }
 
+    // eslint-disable-next-line class-methods-use-this
     onHashChanged(): void {
         // override this function
     }
@@ -31,7 +32,7 @@ class Router<P, S> extends Component<P, S> {
         const parts = hash.split('/').map(item => {
             try {
                 return item ? decodeURIComponent(item) : '';
-            } catch (e) {
+            } catch {
                 console.error(`Router: Cannot decode ${item}`);
                 return item || '';
             }

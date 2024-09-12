@@ -3,9 +3,9 @@
  *
  * MIT License
  *
- * */
-import React from 'react';
-import { PROGRESS, Connection, AdminConnection } from '@iobroker/socket-client';
+ */
+import React, { type JSX } from 'react';
+import { PROGRESS, Connection, type AdminConnection } from '@iobroker/socket-client';
 import * as Sentry from '@sentry/browser';
 
 import { Snackbar, IconButton } from '@mui/material';
@@ -21,7 +21,27 @@ import SaveCloseButtons from './Components/SaveCloseButtons';
 import ConfirmDialog from './Dialogs/Confirm';
 import I18n from './i18n';
 import DialogError from './Dialogs/Error';
-import { GenericAppProps, GenericAppState, GenericAppSettings, ThemeName, ThemeType, IobTheme, Width } from './types';
+import type {
+    GenericAppProps,
+    GenericAppState,
+    GenericAppSettings,
+    ThemeName,
+    ThemeType,
+    IobTheme,
+    Width,
+} from './types';
+
+import langEn from './i18n/en.json';
+import langDe from './i18n/de.json';
+import langRu from './i18n/ru.json';
+import langPt from './i18n/pt.json';
+import langNl from './i18n/nl.json';
+import langFr from './i18n/fr.json';
+import langIt from './i18n/it.json';
+import langEs from './i18n/es.json';
+import langPl from './i18n/pl.json';
+import langUk from './i18n/uk.json';
+import langZhCn from './i18n/zh-cn.json';
 
 declare global {
     /** If config has been changed */
@@ -220,17 +240,17 @@ class GenericApp<
 
         // init translations
         const translations: Record<ioBroker.Languages, Record<string, string>> = {
-            en: require('./i18n/en.json'),
-            de: require('./i18n/de.json'),
-            ru: require('./i18n/ru.json'),
-            pt: require('./i18n/pt.json'),
-            nl: require('./i18n/nl.json'),
-            fr: require('./i18n/fr.json'),
-            it: require('./i18n/it.json'),
-            es: require('./i18n/es.json'),
-            pl: require('./i18n/pl.json'),
-            uk: require('./i18n/uk.json'),
-            'zh-cn': require('./i18n/zh-cn.json'),
+            en: langEn,
+            de: langDe,
+            ru: langRu,
+            pt: langPt,
+            nl: langNl,
+            fr: langFr,
+            it: langIt,
+            es: langEs,
+            pl: langPl,
+            uk: langUk,
+            'zh-cn': langZhCn,
         };
 
         // merge together
@@ -363,7 +383,7 @@ class GenericApp<
 
                         waitPromise = waitPromise || Promise.resolve();
 
-                        waitPromise.then(() => {
+                        void waitPromise.then(() => {
                             if (instanceObj) {
                                 this.common = instanceObj?.common;
                                 this.onPrepareLoad(instanceObj.native, instanceObj.encryptedNative); // decode all secrets
@@ -396,13 +416,14 @@ class GenericApp<
 
     /**
      * Checks if this connection is running in a web adapter and not in an admin.
+     *
      * @returns True if running in a web adapter or in a socketio adapter.
      */
     static isWeb(): boolean {
         return window.socketUrl !== undefined;
     }
 
-    showAlert(message: string, type?: 'info' | 'warning' | 'error' | 'success') {
+    showAlert(message: string, type?: 'info' | 'warning' | 'error' | 'success'): void {
         if (type !== 'error' && type !== 'warning' && type !== 'info' && type !== 'success') {
             type = 'info';
         }
@@ -414,7 +435,7 @@ class GenericApp<
         });
     }
 
-    renderAlertSnackbar() {
+    renderAlertSnackbar(): JSX.Element {
         this.alertDialogRendered = true;
 
         return (
@@ -434,7 +455,7 @@ class GenericApp<
         );
     }
 
-    onSystemConfigChanged = (id: string, obj: ioBroker.AnyObject | null | undefined) => {
+    onSystemConfigChanged = (id: string, obj: ioBroker.AnyObject | null | undefined): void => {
         if (obj && id === 'system.config') {
             if (this.socket.systemLang !== (obj as ioBroker.SystemConfigObject)?.common.language) {
                 this.socket.systemLang = (obj as ioBroker.SystemConfigObject)?.common.language || 'en';
@@ -455,7 +476,7 @@ class GenericApp<
     /**
      * Called immediately after a component is mounted. Setting state here will trigger re-rendering.
      */
-    componentDidMount() {
+    componentDidMount(): void {
         window.addEventListener('resize', this.onResize, true);
         window.addEventListener('message', this.onReceiveMessage, false);
         super.componentDidMount();
@@ -464,13 +485,13 @@ class GenericApp<
     /**
      * Called immediately before a component is destroyed.
      */
-    componentWillUnmount() {
+    componentWillUnmount(): void {
         window.removeEventListener('resize', this.onResize, true);
         window.removeEventListener('message', this.onReceiveMessage, false);
         super.componentWillUnmount();
     }
 
-    onReceiveMessage = (message: { data: string } | null) => {
+    onReceiveMessage = (message: { data: string } | null): void => {
         if (message?.data) {
             if (message.data === 'updateTheme') {
                 const newThemeName = Utils.getThemeName();
@@ -501,7 +522,7 @@ class GenericApp<
         }
     };
 
-    private onResize = () => {
+    private onResize = (): void => {
         this.resizeTimer && clearTimeout(this.resizeTimer);
         this.resizeTimer = setTimeout(() => {
             this.resizeTimer = null;
@@ -511,7 +532,6 @@ class GenericApp<
 
     /**
      * Gets the width depending on the window inner width.
-     * @returns {import('./types').Width}
      */
     static getWidth(): Width {
         /**
@@ -536,15 +556,18 @@ class GenericApp<
 
     /**
      * Get a theme
+     *
      * @param name Theme name
      */
-    createTheme(name?: ThemeName | null | undefined): IobTheme {
+    // eslint-disable-next-line class-methods-use-this
+    createTheme(name?: ThemeName | null): IobTheme {
         return Theme(Utils.getThemeName(name));
     }
 
     /**
      * Get the theme name
      */
+    // eslint-disable-next-line class-methods-use-this
     getThemeName(currentTheme: IobTheme): ThemeName {
         return currentTheme.name;
     }
@@ -552,27 +575,30 @@ class GenericApp<
     /**
      * Get the theme type
      */
+    // eslint-disable-next-line class-methods-use-this
     getThemeType(currentTheme: IobTheme): ThemeType {
         return currentTheme.palette.mode;
     }
 
-    onThemeChanged(_newThemeName: string) {}
+    // eslint-disable-next-line class-methods-use-this
+    onThemeChanged(_newThemeName: string): void {}
 
-    onToggleExpertMode(_expertMode: boolean) {}
+    // eslint-disable-next-line class-methods-use-this
+    onToggleExpertMode(_expertMode: boolean): void {}
 
     /**
      * Changes the current theme
-     * */
-    toggleTheme(newThemeName?: ThemeName) {
+     */
+    toggleTheme(newThemeName?: ThemeName): void {
         const themeName = this.state.themeName;
 
         // dark => blue => colored => light => dark
         newThemeName =
             newThemeName ||
             (themeName === 'dark'
-                ? 'blue'
+                ? 'light'
                 : themeName === 'blue'
-                  ? 'colored'
+                  ? 'light'
                   : themeName === 'colored'
                     ? 'light'
                     : 'dark');
@@ -598,9 +624,8 @@ class GenericApp<
 
     /**
      * Gets the system configuration.
-     * @returns {Promise<ioBroker.OtherObject>}
      */
-    getSystemConfig() {
+    getSystemConfig(): Promise<ioBroker.SystemConfigObject> {
         return this.socket.getSystemConfig();
     }
 
@@ -615,7 +640,8 @@ class GenericApp<
      * Gets called when the socket.io connection is ready.
      * You can overload this function to execute own commands.
      */
-    onConnectionReady() {}
+    // eslint-disable-next-line class-methods-use-this
+    onConnectionReady(): void {}
 
     /**
      * Encrypts a string.
@@ -624,7 +650,6 @@ class GenericApp<
         let result = '';
         if (this._secret) {
             for (let i = 0; i < value.length; i++) {
-                // eslint-disable-next-line no-bitwise
                 result += String.fromCharCode(
                     this._secret[i % this._secret.length].charCodeAt(0) ^ value.charCodeAt(i),
                 );
@@ -640,7 +665,6 @@ class GenericApp<
         let result = '';
         if (this._secret) {
             for (let i = 0; i < value.length; i++) {
-                // eslint-disable-next-line no-bitwise
                 result += String.fromCharCode(
                     this._secret[i % this._secret.length].charCodeAt(0) ^ value.charCodeAt(i),
                 );
@@ -653,7 +677,7 @@ class GenericApp<
      * Gets called when the navigation hash changes.
      * You may override this if needed.
      */
-    onHashChanged() {
+    onHashChanged(): void {
         const location = Router.getLocation();
         if (location.tab !== this.state.selectedTab) {
             this.selectTab(location.tab);
@@ -663,7 +687,7 @@ class GenericApp<
     /**
      * Selects the given tab.
      */
-    selectTab(tab: string, index?: number) {
+    selectTab(tab: string, index?: number): void {
         ((window as any)._localStorage || window.localStorage).setItem(`${this.adapterName}-adapter`, tab);
         this.setState({ selectedTab: tab, selectedTabNum: index });
     }
@@ -687,9 +711,11 @@ class GenericApp<
     /**
      * Gets called after the settings are loaded.
      * You may override this if needed.
+     *
+     * @param settings instance settings from native part
      * @param encryptedNative optional list of fields to be decrypted
      */
-    onPrepareLoad(settings: Record<string, any>, encryptedNative?: string[]) {
+    onPrepareLoad(settings: Record<string, any>, encryptedNative?: string[]): void {
         // here you can encode values
         this.encryptedFields &&
             this.encryptedFields.forEach(attr => {
@@ -709,7 +735,6 @@ class GenericApp<
 
     /**
      * Gets the extendable instances.
-     * @returns {Promise<any[]>}
      */
     async getExtendableInstances(): Promise<ioBroker.InstanceObject[]> {
         try {
@@ -743,9 +768,10 @@ class GenericApp<
 
     /**
      * Saves the settings to the server.
+     *
      * @param isClose True if the user is closing the dialog.
      */
-    onSave(isClose?: boolean) {
+    onSave(isClose?: boolean): void {
         let oldObj: ioBroker.InstanceObject;
         if (this.state.isConfigurationError) {
             this.setState({ errorText: this.state.isConfigurationError });
@@ -807,7 +833,7 @@ class GenericApp<
     /**
      * Renders the toast.
      */
-    renderToast() {
+    renderToast(): JSX.Element | null {
         if (!this.state.toast) {
             return null;
         }
@@ -842,7 +868,7 @@ class GenericApp<
     /**
      * Closes the dialog.
      */
-    static onClose() {
+    static onClose(): void {
         if (typeof window.parent !== 'undefined' && window.parent) {
             try {
                 if (window.parent.$iframeDialog && typeof window.parent.$iframeDialog.close === 'function') {
@@ -874,7 +900,8 @@ class GenericApp<
 
     /**
      * Checks if the configuration has changed.
-     * @param {Record<string, any>} [native] the new state
+     *
+     * @param native the new state
      */
     getIsChanged(native: Record<string, any>): boolean {
         native = native || this.state.native;
@@ -887,9 +914,10 @@ class GenericApp<
 
     /**
      * Gets called when loading the configuration.
+     *
      * @param newNative The new configuration object.
      */
-    onLoadConfig(newNative: Record<string, any>) {
+    onLoadConfig(newNative: Record<string, any>): void {
         if (JSON.stringify(newNative) !== JSON.stringify(this.state.native)) {
             this.setState({ native: newNative, changed: this.getIsChanged(newNative) });
         }
@@ -898,7 +926,7 @@ class GenericApp<
     /**
      * Sets the configuration error.
      */
-    setConfigurationError(errorText: string) {
+    setConfigurationError(errorText: string): void {
         if (this.state.isConfigurationError !== errorText) {
             this.setState({ isConfigurationError: errorText });
         }
@@ -975,11 +1003,12 @@ class GenericApp<
 
     /**
      * Update the native value
+     *
      * @param attr The attribute name with dots as delimiter.
      * @param value The new value.
      * @param cb Callback which will be called upon completion.
      */
-    updateNativeValue(attr: string, value: any, cb?: () => void) {
+    updateNativeValue(attr: string, value: any, cb?: () => void): void {
         const native = JSON.parse(JSON.stringify(this.state.native));
         if (this._updateNativeValue(native, attr, value)) {
             const changed = this.getIsChanged(native);
@@ -999,12 +1028,13 @@ class GenericApp<
     /**
      * Set the error text to be shown.
      */
-    showError(text: string | React.JSX.Element) {
+    showError(text: string | React.JSX.Element): void {
         this.setState({ errorText: text });
     }
 
     /**
      * Sets the toast to be shown.
+     *
      * @param {string} toast
      */
     showToast(toast: string | React.JSX.Element): void {

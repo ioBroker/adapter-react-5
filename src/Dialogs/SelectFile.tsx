@@ -5,7 +5,7 @@
  *
  */
 // please do not delete React, as without it other projects could not be compiled: ReferenceError: React is not defined
-import React from 'react';
+import React, { JSX } from 'react';
 
 import { Button, DialogTitle, DialogContent, DialogActions, Dialog } from '@mui/material';
 
@@ -58,7 +58,7 @@ interface DialogSelectFileProps {
     multiSelect?: boolean;
     /** Image prefix. Normally, admin has '../..' and the web has '../' */
     imagePrefix?: string; // Prefix (default: '.')
-    /** @deprectaed Image prefix */
+    /** @deprecated Image prefix */
     prefix?: string;
     /** Show the expert button? */
     showExpertButton?: boolean;
@@ -157,11 +157,11 @@ class DialogSelectFile extends React.Component<DialogSelectFileProps, DialogSele
         };
     }
 
-    handleCancel() {
+    handleCancel(): void {
         this.props.onClose();
     }
 
-    handleOk() {
+    handleOk(): void {
         this.props.onOk(
             this.props.multiSelect || !Array.isArray(this.state.selected)
                 ? this.state.selected
@@ -170,7 +170,7 @@ class DialogSelectFile extends React.Component<DialogSelectFileProps, DialogSele
         this.props.onClose();
     }
 
-    render() {
+    render(): JSX.Element {
         let title;
         if (this.state.selected.length) {
             if (!Array.isArray(this.state.selected) || this.state.selected.length === 1) {

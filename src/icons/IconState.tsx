@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { type JSX } from 'react';
 import type IconProps from './IconProps';
 
-const IconState = (props: IconProps): React.JSX.Element => (
+const IconState = (props: IconProps): JSX.Element => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
         onClick={e => props.onClick && props.onClick(e)}

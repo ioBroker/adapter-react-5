@@ -4,7 +4,7 @@ import { orange, grey } from '@mui/material/colors';
 
 import type { SimplePaletteColorOptions } from '@mui/material/styles/createPalette';
 import type { ThemeOptions as ThemeOptionsMui } from '@mui/material/styles/createTheme';
-import type { type IobTheme, type ThemeName, ThemeType } from './types';
+import type { IobTheme, ThemeName, ThemeType } from './types';
 
 const step = (16 - 5) / 23 / 100;
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type JSX } from 'react';
 
 import { IconButton, Tooltip } from '@mui/material';
 
@@ -18,7 +18,14 @@ interface ToggleThemeMenuProps {
     size?: 'small' | 'medium' | 'large';
 }
 
-export default function ToggleThemeMenu({ themeName, toggleTheme, t, className, style, size }: ToggleThemeMenuProps) {
+export default function ToggleThemeMenu({
+    themeName,
+    toggleTheme,
+    t,
+    className,
+    style,
+    size,
+}: ToggleThemeMenuProps): JSX.Element {
     return (
         <div
             className={className || undefined}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type JSX } from 'react';
 import { Box } from '@mui/material';
 
 /*
@@ -87,7 +87,7 @@ const styles: Record<string, any> = {
 };
 
 /** Generates the 404 error page */
-function Page404(): React.JSX.Element {
+function Page404(): JSX.Element {
     return (
         <div style={styles.content}>
             <div style={styles.root}>

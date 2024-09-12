@@ -3,11 +3,11 @@
  *
  * MIT License
  *
- * */
+ */
 import React from 'react';
 import copy from './CopyToClipboard';
 import I18n from '../i18n';
-import { IobTheme, ThemeName, ThemeType } from '../types';
+import type { IobTheme, ThemeName, ThemeType } from '../types';
 
 const NAMESPACE = 'material';
 const days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -57,7 +57,6 @@ type SmartName =
       });
 
 type ClassDictionary = Record<string, any>;
-// eslint-disable-next-line no-use-before-define
 type ClassValue = ClassArray | ClassDictionary | string | number | null | boolean | undefined;
 type ClassArray = ClassValue[];
 
@@ -321,7 +320,13 @@ class Utils {
             language?: ioBroker.Languages;
         },
         defaultEnabling?: boolean,
-    ) {
+    ): {
+        name: string;
+        enabled?: boolean;
+        useCustom?: boolean;
+        icon?: string;
+        color?: string;
+    } {
         let settings;
         const id = (obj as ioBroker.StateObject)?._id || options?.id;
         let common: ioBroker.StateCommon | undefined;
@@ -465,7 +470,7 @@ class Utils {
     static getObjectIcon(id: string | ioBroker.PartialObject, obj?: ioBroker.PartialObject): string | null {
         // If id is Object
         if (typeof id === 'object') {
-            obj = id as ioBroker.PartialObject;
+            obj = id;
             id = obj?._id as string;
         }
 
@@ -767,13 +772,12 @@ class Utils {
                     const rel = m[0].match(/rel="([^"]+)"/) || m[0].match(/rel='([^']+)'/);
                     const title = m[0].match(/>([^<]*)</);
 
-                    // eslint-disable-next-line
                     result.push(
                         <a
                             key={`a${key++}`}
                             href={href ? href[1] : ''}
                             target={target ? target[1] : '_blank'}
-                            rel={rel ? rel[1] : ''}
+                            rel={rel ? rel[1] : 'noreferrer'}
                             style={{ color: 'inherit' }}
                         >
                             {title ? title[1] : ''}

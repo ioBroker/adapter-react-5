@@ -4,7 +4,7 @@
  * MIT License
  *
  */
-import React, { Component, createRef } from 'react';
+import React, { Component, createRef, type JSX } from 'react';
 import SVG from 'react-inlinesvg';
 
 import {
@@ -106,7 +106,7 @@ import TabHeader from './TabHeader';
 declare global {
     interface Window {
         sparkline: {
-            sparkline: (el: HTMLDivElement, data: number[]) => React.JSX.Element;
+            sparkline: (el: HTMLDivElement, data: number[]) => JSX.Element;
         };
     }
 }
@@ -160,7 +160,7 @@ interface ContextMenuItem {
     /** hotkey */
     key?: string;
     visibility: boolean;
-    icon: React.JSX.Element | string;
+    icon: JSX.Element | string;
     label: string;
     onClick?: () => void;
     listItemIconStyle?: React.CSSProperties;
@@ -168,7 +168,7 @@ interface ContextMenuItem {
     subMenu?: {
         label: string;
         visibility: boolean;
-        icon: React.JSX.Element;
+        icon: JSX.Element;
         onClick: () => void;
         iconStyle?: React.CSSProperties;
         style?: React.CSSProperties;
@@ -188,7 +188,7 @@ export interface TreeItemData {
     /** Link to parent item */
     parent?: TreeItem;
     level?: number;
-    icon?: string | React.JSX.Element | null;
+    icon?: string | JSX.Element | null;
     /** If the item existing object or generated folder */
     generated?: boolean;
     title?: string;
@@ -217,16 +217,16 @@ export interface TreeItemData {
     // language in what the rooms and functions where translated
     lang?: ioBroker.Languages;
     state?: {
-        valTextRx?: React.JSX.Element[] | null;
+        valTextRx?: JSX.Element[] | null;
         style?: React.CSSProperties;
     };
-    aclTooltip?: null | React.JSX.Element;
+    aclTooltip?: null | JSX.Element;
 }
 
 interface InputSelectItem {
     value: string;
     name: string;
-    icon?: null | React.JSX.Element;
+    icon?: null | JSX.Element;
 }
 
 type ioBrokerObjectForExport = ioBroker.Object & Partial<ioBroker.State>;
@@ -240,6 +240,7 @@ interface ObjectBrowserCustomFilter {
         // If "_dataSources" - only data sources (history, sql, influxdb, ...)
         // Else "telegram." or something like this
         // `true` - If common.custom not empty
+        // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
         custom?: '_' | '_dataSources' | true | string | string[];
     };
 }
@@ -953,7 +954,7 @@ const styles: Record<string, any> = {
     },
 };
 
-function ButtonIcon(props?: { style?: React.CSSProperties }): React.JSX.Element {
+function ButtonIcon(props?: { style?: React.CSSProperties }): JSX.Element {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -1010,7 +1011,7 @@ function filterObject(
     excludeTranslations?: boolean,
 ): Record<string, any> | any[] {
     if (Array.isArray(obj)) {
-        return walkThroughArray(obj as any[], (result: any[], value: any, key: number) => {
+        return walkThroughArray(obj, (result: any[], value: any, key: number) => {
             if (value === undefined || value === null) {
                 return;
             }
@@ -1121,10 +1122,10 @@ export function getSelectIdIconFromObjects(
     objects: Record<string, ioBroker.Object>,
     id: string,
     imagePrefix?: string,
-): string | React.JSX.Element | null {
+): string | JSX.Element | null {
     // `admin` has prefix '.' and `web` has '../..'
     imagePrefix = imagePrefix || '.'; // http://localhost:8081';
-    let src: string | React.JSX.Element = '';
+    let src: string | JSX.Element = '';
     const _id_ = `system.adapter.${id}`;
     const aIcon = id && objects[_id_] && objects[_id_].common && objects[_id_].common.icon;
     if (aIcon) {
@@ -1229,7 +1230,7 @@ function applyFilter(
     customFilter?: ObjectBrowserCustomFilter,
     selectedTypes?: string[],
     _depth?: number,
-) {
+): boolean {
     _depth = _depth || 0;
     let filteredOut = false;
     if (!context) {
@@ -1451,7 +1452,7 @@ function getSystemIcon(
     level: number,
     themeType: ThemeType,
     imagePrefix?: string,
-): string | React.JSX.Element | null {
+): string | JSX.Element | null {
     let icon;
 
     // system or design has special icons
@@ -1513,7 +1514,7 @@ function getObjectTooltip(data: TreeItemData, lang: ioBroker.Languages): string 
     return null;
 }
 
-function getIdFieldTooltip(data: TreeItemData, lang: ioBroker.Languages) {
+function getIdFieldTooltip(data: TreeItemData, lang: ioBroker.Languages): JSX.Element {
     const tooltip = getObjectTooltip(data, lang);
     if (tooltip?.startsWith('http')) {
         return (
@@ -1850,7 +1851,12 @@ function findRoomsForObject(
     return { rooms, per: !ownEnums }; // per is if the enums are from parent
 }
 
-function findEnumsForObjectAsIds(info: TreeInfo, id: string, enumName: 'roomEnums' | 'funcEnums', funcs?: string[]) {
+function findEnumsForObjectAsIds(
+    info: TreeInfo,
+    id: string,
+    enumName: 'roomEnums' | 'funcEnums',
+    funcs?: string[],
+): string[] {
     if (!id) {
         return [];
     }
@@ -2129,7 +2135,7 @@ function prepareSparkData(values: ioBroker.GetHistoryResult, from: number): numb
     return v;
 }
 
-export const ITEM_IMAGES: Record<string, React.JSX.Element> = {
+export const ITEM_IMAGES: Record<string, JSX.Element> = {
     state: (
         <IconState
             className="itemIcon"
@@ -2383,7 +2389,7 @@ interface DragWrapperProps {
     item: TreeItem;
     className?: string;
     style?: React.CSSProperties;
-    children: React.JSX.Element | null;
+    children: JSX.Element | null;
 }
 
 interface ObjectCustomDialogProps {
@@ -2431,7 +2437,7 @@ interface ObjectBrowserValueProps {
     isFloatComma: boolean;
     t: Translate;
     lang: ioBroker.Languages;
-    width: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    width?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
 
 interface ObjectBrowserEditObjectProps {
@@ -2495,13 +2501,12 @@ interface ObjectBrowserProps {
     objectImportExport?: boolean; // optional toolbar button
     objectEditOfAccessControl?: boolean; // Access Control
     /** modal add object */
-    // eslint-disable-next-line no-use-before-define
-    modalNewObject?: (oBrowser: ObjectBrowserClass) => React.JSX.Element;
+    modalNewObject?: (oBrowser: ObjectBrowserClass) => JSX.Element;
     /** modal Edit Of Access Control */
-    // eslint-disable-next-line no-use-before-define
-    modalEditOfAccessControl: (oBrowser: ObjectBrowserClass, data: TreeItemData) => React.JSX.Element;
+    modalEditOfAccessControl: (oBrowser: ObjectBrowserClass, data: TreeItemData) => JSX.Element;
     onObjectDelete?: (id: string, hasChildren: boolean, objectExists: boolean, childrenCount: number) => void;
-    /** optional filter
+    /**
+     * Optional filter
      *   `{common: {custom: true}}` - show only objects with some custom settings
      *   `{common: {custom: 'sql.0'}}` - show only objects with sql.0 custom settings (only of the specific instance)
      *   `{common: {custom: '_dataSources'}}` - show only objects of adapters `influxdb' or 'sql' or 'history'
@@ -2531,9 +2536,10 @@ interface ObjectBrowserProps {
 
     /** cache of objects */
     objectsWorker?: ObjectsWorker;
-    /** function to filter out all unnecessary objects. It cannot be used together with "types"
+    /**
+     * function to filter out all unnecessary objects. It cannot be used together with "types"
      * Example for function: `obj => obj.common?.type === 'boolean'` to show only boolean states
-     * */
+     */
     filterFunc?: (obj: ioBroker.Object) => boolean;
     /** Used for enums dragging */
     DragWrapper?: React.FC<DragWrapperProps>;
@@ -2602,7 +2608,7 @@ interface ObjectBrowserState {
     modalEditOfAccess?: boolean;
     modalEditOfAccessObjData?: TreeItemData;
     updateOpened?: boolean;
-    tooltipInfo: null | { el: React.JSX.Element[]; id: string };
+    tooltipInfo: null | { el: JSX.Element[]; id: string };
     /** Show the menu with aliases for state */
     aliasMenu: string;
 }
@@ -3203,7 +3209,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * @param isDouble is double click
      */
-    private onAfterSelect(isDouble?: boolean) {
+    private onAfterSelect(isDouble?: boolean): void {
         if (this.state.selected?.length && this.state.selected[0]) {
             this.localStorage.setItem(`${this.props.dialogName || 'App'}.objectSelected`, this.state.selected[0]);
 
@@ -3231,7 +3237,10 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     }
 
-    private static getDerivedStateFromProps(props: ObjectBrowserProps, state: ObjectBrowserState) {
+    private static getDerivedStateFromProps(
+        props: ObjectBrowserProps,
+        state: ObjectBrowserState,
+    ): Partial<ObjectBrowserState> | null {
         const newState: Partial<ObjectBrowserState> = {};
         let changed = false;
         if (props.expertMode !== undefined && props.expertMode !== state.filter.expertMode) {
@@ -3245,7 +3254,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Called when component is mounted.
      */
-    async componentDidMount() {
+    async componentDidMount(): Promise<void> {
         await this.loadAllObjects(!objectsAlreadyLoaded);
         if (this.props.objectsWorker) {
             this.props.objectsWorker.registerHandler(this.onObjectChangeFromWorker);
@@ -3261,7 +3270,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Called when component is unmounted.
      */
-    componentWillUnmount() {
+    componentWillUnmount(): void {
         if (this.filterTimer) {
             clearTimeout(this.filterTimer);
             this.filterTimer = null;
@@ -3287,7 +3296,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Show the deletion dialog for a given object
      */
-    showDeleteDialog(options: { id: string; obj: ioBroker.Object; item: TreeItem }) {
+    showDeleteDialog(options: { id: string; obj: ioBroker.Object; item: TreeItem }): void {
         const { id, obj, item } = options;
 
         // calculate the number of children
@@ -3311,7 +3320,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Context menu handler.
      */
-    onContextMenu = (e: MouseEvent) => {
+    onContextMenu = (e: MouseEvent): void => {
         // console.log(`CONTEXT MENU: ${this.contextMenu ? Date.now() - this.contextMenu.ts : 'false'}`);
         if (this.contextMenu && Date.now() - this.contextMenu.ts < 2000) {
             e.preventDefault();
@@ -3331,7 +3340,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Called when component is mounted.
      */
-    refreshComponent() {
+    refreshComponent(): void {
         // remove all subscribes
         this.subscribes.forEach(pattern => {
             console.log(`- unsubscribe ${pattern}`);
@@ -3346,7 +3355,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Renders the error dialog.
      */
-    renderErrorDialog(): React.JSX.Element | null {
+    renderErrorDialog(): JSX.Element | null {
         return this.state.error ? (
             <Dialog
                 open={!0}
@@ -3378,7 +3387,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Show the error dialog.
      */
-    showError(error: any) {
+    showError(error: any): void {
         this.setState({
             error:
                 typeof error === 'object'
@@ -3392,7 +3401,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Called when an item is selected/deselected.
      */
-    onSelect(toggleItem: string, isDouble?: boolean, cb?: () => void) {
+    onSelect(toggleItem: string, isDouble?: boolean, cb?: () => void): void {
         this.localStorage.setItem(`${this.props.dialogName || 'App'}.focused`, toggleItem);
 
         if (!this.props.multiSelect) {
@@ -3444,7 +3453,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     }
 
-    private _renderDefinedList(isLast: boolean) {
+    private _renderDefinedList(isLast: boolean): JSX.Element[] {
         const cols = [...this.possibleCols];
         cols.unshift('id');
         if (this.props.columns && !this.props.columns.includes('buttons')) {
@@ -3521,7 +3530,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Renders the columns' selector.
      */
-    renderColumnsSelectorDialog(): React.JSX.Element | null {
+    renderColumnsSelectorDialog(): JSX.Element | null {
         if (!this.state.columnsSelectorShow) {
             return null;
         }
@@ -3706,7 +3715,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     }
 
-    private checkUnsubscribes() {
+    private checkUnsubscribes(): void {
         // Remove unused subscriptions
         for (let i = this.subscribes.length - 1; i >= 0; i--) {
             if (!this.recordStates.includes(this.subscribes[i])) {
@@ -3748,7 +3757,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Called when a state changes.
      */
-    onStateChange = (id: string, state?: ioBroker.State | null) => {
+    onStateChange = (id: string, state?: ioBroker.State | null): void => {
         console.log(`> stateChange ${id}`);
         if (this.states[id]) {
             const item = this.findItem(id);
@@ -3873,7 +3882,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         this.afterObjectUpdated();
     };
 
-    afterObjectUpdated() {
+    afterObjectUpdated(): void {
         if (!this.objectsUpdateTimer && this.objects) {
             this.objectsUpdateTimer = setTimeout(() => {
                 this.objectsUpdateTimer = null;
@@ -3940,12 +3949,13 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
     /**
      * Processes a single element in regard to certain filters, columns for admin and updates object dict
+     *
+     * @param id The id of the object
+     * @param obj The object itself
      * @returns Returns an object containing the new state (if any) and whether the object was filtered.
      */
     processOnObjectChangeElement(
-        /** The id of the object */
         id: string,
-        /** The object itself */
         obj?: ioBroker.Object | null,
     ): {
         filtered: boolean;
@@ -3994,17 +4004,19 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         return { newInnerState, filtered: false };
     }
 
-    private subscribe(id: string) {
+    private subscribe(id: string): void {
         if (!this.subscribes.includes(id)) {
             this.subscribes.push(id);
             console.log(`+ subscribe ${id}`);
             if (!this.pausedSubscribes) {
-                this.props.socket.subscribeState(id, this.onStateChange);
+                this.props.socket
+                    .subscribeState(id, this.onStateChange)
+                    .catch(e => console.error(`Cannot subscribe on state ${id}: ${e}`));
             }
         }
     }
 
-    private unsubscribe(id: string) {
+    private unsubscribe(id: string): void {
         const pos = this.subscribes.indexOf(id);
         if (pos !== -1) {
             this.subscribes.splice(pos, 1);
@@ -4020,7 +4032,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     }
 
-    private pauseSubscribe(isPause: boolean) {
+    private pauseSubscribe(isPause: boolean): void {
         if (!this.pausedSubscribes && isPause) {
             this.pausedSubscribes = true;
             this.subscribes.forEach(id => this.props.socket.unsubscribeState(id, this.onStateChange));
@@ -4030,7 +4042,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     }
 
-    private onFilter(name?: string, value?: string | boolean) {
+    private onFilter(name?: string, value?: string | boolean): void {
         this.filterTimer = null;
         const filter: ObjectBrowserFilter = { ...this.state.filter };
 
@@ -4062,7 +4074,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     }
 
-    clearFilter() {
+    clearFilter(): void {
         const filter: ObjectBrowserFilter = { ...this.state.filter };
 
         Object.keys(this.filterRefs).forEach(name => {
@@ -4088,14 +4100,14 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     }
 
-    isFilterEmpty() {
+    isFilterEmpty(): boolean {
         const someNotEmpty = Object.keys(this.state.filter).find(
             attr => attr !== 'expertMode' && (this.state.filter as Record<string, string>)[attr],
         );
         return !someNotEmpty;
     }
 
-    private getFilterInput(filterName: string) {
+    private getFilterInput(filterName: string): JSX.Element {
         return (
             <FormControl
                 sx={this.styles.filterInput}
@@ -4139,7 +4151,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         );
     }
 
-    private getFilterSelect(name: string, values?: (string | InputSelectItem)[]) {
+    private getFilterSelect(name: string, values?: (string | InputSelectItem)[]): JSX.Element {
         const hasIcons = !!values?.find(item => (item as InputSelectItem).icon);
 
         return (
@@ -4169,7 +4181,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                     {values?.map(item => {
                         let id: string;
                         let _name: string;
-                        let icon: null | React.JSX.Element | undefined;
+                        let icon: null | JSX.Element | undefined;
                         if (typeof item === 'object') {
                             id = (item as InputSelectItem).value;
                             _name = (item as InputSelectItem).name;
@@ -4219,11 +4231,11 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         );
     }
 
-    private getFilterSelectRole() {
+    private getFilterSelectRole(): JSX.Element {
         return this.getFilterSelect('role', this.info.roles);
     }
 
-    private getFilterSelectRoom() {
+    private getFilterSelectRoom(): JSX.Element {
         const rooms: InputSelectItem[] = this.info.roomEnums.map(
             id =>
                 ({
@@ -4241,7 +4253,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         return this.getFilterSelect('room', rooms);
     }
 
-    private getFilterSelectFunction() {
+    private getFilterSelectFunction(): JSX.Element {
         const func: InputSelectItem[] = this.info.funcEnums.map(
             id =>
                 ({
@@ -4252,14 +4264,14 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                             src={this.objects[id]?.common?.icon || ''}
                             style={styles.selectIcon}
                         />
-                    ) as React.JSX.Element,
+                    ) as JSX.Element,
                 }) as InputSelectItem,
         );
 
         return this.getFilterSelect('func', func);
     }
 
-    private getFilterSelectType() {
+    private getFilterSelectType(): JSX.Element {
         const types = this.info.types.map(type => ({
             name: type,
             value: type,
@@ -4269,7 +4281,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         return this.getFilterSelect('type', types);
     }
 
-    private getFilterSelectCustoms() {
+    private getFilterSelectCustoms(): JSX.Element {
         if (this.info.customs.length > 1) {
             const customs = this.info.customs.map(id => ({
                 name: id === '_' ? this.texts.filterCustomsWithout : id,
@@ -4287,7 +4299,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         return null;
     }
 
-    private onExpandAll(root?: TreeItem, expanded?: string[]) {
+    private onExpandAll(root?: TreeItem, expanded?: string[]): void {
         const _root: TreeItem | null = root || this.root;
         expanded = expanded || [];
 
@@ -4306,13 +4318,13 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     }
 
-    private onCollapseAll() {
+    private onCollapseAll(): void {
         this.localStorage.setItem(`${this.props.dialogName || 'App'}.objectExpanded`, JSON.stringify([]));
         this.localStorage.setItem(`${this.props.dialogName || 'App'}.objectSelected`, '[]');
         this.setState({ expanded: [], depth: 0, selected: [] }, () => this.onAfterSelect());
     }
 
-    private expandDepth(root: TreeItem, depth: number, expanded: string[]) {
+    private expandDepth(root: TreeItem, depth: number, expanded: string[]): void {
         root = root || this.root;
         if (depth > 0) {
             root.children?.forEach(item => {
@@ -4329,11 +4341,11 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     }
 
-    private static collapseDepth(depth: number, expanded: string[]) {
+    private static collapseDepth(depth: number, expanded: string[]): string[] {
         return expanded.filter(id => id.split('.').length <= depth);
     }
 
-    private onExpandVisible() {
+    private onExpandVisible(): void {
         if (this.state.depth < 9) {
             const depth = this.state.depth + 1;
             const expanded = [...this.state.expanded];
@@ -4345,13 +4357,13 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     }
 
-    private onStatesViewVisible() {
+    private onStatesViewVisible(): void {
         const statesView = !this.state.statesView;
         this.localStorage.setItem(`${this.props.dialogName || 'App'}.objectStatesView`, JSON.stringify(statesView));
         this.setState({ statesView });
     }
 
-    private onCollapseVisible() {
+    private onCollapseVisible(): void {
         if (this.state.depth > 0) {
             const depth = this.state.depth - 1;
             const expanded = ObjectBrowserClass.collapseDepth(depth, this.state.expanded);
@@ -4383,7 +4395,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         return result.length ? result : undefined;
     };
 
-    private _createAllEnums = async (enums: (string | ioBroker.EnumObject)[], objId: string) => {
+    private _createAllEnums = async (enums: (string | ioBroker.EnumObject)[], objId: string): Promise<void> => {
         for (let e = 0; e < enums.length; e++) {
             const item: string | ioBroker.EnumObject = enums[e];
             let id: string;
@@ -4430,7 +4442,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     };
 
-    private async loadObjects(objs: Record<string, ioBrokerObjectForExport>) {
+    private async loadObjects(objs: Record<string, ioBrokerObjectForExport>): Promise<void> {
         if (objs) {
             for (const id in objs) {
                 if (!Object.prototype.hasOwnProperty.call(objs, id) || !objs[id]) {
@@ -4493,7 +4505,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     }
 
-    _getSelectedIdsForExport() {
+    _getSelectedIdsForExport(): string[] {
         if (this.state.selected.length || this.state.selectedNonObject) {
             const result = [];
             const keys = Object.keys(this.objects);
@@ -4568,7 +4580,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         generateFile(`${id}.json`, result, options);
     }
 
-    renderExportDialog() {
+    renderExportDialog(): JSX.Element | null {
         if (this.state.showExportDialog === false) {
             return null;
         }
@@ -4693,7 +4705,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         );
     }
 
-    private handleJsonUpload(evt: Event) {
+    private handleJsonUpload(evt: Event): void {
         const target = evt.target as HTMLInputElement;
         const f = target.files?.length && target.files[0];
         if (f) {
@@ -4773,7 +4785,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     }
 
-    toolTipObjectCreating = () => {
+    toolTipObjectCreating = (): JSX.Element[] | string => {
         const { t } = this.props;
 
         let value = [
@@ -4890,7 +4902,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Renders the toolbar.
      */
-    getToolbar(): React.JSX.Element {
+    getToolbar(): JSX.Element {
         let allowObjectCreation = false;
         if (this.state.selected.length || this.state.selectedNonObject) {
             const id = this.state.selected[0] || this.state.selectedNonObject;
@@ -5197,7 +5209,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         this.setState({ expanded });
     }
 
-    private onCopy(e: React.MouseEvent, text: string) {
+    private onCopy(e: React.MouseEvent, text: string): void {
         e.stopPropagation();
         e.preventDefault();
         Utils.copyToClipboard(text);
@@ -5208,7 +5220,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     }
 
-    renderTooltipAccessControl = (acl: ioBroker.StateACL): null | React.JSX.Element => {
+    renderTooltipAccessControl = (acl: ioBroker.StateACL): null | JSX.Element => {
         // acl ={object,state,owner,ownerGroup}
         if (!acl) {
             return null;
@@ -5287,7 +5299,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         ) : null;
     };
 
-    renderColumnButtons(id: string, item: TreeItem) {
+    renderColumnButtons(id: string, item: TreeItem): (JSX.Element | null)[] | JSX.Element | null {
         if (!item.data.obj) {
             return this.props.onObjectDelete || this.props.objectEditOfAccessControl ? (
                 <div style={styles.buttonDiv}>
@@ -5475,7 +5487,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         ];
     }
 
-    private readHistory(id: string) {
+    private readHistory(id: string): void {
         /* interface GetHistoryOptions {
             instance?: string;
             start?: number;
@@ -5534,7 +5546,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     }
 
-    private getTooltipInfo(id: string, cb?: () => void) {
+    private getTooltipInfo(id: string, cb?: () => void): void {
         const obj = this.objects[id];
         const state = this.states[id];
 
@@ -5547,7 +5559,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 this.props.isFloatComma === undefined ? this.systemConfig.common.isFloatComma : this.props.isFloatComma,
             full: true,
         });
-        const valFullRx: React.JSX.Element[] = [];
+        const valFullRx: JSX.Element[] = [];
 
         valFull?.forEach(_item => {
             if (_item.t === this.texts.quality && state.q) {
@@ -5618,7 +5630,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         this.setState({ tooltipInfo: { el: valFullRx, id } }, () => cb && cb());
     }
 
-    private renderColumnValue(id: string, item: TreeItem, narrowStyleWithDetails?: boolean): React.JSX.Element | null {
+    private renderColumnValue(id: string, item: TreeItem, narrowStyleWithDetails?: boolean): JSX.Element | null {
         const obj = item.data.obj;
         if (!obj || !this.states) {
             return null;
@@ -5663,7 +5675,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                         ? this.systemConfig.common.isFloatComma
                         : this.props.isFloatComma,
             });
-            const valTextRx: React.JSX.Element[] = [];
+            const valTextRx: JSX.Element[] = [];
             item.data.state = { valTextRx };
 
             const copyText = valText.v || '';
@@ -5720,7 +5732,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
         info.style = getValueStyle({ state, isExpertMode: this.state.filter.expertMode, isButton: item.data.button });
 
-        let val: React.JSX.Element[] = info.valTextRx as React.JSX.Element[];
+        let val: JSX.Element[] = info.valTextRx as JSX.Element[];
         if (!this.state.filter.expertMode) {
             if (item.data.button) {
                 val = [
@@ -5835,7 +5847,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         });
     }
 
-    private renderEnumDialog(): React.JSX.Element | null {
+    private renderEnumDialog(): JSX.Element | null {
         if (!this.state.enumDialog) {
             return null;
         }
@@ -5942,7 +5954,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         );
     }
 
-    private renderEditRoleDialog(): React.JSX.Element | null {
+    private renderEditRoleDialog(): JSX.Element | null {
         if (!this.state.roleDialog || !this.props.objectBrowserEditRole) {
             return null;
         }
@@ -5969,7 +5981,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         return null;
     }
 
-    private onColumnsEditCustomDialogClose(isSave?: boolean) {
+    private onColumnsEditCustomDialogClose(isSave?: boolean): void {
         // cannot be null
         const customColumnDialog: {
             value: boolean | number | string;
@@ -6012,7 +6024,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     }
 
-    private renderColumnsEditCustomDialog() {
+    private renderColumnsEditCustomDialog(): JSX.Element | null {
         if (!this.state.columnsEditCustomDialog) {
             return null;
         }
@@ -6224,7 +6236,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Renders a custom value.
      */
-    renderCustomValue(obj: ioBroker.Object, it: AdapterColumn, item: TreeItem): React.JSX.Element | null {
+    renderCustomValue(obj: ioBroker.Object, it: AdapterColumn, item: TreeItem): JSX.Element | null {
         const text = ObjectBrowserClass.getCustomValue(obj, it);
         if (text !== null && text !== undefined) {
             if (it.edit && !this.props.notEditable && (!it.objTypes || it.objTypes.includes(obj.type))) {
@@ -6262,7 +6274,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         return null;
     }
 
-    renderAliasLink(id: string, index?: number, customStyle?: Record<string, any>): React.JSX.Element | null {
+    renderAliasLink(id: string, index?: number, customStyle?: Record<string, any>): JSX.Element | null {
         const _index = index || 0;
         // read the type of operation
         const aliasObj = this.objects[this.info.aliasesMap[id][_index]].common.alias.id;
@@ -6305,7 +6317,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         item: TreeItem,
         isExpanded: boolean | undefined,
         counter: { count: number },
-    ): { row: React.JSX.Element; details: React.JSX.Element | null } {
+    ): { row: JSX.Element; details: JSX.Element | null } {
         const id = item.data.id;
         counter.count++;
         isExpanded = isExpanded === undefined ? this.state.expanded.includes(id) : isExpanded;
@@ -6442,7 +6454,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
 
         let readWriteAlias: boolean = false;
-        let alias: React.JSX.Element | null = null;
+        let alias: JSX.Element | null = null;
         if (id.startsWith('alias.') && common?.alias?.id) {
             readWriteAlias = typeof common.alias.id === 'object';
             if (readWriteAlias) {
@@ -6681,7 +6693,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
         const q = checkVisibleObjectType ? Utils.quality2text(this.states[id]?.q || 0).join(', ') : null;
 
-        let name: React.JSX.Element[] | string = item.data?.title || '';
+        let name: JSX.Element[] | string = item.data?.title || '';
         let useDesc: boolean = false;
         if (this.state.showDescription) {
             const oTooltip: string | null = getObjectTooltip(item.data, this.props.lang);
@@ -6783,7 +6795,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
         let colMiddle:
             | ({
-                  el: React.JSX.Element;
+                  el: JSX.Element;
                   type:
                       | 'filter_type'
                       | 'filter_role'
@@ -7040,7 +7052,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             ];
         }
 
-        let colCustom: React.JSX.Element[] | null =
+        let colCustom: JSX.Element[] | null =
             this.adapterColumns?.map(it => (
                 <div
                     style={{
@@ -7123,10 +7135,10 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 </div>
             ) : null;
 
-        let colDetails: React.JSX.Element | null = null;
+        let colDetails: JSX.Element | null = null;
         if (this.props.width === 'xs' && this.state.focused === id) {
             colMiddle = colMiddle.filter(a => a);
-            let renderedMiddle: (React.JSX.Element | null)[] | null;
+            let renderedMiddle: (JSX.Element | null)[] | null;
             if (!colMiddle.length) {
                 renderedMiddle = null;
             } else {
@@ -7144,7 +7156,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                                     style={styles.cellCopyButtonInDetails}
                                     onClick={() => {
                                         if (it?.onClick) {
-                                            it.onClick()
+                                            it.onClick();
                                         }
                                     }}
                                 />
@@ -7291,11 +7303,11 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Renders an item.
      */
-    renderItem(root: TreeItem, isExpanded: boolean | undefined, counter?: { count: number }): React.JSX.Element[] {
-        const items: (React.JSX.Element | null)[] = [];
+    renderItem(root: TreeItem, isExpanded: boolean | undefined, counter?: { count: number }): JSX.Element[] {
+        const items: (JSX.Element | null)[] = [];
         counter = counter || { count: 0 };
         const result = this.renderLeaf(root, isExpanded, counter);
-        let leaf: React.JSX.Element;
+        let leaf: JSX.Element;
         const DragWrapper = this.props.DragWrapper;
         if (this.props.dragEnabled && DragWrapper) {
             if (root.data.sumVisibility) {
@@ -7343,7 +7355,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                                 }
                             }
                             return null;
-                        }) as any as React.JSX.Element,
+                        }) as any as JSX.Element,
                     );
                 }
             } else if (root.children) {
@@ -7360,7 +7372,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                         }
 
                         return null;
-                    }) as any as React.JSX.Element,
+                    }) as any as JSX.Element,
                 );
 
                 // then items
@@ -7375,12 +7387,12 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                             }
                         }
                         return null;
-                    }) as any as React.JSX.Element,
+                    }) as any as JSX.Element,
                 );
             }
         }
 
-        return items as React.JSX.Element[];
+        return items as JSX.Element[];
     }
 
     private calculateColumnsVisibility(
@@ -7605,7 +7617,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         }
     };
 
-    resizerMouseUp = () => {
+    resizerMouseUp = (): void => {
         this.localStorage.setItem(`${this.props.dialogName || 'App'}.table`, JSON.stringify(this.resizerCurrentWidths));
         this.resizerActiveName = null;
         this.resizerNextName = null;
@@ -7615,7 +7627,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         window.removeEventListener('mouseup', this.resizerMouseUp);
     };
 
-    resizerMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    resizerMouseDown = (e: React.MouseEvent<HTMLDivElement>): void => {
         this.storedWidths =
             this.storedWidths ||
             (JSON.parse(JSON.stringify(SCREEN_WIDTHS[this.props.width || 'lg'])) as ScreenWidthOne);
@@ -7670,7 +7682,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Handle keyboard events for navigation
      */
-    navigateKeyPress(event: React.KeyboardEvent) {
+    navigateKeyPress(event: React.KeyboardEvent): void {
         const selectedId = this.state.selectedNonObject || this.state.selected[0];
 
         if (!selectedId) {
@@ -7727,7 +7739,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         return _root || null;
     }
 
-    resizerReset = () => {
+    resizerReset = (): void => {
         this.customWidth = false;
         SCREEN_WIDTHS[this.props.width || 'lg'] = JSON.parse(JSON.stringify(this.storedWidths));
         this.calculateColumnsVisibility();
@@ -7738,7 +7750,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Render the right handle for resizing
      */
-    renderHandleRight(): React.JSX.Element {
+    renderHandleRight(): JSX.Element {
         return (
             <Box
                 component="div"
@@ -7751,7 +7763,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         );
     }
 
-    private renderHeader(): React.JSX.Element {
+    private renderHeader(): JSX.Element {
         let filterClearInValue = null;
 
         if (!this.columnsVisibility.buttons && !this.isFilterEmpty()) {
@@ -7955,7 +7967,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         );
     }
 
-    private renderToast(): React.JSX.Element {
+    private renderToast(): JSX.Element {
         return (
             <Snackbar
                 open={!!this.state.toast}
@@ -7980,7 +7992,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Called when component is updated.
      */
-    componentDidUpdate() {
+    componentDidUpdate(): void {
         if (this.tableRef.current) {
             const scrollBarWidth = this.tableRef.current.offsetWidth - this.tableRef.current.clientWidth;
             if (this.state.scrollBarWidth !== scrollBarWidth) {
@@ -8002,7 +8014,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         });
     }
 
-    private renderCustomDialog(): React.JSX.Element | null {
+    private renderCustomDialog(): JSX.Element | null {
         if (this.state.customDialog && this.props.objectCustomDialog) {
             const ObjectCustomDialog = this.props.objectCustomDialog;
 
@@ -8048,7 +8060,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         ack: boolean;
         q: ioBroker.STATE_QUALITY[keyof ioBroker.STATE_QUALITY];
         expire: number | undefined;
-    }) {
+    }): void {
         this.props.socket
             .setState(this.edit.id, {
                 val: valAck.val,
@@ -8059,7 +8071,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
             .catch(e => this.showError(`Cannot write value: ${e}`));
     }
 
-    private renderEditObjectDialog(): React.JSX.Element | null {
+    private renderEditObjectDialog(): JSX.Element | null {
         if (!this.state.editObjectDialog || !this.props.objectBrowserEditObject) {
             return null;
         }
@@ -8124,7 +8136,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         );
     }
 
-    private renderViewObjectFileDialog(): React.JSX.Element | null {
+    private renderViewObjectFileDialog(): JSX.Element | null {
         if (!this.state.viewFileDialog || !this.props.objectBrowserViewFile) {
             return null;
         }
@@ -8141,7 +8153,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         );
     }
 
-    private renderAliasEditorDialog(): React.JSX.Element | null {
+    private renderAliasEditorDialog(): JSX.Element | null {
         if (!this.props.objectBrowserAliasEditor || !this.state.showAliasEditor) {
             return null;
         }
@@ -8191,7 +8203,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     }
 
     /** Renders the aliases list for one state (if more than 2) */
-    private renderAliasMenu(): React.JSX.Element | null {
+    private renderAliasMenu(): JSX.Element | null {
         if (!this.state.aliasMenu) {
             return null;
         }
@@ -8224,13 +8236,13 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * Renders the right mouse button context menu
      */
-    private renderContextMenu(): React.JSX.Element | null {
+    private renderContextMenu(): JSX.Element | null {
         if (!this.state.showContextMenu) {
             return null;
         }
         const item = this.state.showContextMenu.item;
         const id = item.data.id;
-        const items: React.JSX.Element[] = [];
+        const items: JSX.Element[] = [];
         // const ctrl = isIOS() ? '⌘' : (this.props.lang === 'de' ? 'Strg+' : 'Ctrl+');
 
         const obj = item.data.obj;
@@ -8681,7 +8693,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         );
     }
 
-    private renderEditValueDialog(): React.JSX.Element | null {
+    private renderEditValueDialog(): JSX.Element | null {
         if (!this.state.updateOpened || !this.props.objectBrowserValue) {
             return null;
         }
@@ -8743,7 +8755,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
     /**
      * The rendering method of this component.
      */
-    render(): React.JSX.Element {
+    render(): JSX.Element {
         this.recordStates = [];
         if (this.unsubscribeTimer) {
             clearTimeout(this.unsubscribeTimer);
@@ -8852,7 +8864,6 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                 <TabHeader>{this.getToolbar()}</TabHeader>
                 <TabContent>
                     {this.renderHeader()}
-                    {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
                     <div
                         style={styles.tableDiv}
                         ref={this.tableRef}

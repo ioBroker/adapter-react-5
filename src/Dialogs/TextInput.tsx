@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type JSX } from 'react';
 
 import { Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
@@ -34,7 +34,7 @@ interface TextInputProps {
     /** If true, the dialog will be full width */
     fullWidth?: boolean;
 }
-function TextInput(props: TextInputProps) {
+function TextInput(props: TextInputProps): JSX.Element {
     const [text, setText] = React.useState<string>(props.input || props.value || '');
     const [error, setError] = React.useState<string | boolean>('');
     return (

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import type { InputProps } from '@mui/material/Input';
 
-import { ThemeType, Translate } from '../types';
+import type { ThemeType, Translate } from '../types';
 
 import Icon from './Icon';
 import Utils from './Utils';
@@ -146,7 +146,9 @@ class SelectWithIcon extends Component<SelectWithIconProps, SelectWithIconState>
                 variant="standard"
                 disabled={this.props.disabled}
                 value={this.props.value}
-                inputProps={this.props.inputProps}
+                slotProps={{
+                    input: this.props.inputProps,
+                }}
                 renderValue={
                     (/* value */) => (
                         <span>

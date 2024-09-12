@@ -19,6 +19,7 @@ import Utils from './Utils';
 
 /**
  * Get icon by object type (state, channel, device, ...).
+ *
  * @param obj Object
  */
 export function getSystemIcon(obj: ioBroker.Object | null): React.JSX.Element | null {
@@ -57,6 +58,7 @@ export function getSystemIcon(obj: ioBroker.Object | null): React.JSX.Element | 
 
 /**
  * Get icon from the object.
+ *
  * @param obj Object
  * @param imagePrefix Prefix for image
  */
