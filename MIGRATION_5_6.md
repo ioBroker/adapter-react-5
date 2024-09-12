@@ -28,15 +28,15 @@ After:
 
 ```typescript jsx
 const styles: Record<string, any> = {
-   dialog: (theme: IobTheme) => ({
-      height: `calc(100% - ${theme => theme.mixins.toolbar.minHeight}px)`,
-      p: 1, // or 8px, padding is OK too
-      m: '16px', // or 2, margin is OK too
-      gap: '5px',
-      borderRadius: '5px',
-      ml: '10px', // mt, mr, mb, but marginLeft, marginRight, marginBottom is OK too
-      pl: '10px', // pt, pr, pb, but paddingTop, paddingRight, paddingBottom is OK too
-   }),
+    dialog: (theme: IobTheme) => ({
+        height: `calc(100% - ${theme => theme.mixins.toolbar.minHeight}px)`,
+        p: 1, // or 8px, padding is OK too
+        m: '16px', // or 2, margin is OK too
+        gap: '5px',
+        borderRadius: '5px',
+        ml: '10px', // mt, mr, mb, but marginLeft, marginRight, marginBottom is OK too
+        pl: '10px', // pt, pr, pb, but paddingTop, paddingRight, paddingBottom is OK too
+    }),
 };
 ```
 
