@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Grid, Paper } from '@mui/material';
+import { Grid2, Paper } from '@mui/material';
 
 const styles: Record<string, React.CSSProperties> = {
     root: {
@@ -42,14 +42,14 @@ function TabContainer(props: TabContainerProps): React.JSX.Element {
             onKeyDown={props.onKeyDown}
             tabIndex={props.tabIndex}
         >
-            <Grid
+            <Grid2
                 container
                 direction="column"
                 wrap="nowrap"
                 sx={styles.container}
             >
                 {props.children}
-            </Grid>
+            </Grid2>
         </Paper>
     );
 }
