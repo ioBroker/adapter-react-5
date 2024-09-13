@@ -3,7 +3,7 @@
  *
  * MIT License
  *
- **/
+ */
 'use strict';
 
 const fs = require('node:fs');

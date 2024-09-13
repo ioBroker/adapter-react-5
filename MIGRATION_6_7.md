@@ -44,6 +44,7 @@ Replace all `Grid` with `Grid2` component and remove `item` property as it not n
 Attributes xs, sm, md, lg, xl are now in `size` property.
 
 Before:
+
 ```jsx
 <Grid item xs={6} sm={4} md={3}>
 <Grid/>
