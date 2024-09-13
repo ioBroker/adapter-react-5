@@ -698,6 +698,9 @@ You can find the migration instructions:
 
 ## Changelog
 
+### **WORK IN PROGRESS**
+-   (bluefox) Corrected TabContainer
+
 ### 7.1.0 (2024-09-12)
 
 -   (bluefox) Optimized the icon picker

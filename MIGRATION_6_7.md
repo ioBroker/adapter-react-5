@@ -36,3 +36,20 @@ Before:
 ## SelectID dialog
 
 `SelectID` dialog now requires `theme` property. Without this property, the dialog will crash.
+
+## Grid => Grid2
+
+Replace all `Grid` with `Grid2` component and remove `item` property as it not needed anymore.
+
+Attributes xs, sm, md, lg, xl are now in `size` property.
+
+Before:
+```jsx
+<Grid item xs={6} sm={4} md={3}>
+<Grid/>
+```
+
+```jsx
+<Grid2 size={{ xs: 6, sm: 4, md: 3 }}>
+<Grid2/>
+```
