@@ -13,7 +13,7 @@ If you want to create the configuration page with ReactJS:
     - Change `name` from `src` to `ADAPTERNAME-admin` (Of course replace `ADAPTERNAME` with yours)
     - Add to devDependencies:
         ```
-        "@iobroker/adapter-react-v5": "^7.1.1",
+        "@iobroker/adapter-react-v5": "^7.1.2",
         ```
         Versions can be higher.
         So your `src/package.json` should look like:
@@ -24,7 +24,7 @@ If you want to create the configuration page with ReactJS:
     "version": "0.1.0",
     "private": true,
     "dependencies": {
-        "@iobroker/adapter-react-v5": "^7.1.1",
+        "@iobroker/adapter-react-v5": "^7.1.2",
         "@iobroker/build-tools": "^1.0.0",
         "@iobroker/eslint-config": "^0.1.2",
         "@mui/material": "^6.0.2",
@@ -697,8 +697,7 @@ You can find the migration instructions:
 -->
 
 ## Changelog
-
-### **WORK IN PROGRESS**
+### 7.1.2 (2024-09-14)
 
 -   (bluefox) Updated socket classes
 
