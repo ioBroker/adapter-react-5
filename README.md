@@ -697,6 +697,11 @@ You can find the migration instructions:
 -->
 
 ## Changelog
+
+### **WORK IN PROGRESS**
+
+-   (bluefox) Updated socket classes
+
 ### 7.1.1 (2024-09-13)
 
 -   (bluefox) Corrected TabContainer
