@@ -5,6 +5,7 @@ import { Button, DialogTitle, DialogContent, DialogActions, Dialog } from '@mui/
 import { Check as IconOk, Cancel as IconCancel, Delete as IconClear } from '@mui/icons-material';
 
 import ComplexCron from '../Components/ComplexCron';
+import ConfirmDialog from '../Dialogs/Confirm';
 
 import I18n from '../i18n';
 
@@ -35,6 +36,7 @@ interface DialogCronProps {
 
 interface DialogCronState {
     cron: string;
+    showWarning: '' | 'everySecond' | 'everyMinute';
 }
 
 class DialogComplexCron extends React.Component<DialogCronProps, DialogCronState> {
@@ -51,6 +53,7 @@ class DialogComplexCron extends React.Component<DialogCronProps, DialogCronState
         }
 
         this.state = {
+            showWarning: '',
             cron,
         };
     }
@@ -59,9 +62,45 @@ class DialogComplexCron extends React.Component<DialogCronProps, DialogCronState
         this.props.onClose();
     }
 
-    handleOk(): void {
+    handleOk(ignoreCheck?: boolean): void {
+        if (!ignoreCheck) {
+            // Check if the CRON will be executed every second or every minute and warn about it
+            const cron = ComplexCron.cron2state(this.state.cron);
+            if (cron.seconds === '*' || cron.seconds === '*/1') {
+                this.setState({ showWarning: 'everySecond' });
+                return;
+            }
+            if (cron.minutes === '*' || cron.minutes === '*/1') {
+                this.setState({ showWarning: 'everyMinute' });
+                return;
+            }
+        }
+
         this.props.onOk(this.state.cron);
         this.props.onClose();
+    }
+
+    renderWarningDialog(): JSX.Element | null {
+        if (!this.state.showWarning) {
+            return null;
+        }
+        return (
+            <ConfirmDialog
+                title={I18n.t('ra_Please confirm')}
+                text={I18n.t(
+                    this.state.showWarning === 'everySecond'
+                        ? 'ra_The schedule will be executed every second. Are you sure?'
+                        : 'ra_The schedule will be executed every minute. Are you sure?',
+                )}
+                onClose={(ok: boolean) =>
+                    this.setState({ showWarning: '' }, () => {
+                        if (ok) {
+                            this.handleOk(true);
+                        }
+                    })
+                }
+            />
+        );
     }
 
     handleClear(): void {
@@ -79,6 +118,7 @@ class DialogComplexCron extends React.Component<DialogCronProps, DialogCronState
                 open={!0}
                 aria-labelledby="cron-dialog-title"
             >
+                {this.renderWarningDialog()}
                 <DialogTitle id="cron-dialog-title">{this.props.title || I18n.t('ra_Define schedule...')}</DialogTitle>
                 <DialogContent style={{ height: '100%', overflow: 'hidden' }}>
                     <ComplexCron
