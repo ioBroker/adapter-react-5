@@ -36,6 +36,11 @@ const styles: Record<string, React.CSSProperties> = {
     appBar: {
         color: 'white',
     },
+    warning: {
+        marginLeft: 16,
+        color: 'red',
+        fontSize: 12,
+    },
 };
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -467,6 +472,11 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
 
     render(): React.JSX.Element {
         const tab = this.state.seconds !== false ? this.state.tab : this.state.tab + 1;
+
+        // Detect if every minute or every second is activated
+        const everyMinute = this.state.minutes === '*' || this.state.minutes === '*/1';
+        const everySecond = this.state.seconds === '*' || this.state.seconds === '*/1';
+
         return (
             <div style={styles.mainDiv}>
                 <div style={{ paddingLeft: 8, width: '100%' }}>
@@ -479,6 +489,13 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                 </div>
                 <div style={{ paddingLeft: 8, width: '100%', height: 60 }}>
                     {ComplexCron.convertCronToText(this.state.cron, this.props.language || 'en')}
+                    <span style={styles.warning}>
+                        {everySecond
+                            ? I18n.t('ra_warning_every_second')
+                            : everyMinute
+                              ? I18n.t('ra_warning_every_minute')
+                              : ''}
+                    </span>
                 </div>
                 <FormControlLabel
                     control={
@@ -500,7 +517,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                         value={this.state.tab}
                         style={styles.appBar}
                         color="secondary"
-                        onChange={(active, _tab) => this.setState({ tab: _tab })}
+                        onChange={(_active, _tab) => this.setState({ tab: _tab })}
                     >
                         {this.state.seconds !== false && (
                             <Tab

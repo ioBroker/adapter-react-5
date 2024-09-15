@@ -700,6 +700,7 @@ You can find the migration instructions:
 ### **WORK IN PROGRESS**
 
 -   (bluefox) Updated socket classes
+-   (bluefox) Added additional confirmation dialog for CRONs for every minute execution
 
 ### 7.1.1 (2024-09-13)
 
