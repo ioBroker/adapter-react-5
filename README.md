@@ -697,6 +697,10 @@ You can find the migration instructions:
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+
+-   (bluefox) Updated socket classes
+
 ### 7.1.3 (2024-09-15)
 
 -   (bluefox) Updated socket classes
