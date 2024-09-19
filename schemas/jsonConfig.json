@@ -810,6 +810,10 @@
                     "type": "string",
                     "enum": ["contained", "outlined", "text"]
                 },
+                "readOnly": {
+                    "description": "Defines if the control is read-only. Applied only to 'input', 'slider', 'select', 'button', 'switch', 'number'",
+                    "type": "boolean"
+                },
                 "label": true,
                 "type": true,
                 "xs": true,
