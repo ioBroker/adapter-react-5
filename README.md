@@ -697,6 +697,10 @@ You can find the migration instructions:
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+
+-   (bluefox) Allowed using an array of elements in dialogs
+
 ### 7.1.4 (2024-09-15)
 
 -   (bluefox) Updated socket classes
