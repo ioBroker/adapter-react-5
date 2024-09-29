@@ -547,7 +547,7 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
                                     <div style={styles.buttonRemoveWrapper}>
                                         <Tooltip
                                             title={I18n.t('ra_Clear')}
-                                            componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}
+                                            slotProps={{ popper: { sx: { pointerEvents: 'none' } } }}
                                         >
                                             <IconButton
                                                 size="large"
@@ -566,7 +566,7 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
                                 <div style={styles.buttonCropWrapper}>
                                     <Tooltip
                                         title={I18n.t('ra_Crop')}
-                                        componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}
+                                        slotProps={{ popper: { sx: { pointerEvents: 'none' } } }}
                                     >
                                         <IconButton
                                             size="large"
