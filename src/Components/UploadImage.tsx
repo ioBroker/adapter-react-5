@@ -478,8 +478,20 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
     render(): JSX.Element {
         const { disabled, icon, removeIconFunc, error, crop, onChange } = this.props;
         const maxSize = this.props.maxSize || 10 * 1024;
-        const accept = this.props.accept || { 'image/*': [] };
+        let accept = this.props.accept || { 'image/*': [] };
         const { uploadFile, anchorEl, cropHandler } = this.state;
+
+        // covert '"image/png"' to { 'image/*': [] }
+        if (typeof accept === 'string') {
+            accept = { [accept]: [] };
+        } else if (Array.isArray(accept)) {
+            const result: Record<string, string[]> = {};
+            accept.forEach(item => {
+                result[item] = [];
+            });
+            accept = result;
+        }
+
         return (
             <Dropzone
                 disabled={!!disabled || cropHandler}
@@ -535,7 +547,7 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
                                     <div style={styles.buttonRemoveWrapper}>
                                         <Tooltip
                                             title={I18n.t('ra_Clear')}
-                                            componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}
+                                            slotProps={{ popper: { sx: { pointerEvents: 'none' } } }}
                                         >
                                             <IconButton
                                                 size="large"
@@ -554,7 +566,7 @@ class UploadImage extends Component<UploadImageProps, UploadImageState> {
                                 <div style={styles.buttonCropWrapper}>
                                     <Tooltip
                                         title={I18n.t('ra_Crop')}
-                                        componentsProps={{ popper: { sx: { pointerEvents: 'none' } } }}
+                                        slotProps={{ popper: { sx: { pointerEvents: 'none' } } }}
                                     >
                                         <IconButton
                                             size="large"
