@@ -698,6 +698,7 @@ You can find the migration instructions:
 
 ## Changelog
 ### **WORK IN PROGRESS**
+
 -   (@GermanBluefox) Allowed to use `socket.iob` instead of `socket.io`
 
 ### 7.1.4 (2024-09-15)
