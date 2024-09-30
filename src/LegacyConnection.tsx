@@ -16,6 +16,7 @@ declare global {
         registerSocketOnLoad: (func: () => void) => void;
         vendorPrefix: undefined | string;
         io: any;
+        iob: any;
     }
 }
 
@@ -410,7 +411,7 @@ class Connection {
      */
     startSocket(): void {
         // if socket io is not yet loaded
-        if (typeof window.io === 'undefined') {
+        if (typeof window.io === 'undefined' && typeof window.iob === 'undefined') {
             // if in index.html the onLoad function not defined
             if (typeof window.registerSocketOnLoad !== 'function') {
                 // poll if loaded
@@ -475,7 +476,7 @@ class Connection {
 
         const url = port ? `${protocol}://${host}:${port}${path}` : `${protocol}://${host}${path}`;
 
-        this._socket = window.io.connect(url, {
+        this._socket = (window.io || window.iob).connect(url, {
             path: path.endsWith('/') ? `${path}socket.io` : `${path}/socket.io`,
             query: 'ws=true',
             name: this.props.name,
