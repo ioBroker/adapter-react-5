@@ -18,7 +18,7 @@ interface DialogMessageProps {
     /* The dialog title; default: Message (translated) */
     title?: string;
     /* The dialog text */
-    text: string | React.JSX.Element;
+    text: string | React.JSX.Element | React.JSX.Element[];
     /* Close handler. */
     onClose?: () => void;
     /* if the dialog must be fill sized */
