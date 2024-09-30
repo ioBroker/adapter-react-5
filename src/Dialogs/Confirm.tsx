@@ -37,7 +37,7 @@ interface DialogConfirmProps {
     /** The dialog title; default: Are you sure? (translated) */
     title?: string;
     /** The dialog text */
-    text?: string | React.JSX.Element;
+    text?: string | React.JSX.Element | React.JSX.Element[];
     /** Close handler. */
     onClose?: (ok: boolean) => void;
     /** if the dialog must be fill sized */
