@@ -254,7 +254,7 @@ class GenericApp<
         };
 
         // merge together
-        if (settings && settings.translations) {
+        if (settings?.translations) {
             Object.keys(settings.translations).forEach(lang => {
                 if (settings.translations) {
                     translations[lang as ioBroker.Languages] = Object.assign(
