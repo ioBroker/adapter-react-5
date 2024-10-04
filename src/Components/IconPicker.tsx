@@ -21,7 +21,7 @@ const styles: Record<string, React.CSSProperties> = {
         flexGrow: 1000,
     },
     divContainer: {
-        width: 32 + 24,
+        width: 32 + 32,
         height: 32,
         whiteSpace: 'nowrap',
         lineHeight: '32px',
