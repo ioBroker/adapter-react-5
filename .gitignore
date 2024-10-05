@@ -4,3 +4,6 @@
 /dist
 /src/package-lock.json
 /src/**/*.bak
+/test-gui/build
+/test-gui/package-lock.json
+/test-gui/node_modules
