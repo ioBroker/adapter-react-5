@@ -1,6 +1,17 @@
 import React, { Component, type JSX } from 'react';
 
-import { Input, Radio, FormControlLabel, FormGroup, Checkbox, MenuItem, Select, TextField, Box } from '@mui/material';
+import {
+    Input,
+    Radio,
+    FormControlLabel,
+    FormGroup,
+    Checkbox,
+    MenuItem,
+    Select,
+    TextField,
+    Box,
+    type Theme
+} from '@mui/material';
 
 import I18n from '../i18n';
 import type { IobTheme } from '../types';
@@ -650,6 +661,11 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                                             style={{ ...styles.inputTime, marginRight: 10 }}
                                             key="exactTimeFrom"
                                             type="time"
+                                            sx={(theme: Theme) => ({
+                                                '& input[type="time"]::-webkit-calendar-picker-indicator': {
+                                                    filter: theme.palette.mode === 'dark' ? 'invert(80%)' : undefined,
+                                                },
+                                            })}
                                             value={this.state.schedule.time.start}
                                             // InputProps={{inputComponent: TextTime}}
                                             onChange={e => {
@@ -668,6 +684,11 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                                             style={styles.inputTime}
                                             key="exactTimeTo"
                                             type="time"
+                                            sx={(theme: Theme) => ({
+                                                '& input[type="time"]::-webkit-calendar-picker-indicator': {
+                                                    filter: theme.palette.mode === 'dark' ? 'invert(80%)' : undefined,
+                                                },
+                                            })}
                                             value={this.state.schedule.time.end}
                                             // InputProps={{inputComponent: TextTime}}
                                             onChange={e => {
@@ -810,13 +831,19 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                             key="exactTimeValue"
                             value={this.state.schedule.time.start}
                             type="time"
-                            // inputComponent={TextTime}
+                            sx={(theme: Theme) => ({
+                                '& input[type="time"]::-webkit-calendar-picker-indicator': {
+                                    filter: theme.palette.mode === 'dark' ? 'invert(80%)' : undefined,
+                                },
+                            })}
                             onChange={e => {
                                 const _schedule = JSON.parse(JSON.stringify(this.state.schedule));
                                 _schedule.time.start = e.target.value;
                                 this.onChange(_schedule);
                             }}
-                            InputLabelProps={{ shrink: true }}
+                            slotProps={{
+                                inputLabel: { shrink: true },
+                            }}
                             margin="normal"
                         />
                     </div>
@@ -906,7 +933,9 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                                     e.target.value,
                                 );
                             }}
-                            InputLabelProps={{ shrink: true }}
+                            slotProps={{
+                                inputLabel: { shrink: true },
+                            }}
                             label={I18n.t('sch_at')}
                             margin="normal"
                         />
@@ -1882,7 +1911,9 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                                 e.target.value,
                             );
                         }}
-                        InputLabelProps={{ shrink: true }}
+                        slotProps={{
+                            inputLabel: { shrink: true },
+                        }}
                         margin="normal"
                     />
                     <FormControlLabel
@@ -1931,7 +1962,9 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                                     e.target.value,
                                 );
                             }}
-                            InputLabelProps={{ shrink: true }}
+                            slotProps={{
+                                inputLabel: { shrink: true },
+                            }}
                             margin="normal"
                         />
                     )}

@@ -435,5 +435,15 @@
   "ra_warning_every_second": "Попередження: завдання CRON виконуватиметься кожну секунду протягом зазначеного періоду!",
   "ra_warning_every_minute": "Попередження: завдання CRON виконуватиметься щохвилини протягом зазначеного періоду!",
   "ra_The schedule will be executed every second. Are you sure?": "Розклад буде виконуватися щосекунди. Ви впевнені?",
-  "ra_The schedule will be executed every minute. Are you sure?": "Розклад буде виконуватися щохвилини. Ви впевнені?"
+  "ra_The schedule will be executed every minute. Are you sure?": "Розклад буде виконуватися щохвилини. Ви впевнені?",
+  "sc_dow": "День",
+  "ra_Define CRON...": "Визначити CRON...",
+  "ra_Sunday": "неділя",
+  "ra_Monday": "понеділок",
+  "ra_Tuesday": "вівторок",
+  "ra_Wednesday": "Середа",
+  "ra_Thursday": "четвер",
+  "ra_Friday": "П'ятниця",
+  "ra_Saturday": "Субота",
+  "sc_invalid_cron": "Недійсний CRON"
 }

@@ -92,6 +92,7 @@
   "sc_date": "Date",
   "sc_dates": "Dates",
   "sc_dows": "Day of week",
+  "sc_dow": "Day",
   "sc_every": "Every",
   "sc_everyN_dates": "every N days",
   "sc_everyN_dows": "every N day of week",
@@ -435,5 +436,14 @@
   "ra_warning_every_second": "Warning: The CRON job will run every second during the specified period!",
   "ra_warning_every_minute": "Warning: The CRON job will run every minute during the specified period!",
   "ra_The schedule will be executed every second. Are you sure?": "The schedule will be executed every second. Are you sure?",
-  "ra_The schedule will be executed every minute. Are you sure?": "The schedule will be executed every minute. Are you sure?"
+  "ra_The schedule will be executed every minute. Are you sure?": "The schedule will be executed every minute. Are you sure?",
+  "ra_Define CRON...": "Define CRON...",
+  "ra_Sunday": "Sunday",
+  "ra_Monday": "Monday",
+  "ra_Tuesday": "Tuesday",
+  "ra_Wednesday": "Wednesday",
+  "ra_Thursday": "Thursday",
+  "ra_Friday": "Friday",
+  "ra_Saturday": "Saturday",
+  "sc_invalid_cron": "Invalid CRON"
 }

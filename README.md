@@ -697,7 +697,13 @@ You can find the migration instructions:
 -->
 
 ## Changelog
+
+### **WORK IN PROGRESS**
+
+-   (@GermanBluefox) Corrected error in the simple CRON dialog
+
 ### 7.2.2 (2024-10-04)
+
 -   (@GermanBluefox) Small layout change for Icon Picker
 
 ### 7.2.1 (2024-09-30)

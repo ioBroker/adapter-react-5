@@ -435,5 +435,15 @@
   "ra_warning_every_second": "Внимание: задание CRON будет выполняться каждую секунду в течение указанного периода!",
   "ra_warning_every_minute": "Внимание: задание CRON будет запускаться каждую минуту в течение указанного периода!",
   "ra_The schedule will be executed every second. Are you sure?": "Расписание будет выполняться каждую секунду. Вы уверены?",
-  "ra_The schedule will be executed every minute. Are you sure?": "Расписание будет выполняться каждую минуту. Вы уверены?"
+  "ra_The schedule will be executed every minute. Are you sure?": "Расписание будет выполняться каждую минуту. Вы уверены?",
+  "sc_dow": "День",
+  "ra_Define CRON...": "Определите CRON...",
+  "ra_Sunday": "Воскресенье",
+  "ra_Monday": "Понедельник",
+  "ra_Tuesday": "Вторник",
+  "ra_Wednesday": "Среда",
+  "ra_Thursday": "Четверг",
+  "ra_Friday": "Пятница",
+  "ra_Saturday": "Суббота",
+  "sc_invalid_cron": "Неверный CRON"
 }

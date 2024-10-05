@@ -435,5 +435,15 @@
   "ra_warning_every_second": "Waarschuwing: De CRON-taak wordt elke seconde uitgevoerd gedurende de opgegeven periode!",
   "ra_warning_every_minute": "Waarschuwing: De CRON-taak wordt elke minuut uitgevoerd gedurende de opgegeven periode!",
   "ra_The schedule will be executed every second. Are you sure?": "Het schema wordt elke seconde uitgevoerd. Weet je het zeker?",
-  "ra_The schedule will be executed every minute. Are you sure?": "Het schema wordt elke minuut uitgevoerd. Weet u het zeker?"
+  "ra_The schedule will be executed every minute. Are you sure?": "Het schema wordt elke minuut uitgevoerd. Weet u het zeker?",
+  "sc_dow": "Dag",
+  "ra_Define CRON...": "Definieer CRON...",
+  "ra_Sunday": "Zondag",
+  "ra_Monday": "Maandag",
+  "ra_Tuesday": "Dinsdag",
+  "ra_Wednesday": "Woensdag",
+  "ra_Thursday": "Donderdag",
+  "ra_Friday": "Vrijdag",
+  "ra_Saturday": "Zaterdag",
+  "sc_invalid_cron": "Ongeldige CRON"
 }

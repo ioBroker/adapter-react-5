@@ -13,7 +13,7 @@ const styles: Record<string, React.CSSProperties> = {
     periodSelect: {
         // margin: '0 10px 60px 10px',
         display: 'block',
-        width: 200,
+        width: 250,
     },
     slider: {
         marginTop: 20,
@@ -479,7 +479,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
 
         return (
             <div style={styles.mainDiv}>
-                <div style={{ paddingLeft: 8, width: '100%' }}>
+                <div style={{ paddingLeft: 8, width: 'calc(100% - px)' }}>
                     <TextField
                         variant="standard"
                         style={{ width: '100%' }}
@@ -487,7 +487,7 @@ class ComplexCron extends Component<ComplexCronProps, ComplexCronState> {
                         disabled
                     />
                 </div>
-                <div style={{ paddingLeft: 8, width: '100%', height: 60 }}>
+                <div style={{ paddingLeft: 8, width: 'calc(100% - px)', height: 60 }}>
                     {ComplexCron.convertCronToText(this.state.cron, this.props.language || 'en')}
                     <span style={styles.warning}>
                         {everySecond
