@@ -77,6 +77,7 @@ class DialogSimpleCron extends React.Component<DialogCronProps, DialogCronState>
                 <DialogActions>
                     <Button
                         variant="contained"
+                        disabled={!this.state.cron || this.state.cron.includes('_')}
                         onClick={() => this.handleOk()}
                         color="primary"
                         startIcon={<IconOk />}

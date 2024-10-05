@@ -435,5 +435,15 @@
   "ra_warning_every_second": "警告：CRON 作业将在指定期间内每秒运行一次！",
   "ra_warning_every_minute": "警告：CRON 作业将在指定期间内每分钟运行一次！",
   "ra_The schedule will be executed every second. Are you sure?": "该计划将每秒执行一次。你确定吗？",
-  "ra_The schedule will be executed every minute. Are you sure?": "该计划将每分钟执行一次。您确定吗？"
+  "ra_The schedule will be executed every minute. Are you sure?": "该计划将每分钟执行一次。您确定吗？",
+  "sc_dow": "天",
+  "ra_Define CRON...": "定义 CRON...",
+  "ra_Sunday": "星期日",
+  "ra_Monday": "周一",
+  "ra_Tuesday": "周二",
+  "ra_Wednesday": "周三",
+  "ra_Thursday": "周四",
+  "ra_Friday": "星期五",
+  "ra_Saturday": "周六",
+  "sc_invalid_cron": "无效的 CRON"
 }

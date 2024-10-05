@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { InputLabel, MenuItem, Select, TextField, FormControl, FormControlLabel, Checkbox } from '@mui/material';
+import { InputLabel, MenuItem, Select, TextField, FormControl, FormControlLabel, Checkbox, type Theme } from '@mui/material';
 
 import convertCronToText from './cronText';
 
@@ -36,7 +36,16 @@ const PERIODIC_TYPES = {
     minutes: 'minutes',
     // hours: 'hours',
 };
-const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const WEEKDAYS = [
+    'ra_Sunday',
+    'ra_Monday',
+    'ra_Tuesday',
+    'ra_Wednesday',
+    'ra_Thursday',
+    'ra_Friday',
+    'ra_Saturday',
+    'ra_Sunday',
+];
 
 function padding(num: number): string {
     if (num < 10) {
@@ -348,6 +357,9 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
         const text = [];
         let start = null;
         let end = null;
+        if (!list.length) {
+            return '_';
+        }
         for (let i = 0; i < list.length; i++) {
             if (start === null) {
                 start = list[i];
@@ -529,7 +541,7 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
         return (
             <div
                 key="weekdays"
-                style={{ paddingLeft: 8, width: '100%', maxWidth: 600 }}
+                style={{ paddingLeft: 8, width: 'calc(100% - 8px)', maxWidth: 600 }}
             >
                 <h5>{I18n.t('ra_On weekdays')}</h5>
                 {[1, 2, 3, 4, 5, 6, 0].map(day => (
@@ -541,8 +553,15 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
                                 onChange={e => {
                                     const _settings = JSON.parse(JSON.stringify(this.state[type]));
                                     const pos = _settings.weekdays.indexOf(day);
-                                    e.target.checked && pos === -1 && _settings.weekdays.push(day);
-                                    !e.target.checked && pos !== -1 && _settings.weekdays.splice(pos, 1);
+                                    if (e.target.checked) {
+                                        if (pos === -1) {
+                                            _settings.weekdays.push(day);
+                                        }
+                                    } else {
+                                        if (pos !== -1) {
+                                            _settings.weekdays.splice(pos, 1);
+                                        }
+                                    }
                                     _settings.weekdays.sort();
                                     if (type === 'intervalBetween') {
                                         this.setState({ intervalBetween: _settings }, () => this.recalcCron());
@@ -707,6 +726,11 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
                     label={I18n.t('sc_time')}
                     value={settings.time}
                     type="time"
+                    sx={(theme: Theme) => ({
+                        '& input[type="time"]::-webkit-calendar-picker-indicator': {
+                            filter: theme.palette.mode === 'dark' ? 'invert(80%)' : undefined,
+                        },
+                    })}
                     onChange={e => {
                         const _settings = JSON.parse(JSON.stringify(this.state[type]));
                         _settings.time = e.target.value;
@@ -889,16 +913,17 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
     render(): React.JSX.Element {
         return (
             <div style={styles.mainDiv}>
-                <div style={{ paddingLeft: 8, width: '100%' }}>
+                <div style={{ paddingLeft: 8, width: 'calc(100% - 8px)' }}>
                     <TextField
                         variant="standard"
                         style={{ width: '100%' }}
                         value={this.state.cron}
                         disabled
+                        error={this.state.cron.includes('_')}
                     />
                 </div>
-                <div style={{ paddingLeft: 8, width: '100%', height: 60 }}>
-                    {convertCronToText(this.state.cron, this.props.language || 'en')}
+                <div style={{ paddingLeft: 8, width: 'calc(100% - 8px)', height: 60 }}>
+                    {this.state.cron.includes('_') ? I18n.t('sc_invalid_cron') : convertCronToText(this.state.cron, this.props.language || 'en')}
                 </div>
                 <div>
                     <FormControl

@@ -435,5 +435,15 @@
   "ra_warning_every_second": "Ostrzeżenie: Zadanie CRON będzie uruchamiane co sekundę w określonym przedziale czasowym!",
   "ra_warning_every_minute": "Ostrzeżenie: Zadanie CRON będzie uruchamiane co minutę w określonym przedziale czasowym!",
   "ra_The schedule will be executed every second. Are you sure?": "Harmonogram będzie wykonywany co sekundę. Czy jesteś pewien?",
-  "ra_The schedule will be executed every minute. Are you sure?": "Harmonogram będzie wykonywany co minutę. Czy jesteś pewien?"
+  "ra_The schedule will be executed every minute. Are you sure?": "Harmonogram będzie wykonywany co minutę. Czy jesteś pewien?",
+  "sc_dow": "Dzień",
+  "ra_Define CRON...": "Zdefiniuj CRON...",
+  "ra_Sunday": "Niedziela",
+  "ra_Monday": "Poniedziałek",
+  "ra_Tuesday": "Wtorek",
+  "ra_Wednesday": "Środa",
+  "ra_Thursday": "Czwartek",
+  "ra_Friday": "Piątek",
+  "ra_Saturday": "Sobota",
+  "sc_invalid_cron": "Nieprawidłowy CRON"
 }

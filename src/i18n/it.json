@@ -435,5 +435,15 @@
   "ra_warning_every_second": "Attenzione: il processo CRON verrà eseguito ogni secondo durante il periodo specificato!",
   "ra_warning_every_minute": "Attenzione: il processo CRON verrà eseguito ogni minuto durante il periodo specificato!",
   "ra_The schedule will be executed every second. Are you sure?": "La pianificazione verrà eseguita ogni secondo. Sei sicuro?",
-  "ra_The schedule will be executed every minute. Are you sure?": "La pianificazione verrà eseguita ogni minuto. Sei sicuro?"
+  "ra_The schedule will be executed every minute. Are you sure?": "La pianificazione verrà eseguita ogni minuto. Sei sicuro?",
+  "sc_dow": "Giorno",
+  "ra_Define CRON...": "Definisci CRON...",
+  "ra_Sunday": "Domenica",
+  "ra_Monday": "Lunedi",
+  "ra_Tuesday": "Martedì",
+  "ra_Wednesday": "Mercoledì",
+  "ra_Thursday": "Giovedì",
+  "ra_Friday": "Venerdì",
+  "ra_Saturday": "Sabato",
+  "sc_invalid_cron": "CRON non valido"
 }
