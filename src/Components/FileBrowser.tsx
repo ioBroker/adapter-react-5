@@ -4,7 +4,7 @@
  * MIT License
  *
  */
-import React, { Component } from 'react';
+import React, { Component, type JSX } from 'react';
 import Dropzone from 'react-dropzone';
 
 import {
@@ -102,9 +102,6 @@ const FILE_TYPE_ICONS: Record<string, React.FC<{ fontSize?: 'small' }>> = {
 };
 
 const styles: Record<string, any> = {
-    dialog: (theme: IobTheme) => ({
-        height: `calc(100% - ${theme.mixins.toolbar.minHeight}px)`,
-    }),
     root: {
         width: '100%',
         overflow: 'hidden',
@@ -147,7 +144,8 @@ const styles: Record<string, any> = {
         textAlign: 'center',
         opacity: 0.1,
         transition: 'opacity 1s',
-        margin: 4,
+        margin: '4px',
+        borderRadius: '4px',
         '&:hover': {
             background: theme.palette.secondary.light,
             color: Utils.invertColor(theme.palette.secondary.main, true),
@@ -270,8 +268,8 @@ const styles: Record<string, any> = {
         opacity: 0.4,
     },
     itemFolderIconTable: (theme: IobTheme) => ({
-        marginTop: 1,
-        marginLeft: 8,
+        marginTop: '1px',
+        marginLeft: '8px',
         display: 'inline-block',
         width: 30,
         height: 30,
@@ -406,6 +404,9 @@ const styles: Record<string, any> = {
             background: theme.palette.primary.main,
         },
     }),
+    pathDivBreadcrumbSelected: {
+        // todo: add style
+    },
     backgroundImageLight: {
         background: 'white',
     },
@@ -500,7 +501,7 @@ export interface FileBrowserProps {
 
     restrictToFolder?: string;
 
-    modalEditOfAccessControl?: (obj: FileBrowserClass) => React.JSX.Element | null;
+    modalEditOfAccessControl?: (obj: FileBrowserClass) => JSX.Element | null;
 
     allowNonRestricted?: boolean;
 
@@ -1026,7 +1027,17 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         const relPath = parts.join('/');
 
         // make all requests here serial
-        const files = await this.readDirSerial(adapter || '', relPath);
+        let files: ioBroker.ReadDirResult[];
+        try {
+            files = await this.readDirSerial(adapter || '', relPath);
+        } catch (error: unknown) {
+            // work around: 0_userdata.0 is a special folder, that should exist event when other folders and itself do not exit, as the browser shows it anyway.
+            if (error === 'Not exists' && adapter === '0_userdata.0') {
+                files = [];
+            } else {
+                throw error;
+            }
+        }
         try {
             const _folders: FolderOrFileItem[] = [];
 
@@ -1090,7 +1101,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         return newFoldersNotNull;
     }
 
-    toggleFolder(item: FolderOrFileItem, e: React.MouseEvent<Element>): void {
+    toggleFolder(item: FolderOrFileItem, e: React.MouseEvent): void {
         e?.stopPropagation();
         const expanded = [...this.state.expanded];
         const pos = expanded.indexOf(item.id);
@@ -1142,9 +1153,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
     };
 
     changeFolder(e: React.MouseEvent<HTMLDivElement>, folder?: string): void {
-        if (e) {
-            e.stopPropagation();
-        }
+        e?.stopPropagation();
 
         this.lastSelect = Date.now();
 
@@ -1157,9 +1166,11 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         this.localStorage.setItem('files.currentDir', _folder);
 
         if (folder && e && (e.altKey || e.shiftKey || e.ctrlKey || e.metaKey)) {
-            return this.setState({ selected: _folder });
+            this.setState({ selected: _folder });
+            return;
         }
 
+        // If desired folder is not yet loaded
         if (_folder && !this.state.folders[_folder]) {
             this.browseFolder(_folder)
                 .then(folders =>
@@ -1178,7 +1189,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
             return;
         }
 
-        return this.setState(
+        this.setState(
             {
                 currentDir: _folder,
                 selected: _folder,
@@ -1226,7 +1237,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         return undefined;
     }
 
-    renderFolder(item: FolderOrFileItem, expanded?: boolean): React.JSX.Element | null {
+    renderFolder(item: FolderOrFileItem, expanded?: boolean): JSX.Element | null {
         if (
             this.state.viewType === TABLE &&
             this.state.filterEmpty &&
@@ -1241,6 +1252,11 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         const isUserData = item.name === USER_DATA;
         const isSpecialData = isUserData || item.name === 'vis.0' || item.name === 'vis-2.0';
 
+        const iconStyle = Utils.getStyle(
+            this.props.theme,
+            styles[`itemFolderIcon${this.state.viewType}`],
+            isSpecialData && styles.specialFolder,
+        );
         return (
             <Box
                 component="div"
@@ -1260,15 +1276,9 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                 )}
             >
                 <IconEl
-                    style={Utils.getStyle(
-                        this.props.theme,
-                        styles[`itemFolderIcon${this.state.viewType}`],
-                        isSpecialData && styles.specialFolder,
-                    )}
+                    style={iconStyle}
                     onClick={
-                        this.state.viewType === TABLE
-                            ? (e: React.MouseEvent<Element>) => this.toggleFolder(item, e)
-                            : undefined
+                        this.state.viewType === TABLE ? (e: React.MouseEvent) => this.toggleFolder(item, e) : undefined
                     }
                 />
 
@@ -1340,7 +1350,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         );
     }
 
-    renderBackFolder(): React.JSX.Element {
+    renderBackFolder(): JSX.Element {
         return (
             <Box
                 component="div"
@@ -1355,7 +1365,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                     styles[`itemFolder${this.state.viewType}`],
                 )}
             >
-                <IconClosed style={styles[`itemFolderIcon${this.state.viewType}`]} />
+                <IconClosed style={Utils.getStyle(this.props.theme, styles[`itemFolderIcon${this.state.viewType}`])} />
                 <IconBack sx={styles.itemFolderIconBack} />
 
                 <Box
@@ -1372,7 +1382,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         );
     }
 
-    formatSize(size: number | null | undefined): React.JSX.Element {
+    formatSize(size: number | null | undefined): JSX.Element {
         return (
             <div style={styles[`itemSize${this.state.viewType}`]}>
                 {size || size === 0 ? Utils.formatBytes(size) : ''}
@@ -1380,7 +1390,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         );
     }
 
-    formatAcl(acl: ioBroker.EvaluatedFileACL | MetaACL | undefined): React.JSX.Element {
+    formatAcl(acl: ioBroker.EvaluatedFileACL | MetaACL | undefined): JSX.Element {
         const access: number = acl ? (acl as ioBroker.EvaluatedFileACL).permissions || (acl as MetaACL).file : 0;
         let accessStr: string;
         if (access) {
@@ -1406,7 +1416,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         );
     }
 
-    getFileIcon(ext: string | null): React.JSX.Element {
+    getFileIcon(ext: string | null): JSX.Element {
         switch (ext) {
             case 'json':
             case 'json5':
@@ -1483,7 +1493,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         }
     };
 
-    renderFile(item: FolderOrFileItem): React.JSX.Element {
+    renderFile(item: FolderOrFileItem): JSX.Element {
         const padding = this.state.viewType === TABLE ? item.level * this.levelPadding : 0;
         const ext = Utils.getFileExtension(item.name);
 
@@ -1639,11 +1649,11 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         );
     }
 
-    renderItems(folderId: string): React.JSX.Element | (React.JSX.Element | null)[] {
+    renderItems(folderId: string): JSX.Element | (JSX.Element | null)[] {
         if (this.state.folders && this.state.folders[folderId]) {
             // tile
             if (this.state.viewType === TILE) {
-                const res: (React.JSX.Element | null)[] = [];
+                const res: (JSX.Element | null)[] = [];
                 if (folderId && folderId !== '/') {
                     res.push(this.renderBackFolder());
                 }
@@ -1662,7 +1672,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
                 return res;
             }
 
-            const totalResult: (React.JSX.Element | null)[] = [];
+            const totalResult: (JSX.Element | null)[] = [];
             this.state.folders[folderId].forEach(item => {
                 if (item.folder) {
                     const expanded = this.state.expanded.includes(item.id);
@@ -1716,7 +1726,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         );
     }
 
-    renderToolbar(): React.JSX.Element {
+    renderToolbar(): JSX.Element {
         const IconType: React.FC<{ fontSize?: 'small' }> | null = this.props.showTypeSelector
             ? FILE_TYPE_ICONS[this.state.filterByType || 'all'] || FILE_TYPE_ICONS.all
             : null;
@@ -1965,7 +1975,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         return folders[parentFolder].find(item => item.id === id) || null;
     }
 
-    renderInputDialog(): React.JSX.Element | null {
+    renderInputDialog(): JSX.Element | null {
         if (this.state.addFolder) {
             const parentFolder = this.findFirstFolder(this.state.selected);
 
@@ -2074,7 +2084,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         }
     }
 
-    renderUpload(): React.JSX.Element[] | null {
+    renderUpload(): JSX.Element[] | null {
         if (this.state.uploadFile) {
             return [
                 <Fab
@@ -2274,7 +2284,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         );
     }
 
-    renderDeleteDialog(): React.JSX.Element | null {
+    renderDeleteDialog(): JSX.Element | null {
         if (this.state.deleteItem) {
             return (
                 <Dialog
@@ -2322,7 +2332,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         return null;
     }
 
-    renderViewDialog(): React.JSX.Element | null {
+    renderViewDialog(): JSX.Element | null {
         return this.state.viewer ? (
             <FileViewer
                 supportSubscribes={this.supportSubscribes}
@@ -2341,7 +2351,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         ) : null;
     }
 
-    renderError(): React.JSX.Element | null {
+    renderError(): JSX.Element | null {
         if (this.state.errorText) {
             return (
                 <ErrorDialog
@@ -2415,7 +2425,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         }, 100);
     }
 
-    renderBreadcrumb(): React.JSX.Element {
+    renderBreadcrumb(): JSX.Element {
         const parts = this.state.currentDir.startsWith('/')
             ? this.state.currentDir.split('/')
             : `/${this.state.currentDir}`.split('/');
@@ -2454,7 +2464,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         );
     }
 
-    renderPath(): React.JSX.Element {
+    renderPath(): JSX.Element {
         return (
             <Box
                 component="div"
@@ -2490,7 +2500,7 @@ export class FileBrowserClass extends Component<FileBrowserProps, FileBrowserSta
         );
     }
 
-    render(): React.JSX.Element {
+    render(): JSX.Element {
         if (!this.props.ready) {
             return <LinearProgress />;
         }

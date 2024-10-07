@@ -10,7 +10,7 @@ import {
     Select,
     TextField,
     Box,
-    type Theme
+    type Theme,
 } from '@mui/material';
 
 import I18n from '../i18n';
@@ -558,14 +558,14 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                     // every minute
                     desc.push(I18n.t('sch_desc_everyMinute'));
                 } else {
-                    // every N minutes
+                    // every N minute
                     desc.push(I18n.t('sch_desc_everyNMinutes', schedule.time.interval.toString()));
                 }
             } else if (schedule.time.interval === 1) {
                 // every minute
                 desc.push(I18n.t('sch_desc_everyHour'));
             } else {
-                // every N minutes
+                // every N minute
                 desc.push(I18n.t('sch_desc_everyNHours', schedule.time.interval.toString()));
             }
 
@@ -767,7 +767,7 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
                             </div>
                         )}
                     </div>
-                    {!schedule.time.exactTime && this.getPeriodSettingsMinutes()}
+                    {!schedule.time.exactTime && this.getPeriodSettingsMinutes(fromTo)}
                 </div>
             </div>
         );
@@ -1202,13 +1202,16 @@ class Schedule extends Component<ScheduleProps, ScheduleState> {
         ];
     }
 
-    getPeriodSettingsMinutes(): JSX.Element {
+    getPeriodSettingsMinutes(fromTo: boolean): JSX.Element {
         return (
-            <div style={{ display: 'inline-block' }}>
-                <label>{I18n.t('sch_every')}</label>
+            <div style={{ display: 'inline-block', marginTop: fromTo ? 15 : 'inherit' }}>
+                <label style={{ marginLeft: 4, marginRight: 4 }}>{I18n.t('sch_every')}</label>
                 <Input
                     value={this.state.schedule.time.interval}
-                    style={{ ...styles.inputEvery, verticalAlign: 'bottom' }}
+                    style={{
+                        ...styles.inputEvery,
+                        verticalAlign: 'bottom',
+                    }}
                     type="number"
                     inputProps={{ min: 1 }}
                     onChange={e => {

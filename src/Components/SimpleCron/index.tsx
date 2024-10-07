@@ -1,6 +1,15 @@
 import React from 'react';
 
-import { InputLabel, MenuItem, Select, TextField, FormControl, FormControlLabel, Checkbox, type Theme } from '@mui/material';
+import {
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
+    FormControl,
+    FormControlLabel,
+    Checkbox,
+    type Theme,
+} from '@mui/material';
 
 import convertCronToText from './cronText';
 
@@ -923,7 +932,9 @@ class SimpleCron extends React.Component<SimpleCronProps, SimpleCronState> {
                     />
                 </div>
                 <div style={{ paddingLeft: 8, width: 'calc(100% - 8px)', height: 60 }}>
-                    {this.state.cron.includes('_') ? I18n.t('sc_invalid_cron') : convertCronToText(this.state.cron, this.props.language || 'en')}
+                    {this.state.cron.includes('_')
+                        ? I18n.t('sc_invalid_cron')
+                        : convertCronToText(this.state.cron, this.props.language || 'en')}
                 </div>
                 <div>
                     <FormControl

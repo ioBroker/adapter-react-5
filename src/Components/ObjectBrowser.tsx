@@ -28,7 +28,6 @@ import {
     ListItem,
     ListItemButton,
     ListItemIcon,
-    ListItemSecondaryAction,
     ListItemText,
     Menu,
     MenuItem,
@@ -1111,11 +1110,14 @@ function binarySearch(list: string[], find: string, _start?: number, _end?: numb
 }
 
 function getName(name: ioBroker.StringOrTranslated, lang: ioBroker.Languages): string {
-    if (name && typeof name === 'object') {
+    if (typeof name === 'object') {
+        if (!name) {
+            return '';
+        }
         return (name[lang] || name.en || '').toString();
     }
 
-    return (name || '').toString();
+    return name ? name.toString() : '';
 }
 
 export function getSelectIdIconFromObjects(
@@ -3824,13 +3826,16 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
         obj: ioBroker.AdapterObject,
     ): Record<string, CustomAdminColumnStored[]> | null {
         if (obj.common && obj.common.adminColumns && obj.common.name) {
-            let columns: string | (string | ioBroker.CustomAdminColumn)[] = obj.common.adminColumns;
+            const columns: string | (string | ioBroker.CustomAdminColumn)[] = obj.common.adminColumns;
+            let aColumns: (string | ioBroker.CustomAdminColumn)[] | undefined;
             if (columns && typeof columns !== 'object') {
-                columns = [columns];
+                aColumns = [columns];
+            } else if (columns) {
+                aColumns = columns as (string | ioBroker.CustomAdminColumn)[];
             }
             let cColumns: CustomAdminColumnStored[] | null;
             if (columns) {
-                cColumns = (columns as (string | ioBroker.CustomAdminColumn)[])
+                cColumns = aColumns
                     .map((_item: string | ioBroker.CustomAdminColumn) => {
                         if (typeof _item !== 'object') {
                             return { path: _item, name: _item.split('.').pop() };
@@ -3866,7 +3871,7 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                             objTypes: item.objTypes,
                         } as CustomAdminColumnStored;
                     })
-                    .filter(item => item) as CustomAdminColumnStored[];
+                    .filter((item: CustomAdminColumnStored) => item);
             } else {
                 cColumns = null;
             }
@@ -7753,22 +7758,30 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
 
     /**
      * Find the id from the root
+     *
+     * @param root The current root
+     * @param id The object id to find
      */
-    private static getItemFromRoot(
-        /** The current root */
-        root: TreeItem,
-        /** the object id to find */
-        id: string,
-    ): TreeItem | null {
+    private static getItemFromRoot(root: TreeItem, id: string): TreeItem | null {
         const idArr = id.split('.');
         let currId = '';
         let _root: TreeItem | null | undefined = root;
 
-        for (const idEntry of idArr) {
+        for (let i = 0; i < idArr.length; i++) {
+            const idEntry = idArr[i];
             currId = currId ? `${currId}.${idEntry}` : idEntry;
-            _root = _root.children?.find(item => item.data.id === currId);
-            if (!_root) {
-                break;
+            let found = false;
+            if (_root.children) {
+                for (let j = 0; j < _root.children.length; j++) {
+                    if (_root.children[j].data.id === currId) {
+                        _root = _root.children[j];
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (!found) {
+                return null;
             }
         }
 
@@ -8495,7 +8508,6 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                     !this.props.notEditable &&
                     this.props.objectBrowserAliasEditor &&
                     this.props.objectBrowserEditObject &&
-                    this.state.filter.expertMode &&
                     obj?.type === 'state' &&
                     // @ts-expect-error deprecated from js-controller 6
                     obj.common?.type !== 'file'
@@ -8630,9 +8642,9 @@ export class ObjectBrowserClass extends Component<ObjectBrowserProps, ObjectBrow
                                 {ITEMS[key].label}
                                 ...
                             </ListItemText>
-                            <ListItemSecondaryAction>
+                            <div style={{ ...styles.contextMenuKeys, opacity: 1 }}>
                                 <ArrowRightIcon />
-                            </ListItemSecondaryAction>
+                            </div>
                         </MenuItem>,
                     );
 
