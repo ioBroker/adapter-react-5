@@ -697,12 +697,12 @@ You can find the migration instructions:
 -->
 
 ## Changelog
-### 7.2.3 (2024-10-05)
+### **WORK IN PROGRESS**
 
--   (@GermanBluefox) Corrected error in the simple CRON dialog
+-   (@GermanBluefox) Corrected file browser
+-   (@GermanBluefox) Changed Open/Close Folder icons
 
 ### 7.2.2 (2024-10-04)
-
 -   (@GermanBluefox) Small layout change for Icon Picker
 
 ### 7.2.1 (2024-09-30)

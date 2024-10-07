@@ -19,7 +19,7 @@ import langPl from '../../src/i18n/pl.json';
 import langUk from '../../src/i18n/uk.json';
 import langZhCn from '../../src/i18n/zh-cn.json';
 import I18n from '../../src/i18n';
-import SimpleCron from '../../src/Dialogs/SimpleCron';
+import Cron from '../../src/Dialogs/Cron';
 
 class App extends Component {
     private theme: Theme;
@@ -52,10 +52,11 @@ class App extends Component {
         return (
             <StyledEngineProvider injectFirst>
                 <ThemeProvider theme={this.theme}>
-                    <SimpleCron
+                    <Cron
                         onClose={() => {}}
                         onOk={() => {}}
                         cron="0 0 * * *"
+                        theme={this.theme}
                     />
                 </ThemeProvider>
             </StyledEngineProvider>

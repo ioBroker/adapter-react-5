@@ -1,6 +1,6 @@
 // File viewer in adapter-react does not support write
 // import { Buffer } from 'buffer';
-import React, { Component } from 'react';
+import React, { Component, type JSX } from 'react';
 
 import { TextField, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from '@mui/material';
 
@@ -338,7 +338,7 @@ class FileViewer extends Component<FileViewerProps, FileViewerState> {
         return null;
     }
 
-    render(): React.JSX.Element {
+    render(): JSX.Element {
         return (
             <Dialog
                 sx={{
