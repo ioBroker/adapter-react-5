@@ -53,7 +53,7 @@
     "@mui/material": "^6.1.9",
     "@mui/x-date-pickers": "^7.19.0",
     "@sentry/browser": "^8.33.1",
-    "cronstrue": "^2.50.0",
+    "cronstrue": "^2.52.0",
     "react-color": "^2.19.3",
     "react-colorful": "^5.6.1",
     "react-cropper": "^2.3.3",
