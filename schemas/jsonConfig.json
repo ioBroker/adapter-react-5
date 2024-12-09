@@ -4223,7 +4223,14 @@
                     },
                     "tooltip": {
                         "description": "Optional tooltip",
-                        "type": "string"
+                        "oneOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/multilingual"
+                            }
+                        ]
                     },
                     "default": {
                         "description": "Default value"
