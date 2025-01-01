@@ -73,7 +73,7 @@
     "@babel/preset-flow": "^7.25.9",
     "@babel/preset-react": "^7.26.3",
     "@types/node": "^22.10.3",
-    "@types/react": "^18.3.12",
+    "@types/react": "^19.0.2",
     "@types/react-color": "^3.0.13",
     "ajv": "^8.17.1",
     "ts-node": "^10.9.2",
