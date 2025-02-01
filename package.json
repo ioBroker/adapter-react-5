@@ -59,7 +59,7 @@
     "react-cropper": "^2.3.3",
     "react-dropzone": "^14.2.10",
     "react-icons": "^5.3.0",
-    "react-inlinesvg": "^4.1.5"
+    "react-inlinesvg": "^4.1.8"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^3.8.0",
