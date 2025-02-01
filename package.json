@@ -51,7 +51,7 @@
     "@iobroker/js-controller-common-db": "^6.0.11",
     "@mui/icons-material": "^6.1.9",
     "@mui/material": "^6.1.9",
-    "@mui/x-date-pickers": "^7.19.0",
+    "@mui/x-date-pickers": "^7.25.0",
     "@sentry/browser": "^8.33.1",
     "cronstrue": "^2.50.0",
     "react-color": "^2.19.3",
